@@ -60,7 +60,7 @@ export default function SignInComponent() {
                                 }
                             ]}
                         >
-                            <Input placeholder="Email hoặc số điện thoại" />
+                            <Input className='p-4' placeholder="Email hoặc số điện thoại" />
                         </Form.Item>
                         <Form.Item
                             className='mb-12'
@@ -75,7 +75,7 @@ export default function SignInComponent() {
                                 }
                             ]}
                         >
-                            <Input type="password" placeholder="Mật khẩu" />
+                            <Input className='p-4' type="password" placeholder="Mật khẩu" />
                         </Form.Item>
                         <Form.Item>
                             <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">

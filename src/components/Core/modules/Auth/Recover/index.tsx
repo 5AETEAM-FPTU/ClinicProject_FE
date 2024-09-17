@@ -17,7 +17,7 @@ export default function RecoverComponent() {
 
     }
     return (
-        <div className="w-full lg:w-1/2 p-8 flex justify-center items-center">
+        <div className="w-full h-screen lg:w-1/2 p-8 flex justify-center items-center">
             <div className="mb-8 flex justify-center items-center w-80">
                 <div className="w-full max-w-md">
                     <div className="mb-8 flex justify-center items-center">
@@ -30,7 +30,6 @@ export default function RecoverComponent() {
                         onFinish={handleSubmit}
                     >
                         <Form.Item
-                            className='mb-12'
                             hasFeedback
                             validateDebounce={500}
                             name="password"
@@ -42,7 +41,7 @@ export default function RecoverComponent() {
                                 }
                             ]}
                         >
-                            <Input type="password" placeholder="Mật khẩu mới" />
+                            <Input className='p-4' type="password" placeholder="Mật khẩu mới" />
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -61,7 +60,7 @@ export default function RecoverComponent() {
                                 }),
                             ]}
                         >
-                            <Input type="password" placeholder="Nhập lại mật khẩu" />
+                            <Input className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
                         </Form.Item>
                         <Form.Item>
                             <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
