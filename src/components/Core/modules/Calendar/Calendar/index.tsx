@@ -1,10 +1,50 @@
 'use client'
 import React, { useState } from 'react'
-import { Calendar, MapPin, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from 'antd'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import TimeSlot from '../TimeSlot';
+import Information from '../Information';
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+
+// start helper function
+function compareDatesByDay(date1: Date, date2: Date) {
+    // Xóa bỏ thông tin về giờ, phút, giây
+    const date1WithoutTime = new Date(date1.setHours(0, 0, 0, 0));
+    const date2WithoutTime = new Date(date2.setHours(0, 0, 0, 0));
+
+    const time1 = date1WithoutTime.getTime();
+    const time2 = date2WithoutTime.getTime();
+
+    if (time1 > time2) {
+        // Date 1 is after Date 2
+        return 1;
+    } else if (time1 < time2) {
+        //Date 1 is before Date 2
+        return -1;
+    } else {
+        // Date 1 is the same as Date 2
+        return 0;
+    }
+}
+
+const getWeekRow = (date: Date) => {
+    const firstDayOfMonth = getFirstDayOfMonth(date)
+    // Calculate week row index considering Sunday as the start of the week
+    console.log(Math.floor((date.getDate() + firstDayOfMonth) / 7));
+    return Math.ceil((date.getDate() + firstDayOfMonth) / 7)
+}
+
+const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+}
+
+const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+}
+
+// end helper function
 
 export default function Component() {
     const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) // September 2024
@@ -15,13 +55,6 @@ export default function Component() {
         setSelectedDate(null);
         setTimeSlotVisible(false);
     }
-    const getDaysInMonth = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-    }
-
-    const getFirstDayOfMonth = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
-    }
 
     const handlePrevMonth = () => {
         handleClose();
@@ -31,13 +64,6 @@ export default function Component() {
     const handleNextMonth = () => {
         handleClose();
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
-    }
-
-    const getWeekRow = (date: Date) => {
-        const firstDayOfMonth = getFirstDayOfMonth(date)
-        // Calculate week row index considering Sunday as the start of the week
-        console.log(Math.floor((date.getDate() + firstDayOfMonth) / 7));
-        return Math.ceil((date.getDate() + firstDayOfMonth) / 7)
     }
 
     const handleSelectedRow = (date: Date) => {
@@ -58,17 +84,23 @@ export default function Component() {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
             const isSelected = date.toDateString() === selectedDate?.toDateString()
             const isToday = date.toDateString() === new Date().toDateString()
-            const currentWeekRow = getWeekRow(date)
-            const isDisable = date < new Date();
+            const currentWeekRow = getWeekRow(date);
+            const isDisable = compareDatesByDay(date, new Date()) < 0;
             days.push(
-                <button
-                    key={day}
-                    onClick={() => !isDisable && handleSelectedRow(date)}
-                    className={`${isDisable ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''} font-bold h-10 w-full flex items-center justify-center rounded-full ${isSelected ? 'bg-cyan-500 text-white' : ''} ${isToday && !isSelected ? 'border border-cyan-500 text-cyan-500' : ''} ${!isSelected && !isToday && !isDisable ? 'hover:bg-gray-100' : ''} ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}
-                    aria-label={`Select ${date.toDateString()}`}
-                >
-                    {day}
-                </button>
+                <div className={`flex items-center justify-center h-12 ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}>
+                    <Button
+                        disabled={isDisable}
+                        shape="circle"
+                        size='large'
+                        key={day}
+                        type='text'
+                        onClick={() => !isDisable && handleSelectedRow(date)}
+                        className={`text-color-[#333333] font-semibold text-xl ${isDisable ? 'text-gray-400 cursor-not-allowed' : ''} ${isSelected ? 'bg-cyan-500 text-white' : ''} ${isToday && !isSelected ? 'border border-red-500 text-red-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-cyan-500 hover:text-white' : ''}`}
+                        aria-label={`Select ${date.toDateString()}`}
+                    >
+                        {day}
+                    </Button>
+                </div>
             )
         }
 
@@ -76,20 +108,10 @@ export default function Component() {
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100 min-h-screen">
-            <div className="w-full md:w-1/3 bg-white rounded-lg shadow p-4">
-                <h2 className="text-lg font-semibold mb-4">Thông tin cơ sở y tế</h2>
-                <div className="space-y-2">
-                    <p className="flex items-center"><Calendar className="w-5 h-5 mr-2" aria-hidden="true" /> Phòng Khám Đa Khoa Pháp Anh</p>
-                    <p className="flex items-center"><MapPin className="w-5 h-5 mr-2" aria-hidden="true" /> 222-224-226 Nguyễn Duy Dương, Phường 4, Quận 10, TP.HCM</p>
-                    <p className="flex items-center"><MapPin className="w-5 h-5 mr-2" aria-hidden="true" /> Chuyên khoa: Nội tổng quát</p>
-                    <p className="flex items-center"><User className="w-5 h-5 mr-2" aria-hidden="true" /> Bác sĩ: Lê Ngọc Ánh</p>
-                    <p className="flex items-center"><MapPin className="w-5 h-5 mr-2" aria-hidden="true" /> Dịch vụ: Nội tổng quát</p>
-                    <p className="flex items-center"><Calendar className="w-5 h-5 mr-2" aria-hidden="true" /> Ngày khám: {selectedDate?.toLocaleDateString('vi-VN')}</p>
-                </div>
-            </div>
-            <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-4">
-                <h2 className="text-lg font-semibold mb-4">Vui lòng chọn ngày khám</h2>
+        <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100 min-h-screen container mx-auto">
+            <Information selectedDate={selectedDate} />
+            <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-4 h-fit">
+                <h2 className="text-white text-xl font-bold text-center uppercase mb-4 bg-gradient-to-r from-[#665ee3] from-0% to-[#358ec8] to-90% rounded-t-lg p-2">Vui lòng chọn ngày khám</h2>
                 <div className="flex items-center justify-between mb-4">
                     <button onClick={handlePrevMonth} className="p-2" aria-label="Previous month">
                         <ChevronLeft className="w-5 h-5" aria-hidden="true" />
@@ -101,7 +123,7 @@ export default function Component() {
                 </div>
                 <div className="grid grid-cols-7 gap-2 mb-2">
                     {daysOfWeek.map(day => (
-                        <div key={day} className="text-center font-semibold">{day}</div>
+                        <div key={day} className="text-[#666666] text-center font-semibold text-xl">{day}</div>
                     ))}
                 </div>
                 <div className="grid grid-cols-7 gap-2">

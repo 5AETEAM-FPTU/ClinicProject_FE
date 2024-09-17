@@ -35,16 +35,16 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selecte
         <h2 className="text-xl font-bold mb-3">{title}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {slots.map((slot, index) => (
-                <button
+                <Button
                     key={index}
-                    className={`py-2 px-4 border rounded-md text-center ${selectedSlot === slot
+                    className={`py-4 px-2 border text-center ${selectedSlot === slot
                         ? 'bg-blue-500 text-white border-blue-500'
                         : 'bg-white text-black border-blue-200 hover:border-blue-500'
                         }`}
                     onClick={() => onSelectSlot(slot)}
                 >
                     {slot.start} - {slot.end}
-                </button>
+                </Button>
             ))}
         </div>
     </motion.div>
@@ -72,7 +72,7 @@ export default function Component({ handleClose }: { handleClose: () => void }) 
     }
 
     return (
-        <div className="p-4 w-full mx-auto">
+        <div className="p-4 w-full mx-auto mt-4">
             <Button className="float-right" onClick={handleClose}>Đóng</Button>
             <TimeSlotSection
                 title="Buổi sáng"
