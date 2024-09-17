@@ -22,9 +22,7 @@ function AuthRootLayout({ children }: { children: React.ReactNode }) {
                     <Image
                         src={AuthBanner}
                         alt="Woman using smartphone"
-                        width={1440}
-                        height={1440}
-                        className='object-cover'
+                        className='h-screen'
                     />
                 </div>
             </div>
