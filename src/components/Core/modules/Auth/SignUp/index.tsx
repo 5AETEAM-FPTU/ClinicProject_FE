@@ -9,14 +9,27 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'antd/es/form/Form'
+import { useLazyRequestSignUpQuery } from '@/stores/services/auth'
 
 export default function SignUpComponent() {
     const params = useParams();
     const [form] = useForm();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
-    const handleSubmit = (values: any) => {
-
+    const [requestSignUp] = useLazyRequestSignUpQuery();
+    const handleSubmit = async (values: any) => {
+        const dataMapping = {
+            fullName: values.name,
+            email: values.email,
+            phoneNumber: values.phone,
+            password: values.password
+        }
+        const result = await requestSignUp(dataMapping);
+        if (result.error) {
+            console.log(result.error)
+        } else {
+            router.push('/vertify-email?email=' + values.email);
+        }
     }
     return (
         <div className="w-full lg:w-1/2 p-8">

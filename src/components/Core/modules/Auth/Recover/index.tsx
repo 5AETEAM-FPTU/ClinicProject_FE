@@ -7,14 +7,23 @@ import { Button, Input, Form } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
-
+import { useLazyRequestChangePasswordQuery } from '@/stores/services/auth'
 export default function RecoverComponent() {
     const params = useParams();
-    const { t } = useTranslation(params?.locale as string, 'Landing')
+    const { t } = useTranslation(params?.locale as string, 'Landing');
+    const [requestChangePassword] = useLazyRequestChangePasswordQuery();
     const router = useRouter();
     const [form] = Form.useForm();
-    const handleSubmit = (values: any) => {
-
+    const handleSubmit = async (values: any) => {
+        const result = await requestChangePassword({
+            resetPasswordToken: values.OTP,
+            newPassword: values.password
+        });
+        if (result.error) {
+            console.log('Change password failed', result.error);
+        } else {
+            router.push('/sign-in');
+        }
     }
     return (
         <div className="w-full h-screen lg:w-1/2 p-8 flex justify-center items-center">
@@ -29,6 +38,20 @@ export default function RecoverComponent() {
                         form={form}
                         onFinish={handleSubmit}
                     >
+                        <Form.Item
+                            hasFeedback
+                            validateDebounce={500}
+                            name="OTP"
+                            rules={[
+                                { required: true, message: "Vui lòng nhập mật khẩu" },
+                                {
+                                    len: 5,
+                                    message: "Mã OTP phải có 5 ký tự"
+                                }
+                            ]}
+                        >
+                            <Input className='p-4' type="password" placeholder="OTP" />
+                        </Form.Item>
                         <Form.Item
                             hasFeedback
                             validateDebounce={500}
