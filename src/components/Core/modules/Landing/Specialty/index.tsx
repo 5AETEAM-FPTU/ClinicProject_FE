@@ -18,23 +18,8 @@ import NoiTruyenNhiem from '@public/landing/specialty/NoiTruyenNhiem.png'
 
 function Specialty() {
     return (
-        <motion.div
-            initial={{
-                y: 10,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 1,
-                delay: 0.45,
-            }}
-            viewport={{
-                once: true,
-            }}
+        <div
+            
         >
             <CommonSection
                 title={'Chuyên khoa nội'}
@@ -168,7 +153,7 @@ function Specialty() {
                     <div></div>
                 </div>
             </CommonSection>
-        </motion.div>
+        </div>
     )
 }
 

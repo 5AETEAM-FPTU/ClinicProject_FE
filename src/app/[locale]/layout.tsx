@@ -7,11 +7,9 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "P-Clinic",
-  description: "P-Clinic",
-  icons: {
-    icon: "/public/landing/app/logo.png",
-  }
+  title: "P-CLINIC",
+  description: "P-CLINIC",
+  icons: "/icons/layout/p-clinic.png",
 };
 
 export default async function RootLayout({

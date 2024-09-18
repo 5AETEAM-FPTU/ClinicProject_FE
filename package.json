@@ -12,6 +12,7 @@
         "@ant-design/nextjs-registry": "^1.0.0",
         "@reduxjs/toolkit": "^2.2.7",
         "@smakss/react-scroll-direction": "^4.2.0",
+        "@tinymce/tinymce-react": "^5.1.1",
         "accept-language": "^3.0.18",
         "antd": "^5.20.5",
         "clsx": "^2.1.1",

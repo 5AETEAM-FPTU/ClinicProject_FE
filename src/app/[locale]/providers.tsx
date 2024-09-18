@@ -38,6 +38,7 @@ function Providers({ children }: { children: React.ReactNode }) {
                                         },
                                         Select: {
                                             controlHeight: 40,
+                                            fontSizeLG: 14,
                                         },
                                     },
                                     token: {

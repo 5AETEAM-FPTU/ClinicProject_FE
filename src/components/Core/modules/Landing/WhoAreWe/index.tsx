@@ -17,23 +17,8 @@ function WhoAreWe() {
 
     const { t } = useTranslation(params?.locale as string, 'Landing')
     return (
-        <motion.div
-            initial={{
-                y: 10,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 1,
-                delay: 0.45,
-            }}
-            viewport={{
-                once: true,
-            }}
+        <div
+            
         >
             <CommonSection
                 tailCustomStyle="bg-white !pt-0 bg-gradient-to-b from-white to-secondaryLight"
@@ -67,7 +52,7 @@ function WhoAreWe() {
                     </div>
                 </div>
             </CommonSection>
-        </motion.div>
+        </div>
     )
 }
 

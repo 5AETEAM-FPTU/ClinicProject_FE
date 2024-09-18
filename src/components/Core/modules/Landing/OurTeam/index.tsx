@@ -108,23 +108,8 @@ function OurTeam() {
         // Add more doctor objects here...
     ]
     return (
-        <motion.div
-            initial={{
-                y: 10,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 1,
-                delay: 0.45,
-            }}
-            viewport={{
-                once: true,
-            }}
+        <div
+            
         >
             <CommonSection
                 title={'đội ngũ tại p-linic'}
@@ -196,7 +181,7 @@ function OurTeam() {
                     ))}
                 </Carousel>
             </CommonSection>
-        </motion.div>
+        </div>
     )
 }
 
