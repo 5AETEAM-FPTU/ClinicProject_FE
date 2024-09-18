@@ -197,11 +197,11 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                     }}
                 >
                     {children}
-                    <Footer className='bg-[#F8F9FB] !p-0'>
+                    {/* <Footer className='bg-[#F8F9FB] !p-0'>
                         <div className='w-full p-5 flex flex-row gap-5'>
                             <p>© Bản quyền thuộc về Team 5AE © 2024, All Rights Reserved ❤️</p>
                         </div>
-                    </Footer>
+                    </Footer> */}
                 </Content>
             </Layout>
         </Layout>
