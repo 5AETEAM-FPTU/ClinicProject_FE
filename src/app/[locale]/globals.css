@@ -25,3 +25,22 @@ body {
   /* font-weight: 400;
   font-style: normal; */
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+  padding-inline: 1px;
+  background: rgba(0, 0, 0, 0);
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f5f3ea;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #dbdbdb;
+  border-radius: 100vw;
+  border: 3px solid #f5f3ea;
+}
+

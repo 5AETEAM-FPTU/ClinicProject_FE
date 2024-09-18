@@ -72,23 +72,8 @@ function CustomerFeedback() {
     ]
 
     return (
-        <motion.div
-            initial={{
-                y: 10,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 1,
-                delay: 0.45,
-            }}
-            viewport={{
-                once: true,
-            }}
+        <div
+            
         >
             <CommonSection
                 title={'Cảm nhận từ khách hàng'}
@@ -133,7 +118,7 @@ function CustomerFeedback() {
                     ))}
                 </Carousel>
             </CommonSection>
-        </motion.div>
+        </div>
     )
 }
 

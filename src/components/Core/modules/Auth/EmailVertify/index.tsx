@@ -6,20 +6,38 @@
 import { Button, Input } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import RequestEmail from '@public/landing/icons/request-vertifying-email.svg'
 import EmailSuccess from '@public/landing/icons/vertify-email-success.svg'
 import Image from 'next/image';
+import { useLazyRequestConfirmEmailQuery } from '@/stores/services/auth'
+import { useState } from 'react'
+
 
 export default function EmailVertify() {
     const params = useParams();
-    const { t } = useTranslation(params?.locale as string, 'Landing')
-    const router = useRouter();
+    const { t } = useTranslation(params?.locale as string, 'Landing');
+    const [requestConfirmEmail] = useLazyRequestConfirmEmailQuery();
+    const [isSuccess, setIsSuccess] = useState(false);
+    const searchParams = useSearchParams();
+    const email = searchParams.get('email') as string;
+    const token = searchParams.get('token') as string;
+    const handleConfirmEmail = async () => {
+        const result = await requestConfirmEmail({
+            token
+        });
+        if (result.error) {
+            console.log('Confirm email failed', result.error);
+        } else {
+            setIsSuccess(true);
+        }
+    }
+    if (token) handleConfirmEmail();
     return (
         <div className="w-full lg:w-1/2 p-8 flex justify-center items-center">
             <div className="mb-8 flex justify-center items-center">
-                <VertifyEmailRequest email="abcdef123@gmail.com" />
-                {/* <VertifyEmailSuccess /> */}
+                {!isSuccess ? <VertifyEmailRequest email={email} /> :
+                    <VertifyEmailSuccess />}
             </div>
         </div >
     )

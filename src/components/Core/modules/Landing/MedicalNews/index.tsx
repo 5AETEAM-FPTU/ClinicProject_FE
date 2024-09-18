@@ -46,23 +46,8 @@ function MedicalNews() {
         },
     ]
     return (
-        <motion.div
-            initial={{
-                y: 10,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 1,
-                delay: 0.45,
-            }}
-            viewport={{
-                once: true,
-            }}
+        <div
+           
         >
             <CommonSection
                 title={'Tin tức y tế'}
@@ -104,7 +89,7 @@ function MedicalNews() {
                             <div className="flex h-[280px] w-[360px] flex-col rounded-xl bg-slate-500"></div> */}
                             {data.slice(1, 3).map((item, index) => {
                                 return (
-                                    <div className="flex h-[280px] w-[360px] flex-col gap-[12px] rounded-xl bg-white p-[14px] shadow-primary">
+                                    <div className="flex h-[280px] w-[360px] flex-col gap-[12px] rounded-xl bg-white p-[14px] shadow-primary" key={index}>
                                         <div>
                                             <Image
                                                 src={item.thumbnails}
@@ -129,7 +114,7 @@ function MedicalNews() {
                         <div className="flex flex-row gap-[40px]">
                             {data.slice(3, 5).map((item, index) => {
                                 return (
-                                    <div className="flex h-[280px] w-[360px] flex-col gap-[12px] rounded-xl bg-white p-[14px] shadow-primary" >
+                                    <div className="flex h-[280px] w-[360px] flex-col gap-[12px] rounded-xl bg-white p-[14px] shadow-primary" key={index}>
                                         <div>
                                             <Image
                                                 src={item.thumbnails}
@@ -154,7 +139,7 @@ function MedicalNews() {
                     </div>
                 </div>
             </CommonSection>
-        </motion.div>
+        </div>
     )
 }
 

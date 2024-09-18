@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { get, set } from 'lodash';
 import { getCookie, setCookie } from 'cookies-next';
 import Cookies from 'js-cookie';
 
@@ -21,7 +21,7 @@ const webStorageClient = {
   },
 
   remove(key: string) {
-    setCookie(key, null, {maxAge: 0});
+    setCookie(key, null, { maxAge: 0 });
   },
 
   removeAll() {
@@ -36,6 +36,14 @@ const webStorageClient = {
 
   getToken() {
     return getCookie(constants.ACCESS_TOKEN);
+  },
+
+  setRefreshToken(value: string, option?: any) {
+    setCookie(constants.REFRESH_TOKEN, value, option);
+  },
+
+  getRefreshToken() {
+    return getCookie(constants.REFRESH_TOKEN);
   },
 };
 
