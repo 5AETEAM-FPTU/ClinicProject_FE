@@ -21,7 +21,7 @@ export default function EmailRequestNotification({ email }: { email: string }) {
             <p className="mb-8 text-gray-600 text-center">
                 Mã đã gửi đến email của bạn: <strong>{email}</strong>, vui lòng kiểm tra email.
             </p>
-            <Button className="w-full h-10 bg-blue-500 text-white hover:bg-blue-600" onClick={() => router.push('/recover-password')}>Đổi mật khẩu</Button>
+            <Button className="w-full h-10 bg-blue-500 text-white hover:bg-blue-600" onClick={() => router.push(`/recover-password?email=${email}`)}>Đổi mật khẩu</Button>
         </div>
     )
 }

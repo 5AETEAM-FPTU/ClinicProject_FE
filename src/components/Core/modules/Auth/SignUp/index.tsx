@@ -9,14 +9,14 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'antd/es/form/Form'
-import { useLazyRequestSignUpQuery } from '@/stores/services/auth'
+import { useRequestSignUpMutation } from '@/stores/services/auth'
 
 export default function SignUpComponent() {
     const params = useParams();
     const [form] = useForm();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
-    const [requestSignUp] = useLazyRequestSignUpQuery();
+    const [requestSignUp] = useRequestSignUpMutation();
     const handleSubmit = async (values: any) => {
         const dataMapping = {
             fullName: values.name,

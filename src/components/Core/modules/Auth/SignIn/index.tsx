@@ -8,8 +8,7 @@ import { ArrowLeft } from "lucide-react"
 import { redirect, useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
-import { useLazyRequestLoginQuery } from '@/stores/services/auth'
-import { initAuth } from '@/stores/features/auth'
+import { useRequestLoginMutation } from '@/stores/services/auth'
 import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
 export default function SignInComponent() {
@@ -18,7 +17,7 @@ export default function SignInComponent() {
     const dispatch: AppDispatch = useDispatch();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
-    const [requestLogin, { data, isLoading, error }] = useLazyRequestLoginQuery();
+    const [requestLogin] = useRequestLoginMutation();
     const handleSubmit = async (values: any) => {
         const result = await requestLogin({
             username: values.username,
@@ -28,7 +27,6 @@ export default function SignInComponent() {
         if (result.error) {
             console.error('Login failed', result.error);
         } else {
-            dispatch(initAuth(result.data.body));
             router.push('/home');
         }
     }

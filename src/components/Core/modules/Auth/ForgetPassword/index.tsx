@@ -8,8 +8,7 @@ import { ArrowLeft } from "lucide-react"
 import { redirect, useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
-import { useLazyRequestForgetPasswordQuery } from '@/stores/services/auth'
-import { initAuth } from '@/stores/features/auth'
+import { useRequestForgetPasswordMutation } from '@/stores/services/auth'
 import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react';
@@ -23,7 +22,7 @@ export default function ForgetPassword() {
     const dispatch: AppDispatch = useDispatch();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
-    const [requestForgetPassword, { data, isLoading, error }] = useLazyRequestForgetPasswordQuery();
+    const [requestForgetPassword] = useRequestForgetPasswordMutation();
     const handleSubmit = async (values: any) => {
         const result = await requestForgetPassword({
             email: values.email

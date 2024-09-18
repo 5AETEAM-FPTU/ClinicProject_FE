@@ -6,18 +6,21 @@
 import { Button, Input, Form } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
-import { useRouter } from 'next/navigation'
-import { useLazyRequestChangePasswordQuery } from '@/stores/services/auth'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useRequestChangePasswordMutation } from '@/stores/services/auth'
+
 export default function RecoverComponent() {
     const params = useParams();
     const { t } = useTranslation(params?.locale as string, 'Landing');
-    const [requestChangePassword] = useLazyRequestChangePasswordQuery();
+    const [requestChangePassword] = useRequestChangePasswordMutation();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [form] = Form.useForm();
     const handleSubmit = async (values: any) => {
         const result = await requestChangePassword({
             resetPasswordToken: values.OTP,
-            newPassword: values.password
+            newPassword: values.password,
+            email: searchParams.get('email') as string
         });
         if (result.error) {
             console.log('Change password failed', result.error);

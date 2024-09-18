@@ -3,7 +3,7 @@ import { baseApi } from "./base";
 import { authEndpoint } from "@/settings/endpoints";
 export const authApis = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        requestLogin: build.query<any, { username: string, password: string, isRemember: boolean }>({
+        requestLogin: build.mutation<any, { username: string, password: string, isRemember: boolean }>({
             query: (params) => ({
                 url: authEndpoint.SIGNIN,
                 body: {
@@ -13,11 +13,10 @@ export const authApis = baseApi.injectEndpoints({
                 },
                 flashError: true,
                 method: 'POST',
-
             }),
             extraOptions: { skipAuth: true }
         }),
-        requestForgetPassword: build.query<any, { email: string }>({
+        requestForgetPassword: build.mutation<any, { email: string }>({
             query: (params) => ({
                 url: authEndpoint.FORGET_PASSWORD,
                 body: {
@@ -29,12 +28,13 @@ export const authApis = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: true }
         }),
-        requestChangePassword: build.query<any, { newPassword: string, resetPasswordToken: string }>({
+        requestChangePassword: build.mutation<any, { newPassword: string, resetPasswordToken: string, email: string }>({
             query: (params) => ({
                 url: authEndpoint.CHANGE_PASSWORD,
                 body: {
                     newPassword: params.newPassword,
-                    resetPasswordToken: params.resetPasswordToken
+                    resetPasswordToken: params.resetPasswordToken,
+                    email: params.email
                 },
                 flashError: true,
                 method: 'PATCH',
@@ -51,7 +51,7 @@ export const authApis = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: true }
         }),
-        requestLogout: build.query<any, any>({
+        requestLogout: build.mutation<any, any>({
             query: (params) => ({
                 url: authEndpoint.LOGOUT,
                 flashError: true,
@@ -60,7 +60,7 @@ export const authApis = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        requestSignUp: build.query<any, { fullName: string, phoneNumber: string, email: string, password: string }>({
+        requestSignUp: build.mutation<any, { fullName: string, phoneNumber: string, email: string, password: string }>({
             query: (params) => ({
                 url: authEndpoint.SIGNUP,
                 body: {
@@ -79,10 +79,10 @@ export const authApis = baseApi.injectEndpoints({
 })
 
 export const {
-    useLazyRequestLoginQuery,
-    useLazyRequestForgetPasswordQuery,
-    useLazyRequestChangePasswordQuery,
+    useRequestLoginMutation,
+    useRequestChangePasswordMutation,
+    useRequestForgetPasswordMutation,
     useLazyRequestConfirmEmailQuery,
-    useLazyRequestLogoutQuery,
-    useLazyRequestSignUpQuery,
+    useRequestLogoutMutation,
+    useRequestSignUpMutation,
 } = authApis;
