@@ -75,6 +75,18 @@ export const authApis = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: true }
         }),
+        resendEmail: build.mutation<any, { email: string }>({
+            query: (params) => ({
+                url: authEndpoint.RESEND_EMAIL,
+                body: {
+                    email: params.email
+                },
+                flashError: true,
+                method: 'POST',
+
+            }),
+            extraOptions: { skipAuth: true }
+        }),
     }),
 })
 
@@ -85,4 +97,5 @@ export const {
     useLazyRequestConfirmEmailQuery,
     useRequestLogoutMutation,
     useRequestSignUpMutation,
+    useResendEmailMutation,
 } = authApis;

@@ -10,8 +10,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import RequestEmail from '@public/landing/icons/request-vertifying-email.svg'
 import EmailSuccess from '@public/landing/icons/vertify-email-success.svg'
 import Image from 'next/image';
-import { useLazyRequestConfirmEmailQuery } from '@/stores/services/auth'
-import { useState } from 'react'
+import { useLazyRequestConfirmEmailQuery, useResendEmailMutation } from '@/stores/services/auth'
+import { useEffect, useState } from 'react'
 
 
 export default function EmailVertify() {
@@ -32,7 +32,10 @@ export default function EmailVertify() {
             setIsSuccess(true);
         }
     }
-    if (token) handleConfirmEmail();
+
+    useEffect(() => {
+        if (token) handleConfirmEmail();
+    }, [token])
     return (
         <div className="w-full lg:w-1/2 p-8 flex justify-center items-center">
             <div className="mb-8 flex justify-center items-center">
@@ -46,6 +49,17 @@ export default function EmailVertify() {
 export function VertifyEmailRequest({ email }: { email: string }) {
     const params = useParams();
     const { t } = useTranslation(params?.locale as string, 'Landing')
+    const [resendEmail] = useResendEmailMutation();
+    const handleResend = async () => {
+        const result = await resendEmail({
+            email
+        });
+        if (result.error) {
+            console.log('Resend email failed', result.error);
+        } else {
+            alert("Gửi lại email thành công");
+        }
+    }
     return (
         <div className="w-full max-w-md">
             <div className="mb-12 flex justify-center items-center">
@@ -58,7 +72,7 @@ export function VertifyEmailRequest({ email }: { email: string }) {
             <p className="mb-8 text-gray-600 text-center" dangerouslySetInnerHTML={{ __html: t('request_email_description', { email }) }}>
 
             </p>
-            <Button className="w-full bg-blue-500 text-white hover:bg-blue-600">Gửi lại</Button>
+            <Button className="w-full bg-blue-500 text-white hover:bg-blue-600" onClick={handleResend}>Gửi lại</Button>
         </div>
     )
 }
