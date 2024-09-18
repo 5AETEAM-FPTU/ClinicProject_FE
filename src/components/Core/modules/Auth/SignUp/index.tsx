@@ -9,14 +9,27 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'antd/es/form/Form'
+import { useRequestSignUpMutation } from '@/stores/services/auth'
 
 export default function SignUpComponent() {
     const params = useParams();
     const [form] = useForm();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
-    const handleSubmit = (values: any) => {
-
+    const [requestSignUp] = useRequestSignUpMutation();
+    const handleSubmit = async (values: any) => {
+        const dataMapping = {
+            fullName: values.name,
+            email: values.email,
+            phoneNumber: values.phone,
+            password: values.password
+        }
+        const result = await requestSignUp(dataMapping);
+        if (result.error) {
+            console.log(result.error)
+        } else {
+            router.push('/vertify-email?email=' + values.email);
+        }
     }
     return (
         <div className="w-full lg:w-1/2 p-8">
@@ -33,14 +46,13 @@ export default function SignUpComponent() {
                     <p className="mb-6 text-lg text-gray-700 text-center">Vui lòng nhập email hoặc số điện thoại và mật khẩu</p>
                     <Form className="space-y-4" form={form} onFinish={handleSubmit}>
                         <Form.Item
-                            className='mb-12'
                             validateDebounce={500}
-                            name="password"
+                            name="name"
                             rules={[
                                 { required: true, message: "Vui lòng nhập họ và tên" },
                             ]}
                         >
-                            <Input type="text" placeholder="Họ và tên" />
+                            <Input className='p-4' type="text" placeholder="Họ và tên" />
                         </Form.Item>
                         <Form.Item
                             name="email"
@@ -68,7 +80,7 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input placeholder="Email hoặc số điện thoại" />
+                            <Input className='p-4' placeholder="Email hoặc số điện thoại" />
                         </Form.Item>
                         <Form.Item
                             name="phone"
@@ -96,7 +108,7 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input placeholder="Số điện thoại" />
+                            <Input className='p-4' placeholder="Số điện thoại" />
                         </Form.Item>
                         <Form.Item
                             className='mb-12'
@@ -111,7 +123,7 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input type="password" placeholder="Mật khẩu" />
+                            <Input className='p-4' type="password" placeholder="Mật khẩu" />
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -130,7 +142,7 @@ export default function SignUpComponent() {
                                 }),
                             ]}
                         >
-                            <Input type="password" placeholder="Nhập lại mật khẩu" />
+                            <Input className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
                         </Form.Item>
                         <Form.Item>
                             <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
