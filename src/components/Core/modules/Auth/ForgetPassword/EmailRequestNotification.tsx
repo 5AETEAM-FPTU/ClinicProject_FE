@@ -11,17 +11,25 @@ export default function EmailRequestNotification({ email }: { email: string }) {
     const { t } = useTranslation(params?.locale as string, 'Landing');
     return (
         <div className="w-full max-w-md">
-            <div className="mb-12 flex justify-center items-center">
-                <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
-            </div>
             <div className="mb-4 flex justify-center items-center">
                 <Image src={RequestEmail} alt="Request email" />
             </div>
-            <h2 className="mb-1 text-2xl font-semibold text-center">Xác thực email của bạn</h2>
-            <p className="mb-8 text-gray-600 text-center">
+            <div className="mb-6">
+                <h1 className="text-center text-[30px] text-[#003553] font-bold">
+                    Xác thực email của bạn
+                </h1>
+            </div>
+            <p className="mb-12 text-[#003553] text-center text-base text-gray-700">
                 Mã đã gửi đến email của bạn: <strong>{email}</strong>, vui lòng kiểm tra email.
             </p>
-            <Button className="w-full h-10 bg-blue-500 text-white hover:bg-blue-600" onClick={() => router.push(`/recover-password?email=${email}`)}>Đổi mật khẩu</Button>
+            <Button
+                size="large"
+                className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold text-md py-[10px] box-content h-[31px] px-0"
+                htmlType="submit"
+                onClick={() => router.push(`/recover-password?email=${email}`)}
+            >
+                Đổi mật khẩu
+            </Button>
         </div>
     )
 }

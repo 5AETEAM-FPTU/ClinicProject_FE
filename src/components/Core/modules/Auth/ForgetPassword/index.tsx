@@ -39,19 +39,23 @@ export default function ForgetPassword() {
         }
     }
     return (
-        <div className="w-full lg:w-1/2 p-8">
+        <div className="w-full lg:w-1/2 p-8 bg-[#F7FBFC]">
             <ConfigProvider wave={{ disabled: true }}>
-                <Button className="m-8 p-0 border-none" onClick={() => router.back()}>
+                <Button className=" p-0 border-none bg-transparent" onClick={() => router.back()}>
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
             </ConfigProvider>
-            <div className="mb-8 flex justify-center items-center">
+            <div className="flex justify-center items-center h-full">
                 {!isSuccess ?
                     <div className="w-full max-w-md">
-                        <div className="mb-8 flex justify-center items-center">
-                            <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
+                        <div className="mb-6">
+                            <span className="text-4xl text-[30px] text-[#003553] font-bold">
+                                Nhập email của bạn để thay đổi mật khẩu
+                            </span>
                         </div>
-                        <p className="mb-6 text-lg text-gray-700 text-center">Vui lòng nhập email</p>
+                        <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+                            Chúng tôi sẽ gửi OTP thông qua email của bạn, hãy sử dụng mã này để thay đổi mật khẩu.<br /> Lưu ý không để lộ mã này ra bên ngoài
+                        </p>
                         <Form className="space-y-4" form={form} onFinish={handleSubmit}>
                             <Form.Item
                                 name="email"
@@ -82,10 +86,20 @@ export default function ForgetPassword() {
                                     }
                                 ]}
                             >
-                                <Input className='p-4' placeholder="Email" />
+                                <div>
+                                    <label htmlFor="email" className='text-base font-medium mb-2 block text-[#003553]'>Nhập email của bạn</label>
+                                    <Input
+                                        className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
+                                        placeholder="Email"
+                                    />
+                                </div>
                             </Form.Item>
                             <Form.Item>
-                                <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
+                                <Button
+                                    size="large"
+                                    className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold text-md py-[10px] box-content h-[31px] px-0"
+                                    htmlType="submit"
+                                >
                                     Gửi yêu cầu
                                 </Button>
                             </Form.Item>
