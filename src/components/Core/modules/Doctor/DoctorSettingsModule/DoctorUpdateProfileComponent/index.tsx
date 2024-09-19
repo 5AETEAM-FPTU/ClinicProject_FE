@@ -1,39 +1,34 @@
 'use client'
-import React, { useState } from 'react'
-import {
-    Layout,
-    Card,
-    Avatar,
-    Button,
-    Typography,
-    List,
-    Divider,
-    Row,
-    Col,
-    Space,
-    message,
-    Upload,
-} from 'antd'
-import {
-    CloudUploadOutlined,
-    MessageOutlined,
-    SettingOutlined,
-    UserOutlined,
-} from '@ant-design/icons'
-import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { DefaultImage } from '@/helpers/data/Default'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
-import { useParams } from 'next/navigation'
-import { useTranslation } from '@/app/i18n/client'
+import { constants } from '@/settings'
+import { updateUserAvatar } from '@/stores/features/auth'
 import { useChangeProfileAvatarMutation } from '@/stores/services/user/userSettings'
 import webStorageClient from '@/utils/webStorageClient'
-import { constants } from '@/settings'
-import { useRouter } from 'next-nprogress-bar'
-import { useLocale } from 'next-intl'
-import axios from "axios";
-import { updateUserAvatar } from '@/stores/features/auth'
-import { DefaultImage } from '@/helpers/data/Default'
+import {
+    CloudUploadOutlined,
+    MessageOutlined
+} from '@ant-design/icons'
 import ProfileBackground from '@public/landing/images/profile-background.png'
+import {
+    Avatar,
+    Button,
+    message,
+    Space,
+    Typography,
+    Upload
+} from 'antd'
+import axios from "axios"
+import { useLocale } from 'next-intl'
+import { useRouter } from 'next-nprogress-bar'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
+
+type DoctorUpdateProfileProps = {
+    isProfileFetching?: boolean
+    profile?: any
+}
 
 const { Title, Text, Paragraph } = Typography
 
