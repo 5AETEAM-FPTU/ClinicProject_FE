@@ -29,6 +29,9 @@ const slice = createSlice({
         },
         updateUserAvatar: (state, action) => {
             state.user.avatarUrl = action.payload
+        },
+        updateUserFullName: (state, action) => {
+            state.user.fullName = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -100,7 +103,8 @@ const slice = createSlice({
 
 export const {
     updateUserInfo,
-    updateUserAvatar
+    updateUserAvatar,
+    updateUserFullName
 } = slice.actions
 
 export default slice.reducer

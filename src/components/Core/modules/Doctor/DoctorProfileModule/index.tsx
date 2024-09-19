@@ -20,6 +20,12 @@ import {
 import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
 import { motion } from 'framer-motion'
+import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
+import { DefaultImage } from '@/helpers/data/Default'
+import { useRouter } from 'next-nprogress-bar'
+import { useLocale } from 'next-intl'
+import { Settings } from 'lucide-react'
+import dayjs from 'dayjs'
 
 const { Header, Content } = Layout
 const { Title, Text, Paragraph } = Typography
@@ -39,10 +45,26 @@ const messages = [
 ]
 
 export default function DoctorProfileModule() {
+    const router = useRouter()
+    const locale = useLocale()
+    const { result, isFetching, refetch } = useGetDoctorProfileQuery(
+        undefined,
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    result: data?.body?.user ?? {},
+                    isFetching: isFetching,
+                }
+            },
+        },
+    )
+
+    console.log(result)
     return (
         <motion.div
-            initial={{ opacity: 0, translateY: 10 }}
+            initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
         >
             <Layout
@@ -50,7 +72,7 @@ export default function DoctorProfileModule() {
                 className="bg-dashboardBackground"
             >
                 <Content style={{ padding: '0px' }}>
-                    <div className="relative mb-[85px] h-[300px]">
+                    <div className="relative mb-[85px] h-[250px]">
                         <Image
                             className="z-1 h-[100%] w-full rounded-2xl"
                             src={ProfileBackground}
@@ -65,26 +87,37 @@ export default function DoctorProfileModule() {
                                     shape="square"
                                     className="size-16 rounded-xl sm:size-20"
                                     icon={<UserOutlined />}
+                                    src={
+                                        result?.avatarUrl
+                                            ? result?.avatarUrl
+                                            : DefaultImage
+                                    }
                                 />
                                 <div className="">
                                     <p
                                         className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
                                         style={{ margin: 0 }}
                                     >
-                                        Nguyễn Minh Hoàng Quốc
+                                        {result?.fullName
+                                            ? result?.fullName
+                                            : 'Ẩn danh'}
                                     </p>
                                     <Text
                                         className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                         type="secondary"
                                     >
-                                        Bác sĩ thần kinh
+                                        {result?.position
+                                            ? result?.position
+                                            : 'Ẩn vị trí làm việc'}
                                     </Text>
                                     <br />
                                     <Text
                                         className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                                         type="secondary"
                                     >
-                                        Chuyên khoa thần kinh
+                                        {result?.specialty
+                                            ? result?.specialty
+                                            : 'Ẩn chuyển khoa'}
                                     </Text>
                                 </div>
                             </Space>
@@ -93,16 +126,26 @@ export default function DoctorProfileModule() {
                                 style={{ marginLeft: 'auto' }}
                             >
                                 <Button
-                                    className="text-md font-semibold sm:text-lg"
-                                    type="text"
+                                    type="primary"
+                                    className=""
                                     icon={<MessageOutlined />}
+                                    onClick={() =>
+                                        router.push(
+                                            `/${locale}/doctor/consultation/pending-room`,
+                                        )
+                                    }
                                 >
                                     Tin nhắn
                                 </Button>
                                 <Button
-                                    className="text-md font-semibold sm:text-lg"
-                                    type="text"
-                                    icon={<SettingOutlined />}
+                                    type="primary"
+                                    className=""
+                                    icon={<Settings size={18} />}
+                                    onClick={() =>
+                                        router.push(
+                                            `/${locale}/doctor/account/settings`,
+                                        )
+                                    }
                                 >
                                     Cài đặt
                                 </Button>
@@ -167,43 +210,48 @@ export default function DoctorProfileModule() {
                                     </div>
                                 }
                             >
-                                <Paragraph className="text-lg text-secondarySupperDarker">
-                                    Hi, I'm Alec Thompson. Decisions: If you
-                                    can't decide, the answer is no. If two
-                                    equally difficult paths, choose the one more
-                                    painful in the short term (pain avoidance is
-                                    creating an illusion of equality).
-                                </Paragraph>
+                                {
+                                    result?.description ? <p className="text-lg text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: result?.description }}>
+                                </p> : <div className='w-full h-fit flex justify-center items-center'>
+                                    Ẩn mô tả cá nhân
+                                </div>
+                                }
                                 <Divider />
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Họ và tên:
                                     </span>{' '}
-                                    Nguyễn Minh Hoàng Quốc
+                                  {
+                                    result?.fullName ? result?.fullName : 'Ẩn danh'
+                                  }
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Số điện thoại:
                                     </span>{' '}
-                                    (84) 775771047
+                                    (84) {result?.phoneNumber ? result?.phoneNumber : 'Ẩn số điện thoại'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Email:
                                     </span>{' '}
-                                    hoangquoc.work@gmail.com
+                                    {result?.username ? result?.username : 'Ẩn email'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Chức vụ:
                                     </span>{' '}
-                                    Bác sĩ tâm thần
+                                    {
+                                        result?.position ? result?.position : 'Ẩn chức vụ'
+                                    }
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Ngày sinh:
                                     </span>{' '}
-                                    01/01/2004
+                                    {
+                                        result?.dob ? dayjs(result?.dob).format('DD/MM/YYYY') : 'Ẩn ngày sinh'
+                                    }
                                 </p>
                             </Card>
                         </Col>
@@ -270,51 +318,7 @@ export default function DoctorProfileModule() {
                         }
                         style={{ marginTop: '24px' }}
                     >
-                        <Title level={4}>Tiểu sử</Title>
-                        <ul>
-                            <li>
-                                Tốt nghiệp chuyên ngành Bác sĩ đa khoa tại Đại
-                                học Y Hà Nội năm 2001-
-                            </li>
-                            <li>
-                                Tốt nghiệp BSCKI chuyên ngành Nội Tim mạch tại
-                                Đại học Y Hà Nội năm 2008
-                            </li>
-                            <li>
-                                Tốt nghiệp BSCKII chuyên ngành Nội Tim mạch tại
-                                Đại học Y Dược Huế năm 2016
-                            </li>
-                            <li>
-                                Chứng chỉ siêu âm tim tại Đại học Y Dược Huế năm
-                                2017
-                            </li>
-                            <li>
-                                Chứng chỉ tiêm Nội khớp tại Đại học Y Dược TP Hồ
-                                Chí Minh năm 2018
-                            </li>
-                        </ul>
-                        <Title level={4}>Kinh nghiệm</Title>
-                        <ul>
-                            <li>
-                                There are many variations of passages of Lorem
-                                Ipsum available
-                            </li>
-                            <li>
-                                But the majority have suffered alteration in
-                                some form, by injected humour
-                            </li>
-                            <li>
-                                Randomised words which don't look even slightly
-                                believable.
-                            </li>
-                            <li>
-                                If you are going to use a passage of Lorem Ipsum
-                            </li>
-                            <li>
-                                You need to be sure there isn't anything
-                                embarrassing hidden in the middle of text.
-                            </li>
-                        </ul>
+                        <div dangerouslySetInnerHTML={{ __html: result?.achievement ?? 'Chưa cập nhật' }}></div>
                     </Card>
                 </Content>
             </Layout>

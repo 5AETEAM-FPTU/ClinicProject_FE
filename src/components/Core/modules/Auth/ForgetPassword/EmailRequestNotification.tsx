@@ -19,7 +19,7 @@ export default function EmailRequestNotification({ email }: { email: string }) {
                     Xác thực email của bạn
                 </h1>
             </div>
-            <p className="mb-12 text-[#003553] text-center text-base text-gray-700">
+            <p className="mb-12  text-center text-base text-gray-700">
                 Mã đã gửi đến email của bạn: <strong>{email}</strong>, vui lòng kiểm tra email.
             </p>
             <Button

@@ -67,7 +67,7 @@ export function VertifyEmailRequest({ email }: { email: string }) {
                     Xác thực email của bạn
                 </span>
             </div>
-            <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+            <p className="mb-12 text-[#003553] text-left text-base ">
                 Hãy kiểm tra email để tiến hành xác thực tài khoản
             </p>
             <div className="mb-12 flex justify-center items-center">
@@ -76,7 +76,7 @@ export function VertifyEmailRequest({ email }: { email: string }) {
             <h1 className="text-4xl mb-5 w-full text-center text-[24px] text-[#003553] font-bold">
                 Kiểm tra email của bạn
             </h1>
-            <p className="mb-12 text-[#003553] text-center text-base text-gray-700">
+            <p className="mb-12 text-[#003553] text-center text-base ">
                 Bạn đã sử dụng <strong>quoch147@gmail.com</strong> như là email của tài khoản
             </p>
             <Button

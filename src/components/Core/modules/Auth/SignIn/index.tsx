@@ -18,6 +18,7 @@ import Google from '@public/icons/google-icon.svg'
 import { result } from 'lodash'
 import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
 import { setLoaded, setLoading } from '@/stores/features/loading'
+import { error } from 'console'
 
 export interface JwtPayloadUpdated extends JwtPayload {
     role: string
@@ -56,7 +57,16 @@ export default function SignInComponent() {
         }
 
         if (result.error) {
-            message.error('Đăng nhập không thành công!')
+            console.log(result.error)
+            if ((result.error as any)?.data?.appCode === 'LoginFeature: USER_IS_NOT_FOUND') {
+                message.error("Không tìm thấy tài khoản!")
+                return
+            }
+            if ((result.error as any)?.data?.appCode === "LoginFeature: USER_PASSWORD_IS_NOT_CORRECT") {
+                message.error("Mật khẩu không chính xác!")
+                return
+            }
+            message.error("Đăng nhập không thành công!")
         } else {
             message.success("Đăng nhập thành công!")
             router.push(
@@ -86,7 +96,6 @@ export default function SignInComponent() {
         });
         dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
-        console.log(result)
 
         if (result.error) {
             if ((result.error as any).status !== 500) {
@@ -163,7 +172,7 @@ export default function SignInComponent() {
                             <div>
                                 <label htmlFor="username" className='text-base font-medium mb-2 block text-[#003553]'>Email hoặc số điện thoại</label>
                                 <Input
-                                    className="!border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
+                                    className="!border-[#003553] placeholder:!text-[#003553] placeholder:!text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553]"
                                     placeholder="abc@gmail.com"
                                 />
                             </div>

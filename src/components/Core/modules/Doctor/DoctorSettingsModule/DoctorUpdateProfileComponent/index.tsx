@@ -5,37 +5,31 @@ import { constants } from '@/settings'
 import { updateUserAvatar } from '@/stores/features/auth'
 import { useChangeProfileAvatarMutation } from '@/stores/services/user/userSettings'
 import webStorageClient from '@/utils/webStorageClient'
-import {
-    CloudUploadOutlined,
-    MessageOutlined
-} from '@ant-design/icons'
+import { CloudUploadOutlined, MessageOutlined } from '@ant-design/icons'
 import ProfileBackground from '@public/landing/images/profile-background.png'
-import {
-    Avatar,
-    Button,
-    message,
-    Space,
-    Typography,
-    Upload
-} from 'antd'
-import axios from "axios"
+import { Avatar, Button, message, Space, Typography, Upload } from 'antd'
+import axios from 'axios'
 import { useLocale } from 'next-intl'
 import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
+import { DoctorProfileTypes } from '..'
 
 type DoctorUpdateProfileProps = {
-    isProfileFetching?: boolean
-    profile?: any
+    isProfileFetching: boolean
+    profile: DoctorProfileTypes
 }
 
 const { Title, Text, Paragraph } = Typography
 
-export const UpdateProfileComponent = () => {
+export const DoctorUpdateProfileComponent = ({
+    isProfileFetching,
+    profile,
+}: DoctorUpdateProfileProps) => {
     const [imageUrl, setImageUrl] = useState<string>('')
     const [isUploading, setIsUploading] = useState<boolean>(false)
-    const [changeProfileAvatar] = useChangeProfileAvatarMutation()
+    const [changeProfileAvatar, {isLoading}] = useChangeProfileAvatarMutation()
     const dispatch = useAppDispatch()
     const params = useParams()
 
@@ -50,39 +44,42 @@ export const UpdateProfileComponent = () => {
         file,
         onProgress,
     }: any) => {
-        const fmData = new FormData();
+        const fmData = new FormData()
         const config = {
-          headers: { "content-type": "multipart/form-data" },
-          onUploadProgress: (event: any) => {
-            onProgress({ percent: (event.loaded / event.total) * 100 });
-            setIsUploading(true);
-          },
-        };
-    
-        fmData.append("image", file);
-        fmData.append("album", "PClinic")
+            headers: { 'content-type': 'multipart/form-data' },
+            onUploadProgress: (event: any) => {
+                onProgress({ percent: (event.loaded / event.total) * 100 })
+                setIsUploading(true)
+            },
+        }
+
+        fmData.append('image', file)
+        fmData.append('album', 'PClinic')
         try {
-          const res = await axios.post(
-            "https://api.imgbb.com/1/upload?key=488e7d944b2bedd5020e1ace8585d1df",
-            fmData,
-            config
-          );
-          onSuccess("Ok");
-          setImageUrl(res?.data?.data?.url);
-          if (res) {
-            const data = {
-              avatar: res?.data?.data?.url,
-            };
-    
-            changeProfileAvatar({avatarUrl: res?.data?.data?.url});
-            webStorageClient.set(constants.USER_AVATAR, res?.data?.data?.url);
-            dispatch(updateUserAvatar(res?.data?.data?.url));
-            message.success("Cập nhật ảnh thành công!");
-          }
-          setIsUploading(false);
+            const res = await axios.post(
+                'https://api.imgbb.com/1/upload?key=488e7d944b2bedd5020e1ace8585d1df',
+                fmData,
+                config,
+            )
+            onSuccess('Ok')
+            setImageUrl(res?.data?.data?.url)
+            if (res) {
+                const data = {
+                    avatar: res?.data?.data?.url,
+                }
+
+                changeProfileAvatar({ avatarUrl: res?.data?.data?.url })
+                webStorageClient.set(
+                    constants.USER_AVATAR,
+                    res?.data?.data?.url,
+                )
+                dispatch(updateUserAvatar(res?.data?.data?.url))
+                message.success('Cập nhật ảnh thành công!')
+            }
+            setIsUploading(false)
         } catch (err) {
-          const error = new Error("Upload Failed.");
-          onError({ error });
+            const error = new Error('Upload Failed.')
+            onError({ error })
         }
     }
 
@@ -101,27 +98,35 @@ export const UpdateProfileComponent = () => {
                     <Avatar
                         shape="square"
                         className="size-16 rounded-xl sm:size-20"
-                        src={user?.avatarUrl ? user.avatarUrl : DefaultImage}
+                        src={
+                            user?.avatarUrl ? user?.avatarUrl : DefaultImage
+                        }
                     />
                     <div className="">
                         <p
                             className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
                             style={{ margin: 0 }}
                         >
-                            {user?.fullName}
+                            {user?.fullName
+                                ? user?.fullName
+                                : 'Chưa cài đặt tên '}
                         </p>
                         <Text
                             className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                             type="secondary"
                         >
-                            Bác sĩ thần kinh
+                            {profile?.position
+                                ? profile?.position
+                                : 'Chưa có ví trí làm việc'}
                         </Text>
                         <br />
                         <Text
                             className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                             type="secondary"
                         >
-                            Chuyên khoa thần kinh
+                            {profile?.specialty
+                                ? profile?.specialty
+                                : 'Chưa có chuyên khoa'}
                         </Text>
                     </div>
                 </Space>
@@ -130,9 +135,8 @@ export const UpdateProfileComponent = () => {
                     style={{ marginLeft: 'auto' }}
                 >
                     <Button
-                        type='primary'
-                        className="text-md font-semibold sm:text-lg"
-                        icon={<MessageOutlined/>}
+                        type="primary"
+                        icon={<MessageOutlined />}
                         onClick={() => {
                             router.push(
                                 `/${locale}/doctor/consultation/conversation`,
@@ -156,12 +160,11 @@ export const UpdateProfileComponent = () => {
                         <Button
                             type="primary"
                             icon={<CloudUploadOutlined />}
-                            loading={isUploading}
+                            loading={isLoading}
                         >
                             Đổi ảnh
                         </Button>
                     </Upload>
-                   
                 </Space>
             </div>
         </div>

@@ -61,7 +61,6 @@ export default function SignUpComponent() {
             idToken: value
         });
         const accessToken = result?.data?.body?.accessToken ?? ''
-        console.log(result)
 
         if(result.error) {
             if((result.error as any).status !== 500) {
@@ -109,7 +108,7 @@ export default function SignUpComponent() {
                         >
                             <div>
                                 <label htmlFor="name" className='text-base font-medium mb-2 block text-[#003553]'>Họ và tên</label>
-                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" type="text" placeholder="Nguyen Van A" />
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] " type="text" placeholder="Nguyen Van A" />
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -140,7 +139,7 @@ export default function SignUpComponent() {
                         >
                             <div>
                                 <label htmlFor="email" className='text-base font-medium mb-2 block text-[#003553]'>Email</label>
-                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" placeholder="abc@gmail.com" />
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] " placeholder="abc@gmail.com" />
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -172,7 +171,7 @@ export default function SignUpComponent() {
 
                             <div>
                                 <label htmlFor="phone" className='text-base font-medium mb-2 block text-[#003553]'>Số điện thoại (Không bắt buộc)</label>
-                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" placeholder="Số điện thoại" />
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] " placeholder="Số điện thoại" />
                             </div>
                         </Form.Item>
                         <Form.Item
