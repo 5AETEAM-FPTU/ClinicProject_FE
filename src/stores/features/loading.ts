@@ -17,10 +17,10 @@ const slice = createSlice({
     name: 'loading',
     initialState,
     reducers: {
-        setLoading: (state, action: PayloadAction<{ showDesc?: boolean, desc?: string }>) => {
+        setLoading: (state, action: PayloadAction<{ showDesc?: boolean, desc?: string } | undefined>) => {
             state.isLoading = true;
-            state.showDesc = action.payload.showDesc || false;
-            state.desc = action.payload.desc || '';
+            state.showDesc = action.payload?.showDesc || false;
+            state.desc = action.payload?.desc || '';
         },
         setLoaded: (state) => {
             state.isLoading = false;

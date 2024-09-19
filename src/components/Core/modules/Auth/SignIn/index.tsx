@@ -17,6 +17,7 @@ import Image from 'next/image'
 import Google from '@public/icons/google-icon.svg'
 import { result } from 'lodash'
 import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
+import { setLoaded, setLoading } from '@/stores/features/loading'
 
 export interface JwtPayloadUpdated extends JwtPayload {
     role: string
@@ -81,8 +82,8 @@ export default function SignInComponent() {
         const accessToken = result?.data?.body?.accessToken ?? ''
         console.log(result)
 
-        if(result.error) {
-            if((result.error as any).status !== 500) {
+        if (result.error) {
+            if ((result.error as any).status !== 500) {
                 message.error("Đăng nhập không thành công")
             }
         } else {
@@ -92,10 +93,10 @@ export default function SignInComponent() {
             )
         }
     }
-        
+
     useEffect(() => {
         if (session) {
-           handleLoginByGoogleIdToken(session?.idToken!);
+            handleLoginByGoogleIdToken(session?.idToken!);
         }
     }, [session])
     return (
@@ -184,7 +185,7 @@ export default function SignInComponent() {
                                     type="password"
                                     placeholder="Mật khẩu"
                                 /> */}
-                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự' />
                             </div>
                         </Form.Item>
                         <div className="flex justify-between !mt-0">
