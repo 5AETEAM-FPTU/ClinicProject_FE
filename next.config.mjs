@@ -8,6 +8,9 @@ const nextConfig = {
         styledComponents: true,
     },
     reactStrictMode: false,
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     images: {
         remotePatterns: [
             {

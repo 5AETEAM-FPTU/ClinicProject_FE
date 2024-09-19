@@ -226,7 +226,7 @@ export default function SignUpComponent() {
                                 type='primary'
                                 className="placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent ml-5 w-[75px] text-[#003553] rounded-[16px] !border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
                                 onClick={() => {
-                                    handleLoginWithGoogle
+                                    handleLoginWithGoogle();
                                 }}
                             >
                                 <Image src={Google} alt="google" />
