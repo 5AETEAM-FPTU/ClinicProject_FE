@@ -9,6 +9,8 @@ import { useTranslation } from '@/app/i18n/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRequestChangePasswordMutation } from '@/stores/services/auth'
 import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
+import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { setLoaded, setLoading } from '@/stores/features/loading'
 
 export default function RecoverComponent() {
     const params = useParams();
@@ -17,12 +19,15 @@ export default function RecoverComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [form] = Form.useForm();
+    const dispatch = useAppDispatch();
     const handleSubmit = async (values: any) => {
+        dispatch(setLoading());
         const result = await requestChangePassword({
             resetPasswordToken: values.OTP,
             newPassword: values.password,
             email: searchParams.get('email') as string
         });
+        dispatch(setLoaded());
         if (result.error) {
             console.log('Change password failed', result.error);
         } else {
@@ -60,7 +65,7 @@ export default function RecoverComponent() {
                         >
                             <div>
                                 <label htmlFor="OTP" className='text-base font-medium mb-2 block text-[#003553]'>OTP</label>
-                                <CustomInputPassword placeholder='OTP code'/>
+                                <CustomInputPassword placeholder='OTP code' />
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -70,14 +75,14 @@ export default function RecoverComponent() {
                             rules={[
                                 { required: true, message: "Vui lòng nhập mật khẩu" },
                                 {
-                                    pattern:  /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
+                                    pattern: /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
                                     message: "Mật khẩu phải chứa ít nhất 8 ký tự, chữ cái viết hoa, chữ cái viết thường và ít nhất 1 chữ số"
                                 }
                             ]}
                         >
                             <div>
                                 <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Nhập mật khẩu</label>
-                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự' />
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -99,7 +104,7 @@ export default function RecoverComponent() {
                         >
                             <div>
                                 <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Xác nhận mật khẩu</label>
-                                <CustomInputPassword placeholder='Nhập lại mật khẩu mới'/>
+                                <CustomInputPassword placeholder='Nhập lại mật khẩu mới' />
                             </div>
                         </Form.Item>
                         <Form.Item className='my-5'>
