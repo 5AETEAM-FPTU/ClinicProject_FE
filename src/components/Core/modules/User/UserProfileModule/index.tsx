@@ -63,7 +63,9 @@ export default function UserProfileModule() {
                                             title={<div className='text-secondarySupperDarker font-semibold text-lg'>{item.name}</div>}
                                             description={<div className='text-secondarySupperDarker'>{item.time}</div>}
                                         />
-                                        <div className='text-secondarySupperDarker font-semibold text-lg'>{item.price}</div>
+                                        <Button type='primary' className='bg-secondaryDark !p-5 rounded-xl font-medium'>
+                                            Chi tiết 
+                                        </Button>
                                     </List.Item>
                                 )}
                             />

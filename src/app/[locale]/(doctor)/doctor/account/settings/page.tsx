@@ -1,9 +1,10 @@
+import DoctorSettingsModule from '@/components/Core/modules/Doctor/DoctorSettingsModule'
 import React from 'react'
 
 function DoctorProfileSetting() {
     return (
         <div>
-            doctor profile setting
+          <DoctorSettingsModule/>
         </div>
     )
 }

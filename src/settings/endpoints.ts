@@ -12,4 +12,12 @@ const authEndpoint = {
     GOOGLE_AUTH: "/auth/login/google"
 }
 
-export { demoEnpoints, authEndpoint };
+const userEndpoint = {
+    CHANGE_AVATAR: "/user/avatar"
+}
+
+const doctorEndpoint = {
+    GET_PROFILE: "/doctor/profile"
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };
