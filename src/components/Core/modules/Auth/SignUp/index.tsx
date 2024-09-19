@@ -3,20 +3,33 @@
 // import { setCookie } from 'cookies-next'
 // import { useRouter } from 'next/navigation'
 // import React from 'react'
-import { Button, Input, ConfigProvider, Form } from 'antd'
+import { Button, Input, ConfigProvider, Form, message } from 'antd'
 import { ArrowLeft } from "lucide-react"
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'antd/es/form/Form'
-import { useRequestSignUpMutation } from '@/stores/services/auth'
+import { useRequestAuthGoogleMutation, useRequestLoginMutation, useRequestSignUpMutation } from '@/stores/services/auth'
+import Image from 'next/image'
+import Google from '@public/icons/google-icon.svg'
+import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
+import { signIn, useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import { useLocale } from 'next-intl'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../SignIn'
 
 export default function SignUpComponent() {
     const params = useParams();
     const [form] = useForm();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter();
+    const locale = useLocale();
     const [requestSignUp] = useRequestSignUpMutation();
+    const {data: session} = useSession();
+    const [requestLogin] = useRequestLoginMutation()
+    const [requestAuthGoogle] = useRequestAuthGoogleMutation();
+
     const handleSubmit = async (values: any) => {
         const dataMapping = {
             fullName: values.name,
@@ -31,28 +44,73 @@ export default function SignUpComponent() {
             router.push('/vertify-email?email=' + values.email);
         }
     }
+
+    const handleLoginWithGoogle = async () => {
+        try {
+            await signIn('google', {
+                redirect: true,
+                prompt: 'select_account',
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleLoginByGoogleIdToken = async (value: string) => {
+        const result = await requestAuthGoogle({
+            idToken: value
+        });
+        const accessToken = result?.data?.body?.accessToken ?? ''
+        console.log(result)
+
+        if(result.error) {
+            if((result.error as any).status !== 500) {
+                message.error("Đăng nhập không thành công")
+            }
+        } else {
+            message.success("Đăng nhập thành công")
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
+            )
+        }
+    }
+        
+    useEffect(() => {
+        if (session) {
+           handleLoginByGoogleIdToken(session?.idToken!);
+        }
+    }, [session])
+
     return (
-        <div className="w-full lg:w-1/2 p-8">
+        <div className="w-full p-8 lg:w-1/2 bg-[#F7FBFC]">
             <ConfigProvider wave={{ disabled: true }}>
-                <Button className="m-8 p-0 border-none" onClick={() => router.back()}>
+                <Button className="p-0 border-none bg-transparent" onClick={() => router.back()}>
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
             </ConfigProvider>
-            <div className="mb-8 flex justify-center items-center">
+            <div className="h-full flex justify-center items-center">
                 <div className="w-full max-w-md">
-                    <div className="mb-8 flex justify-center items-center">
-                        <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
+                    <div className="mb-6">
+                        <span className="text-4xl text-[30px] text-[#003553] font-bold">
+                            Đăng ký
+                        </span>
                     </div>
-                    <p className="mb-6 text-lg text-gray-700 text-center">Vui lòng nhập email hoặc số điện thoại và mật khẩu</p>
+                    <p className="mb-5 text-left text-base text-gray-700">
+                        Hãy nhập các thông tin cần thiết để tiến hành đăng ký tài khoản
+                    </p>
                     <Form className="space-y-4" form={form} onFinish={handleSubmit}>
                         <Form.Item
-                            validateDebounce={500}
+                            className='mb-0'
+                            validateTrigger="onBlur"
                             name="name"
                             rules={[
                                 { required: true, message: "Vui lòng nhập họ và tên" },
                             ]}
                         >
-                            <Input className='p-4' type="text" placeholder="Họ và tên" />
+                            <div>
+                                <label htmlFor="name" className='text-base font-medium mb-2 block text-[#003553]'>Họ và tên</label>
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" type="text" placeholder="Nguyen Van A" />
+                            </div>
                         </Form.Item>
                         <Form.Item
                             name="email"
@@ -65,7 +123,7 @@ export default function SignUpComponent() {
                                 {
                                     validator(_, value) {
                                         if (!value) {
-                                            return Promise.resolve(); // If empty, handled by 'required'
+                                            return Promise.resolve();
                                         }
 
                                         // Email regex
@@ -80,7 +138,10 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input className='p-4' placeholder="Email hoặc số điện thoại" />
+                            <div>
+                                <label htmlFor="email" className='text-base font-medium mb-2 block text-[#003553]'>Email</label>
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" placeholder="abc@gmail.com" />
+                            </div>
                         </Form.Item>
                         <Form.Item
                             name="phone"
@@ -108,10 +169,13 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input className='p-4' placeholder="Số điện thoại" />
+
+                            <div>
+                                <label htmlFor="phone" className='text-base font-medium mb-2 block text-[#003553]'>Số điện thoại (Không bắt buộc)</label>
+                                <Input className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60" placeholder="Số điện thoại" />
+                            </div>
                         </Form.Item>
                         <Form.Item
-                            className='mb-12'
                             hasFeedback
                             validateDebounce={500}
                             name="password"
@@ -123,7 +187,10 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input.Password className='p-4' type="password" placeholder="Mật khẩu" />
+                            <div>
+                                <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu</label>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
+                            </div>
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -142,29 +209,31 @@ export default function SignUpComponent() {
                                 }),
                             ]}
                         >
-                            <Input.Password className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
+                            <div>
+                                <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu xác nhận</label>
+                               <CustomInputPassword placeholder='Nhập lại mật khẩu'/>
+                            </div>
                         </Form.Item>
-                        <Form.Item>
-                            <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
-                                Đăng ký
+                        <div className='flex' style={{ marginTop: '20px !important' }}>
+                            <Form.Item name="submit" className='w-4/5'>
+                                <Button size='large' className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold !border-[#0284C7] text-md py-[10px] box-content h-[31px] px-0" htmlType="submit">
+                                    Đăng ký
+                                </Button>
+                            </Form.Item>
+                            <Button
+                                size="large"
+                                ghost
+                                type='primary'
+                                className="placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent ml-5 w-[75px] text-[#003553] rounded-[16px] !border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
+                                onClick={() => {
+                                    handleLoginWithGoogle
+                                }}
+                            >
+                                <Image src={Google} alt="google" />
                             </Button>
-                        </Form.Item>
+                        </div>
+
                     </Form>
-                    <p className="mt-6 text-center text-sm text-gray-600">Hoặc đăng nhập bằng tài khoản</p>
-                    <Button size='large' className="mt-4 w-full bg-red-500 text-white hover:bg-red-600">
-                        <svg
-                            className="mr-2 h-5 w-5"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                        </svg>
-                        ĐĂNG NHẬP VỚI GOOGLE
-                    </Button>
                 </div>
             </div>
         </div >

@@ -62,17 +62,30 @@ export function VertifyEmailRequest({ email }: { email: string }) {
     }
     return (
         <div className="w-full max-w-md">
-            <div className="mb-12 flex justify-center items-center">
-                <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
+            <div className="mb-6">
+                <span className="text-4xl text-[30px] text-[#003553] font-bold">
+                    Xác thực email của bạn
+                </span>
             </div>
-            <div className="mb-4 flex justify-center items-center">
+            <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+                Hãy kiểm tra email để tiến hành xác thực tài khoản
+            </p>
+            <div className="mb-12 flex justify-center items-center">
                 <Image src={RequestEmail} alt="Request email" />
             </div>
-            <h2 className="mb-1 text-2xl font-semibold text-center">Xác thực email của bạn</h2>
-            <p className="mb-8 text-gray-600 text-center" dangerouslySetInnerHTML={{ __html: t('request_email_description', { email }) }}>
-
+            <h1 className="text-4xl mb-5 w-full text-center text-[24px] text-[#003553] font-bold">
+                Kiểm tra email của bạn
+            </h1>
+            <p className="mb-12 text-[#003553] text-center text-base text-gray-700">
+                Bạn đã sử dụng <strong>quoch147@gmail.com</strong> như là email của tài khoản
             </p>
-            <Button className="w-full bg-blue-500 text-white hover:bg-blue-600" onClick={handleResend}>Gửi lại</Button>
+            <Button
+                size="large"
+                className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold text-md py-[10px] box-content h-[31px] px-0"
+                onClick={handleResend}
+            >
+                Gửi lại
+            </Button>
         </div>
     )
 }
@@ -81,17 +94,25 @@ export function VertifyEmailSuccess() {
     const router = useRouter();
     return (
         <div className="w-full max-w-md">
-            <div className="mb-12 flex justify-center items-center">
-                <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
-            </div>
             <div className="mb-2 flex justify-center items-center">
                 <Image src={EmailSuccess} alt="Email success" />
             </div>
-            <h2 className="mb-1 text-2xl font-semibold text-center">Xác thực email thành công</h2>
-            <p className="mb-8 text-gray-600 text-center">
+            <h2 className="text-2xl font-semibold text-center"></h2>
+            <div className="mb-2">
+                <h2 className="mb-1 text-[30px] text-[#003553] font-bold">
+                    Xác thực email thành công
+                </h2>
+            </div>
+            <p className="mb-8 text-[#003553] text-center text-base text-gray-700">
                 Bây giờ bạn có thể đăng nhập và tận hưởng dịch vụ
             </p>
-            <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" onClick={() => router.replace('sign-in')}>Đăng nhập ngay</Button>
+            <Button
+                size="large"
+                className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold text-md py-[10px] box-content h-[31px] px-0"
+                onClick={() => router.replace('sign-in')}
+            >
+                Đăng nhập ngay
+            </Button>
         </div>
     )
 }

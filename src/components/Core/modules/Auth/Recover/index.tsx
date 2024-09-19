@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRequestChangePasswordMutation } from '@/stores/services/auth'
+import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
 
 export default function RecoverComponent() {
     const params = useParams();
@@ -29,13 +30,17 @@ export default function RecoverComponent() {
         }
     }
     return (
-        <div className="w-full h-screen lg:w-1/2 p-8 flex justify-center items-center">
+        <div className="w-full lg:w-1/2 p-8 flex justify-center items-center bg-[#F7FBFC]">
             <div className="mb-8 flex justify-center items-center w-80">
                 <div className="w-full max-w-md">
-                    <div className="mb-8 flex justify-center items-center">
-                        <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
+                    <div className="mb-6">
+                        <span className="text-4xl text-[30px] text-[#003553] font-bold">
+                            Thay đổi mật khẩu
+                        </span>
                     </div>
-                    <p className="mb-6 text-lg text-gray-700 text-center">Vui lòng đổi lại mật khẩu</p>
+                    <p className="mb-12 text-left text-base text-gray-700">
+                        Sử dụng mã OTP mà chúng tôi đã cung cấp cho bạn để thay đổi mật khẩu
+                    </p>
                     <Form
                         className="space-y-4"
                         form={form}
@@ -53,7 +58,10 @@ export default function RecoverComponent() {
                                 }
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="OTP" />
+                            <div>
+                                <label htmlFor="OTP" className='text-base font-medium mb-2 block text-[#003553]'>OTP</label>
+                                <CustomInputPassword placeholder='OTP code'/>
+                            </div>
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -67,7 +75,10 @@ export default function RecoverComponent() {
                                 }
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="Mật khẩu mới" />
+                            <div>
+                                <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Nhập mật khẩu</label>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
+                            </div>
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -86,10 +97,17 @@ export default function RecoverComponent() {
                                 }),
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
+                            <div>
+                                <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Xác nhận mật khẩu</label>
+                                <CustomInputPassword placeholder='Nhập lại mật khẩu mới'/>
+                            </div>
                         </Form.Item>
-                        <Form.Item>
-                            <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
+                        <Form.Item className='my-5'>
+                            <Button
+                                size="large"
+                                className="w-full bg-[#0284C7] rounded-[16px] text-white font-bold text-md py-[10px] box-content h-[31px] px-0"
+                                htmlType="submit"
+                            >
                                 Đổi mật khẩu
                             </Button>
                         </Form.Item>

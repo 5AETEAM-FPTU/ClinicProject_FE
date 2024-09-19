@@ -1,6 +1,5 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { Button } from 'antd'
 import Image from 'next/image'
 import { Irish_Grover } from 'next/font/google'
 import { ChevronsRight, CircleUserRound } from 'lucide-react'
@@ -21,6 +20,7 @@ import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import { signOut } from 'next-auth/react'
 import { useAppSelector } from '@/hooks/redux-toolkit'
 import { DefaultImage, UserRole } from '@/helpers/data/Default'
+import { Button } from 'antd'
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -49,13 +49,13 @@ function Header() {
         }
     }
     const handleRenderUserType = () => {
-        const role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role;
+        const role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role
         if (role == UserRole.DOCTOR) {
-            return "Bác sĩ"
-        } else if (role == UserRole.STAFF)  { 
-            return "Nhân viên y tế"
+            return 'Bác sĩ'
+        } else if (role == UserRole.STAFF) {
+            return 'Nhân viên y tế'
         } else {
-            return ""
+            return ''
         }
     }
 
@@ -154,19 +154,20 @@ function Header() {
                             <div>
                                 <ChangeLanguages />
                             </div>
-                            {_accessToken && (
-                                <Button
-                                    type="default"
-                                    onClick={() => {
-                                        signOut({
-                                            redirect: true,
-                                        })
-                                        webStorageClient.removeAll()
-                                    }}
-                                >
-                                    Đăng xuất
-                                </Button>
-                            )}
+                            <div>
+                                {_accessToken ? (
+                                    <button
+                                        onClick={() => {
+                                            signOut({
+                                                redirect: true,
+                                            })
+                                            webStorageClient.removeAll()
+                                        }}
+                                    >
+                                        Đăng xuất
+                                    </button>
+                                ) : null}
+                            </div>
                         </div>
                     </div>
 

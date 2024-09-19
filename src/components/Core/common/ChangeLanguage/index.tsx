@@ -1,3 +1,4 @@
+'use client'
 import { Dropdown, MenuProps } from 'antd'
 import Image from 'next/image'
 import React, { useTransition } from 'react'
