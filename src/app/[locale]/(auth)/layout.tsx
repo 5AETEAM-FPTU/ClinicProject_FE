@@ -8,11 +8,10 @@ import AuthBanner from '@public/landing/images/auth-banner.png'
 
 function AuthRootLayout({ children }: { children: React.ReactNode }) {
 
-    // const _accessToken = getCookie(constants.ACCESS_TOKEN, {cookies})
-
-    // if(_accessToken) {
-    //     redirect("/");
-    // }
+    const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })    
+    if(_accessToken_Cookie) {
+        redirect("/home");
+    }
 
     return (
         <div className="min-h-screen bg-white flex">

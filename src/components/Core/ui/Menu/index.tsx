@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils'
 import { Typography } from 'antd'
 import { motion } from 'framer-motion'
 import { ChevronDown, ChevronUp, Dot } from 'lucide-react'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next-nprogress-bar'
+import { useParams, usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export type MenuProps = {
@@ -96,6 +97,7 @@ export function MenuItem({ item }: MenuItemTypesProps) {
     useEffect(() => {
         return handlePathSegments()
     }, [pathname])
+    
     return (
         <div className={cn("flex h-fit w-full select-none flex-col transition-all duration-500", `${collapsed && "items-center"}`)}>
             <div

@@ -7,13 +7,23 @@ import { cn } from '@/lib/utils'
 import Logo from '@public/main/logo/FinalLogo.png'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import Menu, { IndividualMenuItemType, TAppPathLayoutState } from '../../Core/ui/Menu'
+import Menu, {
+    IndividualMenuItemType,
+    TAppPathLayoutState,
+} from '../../Core/ui/Menu'
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
 import { toggleSidebar } from '@/stores/features/sidebar'
 import { Bell, Home, Logs, Search, Settings } from 'lucide-react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Footer } from 'antd/es/layout/layout'
+import webStorageClient from '@/utils/webStorageClient'
+import { useLocale } from 'next-intl'
+import { signOut } from 'next-auth/react'
+
+import { AppProgressBar } from 'next-nprogress-bar'
+import themeColors from '@/style/themes/default/colors'
+import { useRouter } from 'next/navigation'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -24,12 +34,14 @@ const irishGrover = Irish_Grover({
 
 export type DashboardProps = {
     children: React.ReactNode
-    sidebarItems?: IndividualMenuItemType[];
+    sidebarItems?: IndividualMenuItemType[]
 }
 
 function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const { collapsed } = useAppSelector((state) => state.sidebar)
     const dispath = useAppDispatch()
+    const router = useRouter()
+    const locale = useLocale()
 
     const [appLayoutState, setAppPathLayoutState] =
         useState<TAppPathLayoutState | null>(null)
@@ -49,7 +61,6 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         return handlePathSegments()
     }, [pathname])
 
-    console.log(appLayoutState)
     const handleRenderDistance = (key: 'distance' | 'destination') => {
         return sidebarItems?.map((item) => {
             if (item.key === appLayoutState?.distance && key === 'distance') {
@@ -66,6 +77,10 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
             }
         })
     }
+    const handleLogout = async () => {
+        webStorageClient.removeAll()
+        await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
+    }
 
     return (
         <Layout className="!h-screen">
@@ -74,12 +89,15 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                 collapsible
                 collapsed={collapsed}
                 className={cn(
-                    '!bg-dashboardBackgournd !min-w-[250px]',
+                    '!min-w-[250px] !bg-dashboardBackgournd',
                     `${collapsed && '!min-w-[80px]'}`,
                 )}
             >
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
-                    <div className="flex flex-row gap-2 border-b-[2px] border-secondaryDark p-4">
+                    <div
+                        className="flex flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
+                        onClick={() => router.push('/sign-in')}
+                    >
                         <div className="h-[45px] w-[45px]">
                             <Image
                                 src={Logo}
@@ -104,7 +122,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                 <Menu items={sidebarItems!} />
             </Sider>
             <Layout className="!bg-dashboardBackgournd">
-                <Header className="!bg-dashboardBackgournd flex !h-[74px] w-[calc(100%)] select-none flex-row items-center !px-[20px] leading-none">
+                <Header className="flex !h-[74px] w-[calc(100%)] select-none flex-row items-center !bg-dashboardBackgournd !px-[20px] leading-none">
                     <Button
                         type="text"
                         icon={
@@ -124,7 +142,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
 
                     <div className="flex w-full flex-row items-center justify-between gap-[20px]">
                         <div className="flex flex-col gap-2">
-                            <div className="text-secondarySupperDarker flex h-fit flex-row items-center gap-2">
+                            <div className="flex h-fit flex-row items-center gap-2 text-secondarySupperDarker">
                                 <Home size={18} />
                                 <span>/</span>
                                 <p>Trang</p>
@@ -157,7 +175,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                 ></Input>
                             </div>
                             <div className="flex flex-row items-center gap-5">
-                                <div className='cursor-pointer relative p-[10px] hover:bg-slate-200 bg-slate-100 rounded-lg transition-all duration-300'>
+                                <div className="relative cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
                                     <Bell size={24} />
                                     <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
                                         <p className="text-[10px] text-white">
@@ -165,10 +183,10 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="cursor-pointer p-[10px] hover:bg-slate-200 bg-slate-100 rounded-lg transition-all duration-300">
+                                <div className="cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
                                     <Settings size={24} />
                                 </div>
-                                <div className="bg-secondarySupperDarker h-[30px] w-[2px]"></div>
+                                <div className="h-[30px] w-[2px] bg-secondarySupperDarker"></div>
 
                                 <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark">
                                     <Image
@@ -181,17 +199,31 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         className="h-full w-full object-cover"
                                     ></Image>
                                 </div>
-                                <div className="text-secondarySupperDarker cursor-pointer text-[16px] font-semibold">
+                                <div
+                                    className="cursor-pointer text-[16px] font-semibold text-secondarySupperDarker"
+                                    onClick={() => {
+                                        handleLogout()
+                                    }}
+                                >
                                     Đăng xuất
                                 </div>
                             </div>
                         </div>
                     </div>
                 </Header>
+                <div>
+                    <AppProgressBar
+                        height="4px"
+                        color={themeColors.primaryDark}
+                        options={{ showSpinner: false }}
+                        shallowRouting
+                        disableSameURL
+                    />
+                </div>
                 <Content
-                    className="bg-dashboardBackgournd !p-[20px] !pb-0 overflow-y-auto"
+                    className="overflow-y-auto bg-dashboardBackgournd !p-[20px] !pb-5"
                     style={{
-                        margin: '20px 0px 0px 20px',
+                        margin: '0px 0px 0px 20px',
                         padding: 24,
                         minHeight: 280,
                     }}

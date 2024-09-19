@@ -123,7 +123,7 @@ export default function SignUpComponent() {
                                 }
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="Mật khẩu" />
+                            <Input.Password className='p-4' type="password" placeholder="Mật khẩu" />
                         </Form.Item>
                         <Form.Item
                             hasFeedback
@@ -142,7 +142,7 @@ export default function SignUpComponent() {
                                 }),
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
+                            <Input.Password className='p-4' type="password" placeholder="Nhập lại mật khẩu" />
                         </Form.Item>
                         <Form.Item>
                             <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">

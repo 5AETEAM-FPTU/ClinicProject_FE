@@ -6,12 +6,10 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 
 function UserRootLayout({ children }: { children: React.ReactNode }) {
-    // const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })
-
-    // if (!_accessToken_Cookie) {
-    //     redirect('/sign-in')
-    // }
-
+    const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })    
+    if(!_accessToken_Cookie) {
+        redirect("/home");
+    }
     return <UserLayout>{children}</UserLayout>
 }
 

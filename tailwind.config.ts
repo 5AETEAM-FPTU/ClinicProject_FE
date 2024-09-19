@@ -14,12 +14,13 @@ const config: Config = {
     boxShadow: {
       primary: "4px 8px 30px 0 #b1c4da59",
       secondary: " 0px 2px 8px 0px",
-      third: "1px 1px 30px 0px #749dce80"
+      third: "1px 1px 20px 0px #749dce4b"
     },
 
     extend: {
       colors: {
         dashboardBackgournd: "#F8F9FB",
+        dashboardBackground: "#F8F9FB",
         background: "var(--background)",
         foreground: "var(--foreground)",
         secondarySupperDarker: "#003553",

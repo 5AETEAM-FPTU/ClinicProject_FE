@@ -1,9 +1,10 @@
+import DoctorProfileModule from '@/components/Core/modules/Doctor/DoctorProfileModule'
 import React from 'react'
 
 function DoctorProfile() {
     return (
         <div>
-            Doctor profile
+            <DoctorProfileModule/>
         </div>
     )
 }

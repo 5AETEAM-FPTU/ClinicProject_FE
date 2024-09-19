@@ -3,54 +3,111 @@
 // import { setCookie } from 'cookies-next'
 // import { useRouter } from 'next/navigation'
 // import React from 'react'
-import { Button, Input, ConfigProvider, Form } from 'antd'
-import { ArrowLeft } from "lucide-react"
+import { Button, Input, ConfigProvider, Form, message } from 'antd'
+import { ArrowLeft } from 'lucide-react'
 import { redirect, useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
 import { useRequestLoginMutation } from '@/stores/services/auth'
 import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
+import { useLocale } from 'next-intl'
+import { jwtDecode, JwtPayload } from 'jwt-decode'
+import { getSession, signIn, useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import webStorageClient from '@/utils/webStorageClient'
+
+export interface JwtPayloadUpdated extends JwtPayload {
+    role: string
+}
+
 export default function SignInComponent() {
-    const params = useParams();
-    const [form] = Form.useForm();
-    const dispatch: AppDispatch = useDispatch();
+    const params = useParams()
+    const [form] = Form.useForm()
+    const dispatch: AppDispatch = useDispatch()
+    const locale = useLocale()
     const { t } = useTranslation(params?.locale as string, 'Landing')
-    const router = useRouter();
-    const [requestLogin] = useRequestLoginMutation();
+    const router = useRouter()
+    const [requestLogin] = useRequestLoginMutation()
+
+    const { data: session } = useSession()
+
     const handleSubmit = async (values: any) => {
         const result = await requestLogin({
             username: values.username,
             password: values.password,
-            isRemember: true
-        });
+            isRemember: true,
+        })
+        const accessToken = result?.data?.body?.accessToken ?? ''
+
+        if (accessToken) {
+            const role = jwtDecode<JwtPayloadUpdated>(accessToken).role
+            if (role === 'admin') {
+                webStorageClient.removeAll();
+                message.warning(
+                    'Admin không được phép đăng nhập vào trang này!',
+                )
+                return
+            }
+        }
+
         if (result.error) {
-            console.error('Login failed', result.error);
+            message.error('Đăng nhập không thành công!')
         } else {
-            router.push('/home');
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
+            )
         }
     }
+
+    const handleLoginWithGoogle = async () => {
+        try {
+            await signIn('google', {
+                redirect: false,
+                prompt: 'select_account',
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if (session) {
+            console.log(session);
+        }
+    }, [session])
     return (
-        <div className="w-full lg:w-1/2 p-8">
+        <div className="w-full p-8 lg:w-1/2">
             <ConfigProvider wave={{ disabled: true }}>
-                <Button className="m-8 p-0 border-none" onClick={() => router.push('/home')}>
+                <Button
+                    className="m-8 border-none p-0"
+                    onClick={() => router.push('/home')}
+                >
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
             </ConfigProvider>
-            <div className="mb-8 flex justify-center items-center">
+            <div className="mb-8 flex items-center justify-center">
                 <div className="w-full max-w-md">
-                    <div className="mb-8 flex justify-center items-center">
-                        <span className="text-4xl font-bold text-blue-500">P-CLINIC</span>
+                    <div className="mb-8 flex items-center justify-center">
+                        <span className="text-4xl font-bold text-blue-500">
+                            P-CLINIC
+                        </span>
                     </div>
-                    <p className="mb-6 text-lg text-gray-700 text-center">Vui lòng nhập email hoặc số điện thoại và mật khẩu</p>
-                    <Form className="space-y-4" form={form} onFinish={handleSubmit}>
+                    <p className="mb-6 text-center text-lg text-gray-700">
+                        Vui lòng nhập email hoặc số điện thoại và mật khẩu
+                    </p>
+                    <Form
+                        className="space-y-4"
+                        form={form}
+                        onFinish={handleSubmit}
+                    >
                         <Form.Item
                             name="username"
                             validateTrigger="onBlur"
                             rules={[
                                 {
                                     required: true,
-                                    message: "Vui lòng nhập username"
+                                    message: 'Vui lòng nhập username',
                                 },
                                 // {
                                 //     validator(_, value) {
@@ -73,35 +130,67 @@ export default function SignInComponent() {
                                 // }
                             ]}
                         >
-                            <Input className='p-4' placeholder="Email hoặc số điện thoại" />
+                            <Input
+                                className="p-4"
+                                placeholder="Email hoặc số điện thoại"
+                            />
                         </Form.Item>
                         <Form.Item
-                            className='mb-12'
+                            className="mb-12"
                             hasFeedback
                             validateDebounce={500}
                             name="password"
                             rules={[
-                                { required: true, message: "Vui lòng nhập mật khẩu" },
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập mật khẩu',
+                                },
                                 // {
                                 //     pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
                                 //     message: "Mật khẩu phải chứa ít nhất 8 ký tự, chữ cái viết hoa, chữ cái viết thường và ít nhất 1 chữ số"
                                 // }
                             ]}
                         >
-                            <Input className='p-4' type="password" placeholder="Mật khẩu" />
+                            <Input.Password
+                                className="p-4"
+                                type="password"
+                                placeholder="Mật khẩu"
+                            />
                         </Form.Item>
                         <Form.Item>
-                            <Button size='large' className="w-full bg-blue-500 text-white hover:bg-blue-600" htmlType="submit">
+                            <Button
+                                size="large"
+                                className="w-full bg-blue-500 text-white hover:bg-blue-600"
+                                htmlType="submit"
+                            >
                                 Đăng nhập
                             </Button>
                         </Form.Item>
                     </Form>
                     <div className="flex justify-between">
-                        <p className="mt-4 text-sm text-blue-500 cursor-pointer" onClick={() => router.push('forget-password')}>Quên khật khẩu</p>
-                        <p className="mt-4 text-sm text-blue-500 cursor-pointer" onClick={() => router.push('sign-up')}>Bạn chưa có tài khoản ?</p>
+                        <p
+                            className="mt-4 cursor-pointer text-sm text-blue-500"
+                            onClick={() => router.push('forget-password')}
+                        >
+                            Quên khật khẩu
+                        </p>
+                        <p
+                            className="mt-4 cursor-pointer text-sm text-blue-500"
+                            onClick={() => router.push('sign-up')}
+                        >
+                            Bạn chưa có tài khoản ?
+                        </p>
                     </div>
-                    <p className="mt-6 text-center text-sm text-gray-600">Hoặc đăng nhập bằng tài khoản</p>
-                    <Button size='large' className="mt-4 w-full bg-red-500 text-white hover:bg-red-600">
+                    <p className="mt-6 text-center text-sm text-gray-600">
+                        Hoặc đăng nhập bằng tài khoản
+                    </p>
+                    <Button
+                        size="large"
+                        className="mt-4 w-full bg-red-500 text-white hover:bg-red-600"
+                        onClick={() => {
+                            handleLoginWithGoogle()
+                        }}
+                    >
                         <svg
                             className="mr-2 h-5 w-5"
                             viewBox="0 0 24 24"

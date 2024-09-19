@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import Image from 'next/image'
 import { Irish_Grover } from 'next/font/google'
 import { CircleUserRound } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
 import themeColors from '@/style/themes/default/colors'
@@ -14,6 +14,11 @@ import ZaloLogo from '@public/landing/icons/Zalo.svg'
 import HeadPhoneIcon from '@public/landing/icons/HeadPhone.svg'
 import useDetectScroll from '@smakss/react-scroll-direction'
 import { cn } from '@/lib/utils'
+import webStorageClient from '@/utils/webStorageClient'
+import { useLocale } from 'next-intl'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
+import { signOut } from 'next-auth/react'
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -24,22 +29,19 @@ function Header() {
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const { scrollDir } = useDetectScroll()
+    const router = useRouter();
+    const locale = useLocale();
+    const _accessToken = webStorageClient.getToken();
 
-    const [isInHeader, setIsInHeader] = useState<boolean>(true)
-    const handleScroll = useCallback(() => {
-        if (window.scrollY > 10) {
-            setIsInHeader(false)
+    const handleAccounts = () => {
+        const isHasToken = webStorageClient.getToken();
+            router.push("");
+        if (isHasToken) {
+            router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`);
         } else {
-            setIsInHeader(true)
+            router.push(`/${locale}/sign-in`);
         }
-    }, [])
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll)
-        return () => {
-            window.removeEventListener('scroll', handleScroll)
-        }
-    }, [handleScroll])
+    }
 
     return (
         <div className="fixed left-0 top-0 z-[100] flex h-fit w-full justify-center bg-white drop-shadow-lg">
@@ -96,6 +98,7 @@ function Header() {
                             <Button
                                 type="default"
                                 className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
+                                onClick={handleAccounts}
                             >
                                 <CircleUserRound
                                     color={themeColors.secondaryDark}
@@ -105,6 +108,11 @@ function Header() {
                             </Button>
                             <div>
                                 <ChangeLanguages />
+                            </div>
+                            <div onClick={() => {
+                                signOut({redirect: true, callbackUrl: "/sign-in"});
+                            }}>
+                                Log out 
                             </div>
                         </div>
                     </div>
