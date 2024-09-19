@@ -9,7 +9,19 @@ const authEndpoint = {
     SIGNUP: "/auth/register-user",
     CONFIRM_EMAIL: "/auth/confirm-email",
     RESEND_EMAIL: "/auth/resend-email-confirmation",
-    GOOGLE_AUTH: "/auth/login/google"
+    GOOGLE_AUTH: "/auth/login/google",
+    UPDATE_PASSWORD: "/auth/update-password",
 }
 
-export { demoEnpoints, authEndpoint };
+const userEndpoint = {
+    CHANGE_AVATAR: "/user/avatar"
+}
+
+const doctorEndpoint = {
+    GET_PROFILE: "/doctor/profile",
+    PATCH_PRIVATE_INFOR: "/doctor/private-info",
+    PATCH_ACHIEVEMENT: "/doctor/achievement",
+    PATCH_DESCRIPTION: "/doctor/description",
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };

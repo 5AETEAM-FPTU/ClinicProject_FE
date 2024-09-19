@@ -55,7 +55,7 @@ export default function ForgetPassword() {
                                 Nhập email của bạn để thay đổi mật khẩu
                             </span>
                         </div>
-                        <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+                        <p className="mb-12 text-[#003553] text-left text-base">
                             Chúng tôi sẽ gửi OTP thông qua email của bạn, hãy sử dụng mã này để thay đổi mật khẩu.<br /> Lưu ý không để lộ mã này ra bên ngoài
                         </p>
                         <Form className="space-y-4" form={form} onFinish={handleSubmit}>
@@ -91,7 +91,7 @@ export default function ForgetPassword() {
                                 <div>
                                     <label htmlFor="email" className='text-base font-medium mb-2 block text-[#003553]'>Nhập email của bạn</label>
                                     <Input
-                                        className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
+                                        className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] "
                                         placeholder="Email"
                                     />
                                 </div>

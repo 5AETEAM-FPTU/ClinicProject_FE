@@ -96,6 +96,17 @@ export const authApis = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'POST',
             }) 
+        }),
+        requestUpdatePassword: build.mutation<any,{currentPassword: string, newPassword: string}>({
+            query: (params) => ({
+                url: authEndpoint.UPDATE_PASSWORD,
+                body: {
+                    currentPassword: params.currentPassword,
+                    newPassword: params.newPassword
+                },
+                flashError: true,
+                method: 'PATCH',
+            }) 
         })
     }),
 })
@@ -108,5 +119,6 @@ export const {
     useRequestLogoutMutation,
     useRequestSignUpMutation,
     useResendEmailMutation,
-    useRequestAuthGoogleMutation
+    useRequestAuthGoogleMutation,
+    useRequestUpdatePasswordMutation
 } = authApis;

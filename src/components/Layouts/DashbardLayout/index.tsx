@@ -41,7 +41,6 @@ export type DashboardProps = {
 function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const { collapsed } = useAppSelector((state) => state.sidebar)
     const { user } = useAppSelector((state) => state.auth)
-    console.log(user);
     const dispath = useAppDispatch()
     const router = useRouter()
     const locale = useLocale()

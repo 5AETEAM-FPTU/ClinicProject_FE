@@ -26,6 +26,12 @@ const slice = createSlice({
     reducers: {
         updateUserInfo: (state, action) => {
             state.user = action.payload
+        },
+        updateUserAvatar: (state, action) => {
+            state.user.avatarUrl = action.payload
+        },
+        updateUserFullName: (state, action) => {
+            state.user.fullName = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -96,7 +102,9 @@ const slice = createSlice({
 })
 
 export const {
-    updateUserInfo
+    updateUserInfo,
+    updateUserAvatar,
+    updateUserFullName
 } = slice.actions
 
 export default slice.reducer
