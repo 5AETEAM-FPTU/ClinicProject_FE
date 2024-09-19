@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRequestChangePasswordMutation } from '@/stores/services/auth'
+import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
 
 export default function RecoverComponent() {
     const params = useParams();
@@ -37,7 +38,7 @@ export default function RecoverComponent() {
                             Thay đổi mật khẩu
                         </span>
                     </div>
-                    <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+                    <p className="mb-12 text-left text-base text-gray-700">
                         Sử dụng mã OTP mà chúng tôi đã cung cấp cho bạn để thay đổi mật khẩu
                     </p>
                     <Form
@@ -59,10 +60,7 @@ export default function RecoverComponent() {
                         >
                             <div>
                                 <label htmlFor="OTP" className='text-base font-medium mb-2 block text-[#003553]'>OTP</label>
-                                <Input
-                                    type="password" placeholder="OTP"
-                                    className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
-                                />
+                                <CustomInputPassword placeholder='OTP code'/>
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -72,17 +70,14 @@ export default function RecoverComponent() {
                             rules={[
                                 { required: true, message: "Vui lòng nhập mật khẩu" },
                                 {
-                                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                                    pattern:  /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
                                     message: "Mật khẩu phải chứa ít nhất 8 ký tự, chữ cái viết hoa, chữ cái viết thường và ít nhất 1 chữ số"
                                 }
                             ]}
                         >
                             <div>
-                                <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu</label>
-                                <Input
-                                    type="password" placeholder="Mật khẩu mới"
-                                    className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
-                                />
+                                <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Nhập mật khẩu</label>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -103,11 +98,8 @@ export default function RecoverComponent() {
                             ]}
                         >
                             <div>
-                                <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Nhập lại mật khẩu</label>
-                                <Input
-                                    type="password" placeholder="Nhập lại mật khẩu"
-                                    className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
-                                />
+                                <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Xác nhận mật khẩu</label>
+                                <CustomInputPassword placeholder='Nhập lại mật khẩu mới'/>
                             </div>
                         </Form.Item>
                         <Form.Item className='my-5'>

@@ -24,6 +24,7 @@ import { signOut } from 'next-auth/react'
 import { AppProgressBar } from 'next-nprogress-bar'
 import themeColors from '@/style/themes/default/colors'
 import { useRouter } from 'next/navigation'
+import { DefaultImage } from '@/helpers/data/Default'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -39,6 +40,8 @@ export type DashboardProps = {
 
 function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const { collapsed } = useAppSelector((state) => state.sidebar)
+    const { user } = useAppSelector((state) => state.auth)
+    console.log(user);
     const dispath = useAppDispatch()
     const router = useRouter()
     const locale = useLocale()
@@ -95,8 +98,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
             >
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
-                        className="flex flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
-                        onClick={() => router.push('/sign-in')}
+                        className="flex flex-row gap-2 border-b-[2px] select-none border-secondaryDark p-4"
+                        onClick={() => router.push('/home')}
                     >
                         <div className="h-[45px] w-[45px]">
                             <Image
@@ -191,7 +194,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                 <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark">
                                     <Image
                                         src={
-                                            'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726406772/udqesjq7wu1sewrhpdzn.jpg'
+                                            user.avatarUrl ? user.avatarUrl : DefaultImage
                                         }
                                         alt="avatar"
                                         width={200}
@@ -199,14 +202,14 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         className="h-full w-full object-cover"
                                     ></Image>
                                 </div>
-                                <div
+                                <Button type='text'
                                     className="cursor-pointer text-[16px] font-semibold text-secondarySupperDarker"
                                     onClick={() => {
                                         handleLogout()
                                     }}
                                 >
                                     Đăng xuất
-                                </div>
+                                </Button>
                             </div>
                         </div>
                     </div>

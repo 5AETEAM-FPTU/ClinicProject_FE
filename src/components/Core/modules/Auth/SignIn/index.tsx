@@ -1,14 +1,11 @@
 'use client'
-// import constants from '@/settings/constants'
-// import { setCookie } from 'cookies-next'
-// import { useRouter } from 'next/navigation'
-// import React from 'react'
+
 import { Button, Input, ConfigProvider, Form, message } from 'antd'
 import { ArrowLeft } from 'lucide-react'
 import { redirect, useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
-import { useRequestLoginMutation } from '@/stores/services/auth'
+import { useRequestAuthGoogleMutation, useRequestLoginMutation } from '@/stores/services/auth'
 import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
 import { useLocale } from 'next-intl'
@@ -18,6 +15,8 @@ import { useEffect } from 'react'
 import webStorageClient from '@/utils/webStorageClient'
 import Image from 'next/image'
 import Google from '@public/icons/google-icon.svg'
+import { result } from 'lodash'
+import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
 
 export interface JwtPayloadUpdated extends JwtPayload {
     role: string
@@ -31,8 +30,9 @@ export default function SignInComponent() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter()
     const [requestLogin] = useRequestLoginMutation()
+    const [requestAuthGoogle] = useRequestAuthGoogleMutation();
 
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const handleSubmit = async (values: any) => {
         const result = await requestLogin({
@@ -56,6 +56,7 @@ export default function SignInComponent() {
         if (result.error) {
             message.error('Đăng nhập không thành công!')
         } else {
+            message.success("Đăng nhập thành công!")
             router.push(
                 `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
             )
@@ -65,7 +66,7 @@ export default function SignInComponent() {
     const handleLoginWithGoogle = async () => {
         try {
             await signIn('google', {
-                redirect: false,
+                redirect: true,
                 prompt: 'select_account',
             })
         } catch (error) {
@@ -73,9 +74,28 @@ export default function SignInComponent() {
         }
     }
 
+    const handleLoginByGoogleIdToken = async (value: string) => {
+        const result = await requestAuthGoogle({
+            idToken: value
+        });
+        const accessToken = result?.data?.body?.accessToken ?? ''
+        console.log(result)
+
+        if(result.error) {
+            if((result.error as any).status !== 500) {
+                message.error("Đăng nhập không thành công")
+            }
+        } else {
+            message.success("Đăng nhập thành công")
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
+            )
+        }
+    }
+        
     useEffect(() => {
         if (session) {
-            console.log(session);
+           handleLoginByGoogleIdToken(session?.idToken!);
         }
     }, [session])
     return (
@@ -95,7 +115,7 @@ export default function SignInComponent() {
                             Đăng nhập
                         </span>
                     </div>
-                    <p className="mb-12 text-[#003553] text-left text-base text-gray-700">
+                    <p className="mb-12 text-left text-base text-gray-700">
                         Đăng nhập với thông tin bạn đã đăng ký với hệ thống
                     </p>
                     <Form
@@ -136,8 +156,8 @@ export default function SignInComponent() {
                             <div>
                                 <label htmlFor="username" className='text-base font-medium mb-2 block text-[#003553]'>Email hoặc số điện thoại</label>
                                 <Input
-                                    className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
-                                    placeholder="Email hoặc số điện thoại"
+                                    className="!border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553] text-opacity-60"
+                                    placeholder="abc@gmail.com"
                                 />
                             </div>
                         </Form.Item>
@@ -159,11 +179,12 @@ export default function SignInComponent() {
                         >
                             <div>
                                 <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu</label>
-                                <Input.Password
-                                    className="border-[#003553] placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent py-3 px-5 text-base font-medium text-[#003553]"
+                                {/* <Input.Password
+                                    className="!border-[#003553] placeholder:!text-[#003553] placeholder:!text-opacity-60 bg-transparent py-3 px-5 text-base font-medium !text-[#003553]"
                                     type="password"
                                     placeholder="Mật khẩu"
-                                />
+                                /> */}
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
                             </div>
                         </Form.Item>
                         <div className="flex justify-between !mt-0">
@@ -193,7 +214,7 @@ export default function SignInComponent() {
                             size="large"
                             ghost
                             type='primary'
-                            className="w-full text-[#003553] rounded-[16px] border border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
+                            className="w-full text-[#003553] rounded-[16px] border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
                             onClick={() => {
                                 handleLoginWithGoogle()
                             }}
