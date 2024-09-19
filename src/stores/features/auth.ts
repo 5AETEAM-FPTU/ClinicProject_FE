@@ -2,13 +2,15 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { constants } from '@/settings'
 import webStorageClient from '@/utils/webStorageClient'
 import { authApis } from '@/stores/services/auth'
+
+export interface IUserInfo {
+    email: string
+    avatarUrl: string | null
+    fullName: string | null
+    role: string | null
+}
 export interface IAuth {
-    user: {
-        email: string
-        avatarUrl: string | null
-        fullName: string | null
-        role: string | null
-    }
+    user: IUserInfo
 }
 const initialState: IAuth = {
     user: {
@@ -22,12 +24,39 @@ const slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        //todo add reducer in need
+        updateUserInfo: (state, action) => {
+            state.user = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
             .addMatcher(
                 authApis.endpoints.requestLogin.matchFulfilled,
+                (state, action) => {
+                    const data = action.payload.body
+                    state.user.email = data.user.email
+                    state.user.avatarUrl = data.user.avatarUrl
+                    state.user.fullName = data.user.fullName
+
+                    webStorageClient.setToken(data.accessToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.setRefreshToken(data.refreshToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.USER_AVATAR, data?.user?.avatarUrl, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.USER_FULLNAME, data?.user?.fullName, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.EMAIL, data?.user?.email, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                },
+            )
+            .addMatcher(
+                authApis.endpoints.requestAuthGoogle.matchFulfilled,
                 (state, action) => {
                     const data = action.payload.body
                     state.user.email = data.user.email
@@ -39,11 +68,17 @@ const slice = createSlice({
                     webStorageClient.setRefreshToken(data.refreshToken, {
                         maxAge: 60 * 60 * 24,
                     })
+                    webStorageClient.set(constants.USER_AVATAR, data?.user?.avatarUrl, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.USER_FULLNAME, data?.user?.fullName, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.EMAIL, data?.user?.email, {
+                        maxAge: 60 * 60 * 24,
+                    })
+
                 },
-            )
-            .addMatcher(
-                authApis.endpoints.requestForgetPassword.matchFulfilled,
-                (state, action) => {},
             )
             .addMatcher(
                 authApis.endpoints.requestChangePassword.matchFulfilled,
@@ -61,7 +96,7 @@ const slice = createSlice({
 })
 
 export const {
-    //todo add reducer in need
+    updateUserInfo
 } = slice.actions
 
 export default slice.reducer

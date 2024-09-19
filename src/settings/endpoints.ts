@@ -8,7 +8,8 @@ const authEndpoint = {
     LOGOUT: "/auth/logout",
     SIGNUP: "/auth/register-user",
     CONFIRM_EMAIL: "/auth/confirm-email",
-    RESEND_EMAIL: "/auth/resend-email-confirmation"
+    RESEND_EMAIL: "/auth/resend-email-confirmation",
+    GOOGLE_AUTH: "/auth/login/google"
 }
 
 export { demoEnpoints, authEndpoint };

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button } from 'antd'
 import Image from 'next/image'
 import { Irish_Grover } from 'next/font/google'
-import { CircleUserRound } from 'lucide-react'
+import { ChevronsRight, CircleUserRound } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 
 import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
@@ -19,6 +19,8 @@ import { useLocale } from 'next-intl'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import { signOut } from 'next-auth/react'
+import { useAppSelector } from '@/hooks/redux-toolkit'
+import { DefaultImage, UserRole } from '@/helpers/data/Default'
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -29,17 +31,31 @@ function Header() {
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const { scrollDir } = useDetectScroll()
-    const router = useRouter();
-    const locale = useLocale();
-    const _accessToken = webStorageClient.getToken();
+    const router = useRouter()
+    const locale = useLocale()
+    const _accessToken = webStorageClient.getToken()
 
+    const { user } = useAppSelector((state) => state.auth)
+    console.log(user)
     const handleAccounts = () => {
-        const isHasToken = webStorageClient.getToken();
-            router.push("");
+        const isHasToken = webStorageClient.getToken()
+        router.push('')
         if (isHasToken) {
-            router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`);
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
+            )
         } else {
-            router.push(`/${locale}/sign-in`);
+            router.push(`/${locale}/sign-in`)
+        }
+    }
+    const handleRenderUserType = () => {
+        const role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role;
+        if (role == UserRole.DOCTOR) {
+            return "Bác sĩ"
+        } else if (role == UserRole.STAFF)  { 
+            return "Nhân viên y tế"
+        } else {
+            return ""
         }
     }
 
@@ -95,31 +111,71 @@ function Header() {
                                 `${scrollDir === 'down' && 'translate-y-[-50px] duration-500'}`,
                             )}
                         >
-                            <Button
-                                type="default"
-                                className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
-                                onClick={handleAccounts}
-                            >
-                                <CircleUserRound
-                                    color={themeColors.secondaryDark}
-                                    size={20}
-                                />
-                                {t('header_accounts')}
-                            </Button>
+                            {_accessToken ? (
+                                <div
+                                    className="flex cursor-pointer select-none flex-row items-center gap-3 rounded-md px-3 transition-all duration-300 hover:bg-slate-200"
+                                    onClick={handleAccounts}
+                                >
+                                    <div>
+                                        <p className="font-medium">
+                                            {handleRenderUserType()} {' '}
+                                            <span className="font-bold text-secondarySupperDarker">
+                                                {user.fullName}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full">
+                                        <Image
+                                            src={
+                                                user.avatarUrl
+                                                    ? user.avatarUrl
+                                                    : DefaultImage
+                                            }
+                                            alt="avatar"
+                                            width={200}
+                                            height={200}
+                                            className="h-full w-full object-cover"
+                                        ></Image>
+                                    </div>
+                                </div>
+                            ) : (
+                                <Button
+                                    type="default"
+                                    className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
+                                    onClick={handleAccounts}
+                                >
+                                    <CircleUserRound
+                                        color={themeColors.secondaryDark}
+                                        size={20}
+                                    />
+                                    {t('header_accounts')}
+                                </Button>
+                            )}
                             <div>
                                 <ChangeLanguages />
                             </div>
-                            <div onClick={() => {
-                                signOut({redirect: true, callbackUrl: "/sign-in"});
-                            }}>
-                                Log out 
-                            </div>
+                            {_accessToken && (
+                                <Button
+                                    type="default"
+                                    onClick={() => {
+                                        signOut({
+                                            redirect: true,
+                                        })
+                                        webStorageClient.removeAll()
+                                    }}
+                                >
+                                    Đăng xuất
+                                </Button>
+                            )}
                         </div>
                     </div>
 
-                    <div className={cn("flex w-full items-center justify-between border-t-2 py-[10px]", `
-                        ${scrollDir === 'down' && 'border-t-0'}
-                        `)}>
+                    <div
+                        className={cn(
+                            'flex w-full items-center justify-between border-t-2 py-[10px]',
+                            ` ${scrollDir === 'down' && 'border-t-0'} `,
+                        )}
+                    >
                         <div className="flex w-[32px] flex-row gap-2">
                             <Image src={HeadPhoneIcon} alt="logo" />
                             <div className="flex flex-col items-center">

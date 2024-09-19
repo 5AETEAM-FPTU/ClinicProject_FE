@@ -118,7 +118,7 @@ export default function SignUpComponent() {
                             rules={[
                                 { required: true, message: "Vui lòng nhập mật khẩu" },
                                 {
-                                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                                    pattern:  /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
                                     message: "Mật khẩu phải chứa ít nhất 8 ký tự, chữ cái viết hoa, chữ cái viết thường và ít nhất 1 chữ số"
                                 }
                             ]}

@@ -22,7 +22,7 @@ export default async function RootLayout({
   };
 }>) {
   return (
-    <html lang={params?.locale} suppressHydrationWarning={true} className="dark">
+    <html lang={params?.locale} suppressHydrationWarning={false} className="dark">
       <body
         className={cn(inter.className)}
       >

@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react'
 import { redirect, useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter } from 'next/navigation'
-import { useRequestLoginMutation } from '@/stores/services/auth'
+import { useRequestAuthGoogleMutation, useRequestLoginMutation } from '@/stores/services/auth'
 import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
 import { useLocale } from 'next-intl'
@@ -16,6 +16,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode'
 import { getSession, signIn, useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import webStorageClient from '@/utils/webStorageClient'
+import { result } from 'lodash'
 
 export interface JwtPayloadUpdated extends JwtPayload {
     role: string
@@ -29,8 +30,9 @@ export default function SignInComponent() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const router = useRouter()
     const [requestLogin] = useRequestLoginMutation()
+    const [requestAuthGoogle] = useRequestAuthGoogleMutation();
 
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const handleSubmit = async (values: any) => {
         const result = await requestLogin({
@@ -54,6 +56,7 @@ export default function SignInComponent() {
         if (result.error) {
             message.error('Đăng nhập không thành công!')
         } else {
+            message.success("Đăng nhập thành công!")
             router.push(
                 `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
             )
@@ -63,7 +66,7 @@ export default function SignInComponent() {
     const handleLoginWithGoogle = async () => {
         try {
             await signIn('google', {
-                redirect: false,
+                redirect: true,
                 prompt: 'select_account',
             })
         } catch (error) {
@@ -71,9 +74,25 @@ export default function SignInComponent() {
         }
     }
 
+    const handleLoginByGoogleIdToken = async (value: string) => {
+        const result = await requestAuthGoogle({
+            idToken: value
+        });
+        const accessToken = result?.data?.body?.accessToken ?? ''
+        
+        if(result.error) {
+            message.error("Đăng nhập không thành công")
+        } else {
+            message.success("Đăng nhập thành công")
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
+            )
+        }
+    }
+        
     useEffect(() => {
         if (session) {
-            console.log(session);
+           handleLoginByGoogleIdToken(session?.idToken!);
         }
     }, [session])
     return (

@@ -87,6 +87,16 @@ export const authApis = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: true }
         }),
+        requestAuthGoogle: build.mutation<any, {idToken: string}>({
+            query: (params) => ({
+                url: authEndpoint.GOOGLE_AUTH,
+                body: {
+                    idToken: params.idToken
+                },
+                flashError: true,
+                method: 'POST',
+            }) 
+        })
     }),
 })
 
@@ -98,4 +108,5 @@ export const {
     useRequestLogoutMutation,
     useRequestSignUpMutation,
     useResendEmailMutation,
+    useRequestAuthGoogleMutation
 } = authApis;

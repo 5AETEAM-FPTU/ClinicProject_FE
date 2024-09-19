@@ -8,21 +8,26 @@ import webStorageClient from '@/utils/webStorageClient'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { App, ConfigProvider } from 'antd'
 import { redirect, useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
 import { SessionProvider } from 'next-auth/react'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { IUserInfo, updateUserInfo } from '@/stores/features/auth'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
+import UserProvider from '@/lib/userProvider'
 
 function Providers({ children }: { children: React.ReactNode }) {
-    const _role = webStorageClient.get(constants.ROLE)
-    const router = useRouter()
-    if (_role == 'admin') {
-        webStorageClient.removeAll()
-        router.push('/home')
+    const _accessToken = webStorageClient.getToken()
+    if (_accessToken) {
+        const _role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role
+        const router = useRouter()
+        if (_role == 'admin') {
+            webStorageClient.removeAll()
+            router.push('/home')
+        }
     }
-    
     return (
         <ProviderI18n>
             <StyledComponentsRegistry>
@@ -62,7 +67,9 @@ function Providers({ children }: { children: React.ReactNode }) {
                             <App>
                                 <Provider store={store}>
                                     <SessionProvider>
-                                        {children}
+                                        <UserProvider>
+                                            {children}
+                                        </UserProvider>
                                     </SessionProvider>
                                 </Provider>
                             </App>
