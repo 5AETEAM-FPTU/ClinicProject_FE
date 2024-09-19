@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 
 import { baseApi } from './services/base'
 import auth from './features/auth'
+import loading from './features/loading'
 import sidebar from './features/sidebar'
 import { authApis } from './services/auth'
 
@@ -15,6 +16,7 @@ export const createStore = (
             [authApis.reducerPath]: authApis.reducer,
             auth,
             sidebar,
+            loading,
         },
         middleware: (getDefaultMiddleware) =>
             getDefaultMiddleware().concat(baseApi.middleware),
