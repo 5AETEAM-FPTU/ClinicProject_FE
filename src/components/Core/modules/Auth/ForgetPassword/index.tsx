@@ -13,6 +13,7 @@ import { AppDispatch } from '@/stores'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react';
 import EmailRequestNotification from './EmailRequestNotification'
+import { setLoaded, setLoading } from '@/stores/features/loading'
 
 export default function ForgetPassword() {
     const params = useParams();
@@ -24,10 +25,11 @@ export default function ForgetPassword() {
     const router = useRouter();
     const [requestForgetPassword] = useRequestForgetPasswordMutation();
     const handleSubmit = async (values: any) => {
+        dispatch(setLoading());
         const result = await requestForgetPassword({
             email: values.email
         });
-
+        dispatch(setLoaded());
         if (result.error) {
             console.error('Send email failed', result.error);
         } else {

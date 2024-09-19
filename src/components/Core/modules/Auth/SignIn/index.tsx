@@ -34,13 +34,14 @@ export default function SignInComponent() {
     const [requestAuthGoogle] = useRequestAuthGoogleMutation();
 
     const { data: session, status } = useSession()
-
     const handleSubmit = async (values: any) => {
+        dispatch(setLoading());
         const result = await requestLogin({
             username: values.username,
             password: values.password,
             isRemember: true,
         })
+        dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
 
         if (accessToken) {
@@ -66,19 +67,24 @@ export default function SignInComponent() {
 
     const handleLoginWithGoogle = async () => {
         try {
+            dispatch(setLoading());
             await signIn('google', {
                 redirect: true,
                 prompt: 'select_account',
             })
         } catch (error) {
             console.log(error)
+        } finally {
+            dispatch(setLoaded());
         }
     }
 
     const handleLoginByGoogleIdToken = async (value: string) => {
+        dispatch(setLoading());
         const result = await requestAuthGoogle({
             idToken: value
         });
+        dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
         console.log(result)
 
