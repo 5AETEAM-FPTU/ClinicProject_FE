@@ -4,7 +4,7 @@ const USER_ID = "_sub";
 const ROLE = "_way";
 const USER_AVATAR= "_avt";
 const USER_FULLNAME= "_fullname";
-const EMAIL= "_fullname";
+const EMAIL= "_email";
 
 
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;

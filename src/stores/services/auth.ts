@@ -107,6 +107,16 @@ export const authApis = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'PATCH',
             }) 
+        }),
+        requestRefreshAccessToken: build.mutation<any,{refreshToken: string}>({
+            query: (params) => ({
+                url: authEndpoint.REFRESH_ACCESS_TOKEN,
+                body: {
+                    refreshToken: params.refreshToken
+                },
+                flashError: true,
+                method: "POST",
+            })
         })
     }),
 })
@@ -120,5 +130,6 @@ export const {
     useRequestSignUpMutation,
     useResendEmailMutation,
     useRequestAuthGoogleMutation,
-    useRequestUpdatePasswordMutation
+    useRequestUpdatePasswordMutation,
+    useRequestRefreshAccessTokenMutation
 } = authApis;
