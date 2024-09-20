@@ -20,17 +20,17 @@ import {
 import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
 import { motion } from 'framer-motion'
+import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
+import { DefaultImage, UserRole } from '@/helpers/data/Default'
 import { useRouter } from 'next-nprogress-bar'
 import { useLocale } from 'next-intl'
 import { Settings } from 'lucide-react'
-import { useGetUserProfileQuery } from '@/stores/services/user/userSettings'
-import { DefaultImage, UserRole } from '@/helpers/data/Default'
-import { UserProfileTypes } from '..'
 import dayjs from 'dayjs'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
-import _ from 'lodash'
+import { useGetStaffProfileQuery } from '@/stores/services/staff/staffSettings'
+import { StaffProfileTypes } from '..'
 
 const { Header, Content } = Layout
 const { Title, Text, Paragraph } = Typography
@@ -49,24 +49,29 @@ const messages = [
     { name: 'Nguyễn Văn Bầu', message: 'Hi! I need more information...' },
 ]
 
-export default function UserProfileModule() {
+export default function StaffProfileModule() {
     const router = useRouter()
     const locale = useLocale()
+    const _accessToken = webStorageClient.getToken()
 
-    const _accessToken = webStorageClient.getToken();
-
-    const { result, isFetching, refetch } = useGetUserProfileQuery(undefined, {
-        selectFromResult: ({ data, isFetching }) => {
-            return {
-                result: (data?.body?.user as UserProfileTypes) ?? {},
-                isFetching: isFetching,
-            }
+    const { result, isFetching, refetch } = useGetStaffProfileQuery(
+        undefined,
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    result: (data?.body?.user as StaffProfileTypes) ?? {},
+                    isFetching: isFetching,
+                }
+            },
         },
-    })
+    )
+
+    console.log(result)
     return (
         <motion.div
-            initial={{ opacity: 0, translateY: 10 }}
+            initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
         >
             <Layout
@@ -108,20 +113,18 @@ export default function UserProfileModule() {
                                         className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                         type="secondary"
                                     >
-                                        {result?.gender
-                                            ? result?.gender
-                                            : 'Ẩn giới tính'}
+                                        {result?.position
+                                            ? result?.position
+                                            : 'Ẩn vị trí làm việc'}
                                     </Text>
                                     <br />
                                     <Text
                                         className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                                         type="secondary"
                                     >
-                                        {result?.dob
-                                            ? dayjs(result?.dob).format(
-                                                  'DD/MM/YYYY',
-                                              )
-                                            : 'Ẩn ngày sinh'}
+                                        {result?.specialty
+                                            ? result?.specialty
+                                            : 'Ẩn chuyển khoa'}
                                     </Text>
                                 </div>
                             </Space>
@@ -135,7 +138,7 @@ export default function UserProfileModule() {
                                     icon={<MessageOutlined />}
                                     onClick={() =>
                                         router.push(
-                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/consultation/pending-room`,
+                                            `/${locale}/doctor/consultation/pending-room`,
                                         )
                                     }
                                 >
@@ -147,7 +150,7 @@ export default function UserProfileModule() {
                                     icon={<Settings size={18} />}
                                     onClick={() =>
                                         router.push(
-                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/settings`,
+                                            `/${locale}/doctor/account/settings`,
                                         )
                                     }
                                 >
@@ -194,12 +197,9 @@ export default function UserProfileModule() {
                                                     </div>
                                                 }
                                             />
-                                            <Button
-                                                type="primary"
-                                                className="rounded-xl bg-secondaryDark !p-5 font-medium"
-                                            >
-                                                Chi tiết
-                                            </Button>
+                                            <div className="text-lg font-semibold text-secondarySupperDarker">
+                                                {item.price}
+                                            </div>
                                         </List.Item>
                                     )}
                                 />
@@ -217,7 +217,6 @@ export default function UserProfileModule() {
                                     </div>
                                 }
                             >
-                                {' '}
                                 {result?.description ? (
                                     <p
                                         className="text-lg text-secondarySupperDarker"
@@ -243,7 +242,8 @@ export default function UserProfileModule() {
                                     <span className="font-bold text-secondarySupperDarker">
                                         Số điện thoại:
                                     </span>{' '}
-                                    (84)  {result?.phoneNumber
+                                    (84){' '}
+                                    {result?.phoneNumber
                                         ? result?.phoneNumber
                                         : 'Ẩn số điện thoại'}
                                 </p>
@@ -255,14 +255,23 @@ export default function UserProfileModule() {
                                         ? result?.username
                                         : 'Ẩn email'}
                                 </p>
-                               
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
-                                        Địa chỉ:
+                                        Chức vụ:
                                     </span>{' '}
-                                    {
-                                        result?.address ? result?.address : 'Ẩn địa chỉ'
-                                    }
+                                    {result?.position
+                                        ? result?.position
+                                        : 'Ẩn chức vụ'}
+                                </p>
+                                <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
+                                    <span className="font-bold text-secondarySupperDarker">
+                                        Ngày sinh:
+                                    </span>{' '}
+                                    {result?.dob
+                                        ? dayjs(result?.dob).format(
+                                              'DD/MM/YYYY',
+                                          )
+                                        : 'Ẩn ngày sinh'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
@@ -325,6 +334,24 @@ export default function UserProfileModule() {
                             </Card>
                         </Col>
                     </Row>
+
+                    <Card
+                        bordered={false}
+                        headStyle={{ borderBottom: 'none' }}
+                        className="h-full !shadow-third"
+                        title={
+                            <div className="text-xl font-bold text-secondarySupperDarker">
+                                Thành tựu
+                            </div>
+                        }
+                        style={{ marginTop: '24px' }}
+                    >
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: result?.achievement ?? 'Chưa cập nhật',
+                            }}
+                        ></div>
+                    </Card>
                 </Content>
             </Layout>
         </motion.div>

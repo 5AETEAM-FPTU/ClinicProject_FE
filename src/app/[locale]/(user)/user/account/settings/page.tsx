@@ -1,9 +1,10 @@
+import UserSettingsModule from '@/components/Core/modules/User/UserSettingsModule'
 import React from 'react'
 
 function UserProfileSettings() {
     return (
         <div>
-            Setting accounts
+           <UserSettingsModule/>
         </div>
     )
 }

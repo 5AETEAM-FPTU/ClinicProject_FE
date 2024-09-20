@@ -12,10 +12,18 @@ import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSetting
 function DoctorLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const _accessToken = webStorageClient.getToken()
-    const { role } = jwtDecode<JwtPayloadUpdated>(_accessToken!)
-    const router = useRouter();
+    let role: string | null = null
 
-    const roleFromPath = pathname?.split('/')[2];
+    if (_accessToken) {
+        try {
+            const decodedToken = jwtDecode<JwtPayloadUpdated>(_accessToken)
+            role = decodedToken?.role || null
+        } catch (error) {
+            console.error('Error decoding token:', error)
+        }
+    }
+
+    const roleFromPath = pathname?.split('/')[2]
 
     return (
         <>

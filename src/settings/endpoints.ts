@@ -15,7 +15,10 @@ const authEndpoint = {
 }
 
 const userEndpoint = {
-    CHANGE_AVATAR: "/user/avatar"
+    CHANGE_AVATAR: "/user/avatar",
+    PATCH_PRIVATE_INFOR: "/user/private-info",
+    GET_PROFILE: "/user/profile",
+    PATCH_DESCRIPTION: "/user/description",
 }
 
 const doctorEndpoint = {
