@@ -38,6 +38,8 @@ export default function DoctorSettingsModule() {
         },
     )
 
+    console.log(result)
+
     useEffect(() => {
         refetch()
     }, [refetch])

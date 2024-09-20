@@ -11,6 +11,7 @@ const authEndpoint = {
     RESEND_EMAIL: "/auth/resend-email-confirmation",
     GOOGLE_AUTH: "/auth/login/google",
     UPDATE_PASSWORD: "/auth/update-password",
+    REFRESH_ACCESS_TOKEN: "/auth/refresh-access-token",
 }
 
 const userEndpoint = {

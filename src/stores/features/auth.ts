@@ -87,8 +87,18 @@ const slice = createSlice({
                 },
             )
             .addMatcher(
-                authApis.endpoints.requestChangePassword.matchFulfilled,
-                (state, action) => {},
+                authApis.endpoints.requestRefreshAccessToken.matchFulfilled,
+                (state, action) => {
+                    const data = action.payload.body
+                    
+                    webStorageClient.setToken(data.accessToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.setRefreshToken(data.refreshToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                   
+                },
             )
             .addMatcher(
                 authApis.endpoints.requestConfirmEmail.matchFulfilled,

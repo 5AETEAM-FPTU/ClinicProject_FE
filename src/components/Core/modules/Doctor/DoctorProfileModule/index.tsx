@@ -59,7 +59,6 @@ export default function DoctorProfileModule() {
         },
     )
 
-    console.log(result)
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
