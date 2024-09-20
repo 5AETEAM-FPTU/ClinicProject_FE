@@ -11,7 +11,16 @@ import UnAccessable from '@/components/Core/common/UnAccesable'
 function StaffLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const _accessToken = webStorageClient.getToken()
-    const { role } = jwtDecode<JwtPayloadUpdated>(_accessToken!)
+    let role: string | null = null
+
+    if (_accessToken) {
+        try {
+            const decodedToken = jwtDecode<JwtPayloadUpdated>(_accessToken)
+            role = decodedToken?.role || null
+        } catch (error) {
+            console.error('Error decoding token:', error)
+        }
+    }
 
     const roleFromPath = pathname?.split('/')[2]
     return (

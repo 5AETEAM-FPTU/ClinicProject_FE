@@ -2,18 +2,18 @@
 import { useRequestUpdatePasswordMutation } from '@/stores/services/auth'
 import { Button, Form, Input, message } from 'antd'
 import { FormProps } from 'antd/lib'
-import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
+import { UserSettingProfileComponetProps } from '../UserUpdateGeneral'
 
 export type ChangePasswordTypes = {
     currentPassword: string
     newPassword: string
 }
 
-export default function DoctorChangePassword({
+export default function UserChangePassword({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: UserSettingProfileComponetProps ) {
     const [requestUpdatePassword, { isLoading }] =
         useRequestUpdatePasswordMutation()
     const onFinish: FormProps<ChangePasswordTypes>['onFinish'] = async (
@@ -113,7 +113,7 @@ export default function DoctorChangePassword({
                             <Input.Password placeholder="Xác nhận mật khẩu mới" />
                         </Form.Item>
                         <div>
-                            <Form.Item className='!mb-0 mt-5'>
+                            <Form.Item className='!mb-0 mt-5 flex justify-end'>
                                 <Button
                                     type="primary"
                                     htmlType="submit"

@@ -2,18 +2,18 @@
 import { useRequestUpdatePasswordMutation } from '@/stores/services/auth'
 import { Button, Form, Input, message } from 'antd'
 import { FormProps } from 'antd/lib'
-import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
+import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
 
 export type ChangePasswordTypes = {
     currentPassword: string
     newPassword: string
 }
 
-export default function DoctorChangePassword({
+export default function StaffChangePassword({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: StaffSettingProfileComponetProps) {
     const [requestUpdatePassword, { isLoading }] =
         useRequestUpdatePasswordMutation()
     const onFinish: FormProps<ChangePasswordTypes>['onFinish'] = async (

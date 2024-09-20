@@ -7,18 +7,19 @@ import { useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doc
 import { Button, Form, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { DoctorProfileTypes } from '..'
-import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
+import { useUpdateUserDescriptionMutation } from '@/stores/services/user/userSettings'
+import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
+import { useUpdateStaffDescriptionMutation } from '@/stores/services/staff/staffSettings'
 
 
-export default function DoctorUdateSelfAbout({
+export default function StaffUpdateDescription({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: StaffSettingProfileComponetProps) {
     const [editInitContent, setEditInitContent] = useState<string| null> (null); 
     const editorRef = useRef<any>(null)
-    const [updateDoctorDescription, {isLoading}] = useUpdateDoctorDescriptionMutation();
+    const [updateUserDescription, {isLoading}] = useUpdateStaffDescriptionMutation();
     const [isEdit, setIsEdit] = useState<boolean>(false)
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export default function DoctorUdateSelfAbout({
         const content = getEditorHtmlContent(editorRef)
         try {
             if(content){
-                await updateDoctorDescription({description: content}).unwrap()
+                await updateUserDescription({description: content}).unwrap()
                 setEditInitContent(content);
                 message.success('Cập nhật thành công!')
             }

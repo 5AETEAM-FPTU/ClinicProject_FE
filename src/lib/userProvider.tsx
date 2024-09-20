@@ -16,7 +16,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     const dispatch = useAppDispatch()
     const loading = useAppSelector((state) => state.loading.isLoading)
 
-
     useEffect(() => {
         const avatar = webStorageClient.get(constants.USER_AVATAR)
         const fullName = webStorageClient.get(constants.USER_FULLNAME)
@@ -33,41 +32,50 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     const _accessToken: string = webStorageClient.getToken() as string
     const _refreshToken = webStorageClient.getRefreshToken() as string
     const [requestRefreshAccessToken] = useRequestRefreshAccessTokenMutation()
-    const router = useRouter();
-    const [messageApi, contextHolder] = message.useMessage();
-
+    const router = useRouter()
+    const [messageApi, contextHolder] = message.useMessage()
 
     const handleRefreshAccessToken = async () => {
         if (_accessToken) {
             const claims = jwtDecode<JwtPayloadUpdated>(
                 (_accessToken! as string) ?? '',
             )
-            const expiredAt = claims.exp;
+            const expiredAt = claims.exp
 
             const bufferTime = 3 * 60
-            
+
             if (expiredAt! - Date.now() / 1000 < bufferTime) {
                 console.log(
                     'Access token will expire within 3 minutes, refreshing token...',
                 )
-                messageApi.loading({
-                content: "Đang xác thực tài khoản...",
-                key: 'authVerification',
-            });
-                const result = await requestRefreshAccessToken({
-                    refreshToken: _refreshToken!,
-                })
-                console.log("REFRESHED: ", result);
-                messageApi.success({
-                    content: "Tài khoản đã được xác thực thành công!",
-                    key: 'authVerification',
-                    duration: 2,
-                });
-            } 
+
+                try {
+                    messageApi.loading({
+                        content: "Đang xác thực tài khoản...",
+                        key: 'authVerification',
+                    });
+                    await requestRefreshAccessToken({
+                        refreshToken: _refreshToken!,
+                    }).unwrap();
+                    messageApi.success({
+                        content: "Tài khoản đã được xác thực thành công!",
+                        key: 'authVerification',
+                        duration: 2,
+                    });
+                } catch (error) {
+                    webStorageClient.removeAll()
+                    message.error('Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!')
+                    router.push('/sign-in')
+                }
+
+                console.log('Refreshed Access Token!')
+            }
             if (expiredAt! < Date.now() / 1000) {
-                console.log("Access token expired, signing out...");
+                console.log('Access token expired, signing out...')
                 webStorageClient.removeAll()
-                message.destroy("Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!")
+                message.destroy(
+                    'Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!',
+                )
                 router.push('/sign-in')
             }
         }

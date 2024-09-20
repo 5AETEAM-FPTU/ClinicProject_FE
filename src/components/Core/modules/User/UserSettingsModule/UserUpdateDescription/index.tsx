@@ -1,24 +1,21 @@
-'use client'
 import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
-import { useAppDispatch } from '@/hooks/redux-toolkit'
-import { useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
-import { Button, Form, message } from 'antd'
+import { useUpdateUserDescriptionMutation } from '@/stores/services/user/userSettings'
+import { Button, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { DoctorProfileTypes } from '..'
-import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
+import { UserSettingProfileComponetProps } from '../UserUpdateGeneral'
 
 
-export default function DoctorUdateSelfAbout({
+export default function UserUpdateDescription({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: UserSettingProfileComponetProps) {
     const [editInitContent, setEditInitContent] = useState<string| null> (null); 
     const editorRef = useRef<any>(null)
-    const [updateDoctorDescription, {isLoading}] = useUpdateDoctorDescriptionMutation();
+    const [updateUserDescription, {isLoading}] = useUpdateUserDescriptionMutation();
     const [isEdit, setIsEdit] = useState<boolean>(false)
 
     useEffect(() => {
@@ -30,7 +27,7 @@ export default function DoctorUdateSelfAbout({
         const content = getEditorHtmlContent(editorRef)
         try {
             if(content){
-                await updateDoctorDescription({description: content}).unwrap()
+                await updateUserDescription({description: content}).unwrap()
                 setEditInitContent(content);
                 message.success('Cập nhật thành công!')
             }

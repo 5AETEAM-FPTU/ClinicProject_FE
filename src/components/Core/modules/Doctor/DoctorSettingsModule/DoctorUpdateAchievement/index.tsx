@@ -1,3 +1,4 @@
+'use client'
 import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
@@ -44,11 +45,10 @@ export default function DoctorUpdateAchievement({
             <div className="mt-5 flex h-fit w-full flex-col gap-5">
                 <div>
                     {profile?.description || profile?.description === '' ? (
-                        <p
-                            dangerouslySetInnerHTML={{
+                        <div                            dangerouslySetInnerHTML={{
                                 __html: editInitContent!,
                             }}
-                        ></p>
+                        ></div>
                     ) : (
                         <p onClick={() => setIsEdit(true)}>
                             Chưa có thành tựu, câp nhật ngay!
