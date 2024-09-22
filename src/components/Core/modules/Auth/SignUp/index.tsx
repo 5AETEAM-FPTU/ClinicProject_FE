@@ -40,6 +40,7 @@ export default function SignUpComponent() {
         const result = await requestSignUp(dataMapping);
         if (result.error) {
             console.log(result.error)
+            message.error("Không thể đăng ký! Vui lòng xác nhận lại thông tin!")
         } else {
             router.push('/vertify-email?email=' + values.email);
         }

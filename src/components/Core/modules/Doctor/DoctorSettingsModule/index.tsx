@@ -42,7 +42,8 @@ export default function DoctorSettingsModule() {
 
     useEffect(() => {
         refetch()
-    }, [refetch])
+    }, [])
+    
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}

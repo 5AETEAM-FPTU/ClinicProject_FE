@@ -25,7 +25,7 @@ export default function UserSettingsModule() {
         },
     )
 
-    console.log(result)
+    console.log(result);
 
     useEffect(() => {
         refetch()

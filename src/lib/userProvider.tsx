@@ -85,12 +85,12 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     return (
-        <div>
+        <>
             {loading && <RingLoaderComponent />}
             <div className={loading ? 'pointer-events-none' : ''}>
                 {children}
             </div>
-        </div>
+        </>
     )
 }
 
