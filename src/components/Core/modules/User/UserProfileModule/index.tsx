@@ -76,7 +76,7 @@ export default function UserProfileModule() {
                 <Content style={{ padding: '0px' }}>
                     <div className="relative mb-[85px] h-[250px]">
                         <Image
-                            className="z-1 h-[100%] w-full rounded-2xl"
+                            className="z-1 h-[100%] w-full rounded-2xl object-cover"
                             src={ProfileBackground}
                             alt="background"
                         />

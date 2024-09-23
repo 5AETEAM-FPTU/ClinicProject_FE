@@ -7,8 +7,10 @@ import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import UnAccessable from '@/components/Core/common/UnAccesable'
-import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
+import dynamic from 'next/dynamic'
 
+const DynamicUnAccessable = dynamic(() => import('@/components/Core/common/UnAccesable'), { ssr: false });
+const DynamicDashboardLayout = dynamic(() => import('@/components/Layouts/DashbardLayout'), { ssr: false });
 function DoctorLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
     const _accessToken = webStorageClient.getToken()
@@ -28,11 +30,11 @@ function DoctorLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             {role !== roleFromPath ? (
-                <UnAccessable />
+                <DynamicUnAccessable />
             ) : (
-                <DashboardLayout sidebarItems={sidebarDoctorData}>
+                <DynamicDashboardLayout sidebarItems={sidebarDoctorData}>
                     {children}
-                </DashboardLayout>
+                </DynamicDashboardLayout>
             )}
         </>
     )

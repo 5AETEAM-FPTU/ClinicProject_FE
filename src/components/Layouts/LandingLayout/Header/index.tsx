@@ -36,10 +36,9 @@ function Header() {
     const _accessToken = webStorageClient.getToken()
 
     const { user } = useAppSelector((state) => state.auth)
-
+    console.log(user)
     const handleAccounts = () => {
         const isHasToken = webStorageClient.getToken()
-        router.push('')
         if (isHasToken) {
             router.push(
                 `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
@@ -111,21 +110,63 @@ function Header() {
                                 `${scrollDir === 'down' && 'translate-y-[-50px] duration-500'}`,
                             )}
                         >
-                            <Button
-                                type="default"
-                                className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
-                                onClick={handleAccounts}
-                            >
-                                <CircleUserRound
-                                    color={themeColors.secondaryDark}
-                                    size={20}
-                                />
-                                {t('header_accounts')}
-                            </Button>
+                            {_accessToken ? (
+                                <div
+                                    className="flex cursor-pointer select-none flex-row items-center gap-3 rounded-md px-3 transition-all duration-300 hover:bg-slate-200"
+                                    onClick={handleAccounts}
+                                >
+                                    <div>
+                                        <p className="font-medium">
+                                            {handleRenderUserType()} {' '}
+                                            <span className="font-bold text-secondarySupperDarker">
+                                                {user.fullName}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full">
+                                        <Image
+                                            src={
+                                                user.avatarUrl
+                                                    ? user.avatarUrl
+                                                    : DefaultImage
+                                            }
+                                            alt="avatar"
+                                            width={200}
+                                            height={200}
+                                            className="h-full w-full object-cover"
+                                        ></Image>
+                                    </div>
+                                </div>
+                            ) : (
+                                <Button
+                                    type="default"
+                                    className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
+                                    onClick={handleAccounts}
+                                >
+                                    <CircleUserRound
+                                        color={themeColors.secondaryDark}
+                                        size={20}
+                                    />
+                                    {t('header_accounts')}
+                                </Button>
+                            )}
                             <div>
                                 <ChangeLanguages />
                             </div>
-                            
+                            <div>
+                                {_accessToken ? (
+                                    <button
+                                        onClick={() => {
+                                            signOut({
+                                                redirect: true,
+                                            })
+                                            webStorageClient.removeAll()
+                                        }}
+                                    >
+                                        Đăng xuất
+                                    </button>
+                                ) : null}
+                            </div>
                         </div>
                     </div>
 

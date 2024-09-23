@@ -94,6 +94,7 @@ export default function SignInComponent() {
         const result = await requestAuthGoogle({
             idToken: value
         });
+        console.log(result);
         dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
 

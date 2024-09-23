@@ -1,36 +1,33 @@
 'use client'
-import React from 'react'
-import {
-    Layout,
-    Card,
-    Avatar,
-    Button,
-    Typography,
-    List,
-    Divider,
-    Row,
-    Col,
-    Space,
-} from 'antd'
+import { DefaultImage, UserRole } from '@/helpers/data/Default'
+import { useGetStaffProfileQuery } from '@/stores/services/staff/staffSettings'
+import webStorageClient from '@/utils/webStorageClient'
 import {
     MessageOutlined,
-    SettingOutlined,
-    UserOutlined,
+    UserOutlined
 } from '@ant-design/icons'
-import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
-import { motion } from 'framer-motion'
-import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-import { DefaultImage, UserRole } from '@/helpers/data/Default'
-import { useRouter } from 'next-nprogress-bar'
-import { useLocale } from 'next-intl'
-import { Settings } from 'lucide-react'
+import {
+    Avatar,
+    Button,
+    Card,
+    Col,
+    Divider,
+    Layout,
+    List,
+    Row,
+    Space,
+    Typography,
+} from 'antd'
 import dayjs from 'dayjs'
+import { motion } from 'framer-motion'
 import { jwtDecode } from 'jwt-decode'
-import { JwtPayloadUpdated } from '../../Auth/SignIn'
-import webStorageClient from '@/utils/webStorageClient'
-import { useGetStaffProfileQuery } from '@/stores/services/staff/staffSettings'
+import { Settings } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { useRouter } from 'next-nprogress-bar'
+import Image from 'next/image'
 import { StaffProfileTypes } from '..'
+import { JwtPayloadUpdated } from '../../Auth/SignIn'
 
 const { Header, Content } = Layout
 const { Title, Text, Paragraph } = Typography
@@ -81,7 +78,7 @@ export default function StaffProfileModule() {
                 <Content style={{ padding: '0px' }}>
                     <div className="relative mb-[85px] h-[250px]">
                         <Image
-                            className="z-1 h-[100%] w-full rounded-2xl"
+                            className="z-1 h-[100%] w-full rounded-2xl object-cover"
                             src={ProfileBackground}
                             alt="background"
                         />

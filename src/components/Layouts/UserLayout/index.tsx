@@ -7,6 +7,10 @@ import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
 import UnAccessable from '@/components/Core/common/UnAccesable'
+import dynamic from 'next/dynamic'
+
+const DynamicUnAccessable = dynamic(() => import('@/components/Core/common/UnAccesable'), { ssr: false });
+const DynamicDashboardLayout = dynamic(() => import('@/components/Layouts/DashbardLayout'), { ssr: false });
 
 function UserLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
@@ -28,11 +32,11 @@ function UserLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
             {role !== roleFromPath ? (
-                <UnAccessable />
+                <DynamicUnAccessable />
             ) : (
-                <DashboardLayout sidebarItems={sidebarPatientData}>
+                <DynamicDashboardLayout sidebarItems={sidebarPatientData}>
                     {children}
-                </DashboardLayout>
+                </DynamicDashboardLayout>
             )}
         </>
     )

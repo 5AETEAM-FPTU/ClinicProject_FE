@@ -86,7 +86,7 @@ export const StaffChangeAvatar = ({
     return (
         <div className="relative mb-[85px] h-[200px]">
             <Image
-                className="z-1 h-[100%] w-full rounded-2xl"
+                className="z-1 h-[100%] w-full rounded-2xl object-cover"
                 src={ProfileBackground}
                 alt="background"
             />

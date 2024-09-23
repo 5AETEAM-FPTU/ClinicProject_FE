@@ -11,6 +11,7 @@ import { useRequestRefreshAccessTokenMutation } from '@/stores/services/auth'
 import { setLoaded, setLoading } from '@/stores/features/loading'
 import { message } from 'antd'
 import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 
 function UserProvider({ children }: { children: React.ReactNode }) {
     const dispatch = useAppDispatch()
@@ -42,11 +43,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
             )
             const expiredAt = claims.exp
 
-            const bufferTime = 3 * 60
+            const bufferTime = 4 * 60
 
             if (expiredAt! - Date.now() / 1000 < bufferTime) {
                 console.log(
-                    'Access token will expire within 3 minutes, refreshing token...',
+                    'Access token will expire within 4 minutes, refreshing token...',
                 )
 
                 try {
@@ -67,12 +68,14 @@ function UserProvider({ children }: { children: React.ReactNode }) {
                     message.error('Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!')
                     router.push('/sign-in')
                 }
-
                 console.log('Refreshed Access Token!')
+                return
             }
+            
             if (expiredAt! < Date.now() / 1000) {
                 console.log('Access token expired, signing out...')
                 webStorageClient.removeAll()
+                signOut();
                 message.destroy(
                     'Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!',
                 )

@@ -41,7 +41,7 @@ export const staffSettingsApi = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'PATCH',
                 body: {
-                    description: params.achievement
+                    achievement: params.achievement
                 },
                 extraOptions: { skipAuth: true }
             }),
