@@ -1,5 +1,5 @@
 'use client'
-import { Button, Input, Layout } from 'antd'
+import { Button, Input, Layout, Popover } from 'antd'
 import { Irish_Grover } from 'next/font/google'
 import React, { useEffect, useState } from 'react'
 
@@ -25,6 +25,10 @@ import { AppProgressBar } from 'next-nprogress-bar'
 import themeColors from '@/style/themes/default/colors'
 import { useRouter } from 'next/navigation'
 import { DefaultImage } from '@/helpers/data/Default'
+import { useTrigger } from '@/hooks/useTrigger'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
+import Notifications from './Notifications'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -44,7 +48,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const dispath = useAppDispatch()
     const router = useRouter()
     const locale = useLocale()
-
+    const { handleTrigger, trigger } = useTrigger()
+    const _accessToken = webStorageClient.getToken()
     const [appLayoutState, setAppPathLayoutState] =
         useState<TAppPathLayoutState | null>(null)
     const pathname = usePathname()
@@ -84,6 +89,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
     }
 
+    const notificationsUnReadLength = 2
+
     return (
         <Layout className="!h-screen">
             <Sider
@@ -97,7 +104,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
             >
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
-                        className="flex flex-row gap-2 border-b-[2px] select-none border-secondaryDark p-4"
+                        className="flex select-none flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
                         onClick={() => router.push('/home')}
                     >
                         <div className="h-[45px] w-[45px]">
@@ -177,23 +184,49 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                 ></Input>
                             </div>
                             <div className="flex flex-row items-center gap-5">
-                                <div className="relative cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
-                                    <Bell size={24} />
-                                    <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
-                                        <p className="text-[10px] text-white">
-                                            5
-                                        </p>
+                                <Popover
+                                    trigger={'click'}
+                                    open={trigger}
+                                    content={<Notifications />}
+                                    onOpenChange={handleTrigger}
+                                    overlayClassName={cn(
+                                        'min-w-[500px] max-h-[600px] overflow-hidden overflow-y-auto rounded-lg shadow-third',
+                                    )}
+                                >
+                                    <div
+                                        className={cn(
+                                            'relative cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200',
+                                            `${trigger ? 'bg-secondaryDarkerOpacity' : ''}`,
+                                        )}
+                                    >
+                                        <Bell size={24} />
+                                        {notificationsUnReadLength > 0 && (
+                                            <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
+                                                <p className="text-[10px] text-white">
+                                                    {notificationsUnReadLength}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
+                                </Popover>
                                 <div className="cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
                                     <Settings size={24} />
                                 </div>
                                 <div className="h-[30px] w-[2px] bg-secondarySupperDarker"></div>
 
-                                <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark">
+                                <div
+                                    className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark"
+                                    onClick={() => {
+                                        router.push(
+                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/profile`,
+                                        )
+                                    }}
+                                >
                                     <Image
                                         src={
-                                            user.avatarUrl ? user.avatarUrl : DefaultImage
+                                            user.avatarUrl
+                                                ? user.avatarUrl
+                                                : DefaultImage
                                         }
                                         alt="avatar"
                                         width={200}
@@ -201,7 +234,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         className="h-full w-full object-cover"
                                     ></Image>
                                 </div>
-                                <Button type='text'
+                                <Button
+                                    type="text"
                                     className="cursor-pointer text-[16px] font-semibold text-secondarySupperDarker"
                                     onClick={() => {
                                         handleLogout()

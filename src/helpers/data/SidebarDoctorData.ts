@@ -40,7 +40,7 @@ export const sidebarDoctorData: IndividualMenuItemType[] = [
         childrens: [
             {
                 key: 'recently',
-                lable: 'Gần đây',
+                lable: 'Trong tuần',
             },
             {
                 key: 'update-calendar',
@@ -83,6 +83,10 @@ export const sidebarDoctorData: IndividualMenuItemType[] = [
             {
                 key: 'settings',
                 lable: 'Thiết lập',
+            },
+            {
+                key: 'feedbacks',
+                lable: 'Feedbacks',
             }
         ]
     },

@@ -51,24 +51,16 @@ function UserProvider({ children }: { children: React.ReactNode }) {
                 )
 
                 try {
-                    messageApi.loading({
-                        content: "Đang xác thực tài khoản...",
-                        key: 'authVerification',
-                    });
-                    await requestRefreshAccessToken({
+                    const result = await requestRefreshAccessToken({
                         refreshToken: _refreshToken!,
                     }).unwrap();
-                    messageApi.success({
-                        content: "Tài khoản đã được xác thực thành công!",
-                        key: 'authVerification',
-                        duration: 2,
-                    });
+                    if (result) message.success("Tài khoản đã được xác thực thành công!")
+                    console.log('Refreshed Access Token!')
                 } catch (error) {
                     webStorageClient.removeAll()
                     message.error('Xác thực tài khoản thất bại! Vui lòng đăng nhập lại!')
                     router.push('/sign-in')
                 }
-                console.log('Refreshed Access Token!')
                 return
             }
             

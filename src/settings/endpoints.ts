@@ -28,4 +28,13 @@ const doctorEndpoint = {
     PATCH_DESCRIPTION: "/doctor/description",
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };
+const enumEndpoint = {
+    GET_SPECIALTY: "/enum/getAllSpecialty",
+    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
+    GET_POSITION: "/enum/getAllPosition",
+    GET_GENDER: "/enum/getAllGender",
+    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint };
