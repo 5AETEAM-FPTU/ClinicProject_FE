@@ -121,11 +121,12 @@ export default function DoctorProfileModule() {
                                         className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                                         type="secondary"
                                     >
-                                       {result.specialties
-                                ? result.specialties.map(
-                                      (item) => item.specialtyName + ' ',
-                                  )
-                                : 'Ẩn chuyên khoa'}
+                                        {result.specialties
+                                            ? result.specialties.map(
+                                                  (item) =>
+                                                      item.specialtyName + ' ',
+                                              )
+                                            : 'Ẩn chuyên khoa'}
                                     </Text>
                                 </div>
                             </Space>

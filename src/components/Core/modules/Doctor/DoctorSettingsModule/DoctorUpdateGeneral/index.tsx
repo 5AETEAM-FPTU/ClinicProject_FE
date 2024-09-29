@@ -169,7 +169,7 @@ export default function DoctorUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
+                                <Input placeholder="Nhập số điện thoại"></Input>
                             </Form.Item>
                             <Form.Item
                                 label="Địa chỉ"
@@ -182,7 +182,7 @@ export default function DoctorUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
+                                <Input placeholder="Nhập địa chỉ"></Input>
                             </Form.Item>
                             <Form.Item
                                 label="Chuyên khoa"
@@ -265,7 +265,7 @@ export default function DoctorUpdateGeneral({
                                     },
                                 ]}
                             >
-                                {/* <Input placeholder="Nhập họ chức vụ của bạn"></Input> */}
+                            
                                 <Select
                                     className="border-secondarySupperDarker border-opacity-60 placeholder:text-secondarySupperDarker placeholder:!text-opacity-60 focus:hover:!border-secondarySupperDarker"
                                     placeholder="Chọn chức vụ"
