@@ -87,7 +87,7 @@ export default function Component() {
             const currentWeekRow = getWeekRow(date);
             const isDisable = compareDatesByDay(date, new Date()) < 0;
             days.push(
-                <div className={`flex items-center justify-center h-12 ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}>
+                <div className={`flex items-center justify-center h-16 ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}>
                     <Button
                         disabled={isDisable}
                         shape="circle"
@@ -95,7 +95,7 @@ export default function Component() {
                         key={day}
                         type='text'
                         onClick={() => !isDisable && handleSelectedRow(date)}
-                        className={`text-color-[#333333] font-semibold text-xl ${isDisable ? 'text-gray-400 cursor-not-allowed' : ''} ${isSelected ? 'bg-cyan-500 text-white' : ''} ${isToday && !isSelected ? 'border border-red-500 text-red-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-cyan-500 hover:text-white' : ''}`}
+                        className={`text-color-[#333333] font-semibold text-xl ${isDisable ? 'text-gray-400 cursor-not-allowed' : ''} ${isSelected ? 'bg-cyan-500 text-white' : ''} ${isToday && !isSelected ? 'border border-red-500 text-red-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-cyan-500 hover:text-white hover:border-0' : ''}`}
                         aria-label={`Select ${date.toDateString()}`}
                     >
                         {day}
@@ -109,9 +109,14 @@ export default function Component() {
 
     return (
         <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100 min-h-screen container mx-auto">
-            <Information selectedDate={selectedDate} />
+            <div className="w-full h-fit md:w-1/3 rounded-lg shadow bg-transparent">
+                <Information selectedDate={selectedDate} />
+                <Button iconPosition={'end'} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full sm:w-auto">
+                    Xác nhận đặt lịch khám
+                </Button>
+            </div>
             <div className="w-full md:w-2/3 bg-white rounded-lg shadow p-4 h-fit">
-                <h2 className="text-white text-xl font-bold text-center uppercase mb-4 bg-gradient-to-r from-[#665ee3] from-0% to-[#358ec8] to-90% rounded-t-lg p-2">Vui lòng chọn ngày khám</h2>
+                <h2 className="text-white text-xl font-bold text-center mb-4 bg-gradient-to-r from-[#54ADDA] from-0% to-[#0284C7] to-100% rounded-t-lg p-2">Vui lòng chọn ngày khám</h2>
                 <div className="flex items-center justify-between mb-4">
                     <button onClick={handlePrevMonth} className="p-2" aria-label="Previous month">
                         <ChevronLeft className="w-5 h-5" aria-hidden="true" />
