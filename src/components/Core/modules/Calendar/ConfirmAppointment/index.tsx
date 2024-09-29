@@ -1,15 +1,16 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Button } from 'antd'
 import { BadgeDollarSign, SquarePen } from 'lucide-react'
 import Information from '@/components/Core/modules/Calendar/Information';
 import { Editor } from '@tinymce/tinymce-react'
+import EditorTinymce, { getEditorHtmlContent } from '../../../common/EditorTinymce';
+import { TimeSlot } from '@/components/Core/modules/Calendar'
 
-export default function Component() {
+export default function Component({ timeSlotSelected }: { timeSlotSelected: TimeSlot }) {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null) // September 17, 2024
-    const handleEditorChange = (content: string, editor: any) => {
-        console.log('Content was updated:', content)
-    }
+    const editorRef = useRef(null);
+    const content: string = getEditorHtmlContent(editorRef);
     return (
         <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100 min-h-screen container mx-auto">
             <div className="w-full h-fit md:w-1/3 rounded-lg shadow bg-transparent">
@@ -27,7 +28,7 @@ export default function Component() {
                         </p>
                         <div className='flex items-center flex-col gap-[28px] sm:flex-row items-center justify-center'>
                             <span className="text-base font-semibold min-h-10 py-2 px-4 sm:px-5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-full sm:w-auto">
-                                07:00 - 8:00 | Ngày 17 tháng 09 năm 2024
+                                {`${timeSlotSelected.startDate.getHours()}:${timeSlotSelected.startDate.getMinutes().toString().length == 1 ? '0' + timeSlotSelected.startDate.getMinutes().toString() : timeSlotSelected.startDate.getMinutes()}`} - {`${timeSlotSelected.endDate.getHours()}:${timeSlotSelected.endDate.getMinutes().toString().length == 1 ? '0' + timeSlotSelected.startDate.getMinutes().toString() : timeSlotSelected.startDate.getMinutes()}`} | Ngày {timeSlotSelected.startDate.getDate()} tháng {timeSlotSelected.startDate.getMonth() + 1} năm {timeSlotSelected.startDate.getFullYear()}
                             </span>
                             <Button icon={<SquarePen />} className="text-base font-semibold bg-[#FF8058] min-h-10 py-2 px-4 sm:px-5 text-white rounded-md transition-colors w-full sm:w-auto">
                                 Thay đổi
@@ -38,24 +39,7 @@ export default function Component() {
 
                     <div className="mt-4">
                         <p className='text-[20px] text-secondarySupperDarker font-semibold'>Mô tả thêm:</p>
-                        <Editor
-                            apiKey='qzttd93ifxov5wnhdqogf9o50kwat9mha2iqumzafcc0sdzo'
-                            initialValue=""
-                            init={{
-                                height: 300,
-                                menubar: false,
-                                plugins: [
-                                    'advlist autolink lists link image charmap print preview anchor',
-                                    'searchreplace visualblocks code fullscreen',
-                                    'insertdatetime media table paste code help wordcount'
-                                ],
-                                toolbar:
-                                    'undo redo | formatselect | bold italic backcolor | \
-              alignleft aligncenter alignright alignjustify | \
-              bullist numlist outdent indent | removeformat | help'
-                            }}
-                            onEditorChange={handleEditorChange}
-                        />
+                        <EditorTinymce editorRef={editorRef} initContent={null} />
                     </div>
                 </div>
             </div>

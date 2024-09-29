@@ -5,7 +5,7 @@ import { Search, User, BookOpen, Star } from 'lucide-react'
 
 const { Option } = Select
 
-export default function Component() {
+export default function Component({ handleBookDoctor }: { handleBookDoctor: (id: string) => void }) {
     return (
         <div className="bg-gray-100 min-h-screen p-4">
             <h1 className="text-2xl font-bold text-secondarySupperDarker mb-4">Đặt lịch khám</h1>
@@ -71,7 +71,7 @@ export default function Component() {
                                 <p className="font-semibold mb-1 text-secondarySupperDarker">Đánh giá</p>
                                 <div className="flex text-[14px] font-semibold text-secondarySupperDarker">5 <Star fill='#FAFF00' className="ml-1 text-[#FAFF00]" /></div>
                             </div>
-                            <button className="bg-secondaryDark text-white px-4 py-2 rounded-[12px] font-bold">
+                            <button className="bg-secondaryDark text-white px-4 py-2 rounded-[12px] font-bold" onClick={() => handleBookDoctor(index.toString())}>
                                 Đặt ngay
                             </button>
                         </div>

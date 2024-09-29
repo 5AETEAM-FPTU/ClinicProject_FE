@@ -55,7 +55,7 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selecte
     </motion.div>
 )
 
-export default function Component({ handleClose }: { handleClose: () => void }) {
+export default function Component({ handleClose, handleSelectTimeSlot }: { handleClose: () => void, handleSelectTimeSlot: (timeSlot: { startDate: Date, endDate: Date }) => void }) {
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
 
     const morningSlots: TimeSlot[] = [
@@ -74,7 +74,15 @@ export default function Component({ handleClose }: { handleClose: () => void }) 
 
     const handleSelectSlot = (slot: TimeSlot) => {
         setSelectedSlot(slot)
+        handleConfirm(slot);
     }
+    const handleConfirm = (slot: TimeSlot) => {
+        const today = new Date();
+        const startDate = new Date(today.setHours(parseInt(slot.start.split(':')[0]), parseInt(slot.start.split(':')[1])))
+        const endDate = new Date(today.setHours(parseInt(slot.end.split(':')[0]), parseInt(slot.end.split(':')[1])))
+        handleSelectTimeSlot({ startDate, endDate })
+    }
+
 
     return (
         <div className="p-4 w-full mx-auto mt-4">
