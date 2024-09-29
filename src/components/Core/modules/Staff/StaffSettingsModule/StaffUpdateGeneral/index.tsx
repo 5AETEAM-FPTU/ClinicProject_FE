@@ -89,7 +89,7 @@ export default function StaffUpdateGeneral({
             address: profile?.address,
             genderId: profile?.gender?.id,
             positionId: profile?.position?.id,
-            specialtiesId: profile?.specialties?.map((item) => item.id),
+            SpecialtiesId: profile?.specialties?.map((item) => item.id),
             achievement: profile?.achievement,
             description: profile?.description,
             username: profile?.username,
@@ -155,7 +155,7 @@ export default function StaffUpdateGeneral({
                             </Form.Item>
                             <Form.Item
                                 label="Chuyên khoa"
-                                name="specialty"
+                                name="SpecialtiesId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -182,7 +182,7 @@ export default function StaffUpdateGeneral({
                         <div className="h-fit w-full">
                             <Form.Item
                                 label="Giới tính"
-                                name="gender"
+                                name="genderId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -226,7 +226,7 @@ export default function StaffUpdateGeneral({
                             </Form.Item>
                             <Form.Item
                                 label="Chức vụ"
-                                name="position"
+                                name="positionId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
