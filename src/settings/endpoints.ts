@@ -28,4 +28,9 @@ const doctorEndpoint = {
     PATCH_DESCRIPTION: "/doctor/description",
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };
+const scheduleEndpoint = {
+    GET_SCHEDULES_BY_DATE: "/schedules/{date}",
+    POST_CREATE_SCHEDULES: "/schedules",
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, scheduleEndpoint };

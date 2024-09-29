@@ -1,9 +1,10 @@
+import DoctorUpdateSchedules from '@/components/Core/modules/Doctor/DoctorUpdateSchedules'
 import React from 'react'
 
 function UpdateCalendar() {
     return (
         <div>
-            Cập nhật lịch
+            <DoctorUpdateSchedules />
         </div>
     )
 }
