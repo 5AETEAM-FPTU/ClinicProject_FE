@@ -17,9 +17,18 @@ export type DoctorProfileTypes = {
     fullName: string | null
     description: string | null
     address: string
-    gender: string | null
-    position: string | null
-    specialty: string | null
+    gender: {
+        id: string
+        genderName: string
+    }
+    position: {
+        id: string
+        positionName: string
+    }
+    specialties: {
+        id: string
+        specialtyName: string
+    }[]
     username: string
     phoneNumber: string | null
     dob: string | null
@@ -38,12 +47,12 @@ export default function DoctorSettingsModule() {
         },
     )
 
-    console.log(result)
+    console.log('doctor', result)
 
     useEffect(() => {
         refetch()
     }, [])
-    
+
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
@@ -77,7 +86,10 @@ export default function DoctorSettingsModule() {
                                 profile={result}
                                 refetch={refetch}
                             />
-                            <DoctorChangePassword isProfileFetching={isFetching} profile={result} />
+                            <DoctorChangePassword
+                                isProfileFetching={isFetching}
+                                profile={result}
+                            />
                         </div>
                     </div>
                 </Content>

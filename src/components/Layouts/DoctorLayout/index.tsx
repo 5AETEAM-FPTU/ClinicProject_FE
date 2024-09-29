@@ -1,13 +1,11 @@
 'use client'
-import React from 'react'
-import DashboardLayout from '../DashbardLayout'
+import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import { sidebarDoctorData } from '@/helpers/data/SidebarDoctorData'
-import { usePathname, useRouter } from 'next/navigation'
 import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode } from 'jwt-decode'
-import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
-import UnAccessable from '@/components/Core/common/UnAccesable'
 import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
+import React from 'react'
 
 const DynamicUnAccessable = dynamic(() => import('@/components/Core/common/UnAccesable'), { ssr: false });
 const DynamicDashboardLayout = dynamic(() => import('@/components/Layouts/DashbardLayout'), { ssr: false });

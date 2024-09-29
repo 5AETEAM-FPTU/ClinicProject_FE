@@ -10,8 +10,6 @@ import UserChangePassword from './UserChangePassword'
 import UserDeleteAccount from './UseDeleteAccount'
 
 const { Content } = Layout
-
-
 export default function UserSettingsModule() {
     const { result, isFetching, refetch } = useGetUserProfileQuery(
         undefined,
@@ -24,8 +22,6 @@ export default function UserSettingsModule() {
             },
         },
     )
-
-    console.log(result);
 
     useEffect(() => {
         refetch()
