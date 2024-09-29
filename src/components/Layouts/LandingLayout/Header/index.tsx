@@ -39,7 +39,6 @@ function Header() {
     console.log(user)
     const handleAccounts = () => {
         const isHasToken = webStorageClient.getToken()
-        router.push('')
         if (isHasToken) {
             router.push(
                 `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,

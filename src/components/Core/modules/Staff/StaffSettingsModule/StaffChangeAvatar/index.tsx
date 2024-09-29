@@ -14,19 +14,19 @@ import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import { DoctorProfileTypes } from '..'
+import { StaffProfileTypes } from '../..'
 
-type DoctorUpdateProfileProps = {
+type StaffUpdateProfileProps = {
     isProfileFetching: boolean
-    profile: DoctorProfileTypes
+    profile: StaffProfileTypes
 }
 
 const { Title, Text, Paragraph } = Typography
 
-export const DoctorUpdateProfileComponent = ({
+export const StaffChangeAvatar = ({
     isProfileFetching,
     profile,
-}: DoctorUpdateProfileProps) => {
+}: StaffUpdateProfileProps) => {
     const [imageUrl, setImageUrl] = useState<string>('')
     const [isUploading, setIsUploading] = useState<boolean>(false)
     const [changeProfileAvatar, {isLoading}] = useChangeProfileAvatarMutation()

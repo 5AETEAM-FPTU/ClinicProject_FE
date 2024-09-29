@@ -1,9 +1,10 @@
+import StaffProfileModule from '@/components/Core/modules/Staff/StaffProfileModule'
 import React from 'react'
 
 function StaffProfile() {
     return (
         <div>
-            Staff Profile
+            <StaffProfileModule/>
         </div>
     )
 }

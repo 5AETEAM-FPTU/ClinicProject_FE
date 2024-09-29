@@ -1,13 +1,14 @@
 'use client'
 import { Layout, Typography } from 'antd'
 import { motion } from 'framer-motion'
-import { DoctorUpdateProfileComponent } from './DoctorUpdateProfileComponent'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-import DoctorUpdateGeneral from './DoctorUpdateGeneral'
 import { useEffect } from 'react'
-import DoctorUpdateSelfAbout from './DoctotUpdateSelfAbout'
-import DoctorUpdateAchievement from './DoctorUpdateAchievement'
-import DoctorChangePassword from './DoctorChangePassword'
+import { StaffChangeAvatar } from './StaffChangeAvatar'
+import StaffUpdateGeneral from './StaffUpdateGeneral'
+import StaffChangePassword from './StaffChangePasword'
+import StaffUpdateDescription from './StaffUpdateDescription'
+import StaffUpdateAchievement from './StaffChangeAchievement'
+
 
 const { Content } = Layout
 
@@ -25,7 +26,7 @@ export type DoctorProfileTypes = {
     dob: string | null
 }
 
-export default function DoctorSettingsModule() {
+export default function StaffSettingsModule() {
     const { result, isFetching, refetch } = useGetDoctorProfileQuery(
         undefined,
         {
@@ -42,8 +43,7 @@ export default function DoctorSettingsModule() {
 
     useEffect(() => {
         refetch()
-    }, [])
-    
+    }, [refetch])
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
@@ -56,28 +56,25 @@ export default function DoctorSettingsModule() {
                 className="bg-dashboardBackground"
             >
                 <Content style={{ padding: '0px' }}>
-                    <DoctorUpdateProfileComponent
-                        isProfileFetching={isFetching}
-                        profile={result}
-                    />
+                    <StaffChangeAvatar isProfileFetching={isFetching} profile={result}/>
                     <div className="flex h-fit w-full flex-row gap-6">
                         <div className="flex w-full flex-col gap-6">
-                            <DoctorUpdateGeneral
+                            <StaffUpdateGeneral
                                 isProfileFetching={isFetching}
                                 profile={result}
                             />
-                            <DoctorUpdateAchievement
+                            {/* <StaffUpdateAchievement
                                 isProfileFetching={isFetching}
                                 profile={result}
-                            />
+                            /> */}
                         </div>
                         <div className="flex w-full flex-col gap-6">
-                            <DoctorUpdateSelfAbout
+                            <StaffUpdateDescription
                                 isProfileFetching={isFetching}
                                 profile={result}
                                 refetch={refetch}
                             />
-                            <DoctorChangePassword isProfileFetching={isFetching} profile={result} />
+                            <StaffChangePassword isProfileFetching={isFetching} profile={result} />
                         </div>
                     </div>
                 </Content>

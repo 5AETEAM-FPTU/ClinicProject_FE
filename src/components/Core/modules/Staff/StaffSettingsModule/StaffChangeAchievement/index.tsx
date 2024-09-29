@@ -3,34 +3,33 @@ import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
-import { useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
+import { useUpdateDoctorAchievementMutation, useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
 import { Button, Form, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { DoctorProfileTypes } from '..'
-import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
+import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
+import { useUpdateStaffAchievementMutation } from '@/stores/services/staff/staffSettings'
 
-
-export default function DoctorUdateSelfAbout({
+export default function StaffUpdateAchievement({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: StaffSettingProfileComponetProps) {
     const [editInitContent, setEditInitContent] = useState<string| null> (null); 
     const editorRef = useRef<any>(null)
-    const [updateDoctorDescription, {isLoading}] = useUpdateDoctorDescriptionMutation();
+    const [updateStaffAchievement, {isLoading}] = useUpdateStaffAchievementMutation();
     const [isEdit, setIsEdit] = useState<boolean>(false)
 
     useEffect(() => {
-        setEditInitContent(profile?.description || profile?.description === '' ? profile?.description : null)
+        setEditInitContent(profile?.achievement || profile?.achievement === '' ? profile?.achievement : null)
     }, [profile])
 
-
     const handleUpdate = async () => {
-        const content = getEditorHtmlContent(editorRef)
+        const content:string = getEditorHtmlContent(editorRef)
         try {
             if(content){
-                await updateDoctorDescription({description: content}).unwrap()
+                await updateStaffAchievement({achievement: content}).unwrap()
                 setEditInitContent(content);
                 message.success('Cập nhật thành công!')
             }
@@ -42,23 +41,23 @@ export default function DoctorUdateSelfAbout({
     return (
         <div className="h-fit w-full rounded-xl bg-white p-5 shadow-third">
             <div className="h-fit w-full text-start">
-                <h3 className="text-[18px] font-semibold">Mô tả về bản thân</h3>
+                <h3 className="text-[18px] font-semibold">Thành tựu</h3>
             </div>
             <div className="mt-5 flex h-fit w-full flex-col gap-5">
                 <div>
                     {profile?.description || profile?.description === '' ? (
-                        <p
+                        <div
                             dangerouslySetInnerHTML={{
                                 __html: editInitContent!,
                             }}
-                        ></p>
+                        ></div>
                     ) : (
                         <p onClick={() => setIsEdit(true)}>
-                            Không có mô tả, câp nhật ngay!
+                            Chưa có thành tựu, câp nhật ngay!
                         </p>
                     )}
                 </div>
-                <div>
+                <div className='w-full flex justify-end'>
                     <Button
                         type="primary"
                         onClick={() => setIsEdit(!isEdit)}
@@ -76,7 +75,7 @@ export default function DoctorUdateSelfAbout({
                     </div>
                 )}
                 {isEdit && (
-                    <div>
+                    <div className='w-full flex justify-end'>
                         <Button
                             type="primary"
                             onClick={() => {

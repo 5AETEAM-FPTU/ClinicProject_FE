@@ -21,11 +21,15 @@ import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
 import { motion } from 'framer-motion'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-import { DefaultImage } from '@/helpers/data/Default'
+import { DefaultImage, UserRole } from '@/helpers/data/Default'
 import { useRouter } from 'next-nprogress-bar'
 import { useLocale } from 'next-intl'
 import { Settings } from 'lucide-react'
 import dayjs from 'dayjs'
+import { DoctorProfileTypes } from '../DoctorSettingsModule'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../Auth/SignIn'
+import webStorageClient from '@/utils/webStorageClient'
 
 const { Header, Content } = Layout
 const { Title, Text, Paragraph } = Typography
@@ -47,18 +51,21 @@ const messages = [
 export default function DoctorProfileModule() {
     const router = useRouter()
     const locale = useLocale()
+    const _accessToken = webStorageClient.getToken()
+
     const { result, isFetching, refetch } = useGetDoctorProfileQuery(
         undefined,
         {
             selectFromResult: ({ data, isFetching }) => {
                 return {
-                    result: data?.body?.user ?? {},
+                    result: (data?.body?.user as DoctorProfileTypes) ?? {},
                     isFetching: isFetching,
                 }
             },
         },
     )
 
+    console.log(result)
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
@@ -73,7 +80,7 @@ export default function DoctorProfileModule() {
                 <Content style={{ padding: '0px' }}>
                     <div className="relative mb-[85px] h-[250px]">
                         <Image
-                            className="z-1 h-[100%] w-full rounded-2xl"
+                            className="z-1 h-[100%] w-full rounded-2xl object-cover"
                             src={ProfileBackground}
                             alt="background"
                         />
@@ -209,47 +216,68 @@ export default function DoctorProfileModule() {
                                     </div>
                                 }
                             >
-                                {
-                                    result?.description ? <p className="text-lg text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: result?.description }}>
-                                </p> : <div className='w-full h-fit flex justify-center items-center'>
-                                    Ẩn mô tả cá nhân
-                                </div>
-                                }
+                                {result?.description ? (
+                                    <p
+                                        className="text-lg text-secondarySupperDarker"
+                                        dangerouslySetInnerHTML={{
+                                            __html: result?.description,
+                                        }}
+                                    ></p>
+                                ) : (
+                                    <div className="flex h-fit w-full items-center justify-center">
+                                        Ẩn mô tả cá nhân
+                                    </div>
+                                )}
                                 <Divider />
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Họ và tên:
                                     </span>{' '}
-                                  {
-                                    result?.fullName ? result?.fullName : 'Ẩn danh'
-                                  }
+                                    {result?.fullName
+                                        ? result?.fullName
+                                        : 'Ẩn danh'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Số điện thoại:
                                     </span>{' '}
-                                    (84) {result?.phoneNumber ? result?.phoneNumber : 'Ẩn số điện thoại'}
+                                    (84){' '}
+                                    {result?.phoneNumber
+                                        ? result?.phoneNumber
+                                        : 'Ẩn số điện thoại'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Email:
                                     </span>{' '}
-                                    {result?.username ? result?.username : 'Ẩn email'}
+                                    {result?.username
+                                        ? result?.username
+                                        : 'Ẩn email'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Chức vụ:
                                     </span>{' '}
-                                    {
-                                        result?.position ? result?.position : 'Ẩn chức vụ'
-                                    }
+                                    {result?.position
+                                        ? result?.position
+                                        : 'Ẩn chức vụ'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Ngày sinh:
                                     </span>{' '}
+                                    {result?.dob
+                                        ? dayjs(result?.dob).format(
+                                              'DD/MM/YYYY',
+                                          )
+                                        : 'Ẩn ngày sinh'}
+                                </p>
+                                <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
+                                    <span className="font-bold text-secondarySupperDarker">
+                                       Loại tài khoản:
+                                    </span>{' '}
                                     {
-                                        result?.dob ? dayjs(result?.dob).format('DD/MM/YYYY') : 'Ẩn ngày sinh'
+                                        jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.DOCTOR ? 'Bác sĩ' : jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.STAFF ? 'Nhân viên y tế' : 'Bệnh nhân'
                                     }
                                 </p>
                             </Card>
@@ -317,7 +345,11 @@ export default function DoctorProfileModule() {
                         }
                         style={{ marginTop: '24px' }}
                     >
-                        <div dangerouslySetInnerHTML={{ __html: result?.achievement ?? 'Chưa cập nhật' }}></div>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html: result?.achievement ?? 'Chưa cập nhật',
+                            }}
+                        ></div>
                     </Card>
                 </Content>
             </Layout>

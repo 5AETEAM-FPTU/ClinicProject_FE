@@ -1,6 +1,4 @@
-'use client'
 import React, { useEffect } from 'react'
-import { DoctorProfileTypes } from '..'
 import { Button, DatePicker, Form, Input, message, Select } from 'antd'
 import { useForm } from 'antd/es/form/Form'
 import { ChevronDown, Save } from 'lucide-react'
@@ -13,26 +11,29 @@ import { constants } from '@/settings'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
 import { updateUserFullName } from '@/stores/features/auth'
 import dayjs from 'dayjs'
+import { UserProfileTypes } from '../..'
+import { useUpdateUserPrivateInformationMutation } from '@/stores/services/user/userSettings'
 
-export type DoctorSettingProfileComponetProps = {
+export type UserSettingProfileComponetProps = {
     isProfileFetching: boolean
-    profile: DoctorProfileTypes
+    profile: UserProfileTypes
     refetch?: () => void
 }
 
-export default function DoctorUpdateGeneral({
+export default function UserUpdateGeneral({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: UserSettingProfileComponetProps) {
     const [myForm] = Form.useForm()
     const dispatch = useAppDispatch();
-    const [updateDoctorPrivateInformation, {isLoading}] = useUpdateDoctorPrivateInformationMutation()
-    const onFinish: FormProps<DoctorProfileTypes>['onFinish'] = async (
+    const [updateUserPrivateInformation, {isLoading}] = useUpdateUserPrivateInformationMutation();
+    
+    const onFinish: FormProps<UserProfileTypes>['onFinish'] = async (
         values,
     ) => {
         try {
-            await updateDoctorPrivateInformation(values).unwrap();
+            await updateUserPrivateInformation(values).unwrap();
             webStorageClient.set(constants.USER_FULLNAME, values?.fullName)
             dispatch(updateUserFullName(values?.fullName!))
             message.success('Cập nhật thành công!')
@@ -51,8 +52,6 @@ export default function DoctorUpdateGeneral({
             address: profile?.address,
             gender: profile?.gender,
             position: profile?.position,
-            specialty: profile?.specialty,
-            achievement: profile?.achievement,
             description: profile?.description,
             username: profile?.username,
             dob: profile?.dob !== null ? dayjs(profile?.dob): undefined
@@ -115,19 +114,7 @@ export default function DoctorUpdateGeneral({
                             >
                                 <Input placeholder="Nhập họ và tên của bạn"></Input>
                             </Form.Item>
-                            <Form.Item
-                                label="Chuyên khoa"
-                                name="specialty"
-                                wrapperCol={{ span: 24 }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
-                            >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
-                            </Form.Item>
+                            
                         </div>
                         <div className="h-fit w-full">
                             <Form.Item
@@ -151,7 +138,7 @@ export default function DoctorUpdateGeneral({
                                         />
                                     }
                                 >
-                                    <Select.Option value="Name">
+                                    <Select.Option value="Nam">
                                         Nam
                                     </Select.Option>
                                     <Select.Option value="Nữ">
@@ -171,19 +158,6 @@ export default function DoctorUpdateGeneral({
                                     className='!w-full'
                                     placeholder="Nhập ngày sinh"
                                 ></DatePicker>
-                            </Form.Item>
-                            <Form.Item
-                                label="Chức vụ"
-                                name="position"
-                                wrapperCol={{ span: 24 }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
-                            >
-                                <Input placeholder="Nhập họ chức vụ của bạn"></Input>
                             </Form.Item>
                         </div>
                     </div>

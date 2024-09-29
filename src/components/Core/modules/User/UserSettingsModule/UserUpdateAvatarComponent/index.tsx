@@ -14,19 +14,20 @@ import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import { DoctorProfileTypes } from '..'
+import { UserProfileTypes } from '../..'
+import dayjs from 'dayjs'
 
-type DoctorUpdateProfileProps = {
+type UserUpdateProfileProps = {
     isProfileFetching: boolean
-    profile: DoctorProfileTypes
+    profile: UserProfileTypes
 }
 
 const { Title, Text, Paragraph } = Typography
 
-export const DoctorUpdateProfileComponent = ({
+export const UserUpdateAvatarComponent = ({
     isProfileFetching,
     profile,
-}: DoctorUpdateProfileProps) => {
+}: UserUpdateProfileProps) => {
     const [imageUrl, setImageUrl] = useState<string>('')
     const [isUploading, setIsUploading] = useState<boolean>(false)
     const [changeProfileAvatar, {isLoading}] = useChangeProfileAvatarMutation()
@@ -115,18 +116,18 @@ export const DoctorUpdateProfileComponent = ({
                             className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                             type="secondary"
                         >
-                            {profile?.position
-                                ? profile?.position
-                                : 'Chưa có ví trí làm việc'}
+                            {profile?.gender
+                                ? profile?.gender
+                                : 'Chưa cài đặt giới tính'}
                         </Text>
                         <br />
                         <Text
                             className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                             type="secondary"
                         >
-                            {profile?.specialty
-                                ? profile?.specialty
-                                : 'Chưa có chuyên khoa'}
+                            {profile?.dob 
+                                ? dayjs(profile?.dob).format('DD/MM/YYYY')
+                                : 'Chưa cài đặt ngày sinh'}
                         </Text>
                     </div>
                 </Space>

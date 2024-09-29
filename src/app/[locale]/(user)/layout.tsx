@@ -1,6 +1,7 @@
 import UserLayout from '@/components/Layouts/UserLayout'
 import constants from '@/settings/constants'
 import { getCookie } from 'cookies-next'
+import dynamic from 'next/dynamic'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'

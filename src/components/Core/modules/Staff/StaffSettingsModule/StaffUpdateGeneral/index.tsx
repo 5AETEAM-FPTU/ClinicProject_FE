@@ -1,38 +1,37 @@
 'use client'
-import React, { useEffect } from 'react'
-import { DoctorProfileTypes } from '..'
-import { Button, DatePicker, Form, Input, message, Select } from 'antd'
-import { useForm } from 'antd/es/form/Form'
-import { ChevronDown, Save } from 'lucide-react'
-import themeColors from '@/style/themes/default/colors'
-import CommonSelect from '@/components/Core/common/CommonSelect'
-import { FormProps } from 'antd/lib'
-import { useUpdateDoctorPrivateInformationMutation } from '@/stores/services/doctor/doctorSettings'
-import webStorageClient from '@/utils/webStorageClient'
-import { constants } from '@/settings'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { constants } from '@/settings'
 import { updateUserFullName } from '@/stores/features/auth'
+import { useUpdateStaffPrivateInformationMutation } from '@/stores/services/staff/staffSettings'
+import themeColors from '@/style/themes/default/colors'
+import webStorageClient from '@/utils/webStorageClient'
+import { Button, DatePicker, Form, Input, message, Select } from 'antd'
+import { FormProps } from 'antd/lib'
 import dayjs from 'dayjs'
+import { ChevronDown } from 'lucide-react'
+import { useEffect } from 'react'
+import { DoctorProfileTypes } from '..'
+import { StaffProfileTypes } from '../..'
 
-export type DoctorSettingProfileComponetProps = {
+export type StaffSettingProfileComponetProps = {
     isProfileFetching: boolean
-    profile: DoctorProfileTypes
+    profile: StaffProfileTypes
     refetch?: () => void
 }
 
-export default function DoctorUpdateGeneral({
+export default function StaffUpdateGeneral({
     isProfileFetching,
     refetch,
     profile,
-}: DoctorSettingProfileComponetProps) {
+}: StaffSettingProfileComponetProps) {
     const [myForm] = Form.useForm()
     const dispatch = useAppDispatch();
-    const [updateDoctorPrivateInformation, {isLoading}] = useUpdateDoctorPrivateInformationMutation()
+    const [updateStaffPrivateInformation, {isLoading}] = useUpdateStaffPrivateInformationMutation()
     const onFinish: FormProps<DoctorProfileTypes>['onFinish'] = async (
         values,
     ) => {
         try {
-            await updateDoctorPrivateInformation(values).unwrap();
+            await updateStaffPrivateInformation(values).unwrap();
             webStorageClient.set(constants.USER_FULLNAME, values?.fullName)
             dispatch(updateUserFullName(values?.fullName!))
             message.success('Cập nhật thành công!')
