@@ -16,7 +16,8 @@ import { useAppDispatch } from '@/hooks/redux-toolkit'
 import { IUserInfo, updateUserInfo } from '@/stores/features/auth'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
-import UserProvider from '@/lib/userProvider'
+import UserProvider from '@/providers/UserProvider'
+import { ConvexClientProvider } from '@/providers/ConvexClientProvider'
 
 function Providers({ children }: { children: React.ReactNode }) {
     const _accessToken = webStorageClient.getToken()
@@ -68,7 +69,9 @@ function Providers({ children }: { children: React.ReactNode }) {
                                 <Provider store={store}>
                                     <SessionProvider>
                                         <UserProvider>
-                                            {children}
+                                            <ConvexClientProvider>
+                                                {children}
+                                            </ConvexClientProvider>
                                         </UserProvider>
                                     </SessionProvider>
                                 </Provider>

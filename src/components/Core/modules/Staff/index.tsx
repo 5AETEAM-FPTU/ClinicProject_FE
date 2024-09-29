@@ -4,9 +4,18 @@ export type StaffProfileTypes = {
     fullName: string | null
     description: string | null
     address: string
-    gender: string | null
-    position: string | null
-    specialty: string | null
+    gender: {
+        id: string
+        genderName: string
+    }
+    position: {
+        id: string
+        positionName: string
+    }
+    specialties: {
+        id: string
+        specialtyName: string
+    }[]
     username: string
     phoneNumber: string | null
     dob: string | null

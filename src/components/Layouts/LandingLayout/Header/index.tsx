@@ -47,8 +47,12 @@ function Header() {
             router.push(`/${locale}/sign-in`)
         }
     }
+    let role: string | null = null;
+    if(_accessToken) {
+        role = jwtDecode<JwtPayloadUpdated>(_accessToken).role || null;
+    }
+
     const handleRenderUserType = () => {
-        const role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role
         if (role == UserRole.DOCTOR) {
             return 'Bác sĩ'
         } else if (role == UserRole.STAFF) {
@@ -110,14 +114,14 @@ function Header() {
                                 `${scrollDir === 'down' && 'translate-y-[-50px] duration-500'}`,
                             )}
                         >
-                            {_accessToken ? (
+                            {_accessToken && role ? (
                                 <div
                                     className="flex cursor-pointer select-none flex-row items-center gap-3 rounded-md px-3 transition-all duration-300 hover:bg-slate-200"
                                     onClick={handleAccounts}
                                 >
                                     <div>
                                         <p className="font-medium">
-                                            {handleRenderUserType()} {' '}
+                                            {handleRenderUserType()}{' '}
                                             <span className="font-bold text-secondarySupperDarker">
                                                 {user.fullName}
                                             </span>
@@ -154,7 +158,7 @@ function Header() {
                                 <ChangeLanguages />
                             </div>
                             <div>
-                                {_accessToken ? (
+                                {_accessToken && role ? (
                                     <button
                                         onClick={() => {
                                             signOut({

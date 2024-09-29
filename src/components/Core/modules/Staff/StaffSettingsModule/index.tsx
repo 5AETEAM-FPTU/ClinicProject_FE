@@ -12,19 +12,6 @@ import StaffUpdateAchievement from './StaffChangeAchievement'
 
 const { Content } = Layout
 
-export type DoctorProfileTypes = {
-    achievement: string | null
-    avatarUrl: string
-    fullName: string | null
-    description: string | null
-    address: string
-    gender: string | null
-    position: string | null
-    specialty: string | null
-    username: string
-    phoneNumber: string | null
-    dob: string | null
-}
 
 export default function StaffSettingsModule() {
     const { result, isFetching, refetch } = useGetDoctorProfileQuery(
@@ -63,10 +50,10 @@ export default function StaffSettingsModule() {
                                 isProfileFetching={isFetching}
                                 profile={result}
                             />
-                            {/* <StaffUpdateAchievement
+                            <StaffUpdateAchievement
                                 isProfileFetching={isFetching}
                                 profile={result}
-                            /> */}
+                            />
                         </div>
                         <div className="flex w-full flex-col gap-6">
                             <StaffUpdateDescription

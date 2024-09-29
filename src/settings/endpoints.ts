@@ -33,4 +33,13 @@ const scheduleEndpoint = {
     POST_CREATE_SCHEDULES: "/schedules",
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, scheduleEndpoint };
+const enumEndpoint = {
+    GET_SPECIALTY: "/enum/getAllSpecialty",
+    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
+    GET_POSITION: "/enum/getAllPosition",
+    GET_GENDER: "/enum/getAllGender",
+    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint };

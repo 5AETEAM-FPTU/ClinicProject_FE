@@ -13,6 +13,8 @@ import { updateUserFullName } from '@/stores/features/auth'
 import dayjs from 'dayjs'
 import { UserProfileTypes } from '../..'
 import { useUpdateUserPrivateInformationMutation } from '@/stores/services/user/userSettings'
+import { useGetAllGenderQuery } from '@/stores/services/enum/enum'
+import { GenderEnumType } from '../../../Doctor/DoctorSettingsModule/DoctorUpdateGeneral'
 
 export type UserSettingProfileComponetProps = {
     isProfileFetching: boolean
@@ -28,6 +30,14 @@ export default function UserUpdateGeneral({
     const [myForm] = Form.useForm()
     const dispatch = useAppDispatch();
     const [updateUserPrivateInformation, {isLoading}] = useUpdateUserPrivateInformationMutation();
+
+    const { gender } = useGetAllGenderQuery(undefined, {
+        selectFromResult: ({ data }) => {
+            return {
+                gender: data?.body?.genders ?? [],
+            }
+        },
+    })
     
     const onFinish: FormProps<UserProfileTypes>['onFinish'] = async (
         values,
@@ -50,8 +60,7 @@ export default function UserUpdateGeneral({
             fullName: profile?.fullName,
             phoneNumber: profile?.phoneNumber,
             address: profile?.address,
-            gender: profile?.gender,
-            position: profile?.position,
+            genderId: profile?.gender?.id,
             description: profile?.description,
             username: profile?.username,
             dob: profile?.dob !== null ? dayjs(profile?.dob): undefined
@@ -119,7 +128,7 @@ export default function UserUpdateGeneral({
                         <div className="h-fit w-full">
                             <Form.Item
                                 label="Giới tính"
-                                name="gender"
+                                name="genderId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -130,7 +139,7 @@ export default function UserUpdateGeneral({
                             >
                                 <Select
                                     className="border-secondarySupperDarker border-opacity-60 placeholder:text-secondarySupperDarker placeholder:!text-opacity-60 focus:hover:!border-secondarySupperDarker"
-                                    placeholder="Nhập họ và tên của bạn"
+                                    placeholder="Chọn giới tính"
                                     suffixIcon={
                                         <ChevronDown
                                             size={16}
@@ -138,12 +147,14 @@ export default function UserUpdateGeneral({
                                         />
                                     }
                                 >
-                                    <Select.Option value="Nam">
-                                        Nam
-                                    </Select.Option>
-                                    <Select.Option value="Nữ">
-                                        Nữ
-                                    </Select.Option>
+                                   {gender?.map((item: GenderEnumType) => (
+                                        <Select.Option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+                                            {item.genderName}
+                                        </Select.Option>
+                                    ))}
                                 </Select>
                             </Form.Item>
                             <Form.Item
