@@ -6,14 +6,18 @@ import { cookies } from 'next/headers'
 import { constants } from '@/settings';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
 
 function DoctorRootLayout({ children }: { children: React.ReactNode }) {
 
-    const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })   
-    if(!_accessToken_Cookie) {
+    const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })
+    if (!_accessToken_Cookie) {
         redirect("/home");
     }
-    return <DoctorLayout>{children}</DoctorLayout>
+    return <DoctorLayout><div className={inter.className}>{children}</div></DoctorLayout>
 }
 
 export default DoctorRootLayout

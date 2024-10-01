@@ -18,6 +18,9 @@ const config: Config = {
     },
 
     extend: {
+      boxShadow: {
+        'custom-shadow': '0 1px 1px rgba(2, 132, 199, 0.125)',
+      },
       colors: {
         dashboardBackgournd: "#F8F9FB",
         dashboardBackground: "#F8F9FB",
