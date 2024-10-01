@@ -9,9 +9,10 @@ import { Button, DatePicker, Form, Input, message, Select } from 'antd'
 import { FormProps } from 'antd/lib'
 import dayjs from 'dayjs'
 import { ChevronDown } from 'lucide-react'
-import { useEffect } from 'react'
-import { DoctorProfileTypes } from '..'
+import { useEffect, useState } from 'react'
 import { StaffProfileTypes } from '../..'
+import { useGetAllGenderQuery, useGetAllPositionQuery, useGetAllSpecicaltiesQuery } from '@/stores/services/enum/enum'
+import { GenderEnumType, MultipleSelectionType, PositionEnumType, SpecialtyEnumType } from '../../../Doctor/DoctorSettingsModule/DoctorUpdateGeneral'
 
 export type StaffSettingProfileComponetProps = {
     isProfileFetching: boolean
@@ -27,7 +28,45 @@ export default function StaffUpdateGeneral({
     const [myForm] = Form.useForm()
     const dispatch = useAppDispatch();
     const [updateStaffPrivateInformation, {isLoading}] = useUpdateStaffPrivateInformationMutation()
-    const onFinish: FormProps<DoctorProfileTypes>['onFinish'] = async (
+
+    
+    const { positions } = useGetAllPositionQuery(undefined, {
+        selectFromResult: ({ data }) => {
+            return {
+                positions: data?.body?.positions ?? [],
+            }
+        },
+    })
+
+    const { gender } = useGetAllGenderQuery(undefined, {
+        selectFromResult: ({ data }) => {
+            return {
+                gender: data?.body?.genders ?? [],
+            }
+        },
+    })
+
+    const { specialties } = useGetAllSpecicaltiesQuery(undefined, {
+        selectFromResult: ({ data }) => {
+            return {
+                specialties: data?.body?.specialties ?? [],
+            }
+        },
+    })
+    const [specialtyList, setSpecialtyList] = useState<MultipleSelectionType[]>([])
+    useEffect(() => {
+        let newSpecialtyList: MultipleSelectionType[] = specialties.map((item: SpecialtyEnumType) => {
+            return {
+                label: item.specialtyName,
+                value: item.id,
+                emoji: '',
+                desc: '',
+            }
+        })
+        setSpecialtyList(newSpecialtyList);
+    }, [specialties])
+
+    const onFinish: FormProps<StaffProfileTypes>['onFinish'] = async (
         values,
     ) => {
         try {
@@ -48,13 +87,13 @@ export default function StaffUpdateGeneral({
             fullName: profile?.fullName,
             phoneNumber: profile?.phoneNumber,
             address: profile?.address,
-            gender: profile?.gender,
-            position: profile?.position,
-            specialty: profile?.specialty,
+            genderId: profile?.gender?.id,
+            positionId: profile?.position?.id,
+            SpecialtiesId: profile?.specialties?.map((item) => item.id),
             achievement: profile?.achievement,
             description: profile?.description,
             username: profile?.username,
-            dob: profile?.dob !== null ? dayjs(profile?.dob): undefined
+            dob: profile?.dob !== null ? dayjs(profile?.dob) : undefined,
         })
     }, [profile])
     return (
@@ -99,7 +138,7 @@ export default function StaffUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
+                                <Input placeholder="Nhập số điện thoại"></Input>
                             </Form.Item>
                             <Form.Item
                                 label="Địa chỉ"
@@ -112,11 +151,11 @@ export default function StaffUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
+                                <Input placeholder="Nhập địa chỉ"></Input>
                             </Form.Item>
                             <Form.Item
                                 label="Chuyên khoa"
-                                name="specialty"
+                                name="SpecialtiesId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -125,13 +164,25 @@ export default function StaffUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ và tên của bạn"></Input>
+                                <Select
+                                    className="border-secondarySupperDarker border-opacity-60 placeholder:text-secondarySupperDarker placeholder:!text-opacity-60 focus:hover:!border-secondarySupperDarker"
+                                    placeholder="Chọn chuyên khoa"
+                                    suffixIcon={
+                                        <ChevronDown
+                                            size={16}
+                                            color={themeColors.primaryDarker}
+                                        />
+                                    }
+                                    mode="multiple"
+                                    allowClear
+                                    options={specialtyList}
+                                ></Select>
                             </Form.Item>
                         </div>
                         <div className="h-fit w-full">
                             <Form.Item
                                 label="Giới tính"
-                                name="gender"
+                                name="genderId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -150,12 +201,14 @@ export default function StaffUpdateGeneral({
                                         />
                                     }
                                 >
-                                    <Select.Option value="Name">
-                                        Nam
-                                    </Select.Option>
-                                    <Select.Option value="Nữ">
-                                        Nữ
-                                    </Select.Option>
+                                    {gender?.map((item: GenderEnumType) => (
+                                        <Select.Option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+                                            {item.genderName}
+                                        </Select.Option>
+                                    ))}
                                 </Select>
                             </Form.Item>
                             <Form.Item
@@ -173,7 +226,7 @@ export default function StaffUpdateGeneral({
                             </Form.Item>
                             <Form.Item
                                 label="Chức vụ"
-                                name="position"
+                                name="positionId"
                                 wrapperCol={{ span: 24 }}
                                 rules={[
                                     {
@@ -182,7 +235,29 @@ export default function StaffUpdateGeneral({
                                     },
                                 ]}
                             >
-                                <Input placeholder="Nhập họ chức vụ của bạn"></Input>
+                                <Select
+                                    className="border-secondarySupperDarker border-opacity-60 placeholder:text-secondarySupperDarker placeholder:!text-opacity-60 focus:hover:!border-secondarySupperDarker"
+                                    placeholder="Chọn chức vụ"
+                                    suffixIcon={
+                                        <ChevronDown
+                                            size={16}
+                                            color={themeColors.primaryDarker}
+                                        />
+                                    }
+                                >
+                                    {positions.map(
+                                        (position: PositionEnumType) => {
+                                            return (
+                                                <Select.Option
+                                                    key={position.id}
+                                                    value={position.id}
+                                                >
+                                                    {position.positionName}
+                                                </Select.Option>
+                                            )
+                                        },
+                                    )}
+                                </Select>
                             </Form.Item>
                         </div>
                     </div>

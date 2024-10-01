@@ -112,8 +112,8 @@ export default function DoctorProfileModule() {
                                         className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                         type="secondary"
                                     >
-                                        {result?.position
-                                            ? result?.position
+                                        {result?.position.positionName
+                                            ? result?.position?.positionName
                                             : 'Ẩn vị trí làm việc'}
                                     </Text>
                                     <br />
@@ -121,9 +121,12 @@ export default function DoctorProfileModule() {
                                         className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                                         type="secondary"
                                     >
-                                        {result?.specialty
-                                            ? result?.specialty
-                                            : 'Ẩn chuyển khoa'}
+                                        {result.specialties
+                                            ? result.specialties.map(
+                                                  (item) =>
+                                                      item.specialtyName + ' ',
+                                              )
+                                            : 'Ẩn chuyên khoa'}
                                     </Text>
                                 </div>
                             </Space>
@@ -258,8 +261,8 @@ export default function DoctorProfileModule() {
                                     <span className="font-bold text-secondarySupperDarker">
                                         Chức vụ:
                                     </span>{' '}
-                                    {result?.position
-                                        ? result?.position
+                                    {result?.position?.positionName
+                                        ? result?.position?.positionName
                                         : 'Ẩn chức vụ'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
@@ -274,11 +277,16 @@ export default function DoctorProfileModule() {
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
-                                       Loại tài khoản:
+                                        Loại tài khoản:
                                     </span>{' '}
-                                    {
-                                        jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.DOCTOR ? 'Bác sĩ' : jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.STAFF ? 'Nhân viên y tế' : 'Bệnh nhân'
-                                    }
+                                    {jwtDecode<JwtPayloadUpdated>(_accessToken!)
+                                        .role === UserRole.DOCTOR
+                                        ? 'Bác sĩ'
+                                        : jwtDecode<JwtPayloadUpdated>(
+                                                _accessToken!,
+                                            ).role === UserRole.STAFF
+                                          ? 'Nhân viên y tế'
+                                          : 'Bệnh nhân'}
                                 </p>
                             </Card>
                         </Col>
