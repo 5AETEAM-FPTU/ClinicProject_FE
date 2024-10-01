@@ -18,11 +18,11 @@ export default function AppointmentDone() {
                         <span className="font-semibold text-[#003553]">
                             09:30 - 10:30
                         </span>
-                        <div className="flex gap-[5px]">
-                            <Button className="bg-[#f7fafc] text-[#003553]">
+                        <div className="flex gap-[10px]">
+                            <Button className="bg-[#f7fafc] text-[#003553] border border-secondaryDarker  rounded-[10px]">
                                 Xem phiếu khám <FilePlus2 size={18} />
                             </Button>
-                            <Button className="bg-[#22C55E] text-white">
+                            <Button className="bg-[#22C55E] text-white border-none  rounded-[10px]">
                                 Khám xong
                             </Button>
                         </div>

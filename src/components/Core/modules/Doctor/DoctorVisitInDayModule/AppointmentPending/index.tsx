@@ -7,6 +7,7 @@ import ProfileBackground from '@public/landing/images/profile-background.png'
 import { AppointmentStatus } from '..'
 import { useTrigger } from '@/hooks/useTrigger'
 import dayjs from 'dayjs'
+import { cn } from '@/lib/utils'
 
 interface Gender {
     id: string
@@ -58,11 +59,11 @@ export default function AppointmentPending({ payload }: IProps) {
                                 ' - ' +
                                 dayjs(payload.schedule.endDate).format('HH:mm')}
                         </span>
-                        <div className="flex gap-[5px]">
-                            <Button className="bg-[#0284C7] text-white">
+                        <div className="flex gap-[10px]">
+                            <Button className="bg-[#0284C7] text-white border-none rounded-[10px]" >
                                 Tạo phiếu khám <FilePlus2 size={18} />
                             </Button>
-                            <Button className="bg-[#0284C7] text-white">
+                            <Button className="bg-[#0284C7] text-white border-none rounded-[10px]" >
                                 {payload.appointmentStatus.statusName ??
                                     'Không xác định'}
                             </Button>
@@ -72,8 +73,10 @@ export default function AppointmentPending({ payload }: IProps) {
                                 content={<AppointmentStatus />}
                                 onOpenChange={handleTrigger}
                             >
-                                <Button className="bg-[#0284C7] bg-opacity-50 text-[#003553]">
-                                    <Settings size={18} />
+                                <Button className={cn(" w-fit !px-[8px] !py-4 bg-opacity-50 text-[#003553] border-none rounded-[10px]", `
+                                        ${trigger ? "bg-secondaryDark" : "bg-white shadow-primary"}
+                                    `)}>
+                                    <Settings size={18}  className='hover:rotate-180 transition-all duration-500'/>
                                 </Button>
                             </Popover>
                         </div>
