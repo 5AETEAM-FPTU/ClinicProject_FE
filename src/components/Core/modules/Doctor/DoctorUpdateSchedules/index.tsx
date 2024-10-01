@@ -115,6 +115,7 @@ export default function DoctorUpdateSchedules() {
             const isDisable = compareDatesByDay(date, new Date()) < 0
             days.push(
                 <motion.div
+                    key={day}
                     className={`mt-2 flex h-12 items-center justify-center gap-2 ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}
                 >
                     <Button
@@ -126,7 +127,7 @@ export default function DoctorUpdateSchedules() {
                         onClick={() => !isDisable && handleSelectedRow(date)}
                         className={cn(
                             `relative h-[56px] w-full font-semibold text-[16x] text-secondarySupperDarker`,
-                            `${isDisable ? 'cursor-not-allowed !text-gray-300' : ''}`,
+                            `${isDisable ? 'cursor-not-allowed text-gray-300' : ''}`,
                             `${isSelected ? 'bg-secondaryDark bg-opacity-60 text-white' : ''}`,
                             `${isToday && !isSelected ? '!border-2 !border-secondaryDark bg-white bg-opacity-80 !text-white' : ''}`,
                             `${!isSelected && !isDisable ? 'hover:bg-secondaryDark hover:bg-opacity-40 hover:text-white' : ''}`,
@@ -146,14 +147,22 @@ export default function DoctorUpdateSchedules() {
     }
 
     return (
-        <div className="mx-auto flex flex-col gap-4 md:flex-col">
+        <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="mx-auto flex flex-col gap-4 md:flex-col"
+        >
             <div>
-                <h3 className='text-[20px] font-semibold'>Cập nhật lịch khám</h3>
-                <p className='text-[14px] font-semibold text-secondarySupperDarker text-opacity-60'>Xem lại và cài đặt lịch khám sắp tới của bạn</p>
+                <h3 className="text-[20px] font-semibold">
+                    Cập nhật lịch khám
+                </h3>
+                <p className="text-[14px] font-semibold text-secondarySupperDarker text-opacity-60">
+                    Xem lại và cài đặt lịch khám sắp tới của bạn
+                </p>
             </div>
 
             <div className="shadow h-fit w-full rounded-xl bg-white p-4 shadow-third">
-                
                 <div className="mb-4 flex items-center justify-between">
                     <button
                         onClick={handlePrevMonth}
@@ -186,6 +195,6 @@ export default function DoctorUpdateSchedules() {
                     <TimeSlot handleClose={handleClose} date={selectedDate} />
                 ) : null}
             </div>
-        </div>
+        </motion.div>
     )
 }

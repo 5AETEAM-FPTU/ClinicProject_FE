@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 export type TimeSlot = {
     startTime: string
     endTime: string
+    isHadAppointment?: boolean
 }
 
 type TimeSlotSectionProps = {
@@ -25,26 +26,8 @@ export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
     selectedSlot,
     onSelectSlot,
 }) => {
-    const { handleTrigger, trigger } = useTrigger()
     return (
-        <motion.div
-            initial={{
-                y: 30,
-                opacity: 0,
-            }}
-            whileInView={{
-                y: 0,
-                opacity: 1,
-            }}
-            transition={{
-                type: 'spring',
-                duration: 0.4,
-            }}
-            viewport={{
-                once: true,
-            }}
-            className="mb-6"
-        >
+        <motion.div className="mb-6">
             <h2 className="mb-3 text-xl font-bold">{title}</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {slots.map((slot, index) => (
@@ -106,6 +89,7 @@ export default function Component({
                 morning.map((slot: TimeSlot) => ({
                     startTime: dayjs(slot.startTime),
                     endTime: dayjs(slot.endTime),
+                    isHadAppointment: slot.isHadAppointment,
                 })),
             )
 
@@ -113,6 +97,7 @@ export default function Component({
                 afternoon.map((slot: TimeSlot) => ({
                     startTime: dayjs(slot.startTime),
                     endTime: dayjs(slot.endTime),
+                    isHadAppointment: slot.isHadAppointment,
                 })),
             )
         } else {
@@ -127,26 +112,30 @@ export default function Component({
 
     return (
         <>
-            <div className="mx-auto mt-4 w-full p-4">
+            <motion.div
+                className="mx-auto mt-4 w-full p-4"
+            >
                 <Button className="float-right" onClick={handleClose}>
                     Đóng
                 </Button>
-                {morningSlots.length > 0 && (
-                    <TimeSlotSection
-                        title="Buổi sáng"
-                        slots={morningSlots}
-                        selectedSlot={selectedSlot}
-                        onSelectSlot={handleSelectSlot}
-                    />
-                )}
-                {afternoonSlots.length > 0 && (
-                    <TimeSlotSection
-                        title="Buổi chiều"
-                        slots={afternoonSlots}
-                        selectedSlot={selectedSlot}
-                        onSelectSlot={handleSelectSlot}
-                    />
-                )}
+                <div>
+                    {morningSlots.length > 0 && (
+                        <TimeSlotSection
+                            title="Buổi sáng"
+                            slots={morningSlots}
+                            selectedSlot={selectedSlot}
+                            onSelectSlot={handleSelectSlot}
+                        />
+                    )}
+                    {afternoonSlots.length > 0 && (
+                        <TimeSlotSection
+                            title="Buổi chiều"
+                            slots={afternoonSlots}
+                            selectedSlot={selectedSlot}
+                            onSelectSlot={handleSelectSlot}
+                        />
+                    )}
+                </div>
                 {/* {selectedSlot && (
                     <p className="mt-4 text-center font-semibold">
                         Bạn đã chọn khung giờ:{' '}
@@ -154,7 +143,7 @@ export default function Component({
                         {dayjs(selectedSlot.endTime).format('HH:mm')}
                     </p>
                 )} */}
-            </div>
+            </motion.div>
             <div className="px-4">
                 <AddingSchedulesForm date={date} refetch={refetch} />
             </div>
@@ -184,7 +173,7 @@ export function PopoverOptionChange({
             open={trigger}
             content={
                 <div className="flex flex-col gap-2">
-                    <Button type="primary">Cập nhật slot</Button>
+                    <Button type="primary">Cập nhật</Button>
                     <Button type="primary" danger>
                         Xóa slot
                     </Button>
@@ -192,12 +181,17 @@ export function PopoverOptionChange({
             }
         >
             <Button
+                disabled={slot?.isHadAppointment}
                 key={index}
-                className={`relative border px-2 py-4 text-center ${
-                    selectedSlot === slot
-                        ? 'border-secondaryDark bg-secondaryDark text-white'
-                        : 'border-blue-200 bg-white text-black hover:border-blue-500'
-                }`}
+                className={cn(
+                    `relative border px-2 py-4 text-center`,
+                    `${
+                        selectedSlot === slot
+                            ? 'border-secondaryDark bg-secondaryDark text-white'
+                            : 'border-blue-200 bg-white text-secondarySupperDarker hover:border-secondaryDark'
+                    }`,
+                    `${slot?.isHadAppointment ? '!cursor-not-allowed !opacity-50' : ''}`,
+                )}
                 onClick={() => onSelectSlot(slot)}
             >
                 {dayjs(slot.startTime).format('HH:mm')} -{' '}

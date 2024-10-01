@@ -52,9 +52,10 @@ export default function AddingSchedulesForm({
         })
 
         var response = await createSchedules(timeSlots).unwrap()
+        console.log(response)
 
-        if (response.error) {
-            message.error('Thêm ca khám that bai')
+        if (response?.error) {
+            message.error('Thêm ca khám thất bại')
             return
         }
         message.success('Thêm ca khám thành công!')
@@ -65,7 +66,9 @@ export default function AddingSchedulesForm({
     const handleChangingTimeSlot = (dates: any, dateStrings: any) => {
         if (dates) {
             setTimeSlotAdding([
-                { startTime: dateStrings[0], endTime: dateStrings[1] },
+                {
+                    startTime: dateStrings[0], endTime: dateStrings[1],
+                },
             ])
         }
     }
