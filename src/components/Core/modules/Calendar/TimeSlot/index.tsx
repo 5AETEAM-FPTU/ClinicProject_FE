@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 type TimeSlot = {
     start: string
     end: string
+    isDisabled?: boolean
 }
 
 type TimeSlotSectionProps = {
@@ -36,11 +37,15 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selecte
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
             {slots.map((slot, index) => (
                 <Button
+                    disabled={slot.isDisabled}
+                    type='text'
                     key={index}
-                    className={`py-4 px-2 border text-center ${selectedSlot === slot
-                        ? 'bg-blue-500 text-white border-blue-500'
-                        : 'bg-white text-black border-blue-200 hover:border-blue-500'
-                        }`}
+                    className={`py-2 px-2 border text-base text-center 
+                        ${selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
+                            ? 'bg-[#0284C7] text-white'
+                            : 'bg-white text-black border-[#06B6D4] hover:border-[#0284C7]'
+                        } 
+                        ${slot.isDisabled ? 'cursor-not-allowed bg-[#E8E8E8] opacity-40' : ''}`}
                     onClick={() => onSelectSlot(slot)}
                 >
                     {slot.start} - {slot.end}
@@ -50,7 +55,7 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selecte
     </motion.div>
 )
 
-export default function Component({ handleClose }: { handleClose: () => void }) {
+export default function Component({ handleClose, handleSelectTimeSlot }: { handleClose: () => void, handleSelectTimeSlot: (timeSlot: { startDate: Date, endDate: Date }) => void }) {
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
 
     const morningSlots: TimeSlot[] = [
@@ -69,7 +74,15 @@ export default function Component({ handleClose }: { handleClose: () => void }) 
 
     const handleSelectSlot = (slot: TimeSlot) => {
         setSelectedSlot(slot)
+        handleConfirm(slot);
     }
+    const handleConfirm = (slot: TimeSlot) => {
+        const today = new Date();
+        const startDate = new Date(today.setHours(parseInt(slot.start.split(':')[0]), parseInt(slot.start.split(':')[1])))
+        const endDate = new Date(today.setHours(parseInt(slot.end.split(':')[0]), parseInt(slot.end.split(':')[1])))
+        handleSelectTimeSlot({ startDate, endDate })
+    }
+
 
     return (
         <div className="p-4 w-full mx-auto mt-4">
