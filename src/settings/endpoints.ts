@@ -19,6 +19,8 @@ const userEndpoint = {
     PATCH_PRIVATE_INFOR: "/user/private-info",
     GET_PROFILE: "/user/profile",
     PATCH_DESCRIPTION: "/user/description",
+    GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
+    GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
 }
 
 const doctorEndpoint = {
@@ -26,6 +28,7 @@ const doctorEndpoint = {
     PATCH_PRIVATE_INFOR: "/doctor/private-info",
     PATCH_ACHIEVEMENT: "/doctor/achievement",
     PATCH_DESCRIPTION: "/doctor/description",
+    UPDATE_DUTY: "/doctor/duty",
 }
 
 export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };

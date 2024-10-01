@@ -5,7 +5,8 @@ import { Settings, MessageCircle, Calendar as CalendarIcon, Smartphone, UsersRou
 import Image from 'next/image'
 import BackGround from '@public/landing/images/profile-background.png'
 import './style.css'
-
+import { useUpdateDoctorDutyMutation } from '@/stores/services/doctor/doctorOverview'
+import { set } from 'lodash'
 const patients = [
     { name: 'Nguyễn Hòa An', gender: 'Nữ', age: 32 },
     { name: 'Nguyễn Hoàng Anh', gender: 'Nữ', age: 32 },
@@ -49,21 +50,27 @@ const CustomCalendar = () => {
 
 export default function MedicalDashboard() {
     const [checked, setChecked] = useState(false);
+    const [updateDoctorDuty, { isLoading, data, error }] = useUpdateDoctorDutyMutation();
+    const handleUpdateDoctorDuty = async (status: boolean) => {
+        const result = await updateDoctorDuty({ status });
+        if (!result.error) setChecked(status);
+    }
 
     const handleChange = (checked: boolean) => {
-        setChecked(checked);
+        if (!isLoading) handleUpdateDoctorDuty(checked);
     };
+
     return (
         <div className="flex flex-col gap-4 p-4 min-h-screen">
-            <div className="flex flex-col lg:flex-row gap-4">
-                <div className="lg:flex-1">
+            <div className="flex flex-col xl:flex-row gap-4">
+                <div className="xl:flex-1">
                     <CustomCalendar />
                 </div>
-                <div className="lg:flex-1">
+                <div className="xl:flex-1">
                     <div className="bg-white p-4 rounded-lg shadow h-full shadow shadow-third">
                         <h2 className="text-lg font-bold mb-4 text-secondarySupperDarker">Đang chờ khám</h2>
                         {Array.from({ length: 3 }).map((_, index) => (
-                            <div className='flex justify-between py-2 px-[10px] border-b-[1px] border-[#00355350]'>
+                            <div key={index} className='flex justify-between py-2 px-[10px] border-b-[1px] border-[#00355350]'>
                                 <div className='flex'>
                                     <img src="https://gravatar.com/avatar/091e1674e2a84259f010b5371c2823a9?s=400&d=robohash&r=x" className='w-[60px] h-[60px] object-contain mr-[10px]' alt="Patient" />
                                     <div className='flex-col'>
@@ -82,7 +89,7 @@ export default function MedicalDashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="lg:flex-1">
+                <div className="xl:flex-1">
                     <div className="bg-white p-4 rounded-lg shadow shadow-third h-full">
                         <h2 className="text-[18px] font-bold text-secondarySupperDarker">Cập nhật trạng thái</h2>
                         <p className="text-[12px] font-medium text-gray-500 mt-2">
@@ -90,9 +97,9 @@ export default function MedicalDashboard() {
                         </p>
 
                         <div className="flex items-center mt-9">
-                            <Switch className={checked ? `bg-[#0284C7]` : 'bg-white-200'} defaultChecked={false} onChange={handleChange} />
+                            <Switch className={checked ? `bg-[#0284C7]` : 'bg-white-200'} value={checked} onChange={handleChange} />
                             <span className='text-base font-bold ml-4 text-secondarySupperDarker'>
-                                {checked ? 'Hiện đang trực' : 'Hiện không trực'}
+                                {(isLoading && 'Đang cập nhật...') || (!isLoading && checked ? 'Hiện đang trực' : 'Hiện không trực')}
                             </span>
                         </div>
                         <p className="text-sm text-gray-500 mt-9">
@@ -101,8 +108,8 @@ export default function MedicalDashboard() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-4">
-                <div className="lg:flex-1">
+            <div className="flex flex-col xl:flex-row gap-4">
+                <div className="xl:flex-1">
                     <div className="bg-white p-4 rounded-lg shadow shadow-third h-full">
                         <div
                             style={{ backgroundImage: `url(${BackGround.src})` }}
@@ -131,7 +138,7 @@ export default function MedicalDashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="lg:flex-1 flex flex-col gap-4">
+                <div className="xl:flex-1 flex flex-col gap-4">
                     <div className="bg-white p-4 rounded-lg shadow shadow-third">
                         <h2 className="text-[18px] font-bold mb-4 text-secondarySupperDarker">Yêu cầu tư vấn</h2>
                         <List
