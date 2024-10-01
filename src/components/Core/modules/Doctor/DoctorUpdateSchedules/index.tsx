@@ -146,11 +146,14 @@ export default function DoctorUpdateSchedules() {
     }
 
     return (
-        <div className="mx-auto flex flex-col gap-4 md:flex-row">
+        <div className="mx-auto flex flex-col gap-4 md:flex-col">
+            <div>
+                <h3 className='text-[20px] font-semibold'>Cập nhật lịch khám</h3>
+                <p className='text-[14px] font-semibold text-secondarySupperDarker text-opacity-60'>Xem lại và cài đặt lịch khám sắp tới của bạn</p>
+            </div>
+
             <div className="shadow h-fit w-full rounded-xl bg-white p-4 shadow-third">
-                <h2 className="mb-4 rounded-t-lg bg-gradient-to-r to-90% p-2 text-center text-xl font-bold uppercase text-secondarySupperDarker">
-                    Cập nhật lịch
-                </h2>
+                
                 <div className="mb-4 flex items-center justify-between">
                     <button
                         onClick={handlePrevMonth}
