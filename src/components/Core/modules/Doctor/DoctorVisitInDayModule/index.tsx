@@ -48,7 +48,7 @@ export default function DoctorVisitInDayModule() {
                             {dayjs(Date.now()).format('DD/MM/YYYY')}
                         </h6>
                     </div>
-                    <div className="px flex w-full flex-grow gap-5">
+                    <div className="px flex w-full flex-col sm:flex-row gap-5">
                         <div className="w-full">
                             <span className="mb-2 block px-2 text-[16px] font-semibold text-[#003553]">
                                 Đang chờ khám

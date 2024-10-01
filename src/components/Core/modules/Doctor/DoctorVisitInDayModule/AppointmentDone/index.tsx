@@ -12,13 +12,13 @@ export default function AppointmentDone() {
 
     return (
         <>
-            <div className="flex h-fit flex-col rounded-xl bg-white p-[16px] shadow-third">
+            <div className="flex h-fit flex-col rounded-xl bg-white p-[16px] shadow-third gap-2 sm:gap-0">
                 <div className="w-full">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between flex-col sm:flex-row gap-2 sm:gap-0">
                         <span className="font-semibold text-[#003553]">
                             09:30 - 10:30
                         </span>
-                        <div className="flex gap-[10px]">
+                        <div className="flex gap-[10px] justify-end">
                             <Button className="bg-[#f7fafc] text-[#003553] border border-secondaryDarker  rounded-[10px]">
                                 Xem phiếu khám <FilePlus2 size={18} />
                             </Button>

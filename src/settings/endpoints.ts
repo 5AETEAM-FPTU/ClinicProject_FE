@@ -19,6 +19,8 @@ const userEndpoint = {
     PATCH_PRIVATE_INFOR: "/user/private-info",
     GET_PROFILE: "/user/profile",
     PATCH_DESCRIPTION: "/user/description",
+    GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
+    GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
 }
 
 const doctorEndpoint = {
@@ -28,6 +30,7 @@ const doctorEndpoint = {
     PATCH_DESCRIPTION: "/doctor/description",
 
     GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
+    UPDATE_DUTY: "/doctor/duty",
 }
 
 const enumEndpoint = {

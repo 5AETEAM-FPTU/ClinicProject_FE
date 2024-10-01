@@ -51,34 +51,42 @@ export default function AppointmentPending({ payload }: IProps) {
 
     return (
         <>
-            <div className="flex h-fit flex-col rounded-xl bg-white p-[16px] shadow-third">
+            <div className="flex h-fit flex-col gap-2 sm:gap-0 rounded-xl bg-white p-[16px] shadow-third">
                 <div className="w-full">
-                    <div className="flex justify-between">
+                    <div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
                         <span className="font-semibold text-[#003553]">
                             {dayjs(payload.schedule.startDate).format('HH:mm') +
                                 ' - ' +
                                 dayjs(payload.schedule.endDate).format('HH:mm')}
                         </span>
-                        <div className="flex gap-[10px]">
-                            <Button className="bg-[#0284C7] text-white border-none rounded-[10px]" >
+                        <div className="flex gap-[10px] justify-end">
+                            <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
                                 Tạo phiếu khám <FilePlus2 size={18} />
                             </Button>
-                            <Button className="bg-[#0284C7] text-white border-none rounded-[10px]" >
-                                {payload.appointmentStatus.statusName ??
-                                    'Không xác định'}
-                            </Button>
-                            <Popover
-                                trigger={'click'}
-                                open={trigger}
-                                content={<AppointmentStatus />}
-                                onOpenChange={handleTrigger}
-                            >
-                                <Button className={cn(" w-fit !px-[8px] !py-4 bg-opacity-50 text-[#003553] border-none rounded-[10px]", `
-                                        ${trigger ? "bg-secondaryDark" : "bg-white shadow-primary"}
-                                    `)}>
-                                    <Settings size={18}  className='hover:rotate-180 transition-all duration-500'/>
+                            <div className="flex flex-row sm:flex  gap-[10px] sm:gap-0">
+                                <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
+                                    {payload.appointmentStatus.statusName ??
+                                        'Không xác định'}
                                 </Button>
-                            </Popover>
+                                <Popover
+                                    trigger={'click'}
+                                    open={trigger}
+                                    content={<AppointmentStatus />}
+                                    onOpenChange={handleTrigger}
+                                >
+                                    <Button
+                                        className={cn(
+                                            'w-fit rounded-[10px] border-none bg-opacity-50 !px-[8px] !py-4 text-[#003553]',
+                                            ` ${trigger ? 'bg-secondaryDark' : 'bg-white shadow-primary'} `,
+                                        )}
+                                    >
+                                        <Settings
+                                            size={18}
+                                            className="transition-all duration-500 hover:rotate-180"
+                                        />
+                                    </Button>
+                                </Popover>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,7 +132,7 @@ export default function AppointmentPending({ payload }: IProps) {
                     </div>
                 </div>
                 <div className="mt-4">
-                    <p className="text-[#003553] h-[45px]">
+                    <p className="h-[45px] text-[#003553]">
                         <span className="w-[50px] font-semibold text-[#003553]">
                             Mô tả:{' '}
                         </span>

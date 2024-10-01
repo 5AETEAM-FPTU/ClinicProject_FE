@@ -1,0 +1,22 @@
+.ant-switch,
+.ant-switch-inner {
+    width: 108px !important;
+    /* Đặt chiều rộng */
+    height: 50px !important;
+    /* Đặt chiều cao */
+}
+
+.ant-switch-handle::before {
+    width: 40px !important;
+    /* Đặt kích thước cho handle */
+    height: 40px !important;
+    top: 3px !important;
+    border-radius: 50% !important;
+    /* Đặt kích thước cho handle */
+    /* Điều chỉnh vị trí cho handle */
+    inset-inline-start: calc(100% - 16px) !important;
+}
+
+.ant-switch-checked .ant-switch-handle::before {
+    inset-inline-start: calc(100% - 42px) !important;
+}
