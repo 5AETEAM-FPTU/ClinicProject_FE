@@ -112,7 +112,7 @@ export default function DoctorProfileModule() {
                                         className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                         type="secondary"
                                     >
-                                        {result?.position.positionName
+                                        {result?.position?.positionName
                                             ? result?.position?.positionName
                                             : 'Ẩn vị trí làm việc'}
                                     </Text>

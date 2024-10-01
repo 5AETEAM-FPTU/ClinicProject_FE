@@ -69,7 +69,7 @@ export const DoctorUpdateProfileComponent = ({
                     avatar: res?.data?.data?.url,
                 }
 
-                changeProfileAvatar({ avatarUrl: res?.data?.data?.url })
+                await changeProfileAvatar({ avatarUrl: res?.data?.data?.url })
                 webStorageClient.set(
                     constants.USER_AVATAR,
                     res?.data?.data?.url,

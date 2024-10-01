@@ -7,7 +7,6 @@ import { useUpdateDoctorAchievementMutation, useUpdateDoctorDescriptionMutation 
 import { Button, Form, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { DoctorProfileTypes } from '..'
 import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
 import { useUpdateStaffAchievementMutation } from '@/stores/services/staff/staffSettings'
 

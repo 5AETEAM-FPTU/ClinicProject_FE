@@ -33,6 +33,11 @@ const doctorEndpoint = {
     UPDATE_DUTY: "/doctor/duty",
 }
 
+const scheduleEndpoint = {
+    GET_SCHEDULES_BY_DATE: "/schedules/{date}",
+    POST_CREATE_SCHEDULES: "/schedules",
+}
+
 const enumEndpoint = {
     GET_SPECIALTY: "/enum/getAllSpecialty",
     GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
@@ -42,6 +47,4 @@ const enumEndpoint = {
 
 }
 
-
-
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint };
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint };
