@@ -111,7 +111,7 @@ export default function AddingSchedulesForm({
                         setIsAddingTimeVisible(!isAddingSlotVisible)
                     }
                     content={
-                        <div className="shadow-lg relative mt-2 h-36 w-full rounded bg-slate-50">
+                        <div className="shadow-lg relative mt-2 h-36 w-full rounded">
                             <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
                                 <span className="flex-1 text-start">
                                     Bắt đầu

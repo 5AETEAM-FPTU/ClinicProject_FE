@@ -63,7 +63,7 @@ export default function AppointmentPending({ payload }: IProps) {
                             <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
                                 Tạo phiếu khám <FilePlus2 size={18} />
                             </Button>
-                            <div className="flex flex-row sm:flex  gap-[10px] sm:gap-0">
+                            <div className="flex flex-row sm:flex  gap-[10px]">
                                 <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
                                     {payload.appointmentStatus.statusName ??
                                         'Không xác định'}

@@ -6,8 +6,13 @@ import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
 import { useTrigger } from '@/hooks/useTrigger'
 import { AppointmentStatus } from '..'
+import { IAppointmentOnDay } from '../AppointmentPending'
 
-export default function AppointmentDone() {
+interface IProps {
+    payload: IAppointmentOnDay
+}
+
+export default function AppointmentDone({payload}:IProps) {
     const { handleTrigger, trigger } = useTrigger()
 
     return (

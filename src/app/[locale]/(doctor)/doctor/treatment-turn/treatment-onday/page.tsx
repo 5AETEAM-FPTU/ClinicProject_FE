@@ -1,4 +1,4 @@
-import DoctorVisitInDayModule from '@/components/Core/modules/Doctor/DoctorVisitInDayModule'
+import DoctorVisitInDayModule from '@/components/Core/modules/Doctor/DoctorVisitOnDayModule'
 import React from 'react'
 
 function TreatmentOnDay() {

@@ -184,6 +184,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                     {appLayoutState?.destination
                                         ? handleRenderDistance('destination')
                                         : handleRenderDistance('distance')}
+                                    
                                 </p>
                             </div>
                         </div>
