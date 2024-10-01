@@ -2,10 +2,12 @@ import { Button } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useGetScheduleByDateQuery } from '@/stores/services/schedule/scheduleSettings'
+import dayjs from 'dayjs'
+import AddingSchedulesForm from '../AddingSchedulesForm'
 
-type TimeSlot = {
-    start: string
-    end: string
+export type TimeSlot = {
+    startTime: string
+    endTime: string
 }
 
 type TimeSlotSectionProps = {
@@ -15,7 +17,12 @@ type TimeSlotSectionProps = {
     onSelectSlot: (slot: TimeSlot) => void
 }
 
-const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selectedSlot, onSelectSlot }) => (
+export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
+    title,
+    slots,
+    selectedSlot,
+    onSelectSlot,
+}) => (
     <motion.div
         initial={{
             y: 30,
@@ -32,84 +39,119 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, selecte
         viewport={{
             once: true,
         }}
-        className="mb-6">
-        <h2 className="text-xl font-bold mb-3">{title}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        className="mb-6"
+    >
+        <h2 className="mb-3 text-xl font-bold">{title}</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {slots.map((slot, index) => (
                 <Button
                     key={index}
-                    className={`py-4 px-2 border text-center ${selectedSlot === slot
-                        ? 'bg-blue-500 text-white border-blue-500'
-                        : 'bg-white text-black border-blue-200 hover:border-blue-500'
-                        }`}
+                    className={`border px-2 py-4 text-center ${
+                        selectedSlot === slot
+                            ? 'border-blue-500 bg-blue-500 text-white'
+                            : 'border-blue-200 bg-white text-black hover:border-blue-500'
+                    }`}
                     onClick={() => onSelectSlot(slot)}
                 >
-                    {slot.start} - {slot.end}
+                    {dayjs(slot.startTime).format('HH:mm')} -{' '}
+                    {dayjs(slot.endTime).format('HH:mm')}
                 </Button>
             ))}
         </div>
     </motion.div>
 )
 
-export default function Component({ handleClose }: { handleClose: () => void }) {
+export default function Component({
+    handleClose,
+    date,
+}: {
+    handleClose: () => void
+    date: Date | null
+}) {
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
+    const [morningSlots, setMorningSlots] = useState<TimeSlot[]>([])
+    const [afternoonSlots, setAfternoonSlots] = useState<TimeSlot[]>([])
     const { result, isFetching, refetch } = useGetScheduleByDateQuery(
-        undefined,
+        dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString(),
         {
             selectFromResult: ({ data, isFetching }) => {
                 return {
-                    result: data?.body ?? {},
+                    result: data?.body.timeSlots ?? {},
                     isFetching: isFetching,
                 }
             },
         },
     )
 
-    console.log(result)
-
     useEffect(() => {
         refetch()
     }, [])
 
+    useEffect(() => {
+        if (result && result.length > 0) {
+            const morning = result.filter(
+                (slot: TimeSlot) => dayjs(slot.startTime).hour() < 12,
+            )
+            const afternoon = result.filter(
+                (slot: TimeSlot) => dayjs(slot.startTime).hour() >= 12,
+            )
 
-    const morningSlots: TimeSlot[] = [
-        { start: '07:00', end: '08:00' },
-        { start: '08:00', end: '09:00' },
-        { start: '09:00', end: '10:00' },
-        { start: '10:00', end: '11:00' },
-        { start: '11:00', end: '12:00' },
-    ]
+            setMorningSlots(
+                morning.map((slot: TimeSlot) => ({
+                    startTime: dayjs(slot.startTime),
+                    endTime: dayjs(slot.endTime),
+                })),
+            )
 
-    const afternoonSlots: TimeSlot[] = [
-        { start: '13:00', end: '14:00' },
-        { start: '14:00', end: '15:00' },
-        { start: '15:00', end: '16:00' },
-    ]
+            setAfternoonSlots(
+                afternoon.map((slot: TimeSlot) => ({
+                    startTime: dayjs(slot.startTime),
+                    endTime: dayjs(slot.endTime),
+                })),
+            )
+        } else {
+            setMorningSlots([])
+            setAfternoonSlots([])
+        }
+    }, [result, date])
 
     const handleSelectSlot = (slot: TimeSlot) => {
         setSelectedSlot(slot)
     }
 
     return (
-        <div className="p-4 w-full mx-auto mt-4">
-            <Button className="float-right" onClick={handleClose}>Đóng</Button>
-            <TimeSlotSection
-                title="Buổi sáng"
-                slots={morningSlots}
-                selectedSlot={selectedSlot}
-                onSelectSlot={handleSelectSlot}
-            />
-            <TimeSlotSection
-                title="Buổi chiều"
-                slots={afternoonSlots}
-                selectedSlot={selectedSlot}
-                onSelectSlot={handleSelectSlot}
-            />
-            {selectedSlot && (
-                <p className="mt-4 text-center font-semibold">
-                    Bạn đã chọn khung giờ: {selectedSlot.start} - {selectedSlot.end}
-                </p>
-            )}
-        </div>
+        <>
+            <div className="mx-auto mt-4 w-full p-4">
+                <Button className="float-right" onClick={handleClose}>
+                    Đóng
+                </Button>
+                {morningSlots.length > 0 && (
+                    <TimeSlotSection
+                        title="Buổi sáng"
+                        slots={morningSlots}
+                        selectedSlot={selectedSlot}
+                        onSelectSlot={handleSelectSlot}
+                    />
+                )}
+                {afternoonSlots.length > 0 && (
+                    <TimeSlotSection
+                        title="Buổi chiều"
+                        slots={afternoonSlots}
+                        selectedSlot={selectedSlot}
+                        onSelectSlot={handleSelectSlot}
+                    />
+                )}
+                {selectedSlot && (
+                    <p className="mt-4 text-center font-semibold">
+                        Bạn đã chọn khung giờ:{' '}
+                        {dayjs(selectedSlot.startTime).format('HH:mm')} -{' '}
+                        {dayjs(selectedSlot.endTime).format('HH:mm')}
+                    </p>
+                )}
+            </div>
+            <div className="m-4">
+                <AddingSchedulesForm date={date} refetch={refetch}/>
+            </div>
+        </>
     )
 }

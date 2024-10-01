@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { Button } from 'antd'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import TimeSlot from './TimeSlot'
+import dayjs from 'dayjs'
+import AddingSchedulesForm from './AddingSchedulesForm'
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = [
@@ -43,7 +45,6 @@ function compareDatesByDay(date1: Date, date2: Date) {
 const getWeekRow = (date: Date) => {
     const firstDayOfMonth = getFirstDayOfMonth(date)
     // Calculate week row index considering Sunday as the start of the week
-    console.log(Math.floor((date.getDate() + firstDayOfMonth) / 7))
     return Math.ceil((date.getDate() + firstDayOfMonth) / 7)
 }
 
@@ -58,12 +59,10 @@ const getFirstDayOfMonth = (date: Date) => {
 // end helper function
 
 export default function DoctorUpdateSchedules() {
-    const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) // September 2024
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null) // September 17, 2024
+    const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) 
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
 
-
-    
     const handleClose = () => {
         setSelectedDate(null)
         setTimeSlotVisible(false)
@@ -87,6 +86,7 @@ export default function DoctorUpdateSchedules() {
         setSelectedDate(date)
         setTimeSlotVisible(true)
     }
+
 
     const selectedWeekRow = selectedDate && getWeekRow(selectedDate)
 
@@ -161,9 +161,9 @@ export default function DoctorUpdateSchedules() {
                     </button>
                 </div>
                 <div className="mb-2 grid grid-cols-7 gap-2">
-                    {daysOfWeek.map((day) => (
+                    {daysOfWeek.map((day, index) => (
                         <div
-                            key={day}
+                            key={index}
                             className="text-center text-xl font-semibold text-[#666666]"
                         >
                             {day}
@@ -172,8 +172,10 @@ export default function DoctorUpdateSchedules() {
                 </div>
                 <div className="grid grid-cols-7 gap-2">{renderCalendar()}</div>
                 {timeSlotVisible ? (
-                    <TimeSlot handleClose={handleClose} />
+                    <TimeSlot handleClose={handleClose} date={selectedDate} />
                 ) : null}
+
+               
             </div>
         </div>
     )
