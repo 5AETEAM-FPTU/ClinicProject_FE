@@ -1,5 +1,5 @@
 'use client'
-import { Button, Input, Layout } from 'antd'
+import { Button, Grid, Input, Layout, Popover } from 'antd'
 import { Irish_Grover } from 'next/font/google'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -13,7 +13,7 @@ import Menu, {
 } from '../../Core/ui/Menu'
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
-import { toggleSidebar } from '@/stores/features/sidebar'
+import { setCollapsed, toggleSidebar } from '@/stores/features/sidebar'
 import { Bell, Home, LogOut, Logs, Search, Settings } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Footer } from 'antd/es/layout/layout'
@@ -29,6 +29,7 @@ import { useTrigger } from '@/hooks/useTrigger'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import Notifications from './Notifications'
+import { set } from 'lodash'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -47,11 +48,13 @@ const { useBreakpoint } = Grid
 function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const { collapsed } = useAppSelector((state) => state.sidebar)
     const { user } = useAppSelector((state) => state.auth)
-    const sideBarRef = useRef(null);
+    const sideBarRef = useRef(null)
     const handleToggleSidebar = () => dispath(toggleSidebar())
-    const screen = useBreakpoint();
-    console.log(screen);
-    useClickOutside(sideBarRef, () => !collapsed && !screen.md && handleToggleSidebar())
+    const screen = useBreakpoint()
+    useClickOutside(
+        sideBarRef,
+        () => !collapsed && !screen.md && handleToggleSidebar(),
+    )
     const dispath = useAppDispatch()
     const router = useRouter()
     const locale = useLocale()
@@ -96,7 +99,14 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
     }
 
+    console.log(collapsed);
+    console.log(screen);
+
     const notificationsUnReadLength = 2
+
+    useEffect(() => {
+        if(!screen.sm) dispath(setCollapsed(true))
+    }, [screen])
 
     return (
         <Layout className="!h-screen">
@@ -107,8 +117,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                 collapsed={collapsed}
                 className={cn(
                     '!min-w-[250px] !bg-dashboardBackgournd',
-                    `${collapsed ? '!min-w-[80px] sm:translate-x-0 translate-x-[-80px]' : 'translate-x-0'}`,
-                    'fixed z-[999] h-full sm:static'
+                    `${collapsed ? '!min-w-[80px] translate-x-[-80px] sm:translate-x-0' : 'translate-x-0'}`,
+                    'fixed z-[999] h-full sm:static',
                 )}
             >
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
@@ -158,8 +168,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                         }}
                     />
 
-                    <div className="flex w-full flex-row items-center justify-end sm:justify-between gap-[20px]">
-                        <div className="hidden sm:flex flex-col gap-2 min-w-[170px]">
+                    <div className="flex w-full flex-row items-center justify-end gap-[20px] sm:justify-between">
+                        <div className="hidden min-w-[170px] flex-col gap-2 sm:flex">
                             <div className="flex h-fit flex-row items-center gap-2 text-secondarySupperDarker">
                                 <Home size={18} />
                                 <span>/</span>
@@ -187,7 +197,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                             className="mr-3 text-secondaryDarker"
                                         />
                                     }
-                                    className="!w-[280px] !rounded-xl hidden"
+                                    className="hidden !w-[280px] !rounded-xl"
                                     placeholder="Tìm kiếm"
                                     size="middle"
                                 ></Input>
@@ -243,17 +253,22 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         className="h-full w-full object-cover"
                                     ></Image>
                                 </div>
-                                <Button type='text'
-                                    className="hidden md:block cursor-pointer text-[16px] font-semibold text-secondarySupperDarker"
+                                <Button
+                                    type="text"
+                                    className="hidden cursor-pointer text-[16px] font-semibold text-secondarySupperDarker md:block"
                                     onClick={() => {
                                         handleLogout()
                                     }}
                                 >
                                     Đăng xuất
                                 </Button>
-                                <Button onClick={() => {
-                                    handleLogout()
-                                }} className='d-block md:hidden' icon={<LogOut />} />
+                                <Button
+                                    onClick={() => {
+                                        handleLogout()
+                                    }}
+                                    className="d-block md:hidden"
+                                    icon={<LogOut />}
+                                />
                             </div>
                         </div>
                     </div>
