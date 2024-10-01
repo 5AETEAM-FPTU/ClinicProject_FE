@@ -104,9 +104,9 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
 
     const notificationsUnReadLength = 2
 
-    useEffect(() => {
-        if(!screen.sm) dispath(setCollapsed(true))
-    }, [screen])
+    // useEffect(() => {
+    //     if(!screen.sm) dispath(setCollapsed(true))
+    // }, [screen])
 
     return (
         <Layout className="!h-screen">
