@@ -6,7 +6,13 @@ import { TimeSlot, TimeSlotSection } from '../TimeSlot'
 import dayjs, { Dayjs } from 'dayjs'
 import { useTrigger } from '@/hooks/useTrigger'
 
-export default function AddingSchedulesForm({ date, refetch }: { date: Date | null , refetch: () => void}) {
+export default function AddingSchedulesForm({
+    date,
+    refetch,
+}: {
+    date: Date | null
+    refetch: () => void
+}) {
     const [timeSlotAdding, setTimeSlotAdding] = useState<TimeSlot[]>([])
     const { handleTrigger, trigger } = useTrigger()
     const [createSchedules, { isLoading }] = useCreateSchedulesMutation()
@@ -95,24 +101,69 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
     return (
         <>
             <div className="flex gap-4">
-                <button
-                    onClick={handleAddingTimeOpen}
-                    className="shadow flex items-center rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 hover:bg-gray-100"
+                <Popover
+                    trigger={'click'}
+                    open={isAddingSlotVisible}
+                    onOpenChange={() =>
+                        setIsAddingTimeVisible(!isAddingSlotVisible)
+                    }
+                    content={
+                        <div className="shadow-lg relative mt-2 h-36 w-full rounded bg-slate-50">
+                            <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
+                                <span className="flex-1 text-start">
+                                    Bắt đầu
+                                </span>
+                                <span className="flex-1 text-start">
+                                    Kết thúc
+                                </span>
+                            </div>
+                            <Space direction="vertical" className="p-1">
+                                <TimePicker.RangePicker
+                                    size="large"
+                                    onCalendarChange={(dates, dateStrings) => {
+                                        console.log('b', dates, dateStrings)
+                                        handleChangingTimeSlot(
+                                            dates,
+                                            dateStrings,
+                                        )
+                                    }}
+                                    format="HH:mm"
+                                />
+                            </Space>
+                            <div className="m-2 flex gap-4">
+                                <Button className="shadow flex flex-1 items-center justify-center rounded-lg border border-red-500 bg-white px-4 py-2 font-bold text-red-500 hover:bg-red-100">
+                                    Xóa
+                                </Button>
+                                <Button
+                                    loading={isLoading}
+                                    onClick={() => handleSubmit(timeSlotAdding)}
+                                    className="shadow flex flex-1 items-center justify-center rounded-lg border border-secondaryDark bg-secondaryDark px-4 py-2 font-semibold text-white hover:bg-secondaryDark"
+                                >
+                                    Lưu
+                                </Button>
+                            </div>
+                        </div>
+                    }
                 >
-                    <Plus className="mr-2" />
-                    Thêm khung giờ
-                </button>
+                    <button
+                        onClick={() =>
+                            setIsAddingTimeVisible(!isAddingSlotVisible)
+                        }
+                        className="shadow flex items-center rounded-[12px] border border-secondaryDark bg-white px-4 py-2 font-semibold text-secondaryDarker transition-all"
+                    >
+                        <Plus className="mr-2" />
+                        Thêm khung giờ
+                    </button>
+                </Popover>
 
                 <Popover
                     trigger={'click'}
                     open={trigger}
                     content={
-                        <div className="shadow-lg mx-auto max-w-md rounded-xl bg-white p-6">
-                            <h2 className="mb-6 text-2xl font-bold text-gray-800">
-                                Time Slot Scheduler
-                            </h2>
+                        <div className="shadow-lg  max-w-md rounded-xl bg-white p-2">
+                           
                             <div className="space-y-4">
-                                <div className="flex items-center gap-1 justify-between">
+                                <div className="flex items-center justify-between gap-1">
                                     <div>
                                         <label className="mb-1 block text-sm font-medium text-gray-700">
                                             Bắt đầu
@@ -123,7 +174,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                                 'startTime',
                                             )}
                                             format="HH:mm"
-                                            className="border-cyan-500 hover:border-cyan-600 focus:border-cyan-600"
+                                            className="border-secondaryDark hover:border-secondaryDark focus:border-secondaryDark"
                                         />
                                     </div>
                                     <div>
@@ -136,7 +187,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                                 'endTime',
                                             )}
                                             format="HH:mm"
-                                            className="border-cyan-500 hover:border-cyan-600 focus:border-cyan-600"
+                                            className="border-secondaryDark hover:border-secondaryDark focus:border-secondaryDark"
                                         />
                                     </div>
                                 </div>
@@ -153,7 +204,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                                     Number(e.target.value),
                                                 )
                                         }}
-                                        className="w-full rounded-md border border-cyan-500 p-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                                        className="w-full rounded-md border border-secondaryDark p-2 focus:outline-none focus:ring-2 focus:ring-secondaryDark"
                                     />
                                 </div>
                                 <div>
@@ -164,7 +215,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                         {timeSlots.map((slot, index) => (
                                             <div
                                                 key={index}
-                                                className="flex items-center justify-center rounded-md bg-cyan-100 p-2 text-cyan-800"
+                                                className="flex items-center justify-center rounded-md bg-secondaryDark bg-opacity-30 p-2 text-cyan-800"
                                             >
                                                 <Clock className="mr-2 h-4 w-4" />
                                                 {slot}
@@ -175,7 +226,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                 <div className="mt-4 flex justify-end space-x-2">
                                     <Button
                                         onClick={handleTrigger}
-                                        className="border-cyan-500 bg-white text-cyan-600 hover:bg-cyan-50"
+                                        className="border-secondaryDark  bg-white text-secondaryDark  hover:bg-cyan-50"
                                     >
                                         Hủy
                                     </Button>
@@ -185,7 +236,7 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                                         onClick={() =>
                                             handleSubmit(timeSlotAdding)
                                         }
-                                        className="border-none bg-cyan-500 hover:bg-cyan-600"
+                                        className="border-none bg-secondaryDark  hover:bg-secondaryDark"
                                     >
                                         Tạo
                                     </Button>
@@ -198,50 +249,13 @@ export default function AddingSchedulesForm({ date, refetch }: { date: Date | nu
                     {' '}
                     <button
                         onClick={handleQuicklyAdding}
-                        className="shadow flex items-center rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 hover:bg-gray-100"
+                        className="shadow flex items-center rounded-[12px] border border-gray-400 bg-white px-4 py-2 font-semibold text-secondarySupperDarker hover:bg-gray-100"
                     >
                         <Plus className="mr-2" />
                         Tạo nhanh
                     </button>
                 </Popover>
             </div>
-
-            {isAddingSlotVisible && (
-                <div className="shadow-lg relative mt-2 h-36 w-1/4 rounded bg-slate-50">
-                    <button
-                        className="hover:text-red-300-800 absolute right-2 top-2 text-red-500"
-                        onClick={handleClose}
-                    >
-                        <X color="gray" />
-                    </button>
-                    <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
-                        <span className="flex-1 text-start">Bắt đầu</span>
-                        <span className="flex-1 text-start">Kết thúc</span>
-                    </div>
-                    <Space direction="vertical" className="p-1">
-                        <TimePicker.RangePicker
-                            size="large"
-                            onCalendarChange={(dates, dateStrings) => {
-                                console.log('b', dates, dateStrings)
-                                handleChangingTimeSlot(dates, dateStrings)
-                            }}
-                            format="HH:mm"
-                        />
-                    </Space>
-                    <div className="m-2 flex gap-4">
-                        <Button className="shadow flex flex-1 items-center justify-center rounded border border-red-500 bg-white px-4 py-2 font-bold text-red-500 hover:bg-red-100">
-                            Xóa
-                        </Button>
-                        <Button
-                            loading={isLoading}
-                            onClick={() => handleSubmit(timeSlotAdding)}
-                            className="shadow flex flex-1 items-center justify-center rounded border border-blue-500 bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600"
-                        >
-                            Lưu
-                        </Button>
-                    </div>
-                </div>
-            )}
         </>
     )
 }

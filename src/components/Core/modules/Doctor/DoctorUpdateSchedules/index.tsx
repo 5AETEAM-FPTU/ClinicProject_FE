@@ -1,10 +1,9 @@
 'use client'
-import React, { useState } from 'react'
 import { Button } from 'antd'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 import TimeSlot from './TimeSlot'
-import dayjs from 'dayjs'
-import AddingSchedulesForm from './AddingSchedulesForm'
+import {motion} from 'framer-motion';
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = [
@@ -59,7 +58,7 @@ const getFirstDayOfMonth = (date: Date) => {
 // end helper function
 
 export default function DoctorUpdateSchedules() {
-    const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) 
+    const [currentDate, setCurrentDate] = useState(new Date(Date.now())) 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
 
@@ -115,8 +114,9 @@ export default function DoctorUpdateSchedules() {
             const currentWeekRow = getWeekRow(date)
             const isDisable = compareDatesByDay(date, new Date()) < 0
             days.push(
-                <div
-                    className={`flex h-12 items-center justify-center ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}
+                <motion.div
+                
+                    className={`flex gap-2 mt-2 h-12 items-center justify-center ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}
                 >
                     <Button
                         disabled={isDisable}
@@ -125,12 +125,15 @@ export default function DoctorUpdateSchedules() {
                         key={day}
                         type="text"
                         onClick={() => !isDisable && handleSelectedRow(date)}
-                        className={`text-color-[#333333] text-xl font-semibold ${isDisable ? 'cursor-not-allowed text-gray-400' : ''} ${isSelected ? 'bg-sky-400 text-white' : ''} ${isToday && !isSelected ? 'border border-blue-300 text-blue-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-sky-400 hover:text-white' : ''}`}
+                        className={`text-secondarySupperDarker relative w-full h-[56px] text-[16x] font-semibold ${isDisable ? 'cursor-not-allowed !text-gray-300' : ''} ${isSelected ? 'bg-secondaryDark bg-opacity-60 text-white' : ''} ${isToday && !isSelected ? ' !text-white bg-secondaryDark bg-opacity-80 !border-2 !border-secondaryDark' : ''} ${!isSelected && !isDisable ? 'hover:bg-secondaryDark hover:bg-opacity-40 hover:text-white' : ''}`}
                         aria-label={`Select ${date.toDateString()}`}
                     >
                         {day}
+                        {
+                            isToday  && <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-white"></div>
+                        }
                     </Button>
-                </div>,
+                </motion.div>,
             )
         }
 
@@ -138,23 +141,23 @@ export default function DoctorUpdateSchedules() {
     }
 
     return (
-        <div className="container mx-auto flex min-h-screen flex-col gap-4 bg-gray-100 p-4 md:flex-row">
-            <div className="shadow h-fit w-full rounded-lg bg-white p-4">
-                <h2 className="mb-4 rounded-t-lg bg-gradient-to-r from-[#665ee3] from-0% to-[#358ec8] to-90% p-2 text-center text-xl font-bold uppercase text-white">
+        <div className="mx-auto flex flex-col gap-4  p-4 md:flex-row">
+            <div className="shadow h-fit w-full rounded-xl p-4 bg-white shadow-third">
+                <h2 className="mb-4 rounded-t-lg bg-gradient-to-r to-90% p-2 text-center text-xl font-bold uppercase text-secondarySupperDarker">
                     Cập nhật lịch
                 </h2>
                 <div className="mb-4 flex items-center justify-between">
                     <button
                         onClick={handlePrevMonth}
-                        className="p-2"
+                        className="p-2 rounded-full hover:bg-secondaryDarker hover:bg-opacity-20 transition"
                         aria-label="Previous month"
                     >
                         <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                     </button>
-                    <h3 className="text-xl font-semibold">{`${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}</h3>
+                    <h3 className="text-[20px] font-semibold">{`${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`}</h3>
                     <button
                         onClick={handleNextMonth}
-                        className="p-2"
+                        className="p-2  rounded-full hover:bg-secondaryDarker hover:bg-opacity-20 transition"
                         aria-label="Next month"
                     >
                         <ChevronRight className="h-5 w-5" aria-hidden="true" />
@@ -164,7 +167,7 @@ export default function DoctorUpdateSchedules() {
                     {daysOfWeek.map((day, index) => (
                         <div
                             key={index}
-                            className="text-center text-xl font-semibold text-[#666666]"
+                            className="text-center text-[16px] font-bold  text-secondarySupperDarker"
                         >
                             {day}
                         </div>
