@@ -26,6 +26,8 @@ const doctorEndpoint = {
     PATCH_PRIVATE_INFOR: "/doctor/private-info",
     PATCH_ACHIEVEMENT: "/doctor/achievement",
     PATCH_DESCRIPTION: "/doctor/description",
+
+    GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
 }
 
 const enumEndpoint = {
@@ -36,5 +38,7 @@ const enumEndpoint = {
     GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
 
 }
+
+
 
 export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint };
