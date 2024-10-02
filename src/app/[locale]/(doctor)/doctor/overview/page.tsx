@@ -1,11 +1,9 @@
 import React from 'react'
-
-function DoctorOvervie() {
+import OverView from '@/components/Core/modules/Doctor/DoctorOverview'
+function DoctorOverview() {
     return (
-        <div className=''> 
-            This is doctor Overview
-        </div>
+        <OverView />
     )
 }
 
-export default DoctorOvervie
+export default DoctorOverview

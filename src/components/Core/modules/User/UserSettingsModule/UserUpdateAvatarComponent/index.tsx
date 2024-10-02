@@ -116,8 +116,8 @@ export const UserUpdateAvatarComponent = ({
                             className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                             type="secondary"
                         >
-                            {profile?.gender
-                                ? profile?.gender
+                            {profile?.gender?.genderName
+                                ? profile?.gender?.genderName
                                 : 'Chưa cài đặt giới tính'}
                         </Text>
                         <br />

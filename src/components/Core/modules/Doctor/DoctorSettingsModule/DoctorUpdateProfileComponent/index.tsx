@@ -29,7 +29,8 @@ export const DoctorUpdateProfileComponent = ({
 }: DoctorUpdateProfileProps) => {
     const [imageUrl, setImageUrl] = useState<string>('')
     const [isUploading, setIsUploading] = useState<boolean>(false)
-    const [changeProfileAvatar, {isLoading}] = useChangeProfileAvatarMutation()
+    const [changeProfileAvatar, { isLoading }] =
+        useChangeProfileAvatarMutation()
     const dispatch = useAppDispatch()
     const params = useParams()
 
@@ -68,7 +69,7 @@ export const DoctorUpdateProfileComponent = ({
                     avatar: res?.data?.data?.url,
                 }
 
-                changeProfileAvatar({ avatarUrl: res?.data?.data?.url })
+                await changeProfileAvatar({ avatarUrl: res?.data?.data?.url })
                 webStorageClient.set(
                     constants.USER_AVATAR,
                     res?.data?.data?.url,
@@ -98,9 +99,7 @@ export const DoctorUpdateProfileComponent = ({
                     <Avatar
                         shape="square"
                         className="size-16 rounded-xl sm:size-20"
-                        src={
-                            user?.avatarUrl ? user?.avatarUrl : DefaultImage
-                        }
+                        src={user?.avatarUrl ? user?.avatarUrl : DefaultImage}
                     />
                     <div className="">
                         <p
@@ -115,18 +114,20 @@ export const DoctorUpdateProfileComponent = ({
                             className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                             type="secondary"
                         >
-                            {profile?.position
-                                ? profile?.position
-                                : 'Chưa có ví trí làm việc'}
+                            {profile?.position?.positionName
+                                ? profile?.position?.positionName
+                                : 'Chưa có vị trí làm việc'}
                         </Text>
                         <br />
                         <Text
                             className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                             type="secondary"
                         >
-                            {profile?.specialty
-                                ? profile?.specialty
-                                : 'Chưa có chuyên khoa'}
+                            {profile.specialties
+                                ? profile.specialties.map(
+                                      (item) => item.specialtyName + ' ',
+                                  )
+                                : 'Chưa có chuyên khoa'}
                         </Text>
                     </div>
                 </Space>

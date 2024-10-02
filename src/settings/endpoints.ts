@@ -19,6 +19,8 @@ const userEndpoint = {
     PATCH_PRIVATE_INFOR: "/user/private-info",
     GET_PROFILE: "/user/profile",
     PATCH_DESCRIPTION: "/user/description",
+    GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
+    GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
 }
 
 const doctorEndpoint = {
@@ -26,6 +28,23 @@ const doctorEndpoint = {
     PATCH_PRIVATE_INFOR: "/doctor/private-info",
     PATCH_ACHIEVEMENT: "/doctor/achievement",
     PATCH_DESCRIPTION: "/doctor/description",
+
+    GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
+    UPDATE_DUTY: "/doctor/duty",
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint };
+const scheduleEndpoint = {
+    GET_SCHEDULES_BY_DATE: "/schedules/{date}",
+    POST_CREATE_SCHEDULES: "/schedules",
+}
+
+const enumEndpoint = {
+    GET_SPECIALTY: "/enum/getAllSpecialty",
+    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
+    GET_POSITION: "/enum/getAllPosition",
+    GET_GENDER: "/enum/getAllGender",
+    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint };

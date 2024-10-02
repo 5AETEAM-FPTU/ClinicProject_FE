@@ -99,7 +99,7 @@ export const getEditorHtmlContent = (
     editorRef: React.MutableRefObject<any>,
 ) => {
     if (editorRef.current) {
-        return editorRef.current.getContent() 
+        return editorRef.current.getContent()
     }
     return ''
 }

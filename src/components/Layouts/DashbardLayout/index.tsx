@@ -1,7 +1,7 @@
 'use client'
-import { Button, Input, Layout } from 'antd'
+import { Button, Grid, Input, Layout, Popover } from 'antd'
 import { Irish_Grover } from 'next/font/google'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 import Logo from '@public/main/logo/FinalLogo.png'
@@ -13,18 +13,23 @@ import Menu, {
 } from '../../Core/ui/Menu'
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
-import { toggleSidebar } from '@/stores/features/sidebar'
-import { Bell, Home, Logs, Search, Settings } from 'lucide-react'
+import { setCollapsed, toggleSidebar } from '@/stores/features/sidebar'
+import { Bell, Home, LogOut, Logs, Search, Settings } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { Footer } from 'antd/es/layout/layout'
 import webStorageClient from '@/utils/webStorageClient'
 import { useLocale } from 'next-intl'
 import { signOut } from 'next-auth/react'
-
+import useClickOutside from '@/hooks/useClickOutside'
 import { AppProgressBar } from 'next-nprogress-bar'
 import themeColors from '@/style/themes/default/colors'
 import { useRouter } from 'next/navigation'
 import { DefaultImage } from '@/helpers/data/Default'
+import { useTrigger } from '@/hooks/useTrigger'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
+import Notifications from './Notifications'
+import { set } from 'lodash'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -38,13 +43,23 @@ export type DashboardProps = {
     sidebarItems?: IndividualMenuItemType[]
 }
 
+const { useBreakpoint } = Grid
+
 function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const { collapsed } = useAppSelector((state) => state.sidebar)
     const { user } = useAppSelector((state) => state.auth)
+    const sideBarRef = useRef(null)
+    const handleToggleSidebar = () => dispath(toggleSidebar())
+    const screen = useBreakpoint()
+    useClickOutside(
+        sideBarRef,
+        () => !collapsed && !screen.md && handleToggleSidebar(),
+    )
     const dispath = useAppDispatch()
     const router = useRouter()
     const locale = useLocale()
-
+    const { handleTrigger, trigger } = useTrigger()
+    const _accessToken = webStorageClient.getToken()
     const [appLayoutState, setAppPathLayoutState] =
         useState<TAppPathLayoutState | null>(null)
     const pathname = usePathname()
@@ -84,20 +99,31 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
     }
 
+    console.log(collapsed);
+    console.log(screen);
+
+    const notificationsUnReadLength = 2
+
+    // useEffect(() => {
+    //     if(!screen.sm) dispath(setCollapsed(true))
+    // }, [screen])
+
     return (
         <Layout className="!h-screen">
             <Sider
+                ref={sideBarRef}
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
                 className={cn(
                     '!min-w-[250px] !bg-dashboardBackgournd',
-                    `${collapsed && '!min-w-[80px]'}`,
+                    `${collapsed ? '!min-w-[80px] translate-x-[-80px] sm:translate-x-0' : 'translate-x-0'}`,
+                    'fixed z-[999] h-full sm:static',
                 )}
             >
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
-                        className="flex flex-row gap-2 border-b-[2px] select-none border-secondaryDark p-4"
+                        className="flex select-none flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
                         onClick={() => router.push('/home')}
                     >
                         <div className="h-[45px] w-[45px]">
@@ -134,7 +160,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                 <Logs className="text-secondarySupperDarker" />
                             )
                         }
-                        onClick={() => dispath(toggleSidebar())}
+                        onClick={handleToggleSidebar}
                         style={{
                             fontSize: '16px',
                             width: 64,
@@ -142,8 +168,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                         }}
                     />
 
-                    <div className="flex w-full flex-row items-center justify-between gap-[20px]">
-                        <div className="flex flex-col gap-2">
+                    <div className="flex w-full flex-row items-center justify-end gap-[20px] sm:justify-between">
+                        <div className="hidden min-w-[170px] flex-col gap-2 sm:flex">
                             <div className="flex h-fit flex-row items-center gap-2 text-secondarySupperDarker">
                                 <Home size={18} />
                                 <span>/</span>
@@ -158,10 +184,11 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                     {appLayoutState?.destination
                                         ? handleRenderDistance('destination')
                                         : handleRenderDistance('distance')}
+                                    
                                 </p>
                             </div>
                         </div>
-                        <div className="flex flex-row items-center gap-[100px]">
+                        <div className="flex flex-row items-center">
                             {' '}
                             <div>
                                 <Input
@@ -171,29 +198,55 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                             className="mr-3 text-secondaryDarker"
                                         />
                                     }
-                                    className="!w-[280px] !rounded-xl"
+                                    className="hidden !w-[280px] !rounded-xl"
                                     placeholder="Tìm kiếm"
                                     size="middle"
                                 ></Input>
                             </div>
                             <div className="flex flex-row items-center gap-5">
-                                <div className="relative cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
-                                    <Bell size={24} />
-                                    <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
-                                        <p className="text-[10px] text-white">
-                                            5
-                                        </p>
+                                <Popover
+                                    trigger={'click'}
+                                    open={trigger}
+                                    content={<Notifications />}
+                                    onOpenChange={handleTrigger}
+                                    overlayClassName={cn(
+                                        'min-w-[500px] max-h-[600px] overflow-hidden overflow-y-auto rounded-lg shadow-third',
+                                    )}
+                                >
+                                    <div
+                                        className={cn(
+                                            'relative cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200',
+                                            `${trigger ? 'bg-secondaryDarkerOpacity' : ''}`,
+                                        )}
+                                    >
+                                        <Bell size={24} />
+                                        {notificationsUnReadLength > 0 && (
+                                            <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
+                                                <p className="text-[10px] text-white">
+                                                    {notificationsUnReadLength}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
+                                </Popover>
                                 <div className="cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
                                     <Settings size={24} />
                                 </div>
                                 <div className="h-[30px] w-[2px] bg-secondarySupperDarker"></div>
 
-                                <div className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark">
+                                <div
+                                    className="h-[40px] w-[40px] cursor-pointer overflow-hidden rounded-full border-2 border-secondaryDark"
+                                    onClick={() => {
+                                        router.push(
+                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/profile`,
+                                        )
+                                    }}
+                                >
                                     <Image
                                         src={
-                                            user.avatarUrl ? user.avatarUrl : DefaultImage
+                                            user.avatarUrl
+                                                ? user.avatarUrl
+                                                : DefaultImage
                                         }
                                         alt="avatar"
                                         width={200}
@@ -201,14 +254,22 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         className="h-full w-full object-cover"
                                     ></Image>
                                 </div>
-                                <Button type='text'
-                                    className="cursor-pointer text-[16px] font-semibold text-secondarySupperDarker"
+                                <Button
+                                    type="text"
+                                    className="hidden cursor-pointer text-[16px] font-semibold text-secondarySupperDarker md:block"
                                     onClick={() => {
                                         handleLogout()
                                     }}
                                 >
                                     Đăng xuất
                                 </Button>
+                                <Button
+                                    onClick={() => {
+                                        handleLogout()
+                                    }}
+                                    className="d-block md:hidden"
+                                    icon={<LogOut />}
+                                />
                             </div>
                         </div>
                     </div>
@@ -225,7 +286,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                 <Content
                     className="overflow-y-auto bg-dashboardBackgournd !p-[20px] !pb-5"
                     style={{
-                        margin: '0px 0px 0px 20px',
+                        margin: `0px 0px 0px ${!screen.md ? '0px' : '20px'}`,
                         padding: 24,
                         minHeight: 280,
                     }}

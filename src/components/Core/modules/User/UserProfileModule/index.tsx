@@ -108,8 +108,8 @@ export default function UserProfileModule() {
                                         className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                         type="secondary"
                                     >
-                                        {result?.gender
-                                            ? result?.gender
+                                        {result?.gender?.genderName
+                                            ? result?.gender?.genderName
                                             : 'Ẩn giới tính'}
                                     </Text>
                                     <br />

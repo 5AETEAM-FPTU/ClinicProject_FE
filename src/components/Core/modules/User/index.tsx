@@ -4,8 +4,10 @@ export type UserProfileTypes = {
     fullName: string | null
     description: string | null
     address: string
-    gender: string | null
-    position: string | null
+    gender: {
+        id: string;
+        genderName:string;
+    }
     username: string
     phoneNumber: string | null
     dob: string | null
