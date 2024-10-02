@@ -13,11 +13,15 @@ const slice = createSlice({
   reducers: {
     toggleSidebar: (state) => {
         state.collapsed = !state.collapsed
+    },
+    setCollapsed: (state, action) => {
+        state.collapsed = action.payload
     }
   },
   
 });
 export const {
- toggleSidebar
+ toggleSidebar,
+ setCollapsed
 } = slice.actions;
 export default slice.reducer;
