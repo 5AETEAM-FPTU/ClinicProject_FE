@@ -13,6 +13,7 @@ export const doctorOverviewApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
+        
     })
 })
 

@@ -4,6 +4,8 @@ import BookingConfirmation from "@/components/Core/modules/Calendar/ConfirmAppoi
 import AppointmentBooking from "@/components/Core/modules/Calendar/AppointmentBooking"
 import BookedAppointmentList from "@/components/Core/modules//Doctor/BookedAppointmentsList"
 import FollowUpAppointment from "@/components/Core/modules/Doctor/FollowUpAppointment"
+import DoctorFeedback from "@/components/Core/modules/Doctor/DoctorFeedback"
+import DoctorAppointmentTimeLine from "@/components/Core/modules/Doctor/DoctorAppointmentTimeLine"
 
 export default function TestComponent() {
     // return <PaymentSuccess />
@@ -11,5 +13,7 @@ export default function TestComponent() {
     // return <BookingConfirmation />
     // return <AppointmentBooking />
     // return <BookedAppointmentList />
-    return <FollowUpAppointment />
+    // return <FollowUpAppointment />
+    // return <DoctorFeedback />
+    return <DoctorAppointmentTimeLine />
 }
