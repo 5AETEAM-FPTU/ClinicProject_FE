@@ -32,7 +32,7 @@ function CalendarModule() {
 
     if (!step) return <AppointmentBooking handleBookDoctor={handleBookDoctor} />
     if (step === 'booking') return <Calendar handleSelectTimeSlot={handleSelectTimeSlot} />
-    if (step === 'confirm') return <AppointmentConfirm timeSlotSelected={timeSlotSelected} />
+    if (step === 'confirm') return <AppointmentConfirm timeSlotSelected={timeSlotSelected!} />
 }
 
 export default CalendarModule

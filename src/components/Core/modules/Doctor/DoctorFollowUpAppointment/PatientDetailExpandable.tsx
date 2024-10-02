@@ -8,7 +8,7 @@ const PatientDetailExpandable = () => {
         setIsExpanded(!isExpanded);
     };
 
-    const handleClose = (e) => {
+    const handleClose = (e:any) => {
         if (e.target.id === 'overlay') {
             setIsExpanded(false);
         }
@@ -33,7 +33,7 @@ const PatientDetailExpandable = () => {
             <motion.div
                 layout
                 className={`bg-white shadow-lg rounded-lg p-6 z-50 mx-6 ${isExpanded ? 'cursor-default' : 'cursor-pointer'}`}
-                onClick={!isExpanded ? handleToggle : null}
+                onClick={() => {!isExpanded ? handleToggle : null}}
                 initial={false}
                 animate={{
                     width: '300px',

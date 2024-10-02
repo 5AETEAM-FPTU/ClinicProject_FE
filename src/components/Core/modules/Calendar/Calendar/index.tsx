@@ -46,7 +46,7 @@ const getFirstDayOfMonth = (date: Date) => {
 
 // end helper function
 
-export default function Component({ handleSelectTimeSlot }: { handleSelectTimeSlot: (timeSlot: { startDate: Date; endDate: Date }) => void }) {
+export default function Component({ handleSelectTimeSlot }: { handleSelectTimeSlot?: (timeSlot: { startDate: Date; endDate: Date }) => void }) {
     const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) // September 2024
     const [selectedDate, setSelectedDate] = useState<Date | null>(null) // September 17, 2024
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
@@ -134,7 +134,7 @@ export default function Component({ handleSelectTimeSlot }: { handleSelectTimeSl
                 <div className="grid grid-cols-7 gap-2">
                     {renderCalendar()}
                 </div>
-                {timeSlotVisible ? <TimeSlot handleClose={handleClose} handleSelectTimeSlot={handleSelectTimeSlot} /> : null}
+                {timeSlotVisible ? <TimeSlot handleClose={handleClose} handleSelectTimeSlot={handleSelectTimeSlot!} /> : null}
             </div>
         </div>
     )
