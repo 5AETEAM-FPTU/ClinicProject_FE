@@ -61,7 +61,7 @@ export default function DoctorAppointmentTimeLine() {
                         >
                             <div className='bg-white rounded-[12px]'>
                                 <div className="rounded-lg shadow-md flex">
-                                    <img src={patient.avatar} alt={`Tên bệnh nhân`} className="w-16 h-16 rounded-[12px] mr-4" />
+                                    <img src={patient.avatar} alt={`Tên bệnh nhân`} className="w-16 h-16 rounded-[12px] mr-4 object-cover" />
                                     <div className="flex-grow">
                                         <h2 className="text-base text-secondarySupperDarker font-semibold">{patient.fullName || "Tên bệnh nhân"}</h2>
                                         <p className="text-base text-secondarySupperDarker mt-0 font-normal">

@@ -19,6 +19,11 @@ import { set } from 'lodash'
 import { useGetScheduleByMonthQuery } from '@/stores/services/schedule/scheduleSettings'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
 import { useGetAppointmentOnDayQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
+import { DateTimeFormatOptions, useLocale } from 'next-intl'
+import { useRouter } from 'next-nprogress-bar'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../Auth/SignIn'
+import webStorageClient from '@/utils/webStorageClient'
 
 function calculateAge(birthday: string) {
     const today = new Date();
@@ -213,7 +218,7 @@ const RecentBookedAppoinemt = () => {
     if (data) appointments = data.body.appointments;
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        const options = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
+        const options: DateTimeFormatOptions  = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
         return date.toLocaleDateString('vi-VN', options).replace(',', ''); // Format to Vietnamese style
     };
 
@@ -221,11 +226,11 @@ const RecentBookedAppoinemt = () => {
         const date = new Date(dateString);
 
         // Formatting time as HH:mm
-        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false };
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false } as const;
         const formattedTime = date.toLocaleTimeString([], timeOptions);
 
         // Formatting date as DD/MM/YYYY
-        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
         const formattedDate = date.toLocaleDateString('vi-VN', dateOptions);
 
         return `${formattedTime} - ${formattedDate}`; // Combine time and date
@@ -287,6 +292,8 @@ const RecentBookedAppoinemt = () => {
 
 export default function MedicalDashboard() {
     const [checked, setChecked] = useState(false)
+    const router = useRouter();
+    const locale = useLocale();
     // Doctor profile
     const [updateDoctorDuty, { isLoading, data, error }] = useUpdateDoctorDutyMutation();
     const { data: doctorData, isLoading: doctorLoading, error: doctorError } = useGetDoctorProfileQuery();
@@ -356,18 +363,19 @@ export default function MedicalDashboard() {
                                 style={{
                                     backgroundImage: `url(${BackGround.src})`,
                                 }}
-                                className={`flex h-64 h-[160px] items-start justify-between rounded-[12px] bg-cover bg-center p-5`}
+                                className={`flex h-[160px] items-start justify-between rounded-[12px] bg-cover bg-center p-5`}
                             >
                                 <img
                                     src={doctor?.avatarUrl}
                                     alt="Doctor"
-                                    className="mb-4 h-24 w-24 rounded-[10px]"
+                                    className="mb-4 h-[120opx] w-[120px] rounded-[10px] object-cover"
                                 />
                                 <Button
                                     className="h-[37px] border-[1px] border-[#0284C7] bg-white px-3 py-2 text-base font-semibold text-[#0284C7]"
                                     iconPosition="end"
                                     type="primary"
                                     icon={<Settings color="#0284C7" size={20} />}
+                                    onClick={() => { router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/account/settings`)}}
                                 >
                                     Cài đặt
                                 </Button>
