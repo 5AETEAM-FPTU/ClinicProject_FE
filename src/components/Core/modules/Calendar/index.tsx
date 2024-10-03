@@ -1,8 +1,8 @@
 "use client"
 import React from 'react'
 import Calendar from '@/components/Core/modules/Calendar/Calendar'
-import AppointmentConfirm from '@/components/Core/modules/Calendar/ConfirmAppointment'
-import AppointmentBooking from '@/components/Core/modules/Calendar/AppointmentBooking'
+import AppointmentConfirm from '@/components/Core/modules/User/BookingModule/ConfirmAppointment'
+import AppointmentBooking from '@/components/Core/modules/User/BookingModule/AppointmentBooking'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useGetAllDoctorForBookingQuery } from '@/stores/services/user/userAppointments'
 export type TimeSlot = {
@@ -32,7 +32,7 @@ function CalendarModule() {
 
     if (!step) return <AppointmentBooking handleBookDoctor={handleBookDoctor} />
     if (step === 'booking') return <Calendar handleSelectTimeSlot={handleSelectTimeSlot} />
-    if (step === 'confirm') return <AppointmentConfirm timeSlotSelected={timeSlotSelected} />
+    if (step === 'confirm') return <AppointmentConfirm timeSlotSelected={timeSlotSelected!} />
 }
 
 export default CalendarModule

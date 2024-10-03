@@ -12,6 +12,10 @@ const PatientDetailExpandable = ({ isExpanded, setIsExpanded }: { isExpanded: bo
         }
     };
 
+    const handleToggle = () => {
+        setIsExpanded(!isExpanded);
+    };
+
     return (
         isExpanded && <div className="fixed h-screen w-screen z-[1000]">
             <div className='relative h-full w-full overflow-y-auto'>
