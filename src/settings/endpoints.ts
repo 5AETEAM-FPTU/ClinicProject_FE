@@ -21,6 +21,7 @@ const userEndpoint = {
     PATCH_DESCRIPTION: "/user/description",
     GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
     GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
+    GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
 }
 
 const doctorEndpoint = {
@@ -31,11 +32,13 @@ const doctorEndpoint = {
 
     GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
     UPDATE_DUTY: "/doctor/duty",
+    GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
 }
 
 const scheduleEndpoint = {
     GET_SCHEDULES_BY_DATE: "/schedules/{date}",
     POST_CREATE_SCHEDULES: "/schedules",
+    GET_SCHEDULES_BY_MONTH: "/schedules/month",
 }
 
 const enumEndpoint = {

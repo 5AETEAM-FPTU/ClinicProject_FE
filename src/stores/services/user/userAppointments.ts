@@ -33,6 +33,14 @@ export const userAppointments = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false }
             }),
         }),
+        getAppointmentUpcoming: build.query<any, void>({
+            query: () => ({
+                url: userEndpoint.GET_UPCOMING_DATE,
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: false }
+            }),
+        }),
     })
 })
 
@@ -40,4 +48,5 @@ export const {
     useChangeProfileAvatarMutation,
     useGetAllDoctorForBookingQuery,
     useGetBookedAppointmentsQuery,
+    useGetAppointmentUpcomingQuery
 } = userAppointments;
