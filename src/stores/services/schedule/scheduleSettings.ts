@@ -5,7 +5,7 @@ import { TimeSlot } from "@/components/Core/modules/Doctor/DoctorUpdateSchedules
 import { time } from "console";
 
 export const scheduleSettingsApi = baseApi.injectEndpoints({
-     endpoints: (build) => ({
+    endpoints: (build) => ({
         getScheduleByDate: build.query<any, any>({
             query: (date: string) => ({
                 url: scheduleEndpoint.GET_SCHEDULES_BY_DATE.replace('{date}', date),
@@ -18,13 +18,22 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 url: scheduleEndpoint.POST_CREATE_SCHEDULES,
                 flashError: true,
                 method: 'POST',
-                body: {timeSlots: data},
+                body: { timeSlots: data },
             }),
         }),
-     })
+        getScheduleByMonth: build.query<any, { month: number, year: number }>({
+            query: (params) => ({
+                url: `${scheduleEndpoint.GET_SCHEDULES_BY_MONTH}?month=${params.month}&year=${params.year}`,
+                flashError: true,
+                method: 'GET',
+            }),
+            extraOptions: { skipAuth: false }
+        }),
+    })
 })
 
 export const {
     useGetScheduleByDateQuery,
     useCreateSchedulesMutation,
+    useGetScheduleByMonthQuery
 } = scheduleSettingsApi;
