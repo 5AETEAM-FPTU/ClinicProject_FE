@@ -99,9 +99,6 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
     }
 
-    console.log(collapsed);
-    console.log(screen);
-
     const notificationsUnReadLength = 2
 
     // useEffect(() => {

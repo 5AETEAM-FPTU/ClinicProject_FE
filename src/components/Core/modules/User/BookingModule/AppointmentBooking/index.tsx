@@ -25,11 +25,11 @@ function formatDateRange(startDate: string, endDate: string) {
 export default function Component({ handleBookDoctor }: { handleBookDoctor: (id: string) => void }) {
     const doctors = useGetAllDoctorForBookingQuery();
     const appointments = useGetBookedAppointmentsQuery();
-    const doctorsData = !doctors.isLoading && doctors?.data?.body?.userDetails;
+    const doctorsData = !doctors.isLoading && doctors?.data?.body?.userDetails?.contents;
     const appointmentsData = !appointments.isLoading && appointments?.data?.body?.appointment;
 
     return (
-        <div className="bg-gray-100 min-h-screen p-4">
+        <div className="">
             <h1 className="text-2xl font-bold text-secondarySupperDarker mb-4">Đặt lịch khám</h1>
 
             <h2 className="text-xl font-semibold text-secondarySupperDarker opacity-60 mb-2">Lịch đã đặt</h2>
@@ -75,7 +75,7 @@ export default function Component({ handleBookDoctor }: { handleBookDoctor: (id:
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] gap-6">
-                {!doctors.isLoading && doctorsData.map((doctor: any) => (
+                {!doctors.isLoading && doctorsData?.map((doctor: any) => (
                     <div key={doctor.username} className="bg-white rounded-lg shadow-md p-6">
                         <div className="flex items-center mb-4">
                             <img src={`${doctor.avatarUrl}`} alt="Doctor" className="w-16 h-16 rounded-full mr-4" />
