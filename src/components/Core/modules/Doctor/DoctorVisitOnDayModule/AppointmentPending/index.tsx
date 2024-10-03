@@ -8,6 +8,8 @@ import { AppointmentStatus } from '..'
 import { useTrigger } from '@/hooks/useTrigger'
 import dayjs from 'dayjs'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next-nprogress-bar'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 interface Gender {
     id: string
@@ -48,6 +50,12 @@ interface IProps {
 
 export default function AppointmentPending({ payload }: IProps) {
     const { handleTrigger, trigger } = useTrigger()
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const handleCreateMedicalReport = () => {
+        router.push(pathname + '/medical-report' + `?id=${payload.id}`);
+    }
 
     return (
         <>
@@ -60,7 +68,9 @@ export default function AppointmentPending({ payload }: IProps) {
                                 dayjs(payload.schedule.endDate).format('HH:mm')}
                         </span>
                         <div className="flex gap-[10px] justify-end">
-                            <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
+                            <Button className="rounded-[10px] border-none bg-[#0284C7] text-white"
+                                onClick={() => {handleCreateMedicalReport()}}
+                            >
                                 Tạo phiếu khám <FilePlus2 size={18} />
                             </Button>
                             <div className="flex flex-row sm:flex  gap-[10px]">
