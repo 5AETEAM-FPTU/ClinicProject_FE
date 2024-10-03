@@ -4,7 +4,7 @@ import { Button } from 'antd'
 import { BadgeDollarSign, SquarePen } from 'lucide-react'
 import Information from '@/components/Core/modules/Calendar/Information';
 import { Editor } from '@tinymce/tinymce-react'
-import EditorTinymce, { getEditorHtmlContent } from '../../../common/EditorTinymce';
+import EditorTinymce, { getEditorHtmlContent } from '../../../../common/EditorTinymce';
 import { TimeSlot } from '@/components/Core/modules/Calendar'
 
 export default function Component({ timeSlotSelected }: { timeSlotSelected: TimeSlot }) {
@@ -26,7 +26,7 @@ export default function Component({ timeSlotSelected }: { timeSlotSelected: Time
                         <p className="text-base text-secondarySupperDarker font-semibold text-center sm:text-left">
                             Bạn sẽ dự khám vào:
                         </p>
-                        <div className='flex items-center flex-col gap-[28px] sm:flex-row items-center justify-center'>
+                        <div className='flex flex-col gap-[28px] sm:flex-row items-center justify-center'>
                             <span className="text-base font-semibold min-h-10 py-2 px-4 sm:px-5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors w-full sm:w-auto">
                                 {`${timeSlotSelected.startDate.getHours()}:${timeSlotSelected.startDate.getMinutes().toString().length == 1 ? '0' + timeSlotSelected.startDate.getMinutes().toString() : timeSlotSelected.startDate.getMinutes()}`} - {`${timeSlotSelected.endDate.getHours()}:${timeSlotSelected.endDate.getMinutes().toString().length == 1 ? '0' + timeSlotSelected.startDate.getMinutes().toString() : timeSlotSelected.startDate.getMinutes()}`} | Ngày {timeSlotSelected.startDate.getDate()} tháng {timeSlotSelected.startDate.getMonth() + 1} năm {timeSlotSelected.startDate.getFullYear()}
                             </span>

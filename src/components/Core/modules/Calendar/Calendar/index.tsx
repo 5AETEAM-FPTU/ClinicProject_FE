@@ -47,7 +47,7 @@ const getFirstDayOfMonth = (date: Date) => {
 // end helper function
 
 export default function Component({ handleSelectTimeSlot }: { handleSelectTimeSlot?: (timeSlot: { startDate: Date; endDate: Date }) => void }) {
-    const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 1)) // September 2024
+    const [currentDate, setCurrentDate] = useState(new Date(Date.now())) // September 2024
     const [selectedDate, setSelectedDate] = useState<Date | null>(null) // September 17, 2024
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
 
@@ -108,7 +108,7 @@ export default function Component({ handleSelectTimeSlot }: { handleSelectTimeSl
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100 min-h-screen container mx-auto">
+        <div className="flex flex-col md:flex-row gap-4 mx-auto">
             <div className="w-full h-fit md:w-1/3 rounded-lg shadow bg-transparent">
                 <Information selectedDate={selectedDate} />
                 <Button iconPosition={'end'} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full sm:w-auto">
