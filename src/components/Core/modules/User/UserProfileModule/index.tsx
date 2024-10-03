@@ -53,7 +53,7 @@ export default function UserProfileModule() {
     const router = useRouter()
     const locale = useLocale()
 
-    const _accessToken = webStorageClient.getToken();
+    const _accessToken = webStorageClient.getToken()
 
     const { result, isFetching, refetch } = useGetUserProfileQuery(undefined, {
         selectFromResult: ({ data, isFetching }) => {
@@ -243,7 +243,8 @@ export default function UserProfileModule() {
                                     <span className="font-bold text-secondarySupperDarker">
                                         Số điện thoại:
                                     </span>{' '}
-                                    (84)  {result?.phoneNumber
+                                    (84){' '}
+                                    {result?.phoneNumber
                                         ? result?.phoneNumber
                                         : 'Ẩn số điện thoại'}
                                 </p>
@@ -255,22 +256,26 @@ export default function UserProfileModule() {
                                         ? result?.username
                                         : 'Ẩn email'}
                                 </p>
-                               
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
                                         Địa chỉ:
                                     </span>{' '}
-                                    {
-                                        result?.address ? result?.address : 'Ẩn địa chỉ'
-                                    }
+                                    {result?.address
+                                        ? result?.address
+                                        : 'Ẩn địa chỉ'}
                                 </p>
                                 <p className="my-2 text-lg font-semibold text-secondarySupperDarker">
                                     <span className="font-bold text-secondarySupperDarker">
-                                       Loại tài khoản:
+                                        Loại tài khoản:
                                     </span>{' '}
-                                    {
-                                        jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.DOCTOR ? 'Bác sĩ' : jwtDecode<JwtPayloadUpdated>(_accessToken!).role === UserRole.STAFF ? 'Nhân viên y tế' : 'Bệnh nhân'
-                                    }
+                                    {jwtDecode<JwtPayloadUpdated>(_accessToken!)
+                                        .role === UserRole.DOCTOR
+                                        ? 'Bác sĩ'
+                                        : jwtDecode<JwtPayloadUpdated>(
+                                                _accessToken!,
+                                            ).role === UserRole.STAFF
+                                          ? 'Nhân viên y tế'
+                                          : 'Bệnh nhân'}
                                 </p>
                             </Card>
                         </Col>
