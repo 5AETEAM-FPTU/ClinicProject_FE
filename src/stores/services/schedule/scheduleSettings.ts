@@ -6,9 +6,9 @@ import { time } from "console";
 
 export const scheduleSettingsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getScheduleByDate: build.query<any, any>({
-            query: (date: string) => ({
-                url: scheduleEndpoint.GET_SCHEDULES_BY_DATE.replace('{date}', date),
+        getScheduleByDate: build.query<any, { date: string, doctorId?: string }>({
+            query: (query) => ({
+                url: `${scheduleEndpoint.GET_SCHEDULES_BY_DATE}?&date=${query.date}${query.doctorId && `&doctorId=${query.doctorId}`}`,
                 flashError: true,
                 method: 'GET',
             }),
@@ -21,9 +21,9 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 body: { timeSlots: data },
             }),
         }),
-        getScheduleByMonth: build.query<any, { month: number, year: number }>({
+        getScheduleByMonth: build.query<any, { month: number, year: number, doctorId?: string | null }>({
             query: (params) => ({
-                url: `${scheduleEndpoint.GET_SCHEDULES_BY_MONTH}?month=${params.month}&year=${params.year}`,
+                url: `${scheduleEndpoint.GET_SCHEDULES_BY_MONTH}?month=${params.month}&year=${params.year}${params.doctorId && (`&doctorId=${params.doctorId}`)}`,
                 flashError: true,
                 method: 'GET',
             }),
@@ -33,7 +33,7 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
 })
 
 export const {
-    useGetScheduleByDateQuery,
+    useGetScheduleByDateQuery, useLazyGetScheduleByDateQuery,
     useCreateSchedulesMutation,
     useGetScheduleByMonthQuery
 } = scheduleSettingsApi;

@@ -35,7 +35,7 @@ const doctorEndpoint = {
 }
 
 const scheduleEndpoint = {
-    GET_SCHEDULES_BY_DATE: "/schedules/{date}",
+    GET_SCHEDULES_BY_DATE: "/schedules/date",
     POST_CREATE_SCHEDULES: "/schedules",
     GET_SCHEDULES_BY_MONTH: "/schedules/month",
 }
@@ -46,7 +46,7 @@ const enumEndpoint = {
     GET_POSITION: "/enum/getAllPosition",
     GET_GENDER: "/enum/getAllGender",
     GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
-
+    
 }
 
 export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint };

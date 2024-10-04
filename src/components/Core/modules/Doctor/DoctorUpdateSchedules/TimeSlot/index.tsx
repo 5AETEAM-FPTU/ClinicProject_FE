@@ -56,7 +56,7 @@ export default function Component({
     const [afternoonSlots, setAfternoonSlots] = useState<TimeSlot[]>([])
 
     const { result, isFetching, refetch } = useGetScheduleByDateQuery(
-        dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString(),
+        {date: dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString()},
         {
             selectFromResult: ({ data, isFetching }) => {
                 return {
