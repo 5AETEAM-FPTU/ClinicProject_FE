@@ -14,7 +14,14 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false },
         }),
+        getCancelAppointment: build.query<any, void>({
+            query: () => ({
+                url: doctorEndpoint.GET_CANCEL_APPOINTMENTS,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
     }),
 })
 
-export const { useGetAppointmentOnDayQuery } = doctorTreatmentTurnApi
+export const { useGetAppointmentOnDayQuery, useGetCancelAppointmentQuery } = doctorTreatmentTurnApi

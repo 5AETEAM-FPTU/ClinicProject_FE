@@ -30,6 +30,7 @@ const doctorEndpoint = {
     PATCH_DESCRIPTION: "/doctor/description",
 
     GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
+    GET_CANCEL_APPOINTMENTS: "/appointment/absent",
     UPDATE_DUTY: "/doctor/duty",
 }
 
