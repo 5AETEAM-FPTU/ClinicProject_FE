@@ -74,7 +74,7 @@ export default function Component({ handleBookDoctor }: { handleBookDoctor: (id:
                 </Select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px]">
                 {!doctors.isLoading && doctorsData?.map((doctor: any) => (
                     <div key={doctor.username} className="bg-white rounded-lg shadow-md p-6">
                         <div className="flex items-center mb-4">

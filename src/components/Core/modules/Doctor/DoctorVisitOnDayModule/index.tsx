@@ -3,7 +3,7 @@ import { Button, Layout, Skeleton, Typography } from 'antd'
 import { motion } from 'framer-motion'
 import AppointmentPending, { IAppointmentOnDay } from './AppointmentPending'
 import AppointmentDone from './AppointmentDone'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useGetAllAppointmentStatusQuery } from '@/stores/services/enum/enum'
 import { useGetAppointmentOnDayQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
 import dayjs from 'dayjs'
@@ -16,8 +16,11 @@ interface StatusOption {
 }
 
 export default function DoctorVisitInDayModule() {
+    const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), []);
+    console.log(now);
+
     const { appointments, refetch, isFetching } = useGetAppointmentOnDayQuery(
-        { date: '2024-10-01T21:29:16' },
+        { date: '2024-10-06T08:30:00' },
         {
             selectFromResult: ({ data, isFetching }) => ({
                 appointments: data?.body?.appointment ?? [],
