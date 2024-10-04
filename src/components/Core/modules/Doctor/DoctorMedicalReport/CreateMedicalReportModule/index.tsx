@@ -1,60 +1,36 @@
 'use client'
-import { Avatar } from 'antd'
-import Image from 'next/image'
+import NotFound from '@/components/Core/common/NotFound'
+import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
-import React from 'react'
+import MainMedicalReport from './MainMedicalReport'
+import PatientInforComponent from './PatientInforComponents'
 
 export default function CreateMedicalReport() {
     const searchParam = useSearchParams()
-
-    console.log(searchParam.get('id'))
-
+    const reportId = searchParam.get('id')
     return (
-        <div className="flex h-fit w-full flex-col gap-5">
-            <div>
-                <h3 className="text-[20px] font-semibold text-secondarySupperDarker">
-                    Tạo phiếu khám
-                </h3>
-            </div>
-            <div className="h-fit w-full rounded-xl p-5 shadow-third">
-                <div className="">
-                    <div className="flex flex-row items-center gap-5">
-                        <div>
-                            <Avatar
-                                size={50}
-                                src={
-                                    'https://variety.com/wp-content/uploads/2021/04/Avatar.jpg?w=800&h=533&crop=1'
-                                }
-                            ></Avatar>
-                        </div>
-                        <div>
-                            <p className="font-bold text-secondarySupperDarker">
-                                Họ và tên: <span>Nguyen Van A</span>
-                            </p>
-                            <p className="text-secondarySupperDarker">
-                                Ngày sinh:{' '}
-                                <span>
-                                    01/01/2000 <span>20 tuổi</span>
-                                </span>
-                            </p>
-                        </div>
+        <motion.div>
+            {!reportId ? (
+                <NotFound />
+            ) : (
+                <motion.div
+                    initial={{ opacity: 0, translateY: 20 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    exit={{ opacity: 0 }}
+                    className="flex h-fit w-full flex-col gap-5"
+                >
+                    <div>
+                        <h3 className="text-[20px] font-semibold text-secondarySupperDarker">
+                            Tạo phiếu khám
+                        </h3>
                     </div>
-                    <div className="flex flex-row gap-5">
-                        <div>
-                            <p className="font-bold text-secondarySupperDarker">
-                                Địa chỉ: <span>Nguyen Van A</span>
-                            </p>
-                            <p className="text-secondarySupperDarker">
-                                Ngày sinh:{' '}
-                                <span>
-                                    01/01/2000 <span>20 tuổi</span>
-                                </span>
-                            </p>
-                        </div>
+                    <div className="h-fit w-full rounded-xl p-5 shadow-third bg-white">
+                        <PatientInforComponent />
                     </div>
-                    <div></div>
-                </div>
-            </div>
-        </div>
+                    <MainMedicalReport />
+                </motion.div>
+            )}
+        </motion.div>
     )
 }
