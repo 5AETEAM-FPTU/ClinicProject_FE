@@ -53,6 +53,8 @@ export default function AppointmentPending({ payload }: IProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    console.log(payload)
+
     const handleCreateMedicalReport = () => {
         router.push(pathname + '/medical-report' + `?id=${payload.id}`);
     }
@@ -105,8 +107,10 @@ export default function AppointmentPending({ payload }: IProps) {
                     <div className="h-[80px] w-[80px] items-center">
                         <Image
                             className="h-full w-full rounded-xl object-cover"
-                            src={ProfileBackground}
+                            src={payload.patient.avatar}
                             alt="background"
+                            width={400}
+                            height={400}
                         />
                     </div>
 
