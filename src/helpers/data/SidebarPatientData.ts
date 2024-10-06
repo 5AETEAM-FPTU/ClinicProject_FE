@@ -24,8 +24,8 @@ export const sidebarPatientData: IndividualMenuItemType[] = [
         ],
     },
     {
-        key: 'AI',
-        title: 'Trợ lý AI',
+        key: 'consultation',
+        title: 'Tư vấn',
         icon: React.createElement(Headset),
         childrens: [
             {
@@ -59,7 +59,7 @@ export const sidebarPatientData: IndividualMenuItemType[] = [
         icon: React.createElement(Bot),
         childrens: [
             {
-                key: '/chat',
+                key: 'chat',
                 lable: 'Nhắn tin với AI',
             },
         ],

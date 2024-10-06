@@ -1,10 +1,15 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Layout, List, Avatar, Input, Button, Skeleton } from 'antd'
-import { Send, Settings } from 'lucide-react'
+import { Pause, Send, Settings, Volume2, Play, MicOff, Mic } from 'lucide-react'
 import AIAvatar from '@public/landing/images/ai-avatar.png'
 import { MessageType, usePostAnswerMutation } from '@/stores/services/ai/gemini'
-const { Sider, Content } = Layout
+import 'regenerator-runtime/runtime'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+
+const { Sider, Content } = Layout;
+let timeoutId: any = null;
+
 
 interface Message extends MessageType {
     id: number,
@@ -12,13 +17,132 @@ interface Message extends MessageType {
 }
 
 const initialMessages: Message[] = [
-    { id: 1, parts: [{ text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic, hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế. Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh ' }], role: 'user', isHidden: true },
+    { id: 1, parts: [{ text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic, hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế. Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh ' }], role: 'user', isHidden: false },
 ]
+
+function stripHTML(html: string) {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+}
+
+function scrollToEndOfElement(element: HTMLElement | null) {
+    element?.scrollTo({
+        top: element.scrollHeight, // Vị trí cuối cùng của phần tử
+        behavior: 'smooth' // Cuộn mượt mà
+    });
+}
+
+const AudioComponent = ({ text, msg, isCurrent, onClick, className }: { text: string, msg: SpeechSynthesisUtterance, isCurrent: boolean, onClick: () => void, className?: string }) => {
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+
+    if (!isCurrent) {
+        stopSpeaking();
+    }
+
+    useEffect(() => {
+        const event = msg.onend = () => {
+            setIsSpeaking(false);
+            setIsPaused(false);
+        }
+        return () => {
+            if (event) {
+                msg.removeEventListener('end', event);
+            }
+        }
+    }, [isCurrent]);
+
+
+    function speak() {
+        window.speechSynthesis.cancel();
+        setIsSpeaking(true);
+        setIsPaused(false);
+        msg.text = text;
+        window.speechSynthesis.speak(msg)
+    }
+
+    function countinueSpeaking() {
+        setIsSpeaking(true);
+        setIsPaused(false);
+        window.speechSynthesis.resume();
+    }
+    // Hàm để dừng giọng nói
+    function pauseSpeaking() {
+        setIsSpeaking(false);
+        setIsPaused(true);
+        window.speechSynthesis.pause(); // Dừng tất cả giọng nói
+    }
+
+    function stopSpeaking() {
+        if (isSpeaking || isPaused) {
+            setIsSpeaking(false);
+            setIsPaused(false);
+        }
+    }
+
+    return (
+        <div className={`${className}`}>
+            {!isSpeaking && !isPaused && <Volume2 onClick={() => { window.speechSynthesis.cancel(); onClick(); speak(); }} className="w-4 h-4" />}
+            {isSpeaking && <Pause className="w-4 h-4" onClick={() => pauseSpeaking()} />}
+            {isPaused && <Play className="w-4 h-4" onClick={() => countinueSpeaking()} />}
+        </div>
+    )
+}
 
 export default function AIBotComponent() {
     const [messages, setMessages] = useState<Message[]>(initialMessages)
-    const [inputMessage, setInputMessage] = useState('')
+    const msg = useRef(new SpeechSynthesisUtterance()).current;
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [inputMessage, setInputMessage] = useState('');
     const [postAnswer, { isLoading, isError }] = usePostAnswerMutation();
+    const chatboxContainerRef = useRef<HTMLDivElement>(null);
+    const {
+        transcript,
+        listening,
+        resetTranscript,
+        browserSupportsSpeechRecognition,
+        interimTranscript,
+        isMicrophoneAvailable
+    } = useSpeechRecognition();
+    useEffect(() => {
+        setInputMessage(transcript || interimTranscript);
+    }, [transcript, interimTranscript])
+    // Ngôn ngữ của trình nhận diện giọng nói (tiếng Việt)
+    const startListeningInVietnamese = () => {
+        SpeechRecognition.startListening({ language: 'vi-VN', continuous: true });
+    };
+
+    // Thời gian (ms) để tự động dừng nhận diện giọng nói
+    const autoStopTime = 2500; // 5 giây
+
+    useEffect(() => {
+        // Nếu đang lắng nghe và có bản ghi âm
+        if (listening && transcript) {
+            // Thiết lập timeout để tự động dừng lắng nghe
+            timeoutId = setTimeout(() => {
+                SpeechRecognition.stopListening();
+            }, autoStopTime);
+        }
+
+        // Dọn dẹp timeout khi component unmount hoặc khi không còn lắng nghe
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [listening, transcript]);
+
+    if (!browserSupportsSpeechRecognition) {
+        console.warn("Browser doesn't support speech recognition");
+    }
+
+
+    useEffect(() => {
+        msg.lang = 'vi-VN';
+        msg.pitch = 2;
+        msg.rate = 1.5;
+        msg.volume = 0.4;
+    }, [])
+
     const handlePostAnswer = async (messages: Message[]) => {
         try {
             const result = await postAnswer({ messages }).unwrap();
@@ -33,7 +157,9 @@ export default function AIBotComponent() {
             console.error('error', error);
         }
     }
+
     const handleSendMessage = () => {
+        resetTranscript();
         if (inputMessage.trim() && !isLoading) {
             const newMessage: Message = {
                 id: messages.length + 1,
@@ -46,6 +172,10 @@ export default function AIBotComponent() {
             setInputMessage('')
         }
     }
+
+    useEffect(() => {
+        scrollToEndOfElement(chatboxContainerRef.current)
+    }, [messages])
 
     return (
         <Layout className="h-[600px] bg-transparent">
@@ -63,7 +193,7 @@ export default function AIBotComponent() {
                             Cài đặt
                         </Button>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 chatbox">
+                    <div ref={chatboxContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 chatbox">
                         {messages.map((message: Message) => (
                             !message.isHidden && <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div
@@ -71,7 +201,9 @@ export default function AIBotComponent() {
                                         }`}
                                 >
                                     <div className='text-base' dangerouslySetInnerHTML={{ __html: message.parts[0]?.text }}></div>
+                                    <AudioComponent className={`mt-2 ${message.role === 'user' ? 'float-start' : 'float-end'}`} onClick={() => setCurrentIndex(message.id)} isCurrent={currentIndex == message.id} msg={msg} text={stripHTML(message.parts[0]?.text)} />
                                 </div>
+
                             </div>
                         ))}
                         <Skeleton loading={isLoading} active paragraph={{ rows: 2 }} />
@@ -83,9 +215,19 @@ export default function AIBotComponent() {
                             onChange={(e) => setInputMessage(e.target.value)}
                             onPressEnter={handleSendMessage}
                             suffix={
-                                <Button className='font-bold' iconPosition='start' type="primary" icon={<Send className="w-4 h-4" />} onClick={handleSendMessage}>
-                                    Gửi
-                                </Button>
+                                <div>
+                                    {browserSupportsSpeechRecognition && isMicrophoneAvailable
+                                        && (!listening ?
+                                            <Button onClick={() => { resetTranscript(); startListeningInVietnamese(); }} className='font-bold mr-2' iconPosition='start' type="primary" icon={<MicOff className='size-4' />} />
+                                            :
+                                            <Button onClick={() => { SpeechRecognition.stopListening(); clearTimeout(timeoutId) }} className='font-bold mr-2 bg-red-600' iconPosition='start' type="primary" icon={<Mic className='size-4' />} />
+                                        )
+                                    }
+                                    <Button className='font-bold' iconPosition='start' type="primary" icon={<Send className="w-4 h-4" />} onClick={handleSendMessage}>
+                                        Gửi
+                                    </Button>
+                                </div>
+
                             }
                         />
                     </div>
