@@ -22,6 +22,7 @@ const userEndpoint = {
     GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
     GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
     UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
+    GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
 }
 
 const doctorEndpoint = {
