@@ -21,6 +21,7 @@ const userEndpoint = {
     PATCH_DESCRIPTION: "/user/description",
     GET_DOCTORS_FOR_APPOINTMENT: 'doctor/getAllDoctorForBooking',
     GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
+    UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
 }
 
 const doctorEndpoint = {
@@ -46,7 +47,11 @@ const enumEndpoint = {
     GET_POSITION: "/enum/getAllPosition",
     GET_GENDER: "/enum/getAllGender",
     GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
-    
+
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint };
+const geminiEndpoint = {
+    TEXT_GENERATION: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint, geminiEndpoint };

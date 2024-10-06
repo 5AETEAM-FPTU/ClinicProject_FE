@@ -9,6 +9,7 @@ import { useRouter } from 'next-nprogress-bar';
 import { useGetScheduleByMonthQuery, useLazyGetScheduleByDateQuery } from '@/stores/services/schedule/scheduleSettings';
 import { set } from 'lodash';
 import { TimeSlot } from '@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot';
+import { useUpdateBookedAppointmentMutation } from '@/stores/services/user/userAppointments';
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
@@ -61,8 +62,9 @@ export default function Component() {
     const { data, isFetching, error, refetch: getScheduleByMonth } = useGetScheduleByMonthQuery({ month: currentDate.getMonth() + 1, year: currentDate.getFullYear(), doctorId: params.get('doctorId') })
     const [selectedSlot, setSelectedSlot] = useState<any>(null)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+
     const [getScheduleByDateQuery, { data: resultTimeSlots, isFetching: isTimeSlotLoading }] = useLazyGetScheduleByDateQuery()
-    console.log(data);
+    const [updateBookedAppointment] = useUpdateBookedAppointmentMutation()
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
 
     const navigateToConfirmAppointment = () => {
@@ -78,11 +80,27 @@ export default function Component() {
         }).toString()}`)
     }
 
-    const handleUpdateAppointment = () => {
+    const handleUpdateAppointment = async () => {
         if (!selectedSlot) {
             message.error('Vui lòng chọn thời gian khám để cập nhật');
             return;
         }
+        try {
+            await updateBookedAppointment({ appointmentId: params.get('appointmentId') || '', selectedSlotId: selectedSlot.slotId }).unwrap();
+            message.success('Cập nhật lịch khám thành công');
+            handleFetchScheduleByDate();
+        } catch (error: any) {
+            const reason = error.data.appCode.split(': ')[1];
+            if (reason === 'APPOINTMENT_ONLY_UPDATE_ONCE') {
+                message.error('Bạn chỉ được cật nhật cuộc hẹn 1 lần');
+                return;
+            } else if (reason === 'UPDATE_EXPIRED') {
+                message.error('Cuộc hẹn đã hết hạn cật nhật (trước buổi hẹn 12 tiếng)');
+                return;
+            }
+            message.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+
         console.log({ selectedSlot, appointmentId: params.get('appointmentId') });
     }
 

@@ -92,7 +92,7 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({ title, slots, handleS
                     type='text'
                     key={index}
                     className={`py-2 px-2 border text-base text-center 
-                        ${selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
+                        ${!slot.isDisabled && selectedSlot?.start === slot.start && selectedSlot?.end === slot.end
                             ? 'bg-[#0284C7] text-white'
                             : 'bg-white text-black border-[#06B6D4] hover:border-[#0284C7]'
                         } 

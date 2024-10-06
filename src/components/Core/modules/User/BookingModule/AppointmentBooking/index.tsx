@@ -1,10 +1,12 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Input, Select, Rate, Skeleton } from 'antd'
 import { Search, User, BookOpen, Star } from 'lucide-react'
-import { useGetAllDoctorForBookingQuery, useGetBookedAppointmentsQuery } from '@/stores/services/user/userAppointments'
+import { useGetAllDoctorForBookingQuery, useGetBookedAppointmentsQuery, useLazyGetAllDoctorForBookingQuery } from '@/stores/services/user/userAppointments'
 import Paginate from '@/components/Core/common/Paginate'
 import { useRouter } from 'next-nprogress-bar'
+import { useGetAllGenderQuery, useGetAllSpecicaltiesQuery } from '@/stores/services/enum/enum'
+import { debounce } from 'lodash'
 
 const { Option } = Select
 
@@ -47,16 +49,30 @@ const DoctorSkeleton = ({ size, skeletonSize }: { size: number, skeletonSize: nu
 
 
 export default function Component() {
-    const doctors = useGetAllDoctorForBookingQuery();
+    const [getDoctors, { data: doctors, isFetching: isDoctorFetching }] = useLazyGetAllDoctorForBookingQuery();
+    const [search, setSearch] = useState('');
+    const [genderId, setGenderId] = useState('');
+    const [specialtyId, setSpecialtyId] = useState('');
+    console.log("doctor", doctors);
+    useEffect(() => {
+        getDoctors({ pageIndex: 1, doctorName: search, doctorGender: genderId, doctorSpecialtyId: specialtyId });
+    }, [search, genderId, specialtyId]);
     const appointments = useGetBookedAppointmentsQuery();
+    const { data: genders } = useGetAllGenderQuery({});
+    const { data: specialties } = useGetAllSpecicaltiesQuery({});
+    console.log(genders, specialties);
+    console.log(appointments);
     const router = useRouter();
-    const doctorsData = !doctors.isFetching && doctors?.data?.body?.userDetails?.contents;
+    const doctorsData = !isDoctorFetching && doctors?.body?.userDetails?.contents;
     const appointmentsData = !appointments.isLoading && appointments?.data?.body?.appointment;
     const handleBookDoctor = (doctor: { fullName: string, id: string, specialties: any }) => {
         router.push(`booking/schedule?${serialize({ fullName: doctor.fullName, doctorId: doctor.id, specialties: doctor.specialties?.map((spec: any) => spec.specialtyName).join(', ') })}`)
     }
     const handleUpdateAppointment = (doctor: { fullName: string, doctorId: string, specialties: any, appointmentId: string }) => {
         router.push(`booking/schedule?${serialize({ appointmentId: doctor.appointmentId, isUpdate: true, fullName: doctor.fullName, doctorId: doctor.doctorId, specialties: doctor.specialties?.map((spec: any) => spec.name).join(', ') })}`)
+    }
+    const handlePageChange = (page: number) => {
+        getDoctors({ pageIndex: page, doctorName: search, doctorGender: genderId, doctorSpecialtyId: specialtyId });
     }
     return (
         <div className="">
@@ -84,28 +100,36 @@ export default function Component() {
             <div className="flex flex-col xl:flex-row gap-4 mb-8">
                 <Input
                     suffix={<Search className="text-secondarySupperDarker" />}
+                    onChange={search => setSearch(search.target.value)}
                     placeholder="Tìm theo tên"
                     className="flex-grow text-secondarySupperDarker"
                 />
                 <Select
+                    onChange={(value) => setGenderId(value)}
                     className="w-full xl:w-48 text-secondarySupperDarker"
                     placeholder="Giới tính"
+                    defaultValue={""}
                     suffixIcon={<User className="text-gray-400" />}
                 >
-                    <Option value="all" className="text-secondarySupperDarker">Tất cả</Option>
-                    <Option value="male" className="text-secondarySupperDarker">Nam</Option>
-                    <Option value="female" className="text-secondarySupperDarker">Nữ</Option>
+                    <Option value="" className="text-secondarySupperDarker">Tất cả</Option>
+                    {genders && genders.body.genders.map((gender: any) => (
+                        <Option key={gender.id} value={gender.id} className="text-secondarySupperDarker">{gender.genderName}</Option>
+                    ))}
                 </Select>
                 <Select
+                    onChange={(value) => setSpecialtyId(value)}
                     className="w-full xl:w-48 text-secondarySupperDarker"
                     placeholder="Chuyên khoa"
                     suffixIcon={<BookOpen className="text-gray-400" />}
+                    defaultValue={""}
                 >
-                    <Option value="cardiology">Tim mạch</Option>
-                    <Option value="neurology">Thần kinh</Option>
+                    <Option value="" className="text-secondarySupperDarker">Tất cả</Option>
+                    {specialties && specialties.body.specialties.map((specialty: any) => (
+                        <Option key={specialty.id} value={specialty.id} className="text-secondarySupperDarker">{specialty.specialtyName}</Option>
+                    ))}
                 </Select>
             </div>
-            {doctors.isFetching ? <DoctorSkeleton size={3} skeletonSize={64} /> :
+            {isDoctorFetching ? <DoctorSkeleton size={3} skeletonSize={64} /> :
                 <>
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-[20px] gap-6">
                         {doctorsData?.map((doctor: any) => (
@@ -133,7 +157,7 @@ export default function Component() {
                             </div>
                         ))}
                     </div>
-                    <Paginate totalPages={20} />
+                    <Paginate onPageChange={handlePageChange} totalPages={doctors?.body?.userDetails?.totalPages || 0} page={doctors?.body?.userDetails?.pageIndex || 1} />
                 </>
             }
         </div>
