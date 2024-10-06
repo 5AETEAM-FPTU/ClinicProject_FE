@@ -17,7 +17,7 @@ interface Message extends MessageType {
 }
 
 const initialMessages: Message[] = [
-    { id: 1, parts: [{ text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic, hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế. Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh ' }], role: 'user', isHidden: false },
+    { id: 1, parts: [{ text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic, hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế. Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh. Câu trả lời phải tự nhiên gần gủi' }], role: 'user', isHidden: true },
 ]
 
 function stripHTML(html: string) {
@@ -42,13 +42,14 @@ const AudioComponent = ({ text, msg, isCurrent, onClick, className }: { text: st
     }
 
     useEffect(() => {
-        const event = msg.onend = () => {
+        const handlEvent = () => {
             setIsSpeaking(false);
             setIsPaused(false);
-        }
+        };
+        msg.addEventListener("end", handlEvent);
         return () => {
-            if (event) {
-                msg.removeEventListener('end', event);
+            if (handlEvent) {
+                msg.removeEventListener('end', handlEvent);
             }
         }
     }, [isCurrent]);
@@ -83,7 +84,10 @@ const AudioComponent = ({ text, msg, isCurrent, onClick, className }: { text: st
 
     return (
         <div className={`${className}`}>
-            {!isSpeaking && !isPaused && <Volume2 onClick={() => { window.speechSynthesis.cancel(); onClick(); speak(); }} className="w-4 h-4" />}
+            {!isSpeaking && !isPaused && <Volume2 onClick={() => {
+                window.speechSynthesis.cancel();
+                onClick(); speak();
+            }} className="w-4 h-4" />}
             {isSpeaking && <Pause className="w-4 h-4" onClick={() => pauseSpeaking()} />}
             {isPaused && <Play className="w-4 h-4" onClick={() => countinueSpeaking()} />}
         </div>
@@ -138,9 +142,9 @@ export default function AIBotComponent() {
 
     useEffect(() => {
         msg.lang = 'vi-VN';
-        msg.pitch = 2;
+        msg.pitch = 0.5;
         msg.rate = 1.5;
-        msg.volume = 0.4;
+        msg.volume = 1;
     }, [])
 
     const handlePostAnswer = async (messages: Message[]) => {
