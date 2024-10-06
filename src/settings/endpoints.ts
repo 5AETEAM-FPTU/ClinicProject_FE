@@ -36,7 +36,7 @@ const doctorEndpoint = {
 }
 
 const scheduleEndpoint = {
-    GET_SCHEDULES_BY_DATE: "/schedules/{date}",
+    GET_SCHEDULES_BY_DATE: "/schedules/date",
     POST_CREATE_SCHEDULES: "/schedules",
     GET_SCHEDULES_BY_MONTH: "/schedules/month",
 }

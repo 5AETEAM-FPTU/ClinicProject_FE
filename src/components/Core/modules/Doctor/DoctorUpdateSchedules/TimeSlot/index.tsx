@@ -6,6 +6,9 @@ import dayjs from 'dayjs'
 import AddingSchedulesForm from '../AddingSchedulesForm'
 import { useTrigger } from '@/hooks/useTrigger'
 import { cn } from '@/lib/utils'
+import webStorageClient from '@/utils/webStorageClient'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../../Auth/SignIn'
 
 export type TimeSlot = {
     startTime: string
@@ -55,8 +58,14 @@ export default function Component({
     const [morningSlots, setMorningSlots] = useState<TimeSlot[]>([])
     const [afternoonSlots, setAfternoonSlots] = useState<TimeSlot[]>([])
 
+    const _accessToken = webStorageClient.getToken();
+    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub;
+
     const { result, isFetching, refetch } = useGetScheduleByDateQuery(
-        dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString(),
+        {
+            date: dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString(),
+            doctorId: userId!,
+        },
         {
             selectFromResult: ({ data, isFetching }) => {
                 return {

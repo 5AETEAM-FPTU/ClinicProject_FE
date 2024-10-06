@@ -51,11 +51,11 @@ export default function AddingSchedulesForm({
             }
         })
 
-        var response = await createSchedules(timeSlots).unwrap()
-        console.log(response)
-
+        var response = await createSchedules(timeSlots)
         if (response?.error) {
             message.error('Thêm ca khám thất bại')
+            console.log(response);
+
             return
         }
         message.success('Thêm ca khám thành công!')

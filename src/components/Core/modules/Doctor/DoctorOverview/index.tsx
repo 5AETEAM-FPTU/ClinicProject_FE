@@ -73,7 +73,9 @@ const currentMonth = new Date().getMonth() + 1;
 const currentYear = new Date().getFullYear();
 
 const CustomCalendar = () => {
-    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({ month: currentMonth, year: currentYear })
+    const _accessToken = webStorageClient.getToken();
+    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub;
+    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({ month: currentMonth, year: currentYear, doctorId: userId! });
     const days = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
     const dates = Array.from({ length: 31 }, (_, i) => i + 1)
     const currentDate = new Date().getDate();
