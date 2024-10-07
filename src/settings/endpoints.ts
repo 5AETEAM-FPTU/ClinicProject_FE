@@ -40,6 +40,9 @@ const scheduleEndpoint = {
     GET_SCHEDULES_BY_DATE: "/schedules/date",
     POST_CREATE_SCHEDULES: "/schedules",
     GET_SCHEDULES_BY_MONTH: "/schedules/month",
+    REMOVE_SCHEDULE_BY_ID: "/schedules/remove/{scheduleId}",
+    REMOVE_SCHEDULE_BY_DATE: "/schedules/remove/{date}",
+    UPDATE_SCHEDULE_BY_ID: "/schedules/update/{scheduleId}",
 }
 
 const enumEndpoint = {

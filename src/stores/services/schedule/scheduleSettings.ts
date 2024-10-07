@@ -33,6 +33,31 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false },
         }),
+        removeScheduleById: build.mutation<any, string>({
+            query: (id: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_ID.replace('{scheduleId}', id)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        removeScheduleByDate: build.mutation<any, string>({
+            query: (date: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_DATE.replace("{date}", date)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        updateScheduleById: build.mutation<any, {schedularId: string, startDate: string, endDate: string}>({
+            query: (data: {schedularId: string, startDate: string, endDate: string}) => ({
+                url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID.replace('{scheduleId}', data.schedularId)}`,
+                flashError: true,
+                body: {
+                    startDate: data.startDate,
+                    endDate: data.endDate
+                },
+                method: 'PATCH',
+            }),
+        })
     }),
 })
 
@@ -40,4 +65,7 @@ export const {
     useGetScheduleByDateQuery,
     useCreateSchedulesMutation,
     useGetScheduleByMonthQuery,
+    useRemoveScheduleByDateMutation,
+    useRemoveScheduleByIdMutation,
+    useUpdateScheduleByIdMutation
 } = scheduleSettingsApi

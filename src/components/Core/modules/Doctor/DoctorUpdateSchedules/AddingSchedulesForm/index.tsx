@@ -124,7 +124,6 @@ export default function AddingSchedulesForm({
                                 <TimePicker.RangePicker
                                     size="large"
                                     onCalendarChange={(dates, dateStrings) => {
-                                        console.log('b', dates, dateStrings)
                                         handleChangingTimeSlot(
                                             dates,
                                             dateStrings,

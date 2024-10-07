@@ -87,6 +87,7 @@ const CustomCalendar = () => {
         })
         return hash;
     }, [data]);
+
     return (
         <Skeleton loading={isLoading} active>
             <div className="shadow h-full rounded-lg bg-white p-5 shadow-third">
@@ -134,9 +135,10 @@ const AppointmentComponent = () => {
                         className="flex justify-between border-b-[1px] border-[#00355350] px-[10px] py-2"
                     >
                         <div className="flex">
-                            <img
+                            <Avatar
+                                shape='square'
                                 src={item.patient.avatar}
-                                className="mr-[10px] h-[60px] w-[60px] object-contain"
+                                className="mr-[10px] h-[60px] w-[60px] object-cover"
                                 alt="Patient"
                             />
                             <div className="flex-col">
@@ -367,10 +369,11 @@ export default function MedicalDashboard() {
                                 }}
                                 className={`flex h-[160px] items-start justify-between rounded-[12px] bg-cover bg-center p-5`}
                             >
-                                <img
+                                <Avatar
+                                    shape="square"
                                     src={doctor?.avatarUrl}
                                     alt="Doctor"
-                                    className="mb-4 h-[120opx] w-[120px] rounded-[10px] object-cover"
+                                    className="mb-4 h-[120px] w-[120px] rounded-[10px] object-cover"
                                 />
                                 <Button
                                     className="h-[37px] border-[1px] border-[#0284C7] bg-white px-3 py-2 text-base font-semibold text-[#0284C7]"
