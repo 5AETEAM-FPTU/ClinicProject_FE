@@ -33,7 +33,7 @@ const serialize = function (obj: any) {
     return str.join("&");
 }
 
-const DoctorSkeleton = ({ size, skeletonSize }: { size: number, skeletonSize: number }) => {
+export const DoctorSkeleton = ({ size, skeletonSize }: { size: number, skeletonSize: number }) => {
     return (
         <div className='flex'>
             {[...Array(size)].map((_, index) => (

@@ -6,6 +6,7 @@ import BookingConfirmation from "@/components/Core/modules/User/BookingModule/Co
 import AppointmentBooking from "@/components/Core/modules/User/BookingModule/AppointmentBooking"
 import BookedAppointmentList from "@/components/Core/modules/Doctor/DoctorBookedAppointmentsList"
 import FollowUpAppointment from "@/components/Core/modules/Doctor/DoctorFollowUpAppointment"
+import SettingComponent from "@/components/Core/modules/User/AIBotComponent/SettingComponent"
 
 export default function TestComponent() {
     // return <PaymentSuccess />
@@ -13,7 +14,8 @@ export default function TestComponent() {
     // return <BookingConfirmation />
     // return <AppointmentBooking />
     // return <BookedAppointmentList />
-    return <FollowUpAppointment />
+    // return <FollowUpAppointment />
     // return <DoctorFeedback />
     // return <DoctorAppointmentTimeLine />
+    return <SettingComponent />
 }

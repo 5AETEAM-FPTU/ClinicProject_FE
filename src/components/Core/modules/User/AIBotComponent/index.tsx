@@ -1,11 +1,13 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react'
-import { Layout, List, Avatar, Input, Button, Skeleton } from 'antd'
+import { Layout, List, Avatar, Input, Button, Skeleton, Popover, Slider } from 'antd'
 import { Pause, Send, Settings, Volume2, Play, MicOff, Mic } from 'lucide-react'
 import AIAvatar from '@public/landing/images/ai-avatar.png'
 import { MessageType, usePostAnswerMutation } from '@/stores/services/ai/gemini'
 import 'regenerator-runtime/runtime'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import { useGetAllSpecicaltiesQuery } from '@/stores/services/enum/enum'
+import DoctorSuggestion from './DoctorSuggestion'
 
 const { Sider, Content } = Layout;
 let timeoutId: any = null;
@@ -16,8 +18,57 @@ interface Message extends MessageType {
     isHidden?: boolean
 }
 
+const SettingVoice = ({ msg }: { msg: SpeechSynthesisUtterance }) => {
+    const [speed, setSpeed] = useState(1);
+    const [volume, setVolume] = useState(50);
+
+    useEffect(() => {
+        msg.rate = speed;
+        msg.volume = volume / 50;
+    }, [speed, volume])
+
+    return (
+        <div className="w-64 p-4 space-y-4">
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Tốc độ</span>
+                    <span className="text-sm text-gray-500">{speed}x</span>
+                </div>
+                <Slider
+                    min={0.5}
+                    max={2}
+                    step={0.1}
+                    value={speed}
+                    onChange={(value) => setSpeed(value)}
+                />
+            </div>
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Âm lượng</span>
+                    <span className="text-sm text-gray-500">{volume}%</span>
+                </div>
+                <Slider
+                    min={0}
+                    max={100}
+                    value={volume}
+                    onChange={(value) => setVolume(value)}
+                />
+            </div>
+        </div>
+    )
+}
+
+
 const initialMessages: Message[] = [
-    { id: 1, parts: [{ text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic, hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế. Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh. Câu trả lời phải tự nhiên gần gủi' }], role: 'user', isHidden: true },
+    {
+        id: 1, parts: [{
+            text: 'Tôi là bênh nhân của phòng khám tư nhân P-Clinic'
+                + 'hãy đóng vai là 1 chuyên gia y tế tên là PC-AI để trả lời tất cả các câu hỏi của tôi về y tế.'
+                + ' Trả về câu trả lời về định dạnh html ví dụ thẻ p dùng để mô tả đoạn trả lời nào đó, thẻ ul, ol, li, strong nếu muốn nhấn mạnh.'
+                + ' Câu trả lời phải tự nhiên gần gủi.'
+                + ' Lưu ý chỉ gợi ý các chuyên khoa khi bênh nhân đang có vấn đề liên quan đến chuyên khoa đó, bạn chỉ có thể gợi ý 1 chuyên khoa, nếu gợi ý thì bạn phải phản hồi rõ khoa đó liên quan đến tình trạng gì của người hỏi'
+        }], role: 'user', isHidden: true
+    },
 ]
 
 function stripHTML(html: string) {
@@ -99,6 +150,19 @@ export default function AIBotComponent() {
     const msg = useRef(new SpeechSynthesisUtterance()).current;
     const [currentIndex, setCurrentIndex] = useState(0);
     const [inputMessage, setInputMessage] = useState('');
+    const [suggestSpecialty, setSuggestSpecialty] = useState<any>([]);
+    const { data: specialtiesResult, isFetching: isSpecialtyFetching } = useGetAllSpecicaltiesQuery({});
+    useEffect(() => {
+        if (specialtiesResult) {
+            const newDataMessage: Message = {
+                id: messages.length + 1,
+                parts: [{ text: 'Dữ liệu danh sách các chuyên khoa: ' + JSON.stringify(specialtiesResult?.body?.specialties) }],
+                role: 'user',
+                isHidden: true,
+            }
+            setMessages([newDataMessage, ...messages])
+        } specialtiesResult?.body?.specialties
+    }, [specialtiesResult]);
     const [postAnswer, { isLoading, isError }] = usePostAnswerMutation();
     const chatboxContainerRef = useRef<HTMLDivElement>(null);
     const {
@@ -143,14 +207,16 @@ export default function AIBotComponent() {
     useEffect(() => {
         msg.lang = 'vi-VN';
         msg.pitch = 0.5;
-        msg.rate = 1.5;
-        msg.volume = 1;
     }, [])
 
     const handlePostAnswer = async (messages: Message[]) => {
         try {
             const result = await postAnswer({ messages }).unwrap();
-            const reply = result.candidates[0].content.parts[0].text.trim()
+            console.log('result', result);
+            const response = JSON.parse(result.candidates[0].content.parts[0].text);
+            const reply = response.response_text.trim();
+            setSuggestSpecialty(response.suggested_specialty);
+            console.log(response.suggested_specialty);
             const newMessageAI: Message = {
                 id: messages.length + 1,
                 parts: [{ text: reply }],
@@ -182,8 +248,8 @@ export default function AIBotComponent() {
     }, [messages])
 
     return (
-        <Layout className="h-[600px] bg-transparent">
-            <Content className="bg-white p-4 ml-5 rounded-[12px] shadow-third">
+        <Layout className="min-h-[600px] bg-transparent">
+            <Content className="h-[600px] bg-white p-4 ml-5 rounded-[12px] shadow-third">
                 <div className="h-full flex flex-col">
                     <div className="p-4 border-b flex justify-between items-center">
                         <div className="flex items-center">
@@ -193,9 +259,12 @@ export default function AIBotComponent() {
                                 <p className="text-[14px] text-gray-500 text-secondarySupperDarker">Bác sĩ AI</p>
                             </div>
                         </div>
-                        <Button className='shadow-third' icon={<Settings className="w-4 h-4" />} type="text">
-                            Cài đặt
-                        </Button>
+
+                        <Popover content={<SettingVoice msg={msg} />} title="Cài đặt    " trigger="click">
+                            <Button className='shadow-third' icon={<Settings className="w-4 h-4" />} type="text">
+                                Cài đặt
+                            </Button>
+                        </Popover>
                     </div>
                     <div ref={chatboxContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 chatbox">
                         {messages.map((message: Message) => (
@@ -237,6 +306,7 @@ export default function AIBotComponent() {
                     </div>
                 </div>
             </Content>
+            <DoctorSuggestion doctorSpecialtyId={suggestSpecialty[0]?.id} />
         </Layout >
     )
 }
