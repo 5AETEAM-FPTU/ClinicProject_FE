@@ -1,5 +1,5 @@
 import { Button, message, Popover, Space, TimePicker } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
     useGetScheduleByDateQuery,
@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../../Auth/SignIn'
+import useClickOutside from '@/hooks/useClickOutside'
 
 export type TimeSlot = {
     startTime: string
@@ -190,7 +191,7 @@ export function PopoverOptionChange({
     refetch,
     date,
 }: TProps) {
-    const { trigger, handleTrigger } = useTrigger()
+    const { trigger, handleTrigger, handleTriggerPayload } = useTrigger()
 
     const [remvoeScheduleByIdMuation, { isLoading, data }] =
         useRemoveScheduleByIdMutation()
@@ -202,7 +203,7 @@ export function PopoverOptionChange({
 
     const handleRemoveSlotById = async () => {
         try {
-            await remvoeScheduleByIdMuation(slot.slotId! + 'a').unwrap()
+            await remvoeScheduleByIdMuation(slot.slotId!).unwrap()
             console.log(data)
             refetch()
             message.success('Xóa slot thành công!')
@@ -243,7 +244,7 @@ export function PopoverOptionChange({
                 refetch()
                 message.success('Cập nhật thời gian slot thành công!')
                 setIsUpdate(false)
-                handleTrigger()
+                handleTriggerPayload(false);
             }
         } catch (error) {
             if (error) {
@@ -258,78 +259,74 @@ export function PopoverOptionChange({
             trigger={'click'}
             onOpenChange={() => {
                 handleTrigger()
-              
             }}
             open={trigger}
             content={
-                    isUpdate ? (
-                        <>
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                                className="shadow-lg relative mt-2 h-36 w-full rounded"
-                            >
-                                <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
-                                    <span className="flex-1 text-start">
-                                        Bắt đầu
-                                    </span>
-                                    <span className="flex-1 text-start">
-                                        Kết thúc
-                                    </span>
-                                </div>
-                                <Space direction="vertical" className="p-1">
-                                    <TimePicker.RangePicker
-                                        size="large"
-                                        onCalendarChange={(
+                isUpdate ? (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.3 }}
+                            className="shadow-lg relative mt-2 h-36 w-full rounded"
+                        >
+                            <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
+                                <span className="flex-1 text-start">
+                                    Bắt đầu
+                                </span>
+                                <span className="flex-1 text-start">
+                                    Kết thúc
+                                </span>
+                            </div>
+                            <Space direction="vertical" className="p-1">
+                                <TimePicker.RangePicker
+                                    size="large"
+                                    onCalendarChange={(dates, dateStrings) => {
+                                        console.log('b', dates, dateStrings)
+                                        handleChangingTimeSlot(
                                             dates,
                                             dateStrings,
-                                        ) => {
-                                            console.log('b', dates, dateStrings)
-                                            handleChangingTimeSlot(
-                                                dates,
-                                                dateStrings,
-                                            )
-                                        }}
-                                        format="HH:mm"
-                                        defaultValue={[
-                                            dayjs(slot.startTime, 'HH:mm'),
-                                            dayjs(slot.endTime, 'HH:mm'),
-                                        ]}
-                                    />
-                                </Space>
-                                <div className="m-2 flex gap-4">
-                                    <Button className="shadow flex flex-1 items-center justify-center rounded-lg border border-red-500 bg-white px-4 py-2 font-bold text-red-500 hover:bg-red-100">
-                                        Xóa
-                                    </Button>
-                                    <Button
-                                        loading={isLoading}
-                                        onClick={() => handleUpdatingSlotTime()}
-                                        className="shadow flex flex-1 items-center justify-center rounded-lg border border-secondaryDark bg-secondaryDark px-4 py-2 font-semibold text-white hover:bg-secondaryDark"
-                                    >
-                                        Lưu
-                                    </Button>
-                                </div>
-                            </motion.div>
-                        </>
-                    ) : (
-                        <div className="flex flex-col gap-2">
-                            <Button
-                                type="primary"
-                                onClick={() => setIsUpdate(true)}
-                            >
-                                Cập nhật
-                            </Button>
-                            <Button
-                                loading={isLoading}
-                                type="primary"
-                                danger
-                                onClick={() => handleRemoveSlotById()}
-                            >
-                                Xóa slot
-                            </Button>
-                        </div>
-                    )
+                                        )
+                                    }}
+                                    format="HH:mm"
+                                    defaultValue={[
+                                        dayjs(slot.startTime, 'HH:mm'),
+                                        dayjs(slot.endTime, 'HH:mm'),
+                                    ]}
+                                />
+                            </Space>
+                            <div className="m-2 flex gap-4">
+                                <Button className="shadow flex flex-1 items-center justify-center rounded-lg border border-red-500 bg-white px-4 py-2 font-bold text-red-500 hover:bg-red-100">
+                                    Hủy
+                                </Button>
+                                <Button
+                                    loading={isLoading}
+                                    onClick={() => handleUpdatingSlotTime()}
+                                    className="shadow flex flex-1 items-center justify-center rounded-lg border border-secondaryDark bg-secondaryDark px-4 py-2 font-semibold text-white hover:bg-secondaryDark"
+                                >
+                                    Lưu
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </>
+                ) : (
+                    <div className="flex flex-col gap-2">
+                        <Button
+                            type="primary"
+                            onClick={() => setIsUpdate(true)}
+                        >
+                            Cập nhật
+                        </Button>
+                        <Button
+                            loading={isLoading}
+                            type="primary"
+                            danger
+                            onClick={() => handleRemoveSlotById()}
+                        >
+                            Xóa slot
+                        </Button>
+                    </div>
+                )
             }
         >
             <Button
