@@ -1,12 +1,13 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
-export default function Paginate({ totalPages, onPageChange }: { totalPages: number, onPageChange?: (page: number) => void }) {
-    const [currentPage, setCurrentPage] = useState(1);
+export default function Paginate({ totalPages, onPageChange, page }: { page: number, totalPages: number, onPageChange?: (page: number) => void }) {
+    if (totalPages < 1) return null;
+    const [currentPage, setCurrentPage] = useState(page);
 
     // Hàm chuyển trang
     const handlePageChange = (page: number) => {
-        if (page < 1 || page > totalPages) return; // Không cho phép đi ra ngoài giới hạn trang
+        if (currentPage == page || page < 1 || page > totalPages) return; // Không cho phép đi ra ngoài giới hạn trang
         setCurrentPage(page);
         if (onPageChange)
             onPageChange(page); // Gọi callback với số trang hiện tại

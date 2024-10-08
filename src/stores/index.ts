@@ -6,7 +6,7 @@ import auth from './features/auth'
 import loading from './features/loading'
 import sidebar from './features/sidebar'
 import { authApis } from './services/auth'
-
+import { geminiApis } from './services/ai/gemini'
 export const createStore = (
     option?: ConfigureStoreOptions['preloadedState'] | undefined,
 ) =>
@@ -17,9 +17,10 @@ export const createStore = (
             auth,
             sidebar,
             loading,
+            [geminiApis.reducerPath]: geminiApis.reducer,
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(baseApi.middleware),
+            getDefaultMiddleware().concat(baseApi.middleware).concat(geminiApis.middleware),
     })
 export const store = createStore()
 
