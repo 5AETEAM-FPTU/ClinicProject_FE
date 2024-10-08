@@ -33,6 +33,7 @@ const doctorEndpoint = {
     GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
     UPDATE_DUTY: "/doctor/duty",
     GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
+    GET_MEDICAL_REPORT: "/medical-report/all",
 }
 
 const scheduleEndpoint = {

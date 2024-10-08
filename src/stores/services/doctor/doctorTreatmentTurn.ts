@@ -14,7 +14,21 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false },
         }),
+        getAllMedicalReport: build.query<
+            any,
+            { keyword?: string; lastReportDate?: string; pageSize?: number }
+        >({
+            query: (query) => ({
+                url: doctorEndpoint.GET_MEDICAL_REPORT,
+                flashError: true,
+                method: 'GET',
+                params: query,
+                extraOptions: { skipAuth: true },
+            }),
+            extraOptions: { skipAuth: false },
+        }),
     }),
 })
 
-export const { useGetAppointmentOnDayQuery } = doctorTreatmentTurnApi
+export const { useGetAppointmentOnDayQuery, useLazyGetAllMedicalReportQuery } =
+    doctorTreatmentTurnApi
