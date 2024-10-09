@@ -48,7 +48,8 @@
         "slick-carousel": "^1.8.1",
         "styled-components": "^6.1.13",
         "tailwind-merge": "^2.5.2",
-        "tailwindcss-animated": "^1.1.2"
+        "tailwindcss-animated": "^1.1.2",
+        "vnpay": "^1.6.0"
     },
     "devDependencies": {
         "@types/js-cookie": "^3.0.6",
