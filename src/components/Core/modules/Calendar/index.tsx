@@ -30,9 +30,7 @@ function CalendarModule() {
         setStepState("confirm");
     }
 
-    if (!step) return <AppointmentBooking handleBookDoctor={handleBookDoctor} />
-    if (step === 'booking') return <Calendar handleSelectTimeSlot={handleSelectTimeSlot} />
-    if (step === 'confirm') return <AppointmentConfirm timeSlotSelected={timeSlotSelected!} />
+    return <AppointmentBooking />
 }
 
 export default CalendarModule

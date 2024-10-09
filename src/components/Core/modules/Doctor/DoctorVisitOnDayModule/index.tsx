@@ -3,21 +3,18 @@ import { Button, Layout, Skeleton, Typography } from 'antd'
 import { motion } from 'framer-motion'
 import AppointmentPending, { IAppointmentOnDay } from './AppointmentPending'
 import AppointmentDone from './AppointmentDone'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useGetAllAppointmentStatusQuery } from '@/stores/services/enum/enum'
 import { useGetAppointmentOnDayQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
 import dayjs from 'dayjs'
 const { Content } = Layout
 
-interface StatusOption {
-    id: string
-    statusName: string
-    constant: string
-}
-
 export default function DoctorVisitInDayModule() {
-    const { appointments, refetch, isFetching } = useGetAppointmentOnDayQuery(
-        { date: '2024-10-01T21:29:16' },
+    const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), []);
+
+    const { appointments, refetch, isFetching } = 
+    useGetAppointmentOnDayQuery(
+        { date: '2024-10-06T08:30:00' },
         {
             selectFromResult: ({ data, isFetching }) => ({
                 appointments: data?.body?.appointment ?? [],
@@ -25,7 +22,7 @@ export default function DoctorVisitInDayModule() {
             }),
         },
     )
-
+    
     const [appointmentPendingList, SetAppointmentPendingList] = useState<
         IAppointmentOnDay[] | null
     >(null)
@@ -40,13 +37,11 @@ export default function DoctorVisitInDayModule() {
         )
         var newDoneList = appointments?.filter(
             (appointment: IAppointmentOnDay) =>
-                appointment?.appointmentStatus.constant === 'Done',
+                appointment?.appointmentStatus.constant === 'Completed',
         )
         SetAppointmentPendingList(newPendingList)
         SetAppointmentDoneList(newDoneList)
-    }, [refetch, appointments])
-
-    console.log(appointments)
+    }, [refetch, isFetching])
 
     return (
         <motion.div
@@ -98,6 +93,7 @@ export default function DoctorVisitInDayModule() {
                                                     (appointment, index) => {
                                                         return (
                                                             <AppointmentPending
+                                                                refetch={refetch}
                                                                 payload={
                                                                     appointment
                                                                 }
@@ -147,6 +143,7 @@ export default function DoctorVisitInDayModule() {
                                                                 payload={
                                                                     appointment
                                                                 }
+                                                                refetch={refetch}
                                                                 key={index}
                                                             />
                                                         )
@@ -162,38 +159,5 @@ export default function DoctorVisitInDayModule() {
                 </Content>
             </Layout>
         </motion.div>
-    )
-}
-
-export function AppointmentStatus() {
-    const [selectedStatus, setSelectedStatus] = useState<string>('waiting')
-    const { statusOptions } = useGetAllAppointmentStatusQuery(undefined, {
-        selectFromResult: ({ data }) => {
-            return {
-                statusOptions: data?.body?.appointmentStatuses ?? [],
-            }
-        },
-    })
-
-    const handleStatusChange = (id: string) => {
-        setSelectedStatus(id)
-    }
-
-    return (
-        <div className="flex w-48 flex-col gap-2 rounded-md">
-            {statusOptions.map((option: StatusOption) => (
-                <Button
-                    key={option.id}
-                    onClick={() => handleStatusChange(option.id)}
-                    className={`w-full border-none px-4 py-2 text-left transition-colors ${
-                        selectedStatus === option.id
-                            ? 'bg-blue-100 text-secondaryDark'
-                            : 'hover:bg-gray-50'
-                    }`}
-                >
-                    {option.statusName}
-                </Button>
-            ))}
-        </div>
     )
 }

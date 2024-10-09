@@ -1,13 +1,17 @@
 'use client'
 
-import { Button, Popover } from 'antd'
-import { FilePlus2, Settings } from 'lucide-react'
+import { Button, message, Popover } from 'antd'
+import { FilePlus2, Settings, View } from 'lucide-react'
 import Image from 'next/image'
 import ProfileBackground from '@public/landing/images/profile-background.png'
-import { AppointmentStatus } from '..'
 import { useTrigger } from '@/hooks/useTrigger'
 import dayjs from 'dayjs'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next-nprogress-bar'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { useGetAllAppointmentStatusQuery } from '@/stores/services/enum/enum'
+import { useUpdateAppointmentStatusMutation } from '@/stores/services/appointment'
 
 interface Gender {
     id: string
@@ -40,18 +44,26 @@ export interface IAppointmentOnDay {
     patient: Patient
     schedule: Schedule
     appointmentStatus: AppointmentStatus
+    isHadMedicalReport: boolean
 }
 
 interface IProps {
     payload: IAppointmentOnDay
+    refetch: () => void
 }
 
-export default function AppointmentPending({ payload }: IProps) {
-    const { handleTrigger, trigger } = useTrigger()
+export default function AppointmentPending({ payload, refetch }: IProps) {
+    const { handleTrigger, trigger, handleTriggerPayload } = useTrigger()
+    const router = useRouter()
+    const pathname = usePathname()
+
+    const handleCreateMedicalReport = () => {
+        router.push(pathname + '/medical-report' + `?id=${payload.id}`)
+    }
 
     return (
         <>
-            <div className="flex h-fit flex-col gap-2 sm:gap-0 rounded-xl bg-white p-[16px] shadow-third">
+            <div className="flex h-fit flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third sm:gap-0">
                 <div className="w-full">
                     <div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
                         <span className="font-semibold text-[#003553]">
@@ -59,11 +71,29 @@ export default function AppointmentPending({ payload }: IProps) {
                                 ' - ' +
                                 dayjs(payload.schedule.endDate).format('HH:mm')}
                         </span>
-                        <div className="flex gap-[10px] justify-end">
-                            <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
-                                Tạo phiếu khám <FilePlus2 size={18} />
-                            </Button>
-                            <div className="flex flex-row sm:flex  gap-[10px]">
+                        <div className="flex justify-end gap-[10px]">
+                            {payload.isHadMedicalReport ? (
+                                <Button
+                                    className="rounded-[10px] border-secondaryDark border-2 
+                                    bg-white text-secondarySupperDarker"
+                                    onClick={() => {
+                                        handleCreateMedicalReport()
+                                    }}
+                                >
+                                    Xem phiếu khám <View size={18} />
+                                </Button>
+                            ) : (
+                                <Button
+                                    className="rounded-[10px] border-none bg-[#0284C7] text-white"
+                                    onClick={() => {
+                                        handleCreateMedicalReport()
+                                    }}
+                                >
+                                    Tạo phiếu khám <FilePlus2 size={18} />
+                                </Button>
+                            )}
+
+                            <div className="flex flex-row gap-[10px] sm:flex">
                                 <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
                                     {payload.appointmentStatus.statusName ??
                                         'Không xác định'}
@@ -71,7 +101,15 @@ export default function AppointmentPending({ payload }: IProps) {
                                 <Popover
                                     trigger={'click'}
                                     open={trigger}
-                                    content={<AppointmentStatus />}
+                                    content={
+                                        <AppointmentStatus
+                                            onClose={() =>
+                                                handleTriggerPayload(false)
+                                            }
+                                            payload={payload}
+                                            refetch={refetch}
+                                        />
+                                    }
                                     onOpenChange={handleTrigger}
                                 >
                                     <Button
@@ -95,8 +133,10 @@ export default function AppointmentPending({ payload }: IProps) {
                     <div className="h-[80px] w-[80px] items-center">
                         <Image
                             className="h-full w-full rounded-xl object-cover"
-                            src={ProfileBackground}
+                            src={payload.patient.avatar}
                             alt="background"
+                            width={400}
+                            height={400}
                         />
                     </div>
 
@@ -141,5 +181,63 @@ export default function AppointmentPending({ payload }: IProps) {
                 </div>
             </div>
         </>
+    )
+}
+
+export interface StatusOption {
+    id: string
+    statusName: string
+    constant: string
+}
+type TProps = {
+    refetch?: () => void
+    payload: IAppointmentOnDay
+    onClose?: () => void
+}
+export function AppointmentStatus({ payload, refetch, onClose }: TProps) {
+    const [loadingId, setLoadingId] = useState<string | null>(null)
+
+    const { statusOptions } = useGetAllAppointmentStatusQuery(undefined, {
+        selectFromResult: ({ data }) => {
+            return {
+                statusOptions: data?.body?.appointmentStatuses ?? [],
+            }
+        },
+    })
+
+    const [updateScheduleByIdMutation, { isLoading, data }] =
+        useUpdateAppointmentStatusMutation()
+
+    const handlerUpdateAppointmentStatus = async (statusId: string) => {
+        try {
+            setLoadingId(statusId)
+            await updateScheduleByIdMutation({
+                appointmentId: payload.id,
+                statusId: statusId,
+            })
+            onClose?.()
+            message.success('Cập nhật trạng thái thành công!')
+        } catch (error) {
+            setLoadingId(null)
+            message.error('Cập nhật trạng thái thất bại')
+        }
+        refetch?.()
+    }
+
+    return (
+        <div className="flex w-48 flex-col gap-2 rounded-xl">
+            {statusOptions.map((option: StatusOption) => (
+                <Button
+                    loading={loadingId === option.id}
+                    key={option.id}
+                    onClick={() => handlerUpdateAppointmentStatus(option.id)}
+                    className={cn(
+                        `w-full border-none px-4 py-2 text-left font-bold transition-colors`,
+                    )}
+                >
+                    {option.statusName}
+                </Button>
+            ))}
+        </div>
     )
 }

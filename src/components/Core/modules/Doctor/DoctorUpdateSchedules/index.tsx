@@ -1,10 +1,14 @@
 'use client'
-import { Button } from 'antd'
+import { Button, Skeleton } from 'antd'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import TimeSlot from './TimeSlot'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { useGetScheduleByMonthQuery } from '@/stores/services/schedule/scheduleSettings'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../Auth/SignIn'
+import webStorageClient from '@/utils/webStorageClient'
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = [
@@ -92,7 +96,32 @@ export default function DoctorUpdateSchedules() {
     const renderCalendar = () => {
         const daysInMonth = getDaysInMonth(currentDate)
         const firstDayOfMonth = getFirstDayOfMonth(currentDate)
+
         const days = []
+
+        const userId = jwtDecode<JwtPayloadUpdated>(
+            webStorageClient.getToken()!,
+        ).sub
+
+        const { data, isFetching, refetch } = useGetScheduleByMonthQuery({
+            month: currentDate.getMonth() + 1,
+            year: currentDate.getFullYear(),
+            doctorId: userId!,
+        })
+
+        useEffect(() => {
+            refetch();
+        }, [currentDate])
+
+        const hashData = useMemo(() => {
+            let dataHash = data && data.body.workingDays
+            const hash: any = {}
+            dataHash?.forEach((item: string) => {
+                hash[new Date(item).toISOString()] = true
+            })
+            return hash
+        }, [data])
+
         for (let i = 0; i < firstDayOfMonth; i++) {
             days.push(
                 <div
@@ -108,6 +137,8 @@ export default function DoctorUpdateSchedules() {
                 currentDate.getMonth(),
                 day,
             )
+            const isUpdated = hashData[date.toISOString()]
+
             const isSelected =
                 date.toDateString() === selectedDate?.toDateString()
             const isToday = date.toDateString() === new Date().toDateString()
@@ -118,27 +149,34 @@ export default function DoctorUpdateSchedules() {
                     key={day}
                     className={`mt-2 flex h-12 items-center justify-center gap-2 ${selectedWeekRow && currentWeekRow !== selectedWeekRow ? 'hidden' : ''}`}
                 >
-                    <Button
-                        disabled={isDisable}
-                        shape="default"
-                        size="large"
-                        key={day}
-                        type="text"
-                        onClick={() => !isDisable && handleSelectedRow(date)}
-                        className={cn(
-                            `relative h-[56px] w-full font-semibold text-[16x] text-secondarySupperDarker`,
-                            `${isDisable ? 'cursor-not-allowed text-gray-300' : ''}`,
-                            `${isSelected ? 'bg-secondaryDark bg-opacity-60 text-white' : ''}`,
-                            `${isToday && !isSelected ? '!border-2 !border-secondaryDark bg-white bg-opacity-80 !text-white' : ''}`,
-                            `${!isSelected && !isDisable ? 'hover:bg-secondaryDark hover:bg-opacity-40 hover:text-white' : ''}`,
-                        )}
-                        aria-label={`Select ${date.toDateString()}`}
-                    >
-                        {day}
-                        {isToday && (
-                            <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-secondaryDark"></div>
-                        )}
-                    </Button>
+                    {isFetching ? (
+                        <Skeleton.Button size='large' className='w-full h-[56px]'/>
+                    ) : (
+                        <Button
+                            disabled={isDisable}
+                            shape="default"
+                            size="large"
+                            key={day}
+                            type="text"
+                            onClick={() =>
+                                !isDisable && handleSelectedRow(date)
+                            }
+                            className={cn(
+                                `relative h-[56px] w-full font-semibold text-[16x] text-secondarySupperDarker`,
+                                `${isDisable ? 'cursor-not-allowed text-gray-300' : ''}`,
+                                `${isSelected ? 'bg-secondaryDark bg-opacity-60 text-white' : ''}`,
+                                `${isToday && !isSelected ? '!border-2 !border-secondaryDark bg-white bg-opacity-80 !text-white' : ''}`,
+                                `${!isSelected && !isDisable ? 'hover:bg-secondaryDark hover:bg-opacity-40 hover:text-white' : ''}`,
+                                `${isUpdated && !isDisable && !isSelected ? 'bg-secondaryDark bg-opacity-20' : ''}`,
+                            )}
+                            aria-label={`Select ${date.toDateString()}`}
+                        >
+                            {day}
+                            {isToday && (
+                                <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-secondaryDark"></div>
+                            )}
+                        </Button>
+                    )}
                 </motion.div>,
             )
         }

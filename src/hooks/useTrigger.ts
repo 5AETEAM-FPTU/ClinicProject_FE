@@ -6,8 +6,12 @@ export const useTrigger = () => {
     const handleTrigger = () => {
         setTrigger(!trigger);
     }
+    const handleTriggerPayload = (payload:boolean) => {
+        setTrigger(payload);
+    }
     return {
         trigger,
-        handleTrigger
+        handleTrigger,
+        handleTriggerPayload
     }
 }
