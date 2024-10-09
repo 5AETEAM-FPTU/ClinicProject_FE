@@ -1,4 +1,4 @@
-import { Button, message, Popover, Space, TimePicker } from 'antd'
+import { Button, message, Modal, Popover, Space, TimePicker } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
@@ -244,7 +244,7 @@ export function PopoverOptionChange({
                 refetch()
                 message.success('Cập nhật thời gian slot thành công!')
                 setIsUpdate(false)
-                handleTriggerPayload(false);
+                handleTriggerPayload(false)
             }
         } catch (error) {
             if (error) {
@@ -254,21 +254,74 @@ export function PopoverOptionChange({
     }
 
     return (
-        <Popover
-            key={index}
-            trigger={'click'}
-            onOpenChange={() => {
-                handleTrigger()
-            }}
-            open={trigger}
-            content={
-                isUpdate ? (
-                    <>
+        <>
+            <Popover
+                key={index}
+                trigger={'click'}
+                open={trigger}
+                onOpenChange={(open) => {
+                    if (isUpdate) return
+                    handleTriggerPayload(open)
+                }}
+                content={
+                    <div className="flex flex-col gap-2">
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                setIsUpdate(true)
+                                handleTriggerPayload(false)
+                            }}
+                        >
+                            Cập nhật
+                        </Button>
+                        <Button
+                            loading={isLoading}
+                            type="primary"
+                            danger
+                            onClick={() => handleRemoveSlotById()}
+                        >
+                            Xóa slot
+                        </Button>
+                    </div>
+                }
+            >
+                <Button
+                    disabled={slot?.isHadAppointment}
+                    key={index}
+                    className={cn(
+                        `relative border px-2 py-4 text-center`,
+                        `${
+                            selectedSlot === slot
+                                ? 'border-secondaryDark bg-secondaryDark text-white'
+                                : 'border-blue-200 bg-white text-secondarySupperDarker hover:border-secondaryDark'
+                        }`,
+                        `${slot?.isHadAppointment ? '!cursor-not-allowed !opacity-50' : ''}`,
+                    )}
+                    onClick={() => {
+                        if (isUpdate) return
+                        handleTriggerPayload(true)
+                    }}
+                >
+                    {dayjs(slot.startTime).format('HH:mm')} -{' '}
+                    {dayjs(slot.endTime).format('HH:mm')}
+                    <Modal
+                        title="Thay đổi khung giờ"
+                        open={isUpdate}
+                        onClose={() => {
+                            setIsUpdate(false)
+                            handleTriggerPayload(false)
+                        }}
+                        onOk={() => handleUpdatingSlotTime()}
+                        onCancel={() => {
+                            setIsUpdate(false)
+                            handleTriggerPayload(false)
+                        }}
+                    >
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3 }}
-                            className="shadow-lg relative mt-2 h-36 w-full rounded"
+                            className="shadow-lg relative mt-2 w-full rounded"
                         >
                             <div className="ml-4 flex h-10 w-full items-center font-bold text-sky-800">
                                 <span className="flex-1 text-start">
@@ -278,7 +331,7 @@ export function PopoverOptionChange({
                                     Kết thúc
                                 </span>
                             </div>
-                            <Space direction="vertical" className="p-1">
+                            <Space  direction="vertical" className="p-1 !w-full">
                                 <TimePicker.RangePicker
                                     size="large"
                                     onCalendarChange={(dates, dateStrings) => {
@@ -293,61 +346,13 @@ export function PopoverOptionChange({
                                         dayjs(slot.startTime, 'HH:mm'),
                                         dayjs(slot.endTime, 'HH:mm'),
                                     ]}
+                                    className="!w-full"  
                                 />
                             </Space>
-                            <div className="m-2 flex gap-4">
-                                <Button className="shadow flex flex-1 items-center justify-center rounded-lg border border-red-500 bg-white px-4 py-2 font-bold text-red-500 hover:bg-red-100">
-                                    Hủy
-                                </Button>
-                                <Button
-                                    loading={isLoading}
-                                    onClick={() => handleUpdatingSlotTime()}
-                                    className="shadow flex flex-1 items-center justify-center rounded-lg border border-secondaryDark bg-secondaryDark px-4 py-2 font-semibold text-white hover:bg-secondaryDark"
-                                >
-                                    Lưu
-                                </Button>
-                            </div>
                         </motion.div>
-                    </>
-                ) : (
-                    <div className="flex flex-col gap-2">
-                        <Button
-                            type="primary"
-                            onClick={() => setIsUpdate(true)}
-                        >
-                            Cập nhật
-                        </Button>
-                        <Button
-                            loading={isLoading}
-                            type="primary"
-                            danger
-                            onClick={() => handleRemoveSlotById()}
-                        >
-                            Xóa slot
-                        </Button>
-                    </div>
-                )
-            }
-        >
-            <Button
-                disabled={slot?.isHadAppointment}
-                key={index}
-                className={cn(
-                    `relative border px-2 py-4 text-center`,
-                    `${
-                        selectedSlot === slot
-                            ? 'border-secondaryDark bg-secondaryDark text-white'
-                            : 'border-blue-200 bg-white text-secondarySupperDarker hover:border-secondaryDark'
-                    }`,
-                    `${slot?.isHadAppointment ? '!cursor-not-allowed !opacity-50' : ''}`,
-                )}
-                onClick={() => {
-                    handleTrigger()
-                }}
-            >
-                {dayjs(slot.startTime).format('HH:mm')} -{' '}
-                {dayjs(slot.endTime).format('HH:mm')}
-            </Button>
-        </Popover>
+                    </Modal>
+                </Button>
+            </Popover>
+        </>
     )
 }

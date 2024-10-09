@@ -99,10 +99,10 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
                                                         </td>
                                                         <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
                                                             <div className='flex flex-row gap-2'>
-                                                                <Button type='primary' className='bg-secondaryDark'>
+                                                                <Button type='primary' className='bg-secondaryDark rounded-lg'>
                                                                     Lưu lại / <PackageCheck size={16} />
                                                                 </Button>
-                                                                <Button type='primary' className='bg-red-600'>
+                                                                <Button type='primary' className='bg-red-600 rounded-lg'>
                                                                     Xóa / <PackageMinus size={16} />
                                                                 </Button>
                                                             </div>

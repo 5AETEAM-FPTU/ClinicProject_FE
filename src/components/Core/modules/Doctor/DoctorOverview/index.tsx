@@ -93,7 +93,7 @@ const CustomCalendar = () => {
             <div className="shadow h-full rounded-lg bg-white p-5 shadow-third">
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-secondarySupperDarker">
-                        Tháng 4 2024
+                        Tháng {currentMonth} {currentYear}
                     </h2>
                 </div>
                 <div className="grid grid-cols-7 gap-1">
