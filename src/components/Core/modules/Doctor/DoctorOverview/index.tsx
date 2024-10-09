@@ -73,7 +73,9 @@ const currentMonth = new Date().getMonth() + 1;
 const currentYear = new Date().getFullYear();
 
 const CustomCalendar = () => {
-    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({ month: currentMonth, year: currentYear })
+    const _accessToken = webStorageClient.getToken();
+    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub;
+    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({ month: currentMonth, year: currentYear, doctorId: userId! });
     const days = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
     const dates = Array.from({ length: 31 }, (_, i) => i + 1)
     const currentDate = new Date().getDate();
@@ -85,12 +87,13 @@ const CustomCalendar = () => {
         })
         return hash;
     }, [data]);
+
     return (
         <Skeleton loading={isLoading} active>
             <div className="shadow h-full rounded-lg bg-white p-5 shadow-third">
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-secondarySupperDarker">
-                        Tháng 4 2024
+                        Tháng {currentMonth} {currentYear}
                     </h2>
                 </div>
                 <div className="grid grid-cols-7 gap-1">
@@ -132,9 +135,10 @@ const AppointmentComponent = () => {
                         className="flex justify-between border-b-[1px] border-[#00355350] px-[10px] py-2"
                     >
                         <div className="flex">
-                            <img
+                            <Avatar
+                                shape='square'
                                 src={item.patient.avatar}
-                                className="mr-[10px] h-[60px] w-[60px] object-contain"
+                                className="mr-[10px] h-[60px] w-[60px] object-cover"
                                 alt="Patient"
                             />
                             <div className="flex-col">
@@ -365,10 +369,11 @@ export default function MedicalDashboard() {
                                 }}
                                 className={`flex h-[160px] items-start justify-between rounded-[12px] bg-cover bg-center p-5`}
                             >
-                                <img
+                                <Avatar
+                                    shape="square"
                                     src={doctor?.avatarUrl}
                                     alt="Doctor"
-                                    className="mb-4 h-[120opx] w-[120px] rounded-[10px] object-cover"
+                                    className="mb-4 h-[120px] w-[120px] rounded-[10px] object-cover"
                                 />
                                 <Button
                                     className="h-[37px] border-[1px] border-[#0284C7] bg-white px-3 py-2 text-base font-semibold text-[#0284C7]"

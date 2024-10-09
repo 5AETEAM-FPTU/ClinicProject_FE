@@ -1,8 +1,7 @@
 'use client'
-import { scheduleEndpoint, userEndpoint } from "@/settings/endpoints";
-import { baseApi } from "../base";
-import { TimeSlot } from "@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot";
-import { time } from "console";
+import { scheduleEndpoint, userEndpoint } from '@/settings/endpoints'
+import { baseApi } from '../base'
+import { TimeSlot } from '@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot'
 
 export const scheduleSettingsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
@@ -27,13 +26,41 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'GET',
             }),
-            extraOptions: { skipAuth: false }
+            extraOptions: { skipAuth: false },
         }),
-    })
+        removeScheduleById: build.mutation<any, string>({
+            query: (id: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_ID.replace('{scheduleId}', id)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        removeScheduleByDate: build.mutation<any, string>({
+            query: (date: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_DATE.replace("{date}", date)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        updateScheduleById: build.mutation<any, {schedularId: string, startDate: string, endDate: string}>({
+            query: (data: {schedularId: string, startDate: string, endDate: string}) => ({
+                url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID.replace('{scheduleId}', data.schedularId)}`,
+                flashError: true,
+                body: {
+                    startDate: data.startDate,
+                    endDate: data.endDate
+                },
+                method: 'PATCH',
+            }),
+        })
+    }),
 })
 
 export const {
     useGetScheduleByDateQuery, useLazyGetScheduleByDateQuery,
     useCreateSchedulesMutation,
-    useGetScheduleByMonthQuery
-} = scheduleSettingsApi;
+    useGetScheduleByMonthQuery,
+    useRemoveScheduleByDateMutation,
+    useRemoveScheduleByIdMutation,
+    useUpdateScheduleByIdMutation
+} = scheduleSettingsApi
