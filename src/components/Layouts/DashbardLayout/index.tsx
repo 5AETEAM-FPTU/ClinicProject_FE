@@ -51,6 +51,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const sideBarRef = useRef(null)
     const handleToggleSidebar = () => dispath(toggleSidebar())
     const screen = useBreakpoint()
+    
     useClickOutside(
         sideBarRef,
         () => !collapsed && !screen.md && handleToggleSidebar(),

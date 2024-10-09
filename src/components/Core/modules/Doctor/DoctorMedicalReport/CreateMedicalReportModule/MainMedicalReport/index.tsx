@@ -8,6 +8,7 @@ import { useRef, useState } from 'react'
 import CreateMedicalServiceModal from '../../ModalMedicalReport/CreateMedidalServiceModal'
 import { Save } from 'lucide-react'
 import UpdateMedicalServiceModal from '../../ModalMedicalReport/UpdateMedicalServiceModal'
+import CreatePrescriptionModal from '../../ModalMedicalReport/CreatePrescriptionModal'
 
 export default function MainMedicalReport() {
     const [myForm] = Form.useForm()
@@ -217,7 +218,7 @@ export default function MainMedicalReport() {
                     />
                     <Button
                         type="primary"
-                        className="shadow-four rounded-xl bg-[#15803D] !p-[20px] font-semibold"
+                        className="rounded-xl bg-[#15803D] !p-[20px] font-semibold shadow-four"
                         onClick={() => setOpenUpdateMedicalServiceModal(true)}
                     >
                         Cập nhật kết quả
@@ -229,9 +230,14 @@ export default function MainMedicalReport() {
                     <Button
                         type="primary"
                         className="rounded-xl bg-secondaryDark !p-[20px] font-semibold shadow-third"
+                        onClick={() => setOpenCreatePrescriptionModal(true)}
                     >
                         Tạo đơn thuốc
                     </Button>
+                    <CreatePrescriptionModal
+                        open={openCreatePrescriptionModal}
+                        setOpen={setOpenCreatePrescriptionModal}
+                    />
                 </div>
                 <div>
                     <p className="text-[14px] font-semibold text-secondarySupperDarker">

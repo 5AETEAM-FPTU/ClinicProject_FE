@@ -106,7 +106,7 @@ export default function FollowUpAppointment() {
                     ))}
                 </div>
             </div>
-            <Paginate totalPages={10} />
+            <Paginate totalPages={10} page={1} />
         </>
     )
 }

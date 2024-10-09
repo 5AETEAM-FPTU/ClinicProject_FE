@@ -41,6 +41,9 @@ const scheduleEndpoint = {
     GET_SCHEDULES_BY_DATE: "/schedules/date",
     POST_CREATE_SCHEDULES: "/schedules",
     GET_SCHEDULES_BY_MONTH: "/schedules/month",
+    REMOVE_SCHEDULE_BY_ID: "/schedules/remove/{scheduleId}",
+    REMOVE_SCHEDULE_BY_DATE: "/schedules/remove/{date}",
+    UPDATE_SCHEDULE_BY_ID: "/schedules/update/{scheduleId}",
 }
 
 const enumEndpoint = {
@@ -56,4 +59,8 @@ const geminiEndpoint = {
     TEXT_GENERATION: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent",
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint, geminiEndpoint };
+const AppointmentEndpoint = {
+    UPDATE_APPOINTMENT_STATUS: "/appointment/update-status"
+}
+
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint, geminiEndpoint, AppointmentEndpoint };
