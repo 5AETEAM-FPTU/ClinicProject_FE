@@ -20,6 +20,7 @@
         "clsx": "^2.1.1",
         "convex": "^1.16.2",
         "cookies-next": "^4.2.1",
+        "crypto": "^1.0.1",
         "date-fns": "^2.28.0",
         "dayjs": "^1.11.13",
         "framer-motion": "^11.5.4",
@@ -36,6 +37,7 @@
         "next-intl": "^3.19.1",
         "next-nprogress-bar": "^2.3.13",
         "next-themes": "^0.3.0",
+        "querystring": "^0.2.1",
         "react": "^18",
         "react-cookie": "^7.1.4",
         "react-dom": "^18",
@@ -49,6 +51,7 @@
         "slick-carousel": "^1.8.1",
         "styled-components": "^6.1.13",
         "tailwind-merge": "^2.5.2",
+        "tailwindcss-animated": "^1.1.2",
         "tailwind-scrollbar-hide": "^1.1.7",
         "tailwindcss-animated": "^1.1.2"
     },
