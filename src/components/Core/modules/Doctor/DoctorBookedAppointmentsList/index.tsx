@@ -1,11 +1,13 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { DatePicker, Collapse, Divider, Button } from 'antd'
 import { ChevronDown, ChevronUp, Dot } from 'lucide-react'
 import "./style.css"
 import Image from 'next/image'
 import Paginate from '@/components/Core/common/Paginate'
+import { useGetAppointmentInWeekQuery } from '@/stores/services/doctor/doctorOverview'
+import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker
 const { Panel } = Collapse
@@ -17,7 +19,8 @@ interface Appointment {
     phone: string
     gender: string
     age: number
-    description: string
+    description: string,
+    image?: string
 }
 
 interface DayAppointments {
@@ -67,12 +70,60 @@ const mockAppointments: DayAppointments[] = [
 
 export default function DoctorBookedAppointmentsList() {
     const [expandedDate, setExpandedDate] = useState<string | null>(null)
+    const [dateFilter, setDateFilter] = useState([new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10), new Date(Date.now()).toISOString().substring(0, 10)])
     const [expandedAppointment, setExpandedAppointment] = useState<string | null>(null)
-
+    const { data: appointmentReponse, refetch } = useGetAppointmentInWeekQuery({ startDate: dateFilter[0], endDate: dateFilter[1] });
+    console.log(appointmentReponse);
     const toggleDate = (date: string) => {
         setExpandedDate(expandedDate === date ? null : date)
         setExpandedAppointment(null)
     }
+
+    const appointments = useMemo(() => {
+        const appointmentsList = appointmentReponse?.data?.appointment;
+        if (!appointmentsList) return [];
+
+        const appointmentsByDate: DayAppointments[] = appointmentsList.reduce((acc: DayAppointments[], appointment: any) => {
+            const date = dayjs(appointment.schedule.startDate).format('Ngày DD [tháng] M [năm] YYYY');
+            const newAppointment: Appointment = {
+                id: appointment.id,
+                time: `${dayjs(appointment.schedule.startDate).format('HH:mm')} - ${dayjs(appointment.schedule.endDate).format('HH:mm')}`,
+                name: appointment.patient.fullName,
+                phone: appointment.patient.phoneNumber,
+                age: dayjs().diff(dayjs(appointment.patient.dob), 'year'),
+                gender: appointment.patient.gender.name,
+                description: appointment.description,
+                image: appointment.patient.avatar,
+            };
+
+            // Kiểm tra nếu ngày đã tồn tại trong acc
+            const existingDate = acc.find(item => item.date === date);
+
+            if (existingDate) {
+                // Nếu ngày đã tồn tại, thêm cuộc hẹn vào danh sách của ngày đó
+                existingDate.appointments.push(newAppointment);
+            } else {
+                // Nếu không, tạo một mục mới cho ngày đó
+                acc.push({
+                    date: date,
+                    appointments: [newAppointment],
+                });
+            }
+
+            return acc;
+        }, []);
+
+        return appointmentsByDate;
+
+    }, [appointmentReponse]);
+
+    const handleDateFilterChange = (dates: any) => {
+        setDateFilter([new Date(dates[0].$y, dates[0].$M + 1, dates[0].$D).toISOString().substring(0, 10), new Date(dates[1].$y, dates[1].$M + 1, dates[1].$D).toISOString().substring(0, 10)])
+    }
+
+    useEffect(() => {
+        refetch();
+    }, [dateFilter[0], dateFilter[1]])
 
     const toggleAppointment = (appointmentId: string) => {
         setExpandedAppointment(expandedAppointment === appointmentId ? null : appointmentId)
@@ -85,11 +136,13 @@ export default function DoctorBookedAppointmentsList() {
                 <RangePicker
                     className="mx-auto"
                     placeholder={['Từ ngày', 'Đến ngày']}
+                    onChange={handleDateFilterChange}
+                    defaultValue={[dayjs(dateFilter[0]), dayjs(dateFilter[1])]}
                 />
             </div>
 
             <div className="space-y-2">
-                {mockAppointments.map((day) => (
+                {appointments.map((day) => (
                     <div key={day.date} className="shadow-third rounded-lg overflow-hidden bg-white">
                         <div
                             className="flex justify-between items-center p-4 cursor-pointer"
@@ -145,7 +198,7 @@ export default function DoctorBookedAppointmentsList() {
                     </div>
                 ))}
             </div>
-            <Paginate totalPages={20} page={1}/>
+            <Paginate totalPages={20} page={1} />
         </div>
     )
 }
