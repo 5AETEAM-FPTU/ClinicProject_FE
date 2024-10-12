@@ -45,6 +45,7 @@ export interface IAppointmentOnDay {
     schedule: Schedule
     appointmentStatus: AppointmentStatus
     isHadMedicalReport: boolean
+    medicalReportId: string
 }
 
 interface IProps {
@@ -58,7 +59,11 @@ export default function AppointmentPending({ payload, refetch }: IProps) {
     const pathname = usePathname()
 
     const handleCreateMedicalReport = () => {
-        router.push(pathname + '/medical-report' + `?id=${payload.id}`)
+        router.push(pathname + '/medical-report' + `?id=${payload.medicalReportId}`)
+    }
+
+    const handleViewMecidcalReport = () => {
+        router.push(pathname + '/medical-report/view' + `?id=${payload.medicalReportId}`)
     }
 
     return (
@@ -77,7 +82,7 @@ export default function AppointmentPending({ payload, refetch }: IProps) {
                                     className="rounded-[10px] border-secondaryDark border-2 
                                     bg-white text-secondarySupperDarker"
                                     onClick={() => {
-                                        handleCreateMedicalReport()
+                                        handleViewMecidcalReport()
                                     }}
                                 >
                                     Xem phiếu khám <View size={18} />

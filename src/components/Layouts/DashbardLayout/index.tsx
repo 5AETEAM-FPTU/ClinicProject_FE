@@ -29,7 +29,8 @@ import { useTrigger } from '@/hooks/useTrigger'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import Notifications from './Notifications'
-import { set } from 'lodash'
+import { api } from '@convex/_generated/api'
+import { useMutation, useQuery } from 'convex/react'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -51,7 +52,7 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const sideBarRef = useRef(null)
     const handleToggleSidebar = () => dispath(toggleSidebar())
     const screen = useBreakpoint()
-    
+
     useClickOutside(
         sideBarRef,
         () => !collapsed && !screen.md && handleToggleSidebar(),
@@ -100,12 +101,36 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
         await signOut({ redirect: true, callbackUrl: `/${locale}/home` })
     }
 
-    const notificationsUnReadLength = 2
+    const notifications = useQuery(
+        api._user_notifications.functions.getUserNofitication,
+        {
+            receiverId: jwtDecode<JwtPayloadUpdated>(
+                webStorageClient.getToken()!,
+            ).sub!,
+        },
+    )
+    const prevNotificationsLength = useRef(notifications?.length);
 
-    // useEffect(() => {
-    //     if(!screen.sm) dispath(setCollapsed(true))
-    // }, [screen])
+    useEffect(() => {
+      if (audioRef.current && notifications){
+        if (
+          prevNotificationsLength.current !== undefined &&
+          notifications?.length > prevNotificationsLength.current
+        ) {
+          if (notifications?.length > prevNotificationsLength.current) {
+            audioRef.current.play();
+          }
+        }
+      }
+      prevNotificationsLength.current = notifications?.length;
+    }, [notifications]);
 
+    const hasNewNotification =  !!notifications?.length
+    const numberOfUnreadNotifications = notifications?.filter(
+      (notification) => !notification.isRead
+    )
+
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     return (
         <Layout className="!h-screen">
             <Sider
@@ -118,7 +143,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                     `${collapsed ? '!min-w-[80px] translate-x-[-80px] sm:translate-x-0' : 'translate-x-0'}`,
                     'fixed z-[999] h-full sm:static',
                 )}
-            >
+            >   
+                <audio ref={audioRef} preload='auto' src='https://res.cloudinary.com/dy1uuo6ql/video/upload/v1728659255/paowhflbqnlzhj092x2z.mp3'/>
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
                         className="flex select-none flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
@@ -182,7 +208,6 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                     {appLayoutState?.destination
                                         ? handleRenderDistance('destination')
                                         : handleRenderDistance('distance')}
-                                    
                                 </p>
                             </div>
                         </div>
@@ -205,10 +230,10 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                 <Popover
                                     trigger={'click'}
                                     open={trigger}
-                                    content={<Notifications />}
+                                    content={<Notifications payload={notifications!} />}
                                     onOpenChange={handleTrigger}
                                     overlayClassName={cn(
-                                        'min-w-[500px] max-h-[600px] overflow-hidden overflow-y-auto rounded-lg shadow-third',
+                                        'rounded-lg shadow-third',
                                     )}
                                 >
                                     <div
@@ -218,10 +243,10 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         )}
                                     >
                                         <Bell size={24} />
-                                        {notificationsUnReadLength > 0 && (
+                                        {numberOfUnreadNotifications!?.length > 0 && (
                                             <div className="absolute right-[-5px] top-[-5px] flex h-[18px] w-[18px] flex-row items-center justify-center rounded-full bg-red-600">
                                                 <p className="text-[10px] text-white">
-                                                    {notificationsUnReadLength}
+                                                    {hasNewNotification ? numberOfUnreadNotifications?.length : null}
                                                 </p>
                                             </div>
                                         )}

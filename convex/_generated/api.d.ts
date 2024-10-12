@@ -15,6 +15,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as _user_notifications_functions from "../_user_notifications/functions.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -24,7 +25,9 @@ import type {
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "_user_notifications/functions": typeof _user_notifications_functions;
+}>;
 export declare const api: FilterApi<
   typeof fullApi,
   FunctionReference<any, "public">

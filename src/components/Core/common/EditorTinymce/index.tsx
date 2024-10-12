@@ -20,6 +20,7 @@ export default function EditorTinymce({
     return (
         <>
             <Editor
+                initialValue={initContent!}
                 onInit={(_, editor) => {
                     editorRef.current = editor
                 }}

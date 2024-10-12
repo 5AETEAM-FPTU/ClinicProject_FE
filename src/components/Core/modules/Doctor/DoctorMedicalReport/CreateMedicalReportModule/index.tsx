@@ -4,10 +4,27 @@ import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
 import MainMedicalReport from './MainMedicalReport'
 import PatientInforComponent from './PatientInforComponents'
+import { useGetMedicalReportByIdQuery } from '@/stores/services/report/medicalReport'
+import { useEffect } from 'react'
 
 export default function CreateMedicalReport() {
     const searchParam = useSearchParams()
     const reportId = searchParam.get('id')
+
+    const { report, refetch, isFetching } = useGetMedicalReportByIdQuery(
+        reportId!,
+        {
+            selectFromResult: ({ data, isFetching }) => ({
+                report: data?.body ?? {},
+                isFetching: isFetching,
+            }),
+        },
+    )
+
+    useEffect(() => {
+        refetch();
+    }, [])
+
     return (
         <motion.div>
             {!reportId ? (
@@ -26,9 +43,9 @@ export default function CreateMedicalReport() {
                         </h3>
                     </div>
                     <div className="h-fit w-full rounded-xl p-5 shadow-third bg-white">
-                        <PatientInforComponent />
+                        <PatientInforComponent payload={report?.patientInfor} refetch={refetch} isFetching={isFetching}/>
                     </div>
-                    <MainMedicalReport />
+                    <MainMedicalReport payload={report?.medicalReport} refetch={refetch} isFetching={isFetching}/>
                 </motion.div>
             )}
         </motion.div>

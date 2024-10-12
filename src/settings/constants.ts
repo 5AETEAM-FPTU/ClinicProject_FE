@@ -9,6 +9,13 @@ const EMAIL= "_email";
 
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
 
+const NOTIFICATION_TYPES = {
+    SUCCESS: 'Thành công',
+    ERROR: 'Lỗi',
+    WARNING: 'Cảnh báo',
+    INFO: 'Thông tin',
+}
+
 const constants = {
     ACCESS_TOKEN,
     REFRESH_TOKEN,
@@ -17,7 +24,8 @@ const constants = {
     ROLE,
     USER_AVATAR,
     USER_FULLNAME,
-    EMAIL
+    EMAIL,
+    NOTIFICATION_TYPES
 }
 
 export default constants;
