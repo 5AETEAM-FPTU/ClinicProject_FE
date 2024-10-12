@@ -13,7 +13,8 @@ export default function TestComponent() {
     // return <BookingConfirmation />
     // return <AppointmentBooking />
     // return <BookedAppointmentList />
-    return <FollowUpAppointment />
+    // return <FollowUpAppointment />
     // return <DoctorFeedback />
     // return <DoctorAppointmentTimeLine />
+    // return <SettingComponent />
 }

@@ -1,5 +1,5 @@
 import { IndividualMenuItemType } from '@/components/Core/ui/Menu'
-import { CalendarDays, CircleUserRound, Headset, Home } from 'lucide-react'
+import { CalendarDays, CircleUserRound, Headset, Home, Bot } from 'lucide-react'
 import React from 'react'
 
 export const sidebarPatientData: IndividualMenuItemType[] = [
@@ -50,6 +50,17 @@ export const sidebarPatientData: IndividualMenuItemType[] = [
             {
                 key: 'settings',
                 lable: 'Thiết lập',
+            },
+        ],
+    },
+    {
+        key: 'ai-assistant',
+        title: 'Trợ ý AI',
+        icon: React.createElement(Bot),
+        childrens: [
+            {
+                key: 'chat',
+                lable: 'Nhắn tin với AI',
             },
         ],
     },

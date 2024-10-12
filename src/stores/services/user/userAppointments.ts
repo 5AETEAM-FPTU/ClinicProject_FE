@@ -17,9 +17,14 @@ export const userAppointments = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false }
             }),
         }),
-        getAllDoctorForBooking: build.query<any, void>({
-            query: () => ({
-                url: userEndpoint.GET_DOCTORS_FOR_APPOINTMENT,
+        getAllDoctorForBooking: build.query<any, { doctorName?: string, doctorGender?: string, doctorSpecialtyId?: string, pageIndex: number }>({
+            query: (params) => ({
+                url: userEndpoint.GET_DOCTORS_FOR_APPOINTMENT + "?" +
+                    `${params.doctorName ? `doctorName=${params.doctorName}&` : ''}` +
+                    `${params.doctorGender ? `doctorGender=${params.doctorGender}&` : ''}` +
+                    `${params.doctorSpecialtyId ? `doctorSpecialtyId=${params.doctorSpecialtyId}&` : ''}` +
+                    `pageSize=1&pageIndex=${params.pageIndex}`
+                ,
                 flashError: true,
                 method: 'GET',
                 extraOptions: { skipAuth: false }
@@ -30,6 +35,18 @@ export const userAppointments = baseApi.injectEndpoints({
                 url: userEndpoint.GET_BOOKED_APPOINTMENTS,
                 flashError: true,
                 method: 'GET',
+                extraOptions: { skipAuth: false }
+            }),
+        }),
+        updateBookedAppointment: build.mutation<any, { appointmentId: string, selectedSlotId: string }>({
+            query: (params) => ({
+                url: userEndpoint.UPDATE_BOOKED_APPOINTMENT,
+                body: {
+                    appointmentId: params.appointmentId,
+                    selectedSlotId: params.selectedSlotId
+                },
+                flashError: true,
+                method: 'PATCH',
                 extraOptions: { skipAuth: false }
             }),
         }),
@@ -46,7 +63,8 @@ export const userAppointments = baseApi.injectEndpoints({
 
 export const {
     useChangeProfileAvatarMutation,
-    useGetAllDoctorForBookingQuery,
+    useGetAllDoctorForBookingQuery, useLazyGetAllDoctorForBookingQuery,
     useGetBookedAppointmentsQuery,
+    useUpdateBookedAppointmentMutation,
     useGetAppointmentUpcomingQuery
 } = userAppointments;

@@ -1,14 +1,13 @@
 'use client'
-import { scheduleEndpoint, userEndpoint } from "@/settings/endpoints";
-import { baseApi } from "../base";
-import { TimeSlot } from "@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot";
-import { time } from "console";
+import { scheduleEndpoint, userEndpoint } from '@/settings/endpoints'
+import { baseApi } from '../base'
+import { TimeSlot } from '@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot'
 
 export const scheduleSettingsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getScheduleByDate: build.query<any, any>({
-            query: (date: string) => ({
-                url: scheduleEndpoint.GET_SCHEDULES_BY_DATE.replace('{date}', date),
+        getScheduleByDate: build.query<any, { date: string, doctorId?: string }>({
+            query: (query) => ({
+                url: `${scheduleEndpoint.GET_SCHEDULES_BY_DATE}?&date=${query.date}${query.doctorId && `&doctorId=${query.doctorId}`}`,
                 flashError: true,
                 method: 'GET',
             }),
@@ -21,19 +20,47 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 body: { timeSlots: data },
             }),
         }),
-        getScheduleByMonth: build.query<any, { month: number, year: number }>({
+        getScheduleByMonth: build.query<any, { month: number, year: number, doctorId?: string | null }>({
             query: (params) => ({
-                url: `${scheduleEndpoint.GET_SCHEDULES_BY_MONTH}?month=${params.month}&year=${params.year}`,
+                url: `${scheduleEndpoint.GET_SCHEDULES_BY_MONTH}?month=${params.month}&year=${params.year}${params.doctorId && (`&doctorId=${params.doctorId}`)}`,
                 flashError: true,
                 method: 'GET',
             }),
-            extraOptions: { skipAuth: false }
+            extraOptions: { skipAuth: false },
         }),
-    })
+        removeScheduleById: build.mutation<any, string>({
+            query: (id: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_ID.replace('{scheduleId}', id)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        removeScheduleByDate: build.mutation<any, string>({
+            query: (date: string) => ({
+                url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_DATE.replace("{date}", date)}`,
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
+        updateScheduleById: build.mutation<any, {schedularId: string, startDate: string, endDate: string}>({
+            query: (data: {schedularId: string, startDate: string, endDate: string}) => ({
+                url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID.replace('{scheduleId}', data.schedularId)}`,
+                flashError: true,
+                body: {
+                    startDate: data.startDate,
+                    endDate: data.endDate
+                },
+                method: 'PATCH',
+            }),
+        })
+    }),
 })
 
 export const {
-    useGetScheduleByDateQuery,
+    useGetScheduleByDateQuery, useLazyGetScheduleByDateQuery,
     useCreateSchedulesMutation,
-    useGetScheduleByMonthQuery
-} = scheduleSettingsApi;
+    useGetScheduleByMonthQuery,
+    useRemoveScheduleByDateMutation,
+    useRemoveScheduleByIdMutation,
+    useUpdateScheduleByIdMutation
+} = scheduleSettingsApi

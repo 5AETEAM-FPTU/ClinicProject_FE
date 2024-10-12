@@ -65,7 +65,7 @@ const mockAppointments: DayAppointments[] = [
     },
 ]
 
-export default function Component() {
+export default function DoctorBookedAppointmentsList() {
     const [expandedDate, setExpandedDate] = useState<string | null>(null)
     const [expandedAppointment, setExpandedAppointment] = useState<string | null>(null)
 
@@ -145,7 +145,7 @@ export default function Component() {
                     </div>
                 ))}
             </div>
-            <Paginate totalPages={20} />
+            <Paginate totalPages={20} page={1}/>
         </div>
     )
 }
