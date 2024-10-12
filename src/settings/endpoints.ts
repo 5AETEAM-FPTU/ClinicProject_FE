@@ -35,6 +35,7 @@ const doctorEndpoint = {
     GET_CANCEL_APPOINTMENTS: "/appointment/absent",
     UPDATE_DUTY: "/doctor/duty",
     GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
+    GET_MEDICAL_REPORT: "/medical-report/all",
 }
 
 const scheduleEndpoint = {
