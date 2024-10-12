@@ -11,7 +11,7 @@ interface IProps {
 export default function DoctorMedicalReport({ reports }: IProps) {
     return (
         <>
-            <div className="flex h-fit cursor-pointer flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third hover:bg-slate-100 sm:gap-0">
+            <div className="flex h-fit cursor-pointer flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third transition-all hover:bg-slate-100 sm:gap-0">
                 <div className="w-full">
                     <div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
                         <span className="font-semibold text-[#003553]">
@@ -21,12 +21,12 @@ export default function DoctorMedicalReport({ reports }: IProps) {
                     </div>
                 </div>
 
-                <div className="flex h-20 gap-5">
+                <div className="flex h-20 gap-5 mt-1">
                     <div className="h-[80px] w-[80px] items-center">
                         <Image
                             className="h-full w-full rounded-xl object-cover"
                             src={
-                                'https://i.pinimg.com/564x/92/26/5c/92265c40c8e428122e0b32adc1994594.jpg'
+                                reports.avatar
                             }
                             alt="background"
                             width={80}
@@ -61,11 +61,11 @@ export default function DoctorMedicalReport({ reports }: IProps) {
                     </div>
                 </div>
                 <div className="mt-4">
-                    <p className="line-clamp-2 h-[45px] text-[#003553]">
+                    <p className="line-clamp-2 h-[65px] text-[#003553]">
                         <span className="w-[50px] font-semibold text-[#003553]">
                             Mô tả:{' '}
                         </span>
-                        {reports.diagnosis ?? "Chưa có thông tin"}
+                        <p dangerouslySetInnerHTML={{__html: reports.diagnosis ? reports.diagnosis : 'Không có thông tin'}}></p>
                     </p>
                 </div>
             </div>
