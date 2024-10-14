@@ -4,10 +4,7 @@ import { VnPayEndpoint } from '@/settings/endpoints'
 
 export const vnpaySettingsApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        getVnPayUrl: build.mutation<
-            any,
-            { description: string; amount: number; slotId: string }
-        >({
+        getVnPayUrl: build.mutation<any, { description: string; amount: number; appointmentId: string }>({
             query: (payload) => ({
                 url: VnPayEndpoint.CREATE_VNPAY_URL,
                 flashError: true,

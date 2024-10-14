@@ -49,9 +49,10 @@
         "react-vertical-timeline-component": "^3.6.0",
         "regenerator-runtime": "^0.14.1",
         "slick-carousel": "^1.8.1",
+        "stringee": "^2.9.3",
+        "stringee-chat-js-sdk": "^0.2.0",
         "styled-components": "^6.1.13",
         "tailwind-merge": "^2.5.2",
-        "tailwindcss-animated": "^1.1.2",
         "tailwind-scrollbar-hide": "^1.1.7",
         "tailwindcss-animated": "^1.1.2"
     },

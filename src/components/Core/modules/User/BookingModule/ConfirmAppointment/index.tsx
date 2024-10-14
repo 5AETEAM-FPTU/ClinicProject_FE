@@ -6,11 +6,15 @@ import Information from '@/components/Core/modules/Calendar/Information'
 import { Editor } from '@tinymce/tinymce-react'
 import EditorTinymce, {
     getEditorHtmlContent,
+    getRawContent,
 } from '../../../../common/EditorTinymce'
 import { TimeSlot } from '@/components/Core/modules/Calendar/TimeSlot'
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
+import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
+import webStorageClient from '@/utils/webStorageClient'
+import { constants } from '@/settings'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
@@ -21,8 +25,14 @@ const formatSelectedSlot = (selectedSlot: TimeSlot) => {
 export default function AppointmentConfirmation() {
     const router = useRouter()
     const params = useSearchParams()
-    const [createVnPayUrl] = useGetVnPayUrlMutation()
-    const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false)
+    const [createVnPayUrl] = useGetVnPayUrlMutation();
+    const [createAnAppointment] = useCreateAnAppointmentMutation();
+    const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const handleBack = () => {
+        const currentParams = new URLSearchParams(window.location.search);
+        router.push(`/user/treatment-calendar/booking/schedule?${currentParams.toString()}`);
+    }
     if (
         !params.get('doctorId') ||
         !params.get('fullName') ||
@@ -34,31 +44,53 @@ export default function AppointmentConfirmation() {
         router.back()
     }
 
+    // in cookie
+    const vnPayUrl = webStorageClient.get(constants.VNPAY_PAYMENT_URL);
+    if (vnPayUrl) {
+        router.replace(vnPayUrl)
+    }
+
+    const createAppointment = async ({ doctorId, selectedSlotId, description, isFollowUp }: { doctorId: string, selectedSlotId: string, description: string, isFollowUp: boolean }) => {
+
+        if (!doctorId || !selectedSlotId) return
+
+        console.log({ doctorId, selectedSlotId, description, isFollowUp })
+
+        const appointmentResponse = await createAnAppointment({ scheduleId: selectedSlotId, description, reExamination: isFollowUp }).unwrap()
+        return appointmentResponse.body.appointment;
+    }
+
     const handlePayment = async () => {
+        if (vnPayUrl) return;
         const doctorId = params.get('doctorId')
         const selectedSlot = JSON.parse(params.get('selectedSlot') || '{}')
         if (!doctorId || !selectedSlot) return
-        const description = getEditorHtmlContent(editorRef)
+        const description = getRawContent(editorRef);
         const isFollowUp = isFollowUpAppointment
         console.log({ doctorId, selectedSlot, description, isFollowUp })
 
         // get link
         try {
+            setLoading(true);
             //tao appointmet ->
-
-            //
+            const appointment = await createAppointment({ doctorId, selectedSlotId: selectedSlot.slotId, description, isFollowUp });
             const data = await createVnPayUrl({
-                description: "thanh",
+                description: "thanh toan",
                 amount: 150000,
-                slotId: selectedSlot.slotId,
+                appointmentId: appointment.id,
             }).unwrap()
+
 
             if (data) {
                 const vnPayUrl = data?.body?.paymentUrl
+                webStorageClient.set(constants.VNPAY_PAYMENT_URL, data?.body?.paymentUrl, { expires: new Date(Date.now() + 1000 * 60 * 1) })
                 router.replace(vnPayUrl)
             }
         } catch (error) {
             console.log(error)
+            message.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -96,7 +128,7 @@ export default function AppointmentConfirmation() {
                                     {formatSelectedSlot(timeSlotSelected)}
                                 </span>
                                 <Button
-                                    onClick={() => router.back()}
+                                    onClick={handleBack}
                                     icon={<SquarePen />}
                                     className="min-h-10 w-full rounded-md bg-[#FF8058] px-4 py-2 text-base font-semibold text-white transition-colors xl:w-auto xl:px-5"
                                 >
@@ -135,6 +167,7 @@ export default function AppointmentConfirmation() {
             </div>
             <div className="flex justify-end">
                 <Button
+                    loading={loading}
                     onClick={handlePayment}
                     iconPosition={'end'}
                     icon={<BadgeDollarSign height={18} />}

@@ -67,7 +67,7 @@ export default function FollowUpAppointment() {
                         className="w-fit px-5 py-2 border rounded-[12px] border-[#003553] focus:shadow-none font-semibold"
                     />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     {patients.map((patient) => (
                         <div key={patient.id} className='shadow-third py-3 px-[22px] rounded-[12px]'>
                             <div className="rounded-lg shadow-md flex">

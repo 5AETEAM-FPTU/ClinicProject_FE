@@ -23,6 +23,7 @@ const userEndpoint = {
     GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
     UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
+    CREATE_AN_APPOINTMENT: '/appointment/create',
 }
 
 const doctorEndpoint = {
@@ -64,7 +65,7 @@ const AppointmentEndpoint = {
 }
 
 const VnPayEndpoint = {
-    CREATE_VNPAY_URL: '/payment/create-link',
+    CREATE_VNPAY_URL: '/payment/generate-link',
 }
 
 export {

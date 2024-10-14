@@ -37,7 +37,7 @@ const patientDetail: PatientDetail = {
 
 export default function PatientDetailForm() {
     return (
-        <div className="w-[795px] mx-auto p-4 bg-white rounded-[12px]">
+        <div className="max-w-[795px] mx-auto p-4 bg-white rounded-[12px]">
             <div className="flex items-start space-x-4 mb-4">
                 <img src={patientDetail.image} alt={patientDetail.name} className="w-20 h-20 rounded-[12px]" />
                 <div className="flex-grow">

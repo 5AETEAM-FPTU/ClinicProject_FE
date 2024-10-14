@@ -44,7 +44,7 @@ export default function EditorTinymce({
                         'table',
                         'visualblocks',
                         'wordcount',
-            
+
                     ],
                     menubar: false,
                     toolbar:
@@ -72,11 +72,21 @@ export default function EditorTinymce({
         </>
     )
 }
+
 export const getEditorHtmlContent = (
     editorRef: React.MutableRefObject<any>,
 ) => {
     if (editorRef.current) {
         return editorRef.current.getContent()
+    }
+    return ''
+}
+
+export const getRawContent = (
+    editorRef: React.MutableRefObject<any>,
+) => {
+    if (editorRef.current) {
+        return editorRef.current.getContent({ format: 'text' })
     }
     return ''
 }
