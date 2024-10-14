@@ -32,10 +32,11 @@ const doctorEndpoint = {
     PATCH_ACHIEVEMENT: '/doctor/achievement',
     PATCH_DESCRIPTION: '/doctor/description',
 
-    GET_APPOINTMENTS_ON_DAY: '/doctor/appointments',
-    GET_CANCEL_APPOINTMENTS: '/appointment/absent',
-    UPDATE_DUTY: '/doctor/duty',
-    GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
+    GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
+    GET_CANCEL_APPOINTMENTS: "/appointment/absent",
+    UPDATE_DUTY: "/doctor/duty",
+    GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
+    GET_MEDICAL_REPORT: "/medical-report/all",
 }
 
 const scheduleEndpoint = {
