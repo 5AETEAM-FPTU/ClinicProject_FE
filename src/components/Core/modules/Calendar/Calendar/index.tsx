@@ -10,6 +10,8 @@ import { useGetScheduleByMonthQuery, useLazyGetScheduleByDateQuery } from '@/sto
 import { set } from 'lodash';
 import { TimeSlot } from '@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot';
 import { useUpdateBookedAppointmentMutation } from '@/stores/services/user/userAppointments';
+import webStorageClient from '@/utils/webStorageClient';
+import { constants } from '@/settings';
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
@@ -56,6 +58,13 @@ export default function Component() {
     const params = useSearchParams();
     const router = useRouter();
     const isUpdate = params.get('isUpdate') === 'true';
+
+    // in cookie
+    const vnPayUrl = webStorageClient.get(constants.VNPAY_PAYMENT_URL);
+    if (vnPayUrl) {
+        router.replace(vnPayUrl)
+    }
+
     if (isUpdate && !params.get('appointmentId')) router.back();
     const [currentDate, setCurrentDate] = useState(new Date(Date.now())) // September 2024
     if (!params.get('doctorId')) router.back();

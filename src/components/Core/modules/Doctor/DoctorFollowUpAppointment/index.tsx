@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Input, Popover, DatePicker, Select, Button } from 'antd'
 import { Search, RefreshCw, ScanEye } from 'lucide-react'
-import PatientDetailExpandable from './PatientDetailExpandable'
+import PatientModal from './PatientDetailExpandable'
 import Paginate from '@/components/Core/common/Paginate'
 
 interface Patient {
@@ -57,7 +57,7 @@ export default function FollowUpAppointment() {
 
     return (
         <>
-            <PatientDetailExpandable isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+            <PatientModal open={isExpanded} setOpen={setIsExpanded} patientId='23' />
             <div className="w-full mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4 text-secondarySupperDarker">Tái khám</h1>
                 <div className="relative mb-6">
@@ -67,10 +67,10 @@ export default function FollowUpAppointment() {
                         className="w-fit px-5 py-2 border rounded-[12px] border-[#003553] focus:shadow-none font-semibold"
                     />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     {patients.map((patient) => (
                         <div key={patient.id} className='shadow-third py-3 px-[22px] rounded-[12px]'>
-                            <div className="bg-white rounded-lg shadow-md flex">
+                            <div className="rounded-lg shadow-md flex">
                                 <img src={patient.image} alt={patient.name} className="w-16 h-16 rounded-[12px] mr-4" />
                                 <div className="flex-grow">
                                     <h2 className="text-base text-secondarySupperDarker font-semibold">{patient.name}</h2>
@@ -83,7 +83,7 @@ export default function FollowUpAppointment() {
                                             <span className='font-semibold text-base'>Tuổi: </span> {patient.age}
                                         </p>
                                     </div>
-                                    
+
                                 </div>
                                 <button className='h-fit' onClick={() => { setIsExpanded(true) }}>
                                     <ScanEye className="w-6 h-6 text-[#0284C7]" />

@@ -1,0 +1,37 @@
+.wave-effect {
+    position: relative;
+    z-index: 1;
+}
+
+.wave-effect::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    border-radius: 12px;
+    z-index: -1;
+    background: transparent;
+    box-shadow: 0 0 20px 5px rgba(0, 123, 255, 0.6),
+        0 0 40px 10px rgba(0, 123, 255, 0.4),
+        0 0 60px 15px rgba(0, 123, 255, 0.2);
+    animation: wave 1.5s ease-out infinite;
+}
+
+@keyframes wave {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

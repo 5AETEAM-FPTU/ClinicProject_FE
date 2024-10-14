@@ -1,10 +1,9 @@
+import FollowUpAppointment from '@/components/Core/modules/Doctor/DoctorFollowUpAppointment'
 import React from 'react'
 
 function Retreatment() {
     return (
-        <div >
-            Tái khám
-        </div>
+        <FollowUpAppointment />
     )
 }
 

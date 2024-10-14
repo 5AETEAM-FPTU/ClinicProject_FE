@@ -21,7 +21,7 @@ function categorizeTimeSlots(timeSlots: TimeSlot[]) {
     timeSlots.forEach(slot => {
         const startHour = parseInt(slot.start.split(':')[0]); // Lấy giờ từ chuỗi "HH:MM"
 
-        if (startHour >= 7 && startHour < 12) {
+        if (startHour >= 0 && startHour < 12) {
             morningSlots.push(slot);
         } else if (startHour >= 12 && startHour < 17) {
             afternoonSlots.push(slot);
@@ -110,7 +110,7 @@ export default function Component({ handleClose, timeSlots, isLoading, handleSel
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
     const timeSlotsMapping = useMemo(() => mapAppointmentsToTimeSlots(timeSlots), [timeSlots]);
     const categorizedTimeSlots = useMemo(() => categorizeTimeSlots(timeSlotsMapping), [timeSlotsMapping]);
-
+    console.log(categorizedTimeSlots);
     return (
         <div className="p-4 w-full mx-auto mt-4">
             <Button className="float-right" onClick={handleClose}>Đóng</Button>

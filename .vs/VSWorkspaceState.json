@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\public",
+    "\\public\\landing",
+    "\\public\\landing\\flags",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\Layouts",
+    "\\src\\components\\Layouts\\LandingLayout",
+    "\\src\\components\\Layouts\\LandingLayout\\Footer"
+  ],
+  "SelectedNode": "\\public\\landing\\flags\\VietNameseFlag.png",
+  "PreviewInSolutionExplorer": false
+}
