@@ -8,6 +8,8 @@ import { useTrigger } from '@/hooks/useTrigger'
 import { AppointmentStatus, IAppointmentOnDay } from '../AppointmentPending'
 import dayjs from 'dayjs'
 import { cn } from '@/lib/utils'
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next-nprogress-bar'
 
 interface IProps {
     payload: IAppointmentOnDay
@@ -16,6 +18,15 @@ interface IProps {
 
 export default function AppointmentDone({ payload, refetch }: IProps) {
     const { handleTrigger, trigger, handleTriggerPayload } = useTrigger()
+    const router = useRouter()
+    const pathname = usePathname()
+    const handleViewMecidcalReport = () => {
+        router.push(
+            pathname +
+                '/medical-report/view' +
+                `?id=${payload.medicalReportId}`,
+        )
+    }
 
     return (
         <>
@@ -28,36 +39,44 @@ export default function AppointmentDone({ payload, refetch }: IProps) {
                                 dayjs(payload.schedule.endDate).format('HH:mm')}
                         </span>
                         <div className="flex justify-end gap-[10px]">
-                            <Button className="rounded-[10px] border border-secondaryDarker bg-[#f7fafc] text-[#003553]">
+                            <Button
+                                className="rounded-[10px] border-2 border-secondaryDark bg-[#f7fafc] text-[#003553]"
+                                onClick={() => handleViewMecidcalReport()}
+                            >
                                 Xem phiếu khám <FilePlus2 size={18} />
                             </Button>
-                            <Button className="rounded-[10px] border-none bg-[#22C55E] text-white">
+                            <Button
+                                disabled
+                                className="cursor-not-allowed rounded-[10px] border-none bg-[#22C55E] text-white"
+                            >
                                 Khám xong
                             </Button>
                             <Popover
-                                    trigger={'click'}
-                                    open={trigger}
-                                    content={
-                                        <AppointmentStatus
-                                            onClose={() => handleTriggerPayload(false)}
-                                            payload={payload}
-                                            refetch={refetch}
-                                        />
-                                    }
-                                    onOpenChange={handleTrigger}
+                                trigger={'click'}
+                                open={trigger}
+                                content={
+                                    <AppointmentStatus
+                                        onClose={() =>
+                                            handleTriggerPayload(false)
+                                        }
+                                        payload={payload}
+                                        refetch={refetch}
+                                    />
+                                }
+                                onOpenChange={handleTrigger}
+                            >
+                                <Button
+                                    className={cn(
+                                        'w-fit rounded-[10px] border-none bg-opacity-50 !px-[8px] !py-4 text-[#003553]',
+                                        ` ${trigger ? 'bg-secondaryDark' : 'bg-white shadow-primary'} `,
+                                    )}
                                 >
-                                    <Button
-                                        className={cn(
-                                            'w-fit rounded-[10px] border-none bg-opacity-50 !px-[8px] !py-4 text-[#003553]',
-                                            ` ${trigger ? 'bg-secondaryDark' : 'bg-white shadow-primary'} `,
-                                        )}
-                                    >
-                                        <Settings
-                                            size={18}
-                                            className="transition-all duration-500 hover:rotate-180"
-                                        />
-                                    </Button>
-                                </Popover>
+                                    <Settings
+                                        size={18}
+                                        className="transition-all duration-500 hover:rotate-180"
+                                    />
+                                </Button>
+                            </Popover>
                         </div>
                     </div>
                 </div>

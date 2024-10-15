@@ -2,9 +2,10 @@ const ACCESS_TOKEN = '_accessToken';
 const REFRESH_TOKEN = "_refreshToken";
 const USER_ID = "_sub";
 const ROLE = "_way";
-const USER_AVATAR= "_avt";
-const USER_FULLNAME= "_fullname";
-const EMAIL= "_email";
+const USER_AVATAR = "_avt";
+const USER_FULLNAME = "_fullname";
+const EMAIL = "_email";
+const VNPAY_PAYMENT_URL = "_vnpay_payment_url";
 
 
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
@@ -25,7 +26,8 @@ const constants = {
     USER_AVATAR,
     USER_FULLNAME,
     EMAIL,
-    NOTIFICATION_TYPES
+    NOTIFICATION_TYPES,
+    VNPAY_PAYMENT_URL,
 }
 
 export default constants;

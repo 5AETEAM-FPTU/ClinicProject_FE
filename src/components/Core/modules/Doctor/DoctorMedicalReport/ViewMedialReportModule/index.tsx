@@ -7,6 +7,9 @@ import { motion } from 'framer-motion'
 import PatientViewInformation from './PatientViewInformation'
 import MainMedicalReportViewInformation from './MainMedicalReportViewInformation'
 import { useGetMedicalReportByIdQuery } from '@/stores/services/report/medicalReport'
+import { useRouter } from 'next-nprogress-bar'
+import { Button } from 'antd'
+import { MoveLeft } from 'lucide-react'
 
 export type TMedicalReport = {
     reportId: string
@@ -51,6 +54,7 @@ export type MedicalReportResponseBody = {
 export default function ViewMedicalReportModule() {
     const searchParam = useSearchParams()
     const reportId = searchParam.get('id')
+    const router = useRouter();
 
     const { report, refetch, isFetching } = useGetMedicalReportByIdQuery(
         reportId!,
@@ -78,10 +82,13 @@ export default function ViewMedicalReportModule() {
                     exit={{ opacity: 0 }}
                     className="flex h-fit w-full flex-col gap-5"
                 >
-                    <div>
+                    <div className='w-full flex justify-between'>
                         <h3 className="text-[20px] font-semibold text-secondarySupperDarker">
                             Xem phiếu khám
                         </h3>
+                        <div>
+                            <Button type='default' className='border-none shadow-third' onClick={() => {router.back()}}> <MoveLeft size={18} />Quay lại</Button>
+                        </div>
                     </div>
                     <div className="h-fit w-full rounded-xl bg-white p-5 shadow-third">
                         <PatientViewInformation

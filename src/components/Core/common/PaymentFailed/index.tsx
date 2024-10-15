@@ -8,8 +8,8 @@ const { Title, Text } = Typography;
 
 export default function FailedPayment() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-red-100 to-gray-100 flex items-center justify-center p-4">
-            <Card className="w-full shadow-2xl rounded-2xl overflow-hidden">
+        <div className="h-full flex items-center justify-center">
+            <Card className="w-full shadow-third rounded-2xl overflow-hidden" bordered={false} >
                 <Result
                     icon={<CloseCircleFilled className="text-7xl text-red-500" />}
                     title={

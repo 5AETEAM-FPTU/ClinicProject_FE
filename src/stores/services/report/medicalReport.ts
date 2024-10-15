@@ -1,6 +1,7 @@
 'use client'
-import { medicalReportEndpoint } from '@/settings/endpoints'
+import { medicalReportEndpoint, serviceEndpoint } from '@/settings/endpoints'
 import { baseApi } from '../base'
+import { AnyAaaaRecord } from 'dns'
 
 export const medicalReportApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
@@ -27,6 +28,27 @@ export const medicalReportApi = baseApi.injectEndpoints({
                 flashError: true,
             }),
         }),
+        getAllService: build.query<any, {
+            pageIndex: number,
+            pageSize: number,
+            key: string,
+        }>({
+            query: (param) => ({
+                url: serviceEndpoint.GET_ALL_SERVICE,
+                params: param,
+                method: 'GET',
+                flashError: true,
+
+            }),
+        }),
+        createNewMedicalReport: build.mutation<any, any>({
+            query: (data) => ({
+                url: medicalReportEndpoint.CREATE_NEW_MEDICAL_REPORT,
+                method: 'POST',
+                body: data,
+                flashError: true,
+            }),
+        })
     }),
 })
 
@@ -34,4 +56,6 @@ export const {
     useGetMedicalReportByIdQuery,
     useUpdateMedicalReportPatientInformationMutation,
     useUpdateMainMedicalReportInformationMutation,
+    useGetAllServiceQuery,
+    useCreateNewMedicalReportMutation
 } = medicalReportApi

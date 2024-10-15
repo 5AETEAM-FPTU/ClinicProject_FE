@@ -58,6 +58,19 @@ export const userAppointments = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false }
             }),
         }),
+        createAnAppointment: build.mutation<any, { scheduleId: string, description: string, reExamination: boolean }>({
+            query: (params) => ({
+                url: userEndpoint.CREATE_AN_APPOINTMENT,
+                flashError: true,
+                method: 'POST',
+                body: {
+                    ...params,
+                    depositPayment: false,
+                    examinationDate: new Date().toISOString(),
+                },
+                extraOptions: { skipAuth: false }
+            }),
+        })
     })
 })
 
@@ -66,5 +79,6 @@ export const {
     useGetAllDoctorForBookingQuery, useLazyGetAllDoctorForBookingQuery,
     useGetBookedAppointmentsQuery,
     useUpdateBookedAppointmentMutation,
-    useGetAppointmentUpcomingQuery
+    useGetAppointmentUpcomingQuery,
+    useCreateAnAppointmentMutation
 } = userAppointments;

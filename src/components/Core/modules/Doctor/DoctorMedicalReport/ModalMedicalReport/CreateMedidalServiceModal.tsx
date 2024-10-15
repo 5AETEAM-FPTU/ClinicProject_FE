@@ -3,6 +3,7 @@ import React from 'react'
 import { Button, Input, Modal } from 'antd'
 import { set } from 'lodash'
 import { Search } from 'lucide-react'
+import { useGetAllServiceQuery } from '@/stores/services/report/medicalReport'
 
 type TProps = {
     open: boolean
@@ -10,6 +11,20 @@ type TProps = {
 }
 
 export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
+    const { services } = useGetAllServiceQuery(
+        {
+            pageIndex: 1,
+            pageSize: 100,
+            key: '',
+        },
+        {
+            skip: !open,
+            selectFromResult: ({ data }) => ({
+                services: data?.body?.services?.contents ?? [],
+            }),
+        },
+    )
+    console.log('services', services)
     return (
         <Modal
             title={[
@@ -42,7 +57,7 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
             ]}
             className="w-full max-w-fit rounded-xl !bg-white !shadow-third"
         >
-            <div className="flex flex-row gap-5 mt-5">
+            <div className="mt-5 flex flex-row gap-5">
                 <div className="w-fit">
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <p className="text-[14px] font-bold text-secondarySupperDarker">
@@ -72,8 +87,8 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            {Array.from({ length: 0 }).map(
-                                                (_, index) => (
+                                            {Array.from({ length: 10 }).map(
+                                                (_, index: number) => (
                                                     <tr key={index}>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
                                                             Mã xét nghiệm
@@ -94,9 +109,9 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                             )}
                                         </tbody>
                                     </table>
-                                    <div className='w-full h-full flex items-center justify-center'>
+                                    {/* <div className='w-full h-full flex items-center justify-center'>
                                       <p className='text-secondarySupperDarker font-bold text-[24px] text-opacity-40 select-none'>Chưa có dữ liệu</p>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -104,11 +119,21 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                 </div>
                 <div className="fit">
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
-                        <div className='flex flex-row justify-between'>
+                        <div className="flex flex-row justify-between">
                             <p className="text-[14px] font-bold text-secondarySupperDarker">
                                 Đã thêm vào danh sách
                             </p>
-                            <Input size='small' className='w-[200px]' prefix={<Search size={14} className='text-secondaryDark rounded-lg' />} placeholder='Tìm kiếm'/>
+                            <Input
+                                size="small"
+                                className="w-[200px]"
+                                prefix={
+                                    <Search
+                                        size={14}
+                                        className="rounded-lg text-secondaryDark"
+                                    />
+                                }
+                                placeholder="Tìm kiếm"
+                            />
                         </div>
 
                         <div>
@@ -119,8 +144,11 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                             <th className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
                                                 Mã xét nghiệm
                                             </th>
-                                            <th className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-[14px] font-bold text-secondarySupperDarker text-start">
+                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
                                                 Tên xét nghiệm
+                                            </th>
+                                            <th className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                Đơn giá
                                             </th>
                                             <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px] text-secondarySupperDarker">
                                                 Chỉ định
@@ -136,16 +164,19 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            {Array.from({ length: 10 }).map(
-                                                (_, index) => (
+                                            {services.map(
+                                                (service:any, index:number) => (
                                                     <tr key={index}>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            Mã xét nghiệm
+                                                            {service?.code}
                                                         </td>
-                                                        <td className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            Tên xét nghiệm
+                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
+                                                            {service?.name}
                                                         </td>
-                                                        <td className="border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
+                                                        <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-medium text-secondarySupperDarker">
+                                                            {service?.price} vnđ
+                                                        </td>
+                                                        <td className=" border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
                                                             <Button
                                                                 type="primary"
                                                                 className="bg-secondaryDark"
@@ -163,11 +194,14 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                         </div>
                     </div>
                 </div>
-              
             </div>
-            <div className='mt-5'>
-              <p className='text-[14px] font-semibold text-secondarySupperDarker'>Tổng số xét nghiệm: 6</p>
-              <p className='text-[14px] font-bold text-secondarySupperDarker'>Tổng phí xét nghiệm: 840.000 đ</p>
+            <div className="mt-5">
+                <p className="text-[14px] font-semibold text-secondarySupperDarker">
+                    Tổng số xét nghiệm: 6
+                </p>
+                <p className="text-[14px] font-bold text-secondarySupperDarker">
+                    Tổng phí xét nghiệm: 840.000 đ
+                </p>
             </div>
         </Modal>
     )

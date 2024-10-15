@@ -14,7 +14,7 @@ export default function DoctorVisitInDayModule() {
 
     const { appointments, refetch, isFetching } = 
     useGetAppointmentOnDayQuery(
-        { date: '2024-10-06T08:30:00' },
+        { date: '2024-10-23T08:30:00' },
         {
             selectFromResult: ({ data, isFetching }) => ({
                 appointments: data?.body?.appointment ?? [],

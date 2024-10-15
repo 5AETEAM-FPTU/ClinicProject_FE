@@ -12,6 +12,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { useGetAllAppointmentStatusQuery } from '@/stores/services/enum/enum'
 import { useUpdateAppointmentStatusMutation } from '@/stores/services/appointment'
+import { useCreateNewMedicalReportMutation } from '@/stores/services/report/medicalReport'
 
 interface Gender {
     id: string
@@ -20,6 +21,7 @@ interface Gender {
 }
 
 interface Patient {
+    patientId: string
     avatar: string
     fullName: string | null
     phoneNumber: string | null
@@ -57,9 +59,30 @@ export default function AppointmentPending({ payload, refetch }: IProps) {
     const { handleTrigger, trigger, handleTriggerPayload } = useTrigger()
     const router = useRouter()
     const pathname = usePathname()
+    const [createNewMedicalReport, {isLoading}] = useCreateNewMedicalReportMutation();
+    const handleCreateMedicalReport = async () => {
+        try {
+            const result = await createNewMedicalReport({
+                patientId: payload.patient.patientId,
+                appointmentId: payload.id,
+                name: payload.patient.fullName,
+                medicalHistory: "",
+                generalCondition: "",
+                weight: "",
+                height: "",
+                pulse: "",
+                temperature: "",
+                bloodPresser: "",
+                diagnosis: ""
+            })
+            refetch();
+            if(result) {
+                router.push(pathname + '/medical-report' + `?id=${result.data?.body?.medicalReportId}`);
+            }
+        } catch (error) {
+            message.error("Tạo phiếu khám không thành công!")
+        }
 
-    const handleCreateMedicalReport = () => {
-        router.push(pathname + '/medical-report' + `?id=${payload.medicalReportId}`)
     }
 
     const handleViewMecidcalReport = () => {
@@ -99,7 +122,7 @@ export default function AppointmentPending({ payload, refetch }: IProps) {
                             )}
 
                             <div className="flex flex-row gap-[10px] sm:flex">
-                                <Button className="rounded-[10px] border-none bg-[#0284C7] text-white">
+                                <Button disabled className="rounded-[10px] border-none bg-[#0284C7] text-white">
                                     {payload.appointmentStatus.statusName ??
                                         'Không xác định'}
                                 </Button>

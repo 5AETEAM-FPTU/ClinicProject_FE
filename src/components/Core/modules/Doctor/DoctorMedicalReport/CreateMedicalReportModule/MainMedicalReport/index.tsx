@@ -1,6 +1,8 @@
 'use client'
 
-import EditorTinymce, { getEditorHtmlContent } from '@/components/Core/common/EditorTinymce'
+import EditorTinymce, {
+    getEditorHtmlContent,
+} from '@/components/Core/common/EditorTinymce'
 import { Button, Form, Input, message, Skeleton } from 'antd'
 import { FormProps } from 'antd/lib'
 import { useSearchParams } from 'next/navigation'
@@ -34,9 +36,10 @@ export default function MainMedicalReport({
     const [openCreatePrescriptionModal, setOpenCreatePrescriptionModal] =
         useState<boolean>(false)
 
-    const searchParam = useSearchParams();
+    const searchParam = useSearchParams()
 
-    const [updateMainMedicalReportInformation, {isLoading}] = useUpdateMainMedicalReportInformationMutation();
+    const [updateMainMedicalReportInformation, { isLoading }] =
+        useUpdateMainMedicalReportInformationMutation()
 
     const onFinish: FormProps<any>['onFinish'] = async (values: any) => {
         try {
@@ -47,9 +50,9 @@ export default function MainMedicalReport({
                 diagnosis: getEditorHtmlContent(editorRef),
             }
             await updateMainMedicalReportInformation(data).unwrap()
-            message.success("Cập nhật thành công!")
+            message.success('Cập nhật thành công!')
         } catch (error) {
-            message.error("Cập nhật thất bại!")
+            message.error('Cập nhật thất bại!')
         }
     }
 
@@ -230,14 +233,11 @@ export default function MainMedicalReport({
                                 label="Chuẩn đoán"
                                 name={'diagnosis'}
                                 className="!mb-0"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
                             >
-                                <EditorTinymce initContent={payload?.diagnosis}  editorRef={editorRef} />
+                                <EditorTinymce
+                                    initContent={payload?.diagnosis}
+                                    editorRef={editorRef}
+                                />
                             </Form.Item>
                         </div>
                     </div>

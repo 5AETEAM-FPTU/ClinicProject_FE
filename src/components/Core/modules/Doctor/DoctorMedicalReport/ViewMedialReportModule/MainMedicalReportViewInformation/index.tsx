@@ -1,6 +1,6 @@
 'use client'
 import { Button, Skeleton } from 'antd'
-import { Edit, Printer } from 'lucide-react'
+import { Edit, FileDown, Printer } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import React from 'react'
 import { TMedicalReport } from '..'
@@ -69,7 +69,7 @@ export default function MainMedicalReportViewInformation({
                                     <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.medicalHistory
                                             ? payload?.medicalHistory
-                                            : 'Chứa chọn'}
+                                            : 'Chưa có thông tin'}
                                     </p>
                                 </>
                             )}
@@ -186,7 +186,7 @@ export default function MainMedicalReportViewInformation({
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Chuẩn đoán
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: payload?.diagnosis ? payload?.diagnosis : 'Chưa có này' }}>
+                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: payload?.diagnosis ? payload?.diagnosis : 'Chưa có thông tin' }}>
                                     </p>
                                 </>
                             )}
@@ -205,8 +205,8 @@ export default function MainMedicalReportViewInformation({
                             type="primary"
                             className="rounded-xl border-2 border-secondaryDark bg-white !p-[20px] font-semibold text-secondarySupperDarker shadow-third"
                         >
-                            In phiếu khám
-                            <Printer size={18} />
+                            Xuất phiếu khám
+                            <FileDown size={18}/>
                         </Button>
                     </div>
                 </div>
