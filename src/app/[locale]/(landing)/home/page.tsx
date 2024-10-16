@@ -7,6 +7,8 @@ import Specialty from '@/components/Core/modules/Landing/Specialty'
 import WhoAreWe from '@/components/Core/modules/Landing/WhoAreWe'
 import MedicalNews from '@/components/Core/modules/Landing/MedicalNews'
 import Contact from '@/components/Core/modules/Landing/Contact'
+import { Metadata } from 'next'
+
 
 function LandingHome() {
     return (
