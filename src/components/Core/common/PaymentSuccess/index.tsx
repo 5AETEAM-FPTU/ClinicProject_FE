@@ -32,8 +32,8 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
 
     const formattedDate = `${hours}:${minutes} ${day}/${month}/${year}`;
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <Card className="w-full shadow-2xl rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-center">
+            <Card className="w-full shadow-third rounded-2xl overflow-hidden" bordered={false}>
                 <Result
                     icon={<CheckCircleFilled className="text-7xl text-green-500" />}
                     title={

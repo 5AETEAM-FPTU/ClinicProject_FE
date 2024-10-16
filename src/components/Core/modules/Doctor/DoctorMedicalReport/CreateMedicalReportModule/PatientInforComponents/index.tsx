@@ -1,72 +1,134 @@
 'use client'
-import { Avatar, Button, DatePicker, Form, Input, Select } from 'antd'
+import { Avatar, Button, DatePicker, Form, Input, message, Select, Skeleton } from 'antd'
 import { FormProps } from 'antd/lib'
-import React, { useState } from 'react'
-import {motion} from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { CircleFadingArrowUp, Edit } from 'lucide-react'
+import { TPatientInfo } from '../../ViewMedialReportModule'
+import dayjs from 'dayjs'
+import { useUpdateMedicalReportPatientInformationMutation } from '@/stores/services/report/medicalReport'
 
-export type PatitenMedicalReportInfoTypes = {
-    
+type TProps = {
+    payload: TPatientInfo
+    refetch: () => void
+    isFetching: boolean
 }
 
-export default function PatientInforComponent() {
+export default function PatientInforComponent({
+    payload,
+    refetch,
+    isFetching,
+}: TProps) {
     const [isEditPatientInfor, setIsEditPatientInfor] = useState<boolean>(false)
     const [myForm] = Form.useForm()
+    const [updateMedicalReportPatientInformation, {isLoading, isSuccess}] = useUpdateMedicalReportPatientInformationMutation();
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
-        console.log(values)
-        setIsEditPatientInfor(false)
+        // setIsEditPatientInfor(false)
+        try {
+            console.log(values)
+            const data = {
+                ...values,
+                dob: values.dob ? dayjs(values.dob).format('YYYY-MM-DDTHH:mm:ss') : null,
+                patientId: payload?.patientId
+            }
+            await updateMedicalReportPatientInformation(data).unwrap();
+            message.success("Cập nhật thành công!")
+            if(isSuccess) {
+                setIsEditPatientInfor(false)
+            }
+            refetch();
+        } catch (error) {
+            message.error("Cập nhật thất bại!")
+        }
     }
+    useEffect(() => {
+        myForm.setFieldsValue({ 
+            fullName: payload?.fullName,
+            phoneNumber: payload?.phoneNumber,
+            dob: payload?.dob !== null ? dayjs(payload?.dob) : null,
+            gender: payload?.gender,
+            address: payload?.address
+         })
+    }, [payload])
+
     return (
         <div>
             {' '}
             {!isEditPatientInfor ? (
-                <motion.div
-                    
-                    className="flex flex-row items-center justify-between"
-                >
-                    <div className="flex flex-row gap-20">
+                <motion.div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center gap-20">
                         <div className="flex flex-row items-center gap-10">
                             <div>
-                                <Avatar
-                                    size={50}
-                                    src={
-                                        'https://variety.com/wp-content/uploads/2021/04/Avatar.jpg?w=800&h=533&crop=1'
-                                    }
-                                ></Avatar>
+                                {isFetching ? (
+                                    <Avatar size={80} />
+                                ) : (
+                                    <Avatar size={80} src={payload?.avatar} />
+                                )}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <p className="font-bold text-secondarySupperDarker">
-                                    Họ và tên: <span>Nguyen Van A</span>
-                                </p>
+                                {isFetching ? (
+                                    <Skeleton.Input className="w-[244px]" />
+                                ) : (
+                                    <p className="font-bold text-secondarySupperDarker">
+                                        Họ và tên:{' '}
+                                        <span>{payload?.fullName}</span>
+                                    </p>
+                                )}
                                 <p className="text-secondarySupperDarker">
-                                    Ngày sinh:{' '}
-                                    <span>
-                                        01/01/2000 <span>20 tuổi</span>
-                                    </span>
+                                    {isFetching ? (
+                                        <Skeleton.Input className="w-[244px]" />
+                                    ) : (
+                                        <span>
+                                            Ngày sinh:{' '}
+                                            {dayjs(payload?.dob).format(
+                                                'DD/MM/YYYY',
+                                            )}{' '}
+                                            <span>
+                                                {dayjs(payload?.dob).diff(
+                                                    dayjs(),
+                                                    'year',
+                                                )}{' '}
+                                                tuổi
+                                            </span>
+                                        </span>
+                                    )}
                                 </p>
                             </div>
                         </div>
                         <div className="flex flex-row gap-20">
                             <div className="flex flex-col gap-2">
-                                <p className="font-bold text-secondarySupperDarker">
-                                    Địa chỉ:{' '}
-                                    <span className="font-medium">
-                                        24 Nam Kỳ Khỡi Nghĩa, Hòa Hải, TP Đà
-                                        Nẵng
-                                    </span>
-                                </p>
-                                <p className="font-bold text-secondarySupperDarker">
-                                    Giới tính:{' '}
-                                    <span className="font-medium">Nữ</span>
-                                </p>
+                                {isFetching ? (
+                                    <Skeleton.Input className="w-[244px]" />
+                                ) : (
+                                    <p className="font-bold text-secondarySupperDarker">
+                                        Địa chỉ:{' '}
+                                        <span className="font-medium">
+                                            {payload?.address}
+                                        </span>
+                                    </p>
+                                )}
+                                {isFetching ? (
+                                    <Skeleton.Input className="w-[244px]" />
+                                ) : (
+                                    <p className="font-bold text-secondarySupperDarker">
+                                        Giới tính:{' '}
+                                        <span className="font-medium">
+                                            {payload?.gender}
+                                        </span>
+                                    </p>
+                                )}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <p className="font-bold text-secondarySupperDarker">
-                                    Số điện thoại:{' '}
-                                    <span className="font-medium">
-                                        024548349
-                                    </span>
-                                </p>
+                                {isFetching ? (
+                                    <Skeleton.Input className="w-[244px]" />
+                                ) : (
+                                    <p className="font-bold text-secondarySupperDarker">
+                                        Số điện thoại:{' '}
+                                        <span className="font-medium">
+                                            {payload?.phoneNumber}
+                                        </span>
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div></div>
@@ -74,7 +136,7 @@ export default function PatientInforComponent() {
                     <div>
                         <Button
                             type="primary"
-                            className="!bg-secondaryDark rounded-lg"
+                            className="rounded-lg !bg-secondaryDark"
                             onClick={() => {
                                 setIsEditPatientInfor(true)
                             }}
@@ -85,16 +147,13 @@ export default function PatientInforComponent() {
                     </div>
                 </motion.div>
             ) : (
-                <motion.div
-                  
-                    className="flex w-full flex-row gap-10"
-                >
+                <motion.div className="flex w-full flex-row gap-10">
                     <div className="flex flex-row gap-10">
                         <div>
                             <Avatar
-                                size={50}
+                                size={80}
                                 src={
-                                    'https://variety.com/wp-content/uploads/2021/04/Avatar.jpg?w=800&h=533&crop=1'
+                                    payload?.avatar
                                 }
                             ></Avatar>
                         </div>
@@ -111,11 +170,11 @@ export default function PatientInforComponent() {
                             form={myForm}
                         >
                             <div className="flex w-full flex-row justify-between">
-                                <div className="flex flex-row gap-20">
+                                <div className="flex flex-row gap-10">
                                     <div className="flex flex-col gap-0">
                                         <Form.Item
                                             label="Tên bệnh nhân"
-                                            name={'fullname'}
+                                            name={'fullName'}
                                         >
                                             <Input
                                                 placeholder="Nhập họ tên"
@@ -152,7 +211,10 @@ export default function PatientInforComponent() {
                                             <Select
                                                 className="w-[240px]"
                                                 placeholder="Chọn giới tính"
-                                            >
+                                            >   
+                                                <Select.Option value="Khác">
+                                                    Khác
+                                                </Select.Option>
                                                 <Select.Option value="Nam">
                                                     Nam
                                                 </Select.Option>
@@ -165,7 +227,7 @@ export default function PatientInforComponent() {
                                     <div className="flex flex-col gap-0">
                                         <Form.Item
                                             label="Số điện thoại"
-                                            name={'phone'}
+                                            name={'phoneNumber'}
                                             style={{ marginBottom: '0px' }}
                                         >
                                             <Input
@@ -179,7 +241,8 @@ export default function PatientInforComponent() {
                                     <Button
                                         htmlType="submit"
                                         type="primary"
-                                        className="bg-secondaryDark rounded-lg"
+                                        className="rounded-lg bg-secondaryDark"
+                                        loading={isLoading}
                                     >
                                         Cập nhật
                                         <CircleFadingArrowUp size={18} />

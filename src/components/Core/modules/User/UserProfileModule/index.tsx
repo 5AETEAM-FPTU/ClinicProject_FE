@@ -123,7 +123,7 @@ export default function UserProfileModule() {
                                               )
                                             : 'Ẩn ngày sinh'}
                                     </Text>
-                                </div>
+                                    </div>
                             </Space>
                             <Space
                                 className="flex h-full flex-col sm:flex-row"

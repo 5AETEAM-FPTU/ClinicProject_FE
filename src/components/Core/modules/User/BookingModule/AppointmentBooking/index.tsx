@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Input, Select, Rate, Skeleton, Avatar } from 'antd'
+import { Input, Select, Rate, Skeleton, Avatar, Button } from 'antd'
 import { Search, User, BookOpen, Star } from 'lucide-react'
 import {
     useGetAllDoctorForBookingQuery,
@@ -138,14 +138,15 @@ export default function Component() {
                                 key={appointment.appointmentId}
                                 className="shadow-md flex items-center rounded-lg bg-white p-4"
                             >
-                                <img
+                                <Avatar
+                                    size={32}
                                     src={`${appointment.doctorDetails.avatarUrl}`}
                                     alt="Doctor"
                                     className="mr-4 h-12 w-12 rounded-full"
                                 />
                                 <div>
                                     <h3 className="font-semibold text-secondarySupperDarker">
-                                        {appointment.doctorDetails.fullName}
+                                        Bác sĩ: {appointment.doctorDetails.fullName}
                                     </h3>
                                     <p className="text-[12px] text-secondarySupperDarker opacity-80">
                                         {formatDateRange(
@@ -154,7 +155,8 @@ export default function Component() {
                                         )}
                                     </p>
                                 </div>
-                                <button
+                                <Button
+                                    type='primary'
                                     onClick={() =>
                                         handleUpdateAppointment({
                                             ...appointment.doctorDetails,
@@ -162,10 +164,10 @@ export default function Component() {
                                                 appointment.appointmentId,
                                         })
                                     }
-                                    className="ml-auto min-h-[37px] w-20 rounded-[10px] bg-[#00B5F1] px-3 py-1 text-sm text-white"
+                                    className="ml-auto min-h-[37px] w-20 rounded-[10px] bg-secondaryDark px-3 py-1 text-sm text-white"
                                 >
                                     Cập nhật
-                                </button>
+                                </Button>
                             </div>
                         ))}
                 </div>
