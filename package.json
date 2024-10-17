@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@ant-design/nextjs-registry": "^1.0.0",
+        "@microsoft/signalr": "^8.0.7",
         "@reduxjs/toolkit": "^2.2.7",
         "@smakss/react-scroll-direction": "^4.2.0",
         "@tinymce/tinymce-react": "^5.1.1",
@@ -50,7 +51,8 @@
         "styled-components": "^6.1.13",
         "tailwind-merge": "^2.5.2",
         "tailwind-scrollbar-hide": "^1.1.7",
-        "tailwindcss-animated": "^1.1.2"
+        "tailwindcss-animated": "^1.1.2",
+        "uuid": "^10.0.0"
     },
     "devDependencies": {
         "@types/js-cookie": "^3.0.6",
@@ -62,6 +64,7 @@
         "@types/react-speech-recognition": "^3.9.5",
         "@types/react-vertical-timeline-component": "^3.3.6",
         "@types/regenerator-runtime": "^0.13.7",
+        "@types/uuid": "^10.0.0",
         "eslint": "^8",
         "eslint-config-next": "14.2.8",
         "postcss": "^8",

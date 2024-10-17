@@ -23,6 +23,12 @@ const userEndpoint = {
     GET_BOOKED_APPOINTMENTS: '/appointment/getUserBookedAppointment',
     UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
+
+    GET_QUEUE_ROOM_BY_USER: '/queue-room/user-id',
+    REMOVE_QUEUE_ROOM_BY_ID: '/queue-room/{queueRoomId}',
+    ADD_QUEUE_ROOM: '/queue-room',
+    GET_CHAT_ROOM_BY_USER: '/chat-room/user',
+    GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
 }
 
 const doctorEndpoint = {

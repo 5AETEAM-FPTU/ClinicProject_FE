@@ -35,7 +35,7 @@ export default function DoctorUdateSelfAbout({
                 message.success('Cập nhật thành công!')
             }
         } catch (error) {
-            message.success('Cập nhật thất bại!')
+            message.error('Cập nhật thất bại!')
         }
     }
 

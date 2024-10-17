@@ -29,7 +29,7 @@ export interface DayMedicalReports {
     medicalReports: MedicalReport[]
     dayOfDate: string
 }
-
+let a = 0;
 export default function DoctorResultAppointment() {
     const [lastReportDate, setLastReportDate] = useState<string | null>(
         dayjs(Date.now()).format('YYYY-MM-DD'),
@@ -43,7 +43,7 @@ export default function DoctorResultAppointment() {
 
     const handleFetchReports = async (searchVal?: string) => {
         if (prevLength.current == 0 || isFetching) return
-
+        
         let result = await groupedReportsFunc({
             pageSize: 6,
             lastReportDate: lastReportDate!,
