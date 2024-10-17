@@ -69,6 +69,17 @@ const VnPayEndpoint = {
     CREATE_VNPAY_URL: '/payment/generate-link',
 }
 
+const blogEndpoints = {
+    GET_ALL_ACTIVE_CATEGORY: '/api/category/get-active',
+    GET_ALL_POST: '/api/post/get',
+    GET_ALL_ACTIVE_POST: '/api/post/get-active',
+    CREATE_POST: '/api/post/create',
+    DELETE_POST: '/api/post/delete/{:id}',
+    UPDATE_POST: '/api/post/update',
+    GET_POST_BY_SLUG: '/api/post/get/{:slug}',
+    GET_POST_BY_ID: '/api/post/getById/{:id}',
+}
+
 export {
     demoEnpoints,
     authEndpoint,
@@ -79,4 +90,5 @@ export {
     geminiEndpoint,
     AppointmentEndpoint,
     VnPayEndpoint,
+    blogEndpoints,
 }

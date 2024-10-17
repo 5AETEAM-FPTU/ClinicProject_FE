@@ -10,6 +10,10 @@
     },
     "dependencies": {
         "@ant-design/nextjs-registry": "^1.0.0",
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/daygrid": "^6.1.15",
+        "@fullcalendar/react": "^6.1.15",
+        "@fullcalendar/timegrid": "^6.1.15",
         "@reduxjs/toolkit": "^2.2.7",
         "@smakss/react-scroll-direction": "^4.2.0",
         "@tinymce/tinymce-react": "^5.1.1",

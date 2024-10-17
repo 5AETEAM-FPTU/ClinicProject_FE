@@ -37,7 +37,7 @@ export default function ConsultationComponent() {
     const [messages, setMessages] = useState<Message[]>(initialMessages)
     const [inputMessage, setInputMessage] = useState('');
     const userId = `5ffd4aac-b889-4700-98bd-3b6d75966954`;
-    const accessToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InN0cmluZ2VlLWFwaTt2PTEifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3Mjg3NDE1NTQiLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzI4ODI3OTU0LCJ1c2VySWQiOiI1ZmZkNGFhYy1iODg5LTQ3MDAtOThiZC0zYjZkNzU5NjY5NTQifQ.fIWjgFr2XtebusXNBfXa2khDS-85XblOygIQSSn0RJE`;
+    const accessToken = `eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3MjkwNDUwOTIiLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzMxNjM3MDkyLCJ1c2VySWQiOiI1ZmZkNGFhYy1iODg5LTQ3MDAtOThiZC0zYjZkNzU5NjY5NTQiLCJpY2NfYXBpIjp0cnVlfQ.Bjcae5c1LghrfVNh_ccMRNY-ZLfs6pmGk596I3rgoOs`;
     const handleSendMessage = () => {
         if (inputMessage.trim()) {
             const newMessage: Message = {

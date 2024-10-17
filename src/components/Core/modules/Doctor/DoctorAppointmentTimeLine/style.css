@@ -1,3 +1,10 @@
-.vertical-timeline-element-content {
-    box-shadow: 1px 1px 20px 0px #749dce4b !important;
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #003553;
+    margin-left: 1rem;
+}
+
+.fc-col-header-cell-cushion {
+    color: #003553;
 }
