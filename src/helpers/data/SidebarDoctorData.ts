@@ -5,6 +5,7 @@ import {
     CircleUserRound,
     Headset,
     Home,
+    StickyNote,
 } from 'lucide-react'
 import React from 'react'
 
@@ -69,6 +70,17 @@ export const sidebarDoctorData: IndividualMenuItemType[] = [
                 key: 'conversation',
                 lable: 'Trò chuyện',
             }
+        ],
+    },
+    {
+        key: 'blog',
+        title: 'Blog',
+        icon: React.createElement(StickyNote),
+        childrens: [
+            {
+                key: 'post',
+                lable: 'Bài viết',
+            },
         ],
     },
     {

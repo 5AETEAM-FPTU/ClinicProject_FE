@@ -105,7 +105,7 @@ export default function ConsultationComponent() {
     const [stringeeClient, setStringeeClient] = useState(null);
     const [call, setCall] = useState(null);
     const userId = `887c65e7-274e-41c7-87ec-b48973a38883`;
-    const [accessToken, setAccessToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InN0cmluZ2VlLWFwaTt2PTEifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3Mjg3NDE0ODUiLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzI4ODI3ODg1LCJ1c2VySWQiOiI4ODdjNjVlNy0yNzRlLTQxYzctODdlYy1iNDg5NzNhMzg4ODMifQ.WVb46sCeUg-30-uBoeG0jZABNQWM24VUzBmPGWshwcE");
+    const [accessToken, setAccessToken] = useState("eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3MjkwNDUxNDciLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzMxNjM3MTQ3LCJ1c2VySWQiOiI4ODdjNjVlNy0yNzRlLTQxYzctODdlYy1iNDg5NzNhMzg4ODMiLCJpY2NfYXBpIjp0cnVlfQ.aEDd-sGablO6Lg9dKlltikgNWSp3wgtQpaX-yQTrYpc");
     const [callFrom, setCallFrom] = useState<{
         userId: string;
         displayName: string;
