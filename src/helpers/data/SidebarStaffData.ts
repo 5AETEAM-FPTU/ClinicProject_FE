@@ -4,6 +4,7 @@ import {
     CalendarHeart,
     CircleUserRound,
     Home,
+    StickyNote,
     UserSearch,
 } from 'lucide-react'
 import React from 'react'
@@ -68,6 +69,17 @@ export const sidebarStaffData: IndividualMenuItemType[] = [
             {
                 key: 'manual-created',
                 lable: 'Tạo thủ công',
+            },
+        ],
+    },
+    {
+        key: 'blog',
+        title: 'Blog',
+        icon: React.createElement(StickyNote),
+        childrens: [
+            {
+                key: 'post',
+                lable: 'Bài viết',
             },
         ],
     },

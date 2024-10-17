@@ -7,6 +7,7 @@ import loading from './features/loading'
 import sidebar from './features/sidebar'
 import { authApis } from './services/auth'
 import { geminiApis } from './services/ai/gemini'
+import { formServiceBaseApi as nodeServicerBaseApi } from './services/formServiceBase'
 export const createStore = (
     option?: ConfigureStoreOptions['preloadedState'] | undefined,
 ) =>
@@ -14,13 +15,14 @@ export const createStore = (
         reducer: {
             //todo state for adding reducer
             [authApis.reducerPath]: authApis.reducer,
+            [nodeServicerBaseApi.reducerPath]: nodeServicerBaseApi.reducer,
             auth,
             sidebar,
             loading,
             [geminiApis.reducerPath]: geminiApis.reducer,
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(baseApi.middleware).concat(geminiApis.middleware),
+            getDefaultMiddleware().concat(baseApi.middleware).concat(geminiApis.middleware).concat(authApis.middleware).concat(nodeServicerBaseApi.middleware),
     })
 export const store = createStore()
 

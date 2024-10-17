@@ -9,6 +9,7 @@ const VNPAY_PAYMENT_URL = "_vnpay_payment_url";
 
 
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
+const SERVICE_API_SERVIER = process.env.NEXT_PUBLIC_SERVICE_API_SERVER;
 
 const NOTIFICATION_TYPES = {
     SUCCESS: 'Thành công',
@@ -28,6 +29,7 @@ const constants = {
     EMAIL,
     NOTIFICATION_TYPES,
     VNPAY_PAYMENT_URL,
+    SERVICE_API_SERVIER,
 }
 
 export default constants;

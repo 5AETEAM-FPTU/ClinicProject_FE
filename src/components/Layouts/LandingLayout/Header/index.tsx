@@ -33,7 +33,11 @@ function Header() {
     const { scrollDir } = useDetectScroll()
     const router = useRouter()
     const locale = useLocale()
-    const _accessToken = webStorageClient.getToken()
+    const [_accessToken, setAccessToken] = useState<string | null>(null)
+    useEffect(() => {
+        setAccessToken(webStorageClient.getToken() as string);
+    }, [])
+
 
     const { user } = useAppSelector((state) => state.auth)
     console.log(user)
@@ -47,9 +51,9 @@ function Header() {
             router.push(`/${locale}/sign-in`)
         }
     }
-    let role: string | null = null
+    let role: string | null = null;
     if (_accessToken) {
-        role = jwtDecode<JwtPayloadUpdated>(_accessToken).role || null
+        role = jwtDecode<JwtPayloadUpdated>(_accessToken).role || null;
     }
 
     const handleRenderUserType = () => {
