@@ -11,12 +11,13 @@ import CreateMedicalServiceModal from '../../ModalMedicalReport/CreateMedidalSer
 import { Save } from 'lucide-react'
 import UpdateMedicalServiceModal from '../../ModalMedicalReport/UpdateMedicalServiceModal'
 import CreatePrescriptionModal from '../../ModalMedicalReport/CreatePrescriptionModal'
-import { TMedicalReport } from '../../ViewMedialReportModule'
+import { MedicalReportResponseBody, TMedicalReport } from '../../ViewMedialReportModule'
 import dayjs from 'dayjs'
 import { useUpdateMainMedicalReportInformationMutation } from '@/stores/services/report/medicalReport'
+import { useRouter } from 'next/navigation'
 
 type TProps = {
-    payload: TMedicalReport
+    payload: MedicalReportResponseBody
     refetch: () => void
     isFetching: boolean
 }
@@ -28,6 +29,7 @@ export default function MainMedicalReport({
 }: TProps) {
     const [myForm] = Form.useForm()
     const editorRef = useRef<any>(null)
+    const router = useRouter();
 
     const [openCreateMedicalServiceModal, setOpenCreateMedicalServiceModal] =
         useState<boolean>(false)
@@ -58,14 +60,14 @@ export default function MainMedicalReport({
 
     useEffect(() => {
         myForm.setFieldsValue({
-            medicalHistory: payload?.medicalHistory,
-            generalCondition: payload?.generalCondition,
-            weight: payload?.weight,
-            height: payload?.height,
-            pulse: payload?.pulse,
-            temperature: payload?.temperature,
-            bloodPresser: payload?.bloodPressure,
-            diagnosis: payload?.diagnosis,
+            medicalHistory: payload?.medicalReport?.medicalHistory,
+            generalCondition: payload?.medicalReport?.generalCondition,
+            weight: payload?.medicalReport?.weight,
+            height: payload?.medicalReport?.height,
+            pulse: payload?.medicalReport?.pulse,
+            temperature: payload?.medicalReport?.temperature,
+            bloodPresser: payload?.medicalReport?.bloodPressure,
+            diagnosis: payload?.medicalReport?.diagnosis,
         })
     }, [])
 
@@ -97,9 +99,9 @@ export default function MainMedicalReport({
                                 <p className="font-bold">
                                     Thời gian khám:{' '}
                                     <span className="font-medium">
-                                        {dayjs(payload?.date).format('HH:mm') +
+                                        {dayjs(payload?.medicalReport?.date).format('HH:mm') +
                                             ' ' +
-                                            dayjs(payload?.date).format(
+                                            dayjs(payload?.medicalReport?.date).format(
                                                 'DD/MM/YYYY',
                                             )}
                                     </span>
@@ -119,7 +121,7 @@ export default function MainMedicalReport({
                         </Form.Item>
                     </div>
                     <div className="w-full flex-col gap-5">
-                        <div className="flex h-fit w-full flex-row gap-5">
+                        <div className="flex h-fit w-full flex-col gap-0 sm:flex-row sm:gap-5">
                             <Form.Item
                                 label="Tiền sử bệnh án"
                                 name={'medicalHistory'}
@@ -131,7 +133,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -146,7 +148,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -161,7 +163,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -176,12 +178,12 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
                         </div>
-                        <div className="flex h-fit w-full flex-row gap-5">
+                        <div className="flex h-fit w-full flex-col gap-0 sm:flex-row sm:gap-5">
                             <Form.Item
                                 label="Mạch"
                                 name={'pulse'}
@@ -193,7 +195,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -208,7 +210,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -223,7 +225,7 @@ export default function MainMedicalReport({
                                 ]}
                             >
                                 <Input
-                                    className="w-[224px]"
+                                    className="w-full sm:w-[224px]"
                                     placeholder="Nhập thông tin..."
                                 ></Input>
                             </Form.Item>
@@ -235,24 +237,27 @@ export default function MainMedicalReport({
                                 className="!mb-0"
                             >
                                 <EditorTinymce
-                                    initContent={payload?.diagnosis}
+                                    initContent={payload?.medicalReport?.diagnosis}
                                     editorRef={editorRef}
                                 />
                             </Form.Item>
                         </div>
                     </div>
                 </Form>
-                <div className="flex flex-row gap-5">
+                <div className="flex flex-col gap-5 sm:flex-row">
                     <Button
                         type="primary"
                         className="rounded-xl bg-secondaryDark !p-[20px] font-semibold shadow-third"
-                        onClick={() => setOpenCreateMedicalServiceModal(true)}
+                        onClick={() => {
+                            setOpenCreateMedicalServiceModal(true)
+                        }}
                     >
                         Thêm dịch vụ khám
                     </Button>
                     <CreateMedicalServiceModal
                         open={openCreateMedicalServiceModal}
                         setOpen={setOpenCreateMedicalServiceModal}
+                        serviceOrderId={payload?.service?.serviceOrderId}
                     />
                     <Button
                         type="primary"
@@ -264,6 +269,7 @@ export default function MainMedicalReport({
                     <UpdateMedicalServiceModal
                         open={openUpdateMedicalServiceModal}
                         setOpen={setOpenUpdateMedicalServiceModal}
+                        serviceOrderId={payload?.service?.serviceOrderId}
                     />
                     <Button
                         type="primary"
@@ -275,6 +281,7 @@ export default function MainMedicalReport({
                     <CreatePrescriptionModal
                         open={openCreatePrescriptionModal}
                         setOpen={setOpenCreatePrescriptionModal}
+                        medicineOrderId={payload?.medicine?.medicineOrderId}
                     />
                 </div>
                 <div>

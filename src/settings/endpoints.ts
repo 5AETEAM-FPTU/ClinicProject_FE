@@ -76,11 +76,19 @@ const medicalReportEndpoint = {
 }
 
 const serviceEndpoint = {
-    GET_ALL_SERVICE: '/services/all',
+    GET_ALL_SERVICE: '/services/available',
 }
 
-const medicineEndpoint = {
-
+const medicineOrderEndpoint = {
+    GET_MEDICINE_AVAILABLE: '/admin/medicine/available',
+    GET_MEDICINE_ORDER_DETAIL: '/medicine-order/detail',
+    ADD_MEDICINE_ORDER_ITEM: '/medicine-order/item/add',
+    UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
+    DELETE_MEDICINE_ORDER_ITEM: '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
+}
+const serviceOrderEndpoint = {
+    SERVICE_ORDER_ADD: '/service-order/add',
+    SERVICE_ORDER_DETAIL: '/service-order/detail',
 }
 
 const VnPayEndpoint = {
@@ -99,4 +107,6 @@ export {
     VnPayEndpoint,
     medicalReportEndpoint,
     serviceEndpoint,
+    serviceOrderEndpoint,
+    medicineOrderEndpoint
 }

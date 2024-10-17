@@ -42,15 +42,15 @@ export default function UserSettingsModule() {
                         isProfileFetching={isFetching}
                         profile={result}
                     />
-                    <div className="flex h-fit w-full flex-row gap-6">
-                        <div className="flex w-full flex-col gap-6">
+                    <div className="flex h-fit w-full flex-col sm:flex-row gap-5 ">
+                        <div className="flex w-full flex-col gap-5">
                             <UserUpdateGeneral
                                 isProfileFetching={isFetching}
                                 profile={result}
                             />
                            <UserChangePassword isProfileFetching={isFetching} profile={result}/>
                         </div>
-                        <div className="flex w-full flex-col gap-6">
+                        <div className="flex w-full flex-col gap-5">
                             <UserUpdateDescription isProfileFetching={isFetching} profile={result}/>
                             <UserDeleteAccount/>
                         </div>

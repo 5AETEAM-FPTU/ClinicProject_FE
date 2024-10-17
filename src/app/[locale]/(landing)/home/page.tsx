@@ -15,11 +15,11 @@ function LandingHome() {
         <div>
             <Banner/>
             <WhoAreWe/>
-            <OurTeam/>
+            {/* <OurTeam/>
             <Specialty/>
             <CustomerFeedback/>
             <MedicalNews/>
-            <Contact/>
+            <Contact/> */}
         </div>
     )
 }

@@ -1,12 +1,33 @@
 'use client'
+import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
 import { Button, Input, Modal } from 'antd'
 import { Edit, Search, View } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    serviceOrderId?: string
 }
-export default function UpdateMedicalServiceModal({ open, setOpen }: TProps) {
+export default function UpdateMedicalServiceModal({
+    open,
+    setOpen,
+    serviceOrderId,
+}: TProps) {
+    const { serviceOrderDetail, refetch } = useGetServiceOrderDetailQuery(
+        serviceOrderId!,
+        {
+            skip: !open,
+            selectFromResult: ({ data }) => ({
+                serviceOrderDetail: data?.body?.serviceOrder,
+            }),
+        },
+    )
+    useEffect(() => {
+        if (open) {
+            refetch()
+        }
+    }, [open])
+
     return (
         <Modal
             title={[
@@ -80,60 +101,59 @@ export default function UpdateMedicalServiceModal({ open, setOpen }: TProps) {
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            <tr>
-                                                <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                    Mã xét nghiệm
-                                                </td>
-                                                <td className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                    Tên xét nghiệm
-                                                </td>
-                                                <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondaryDark">
-                                                    Đã cập nhật
-                                                </td>
-                                                <td className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                    <Button
-                                                        type="primary"
-                                                        className="!bg-[#15803D]"
-                                                    >
-                                                        Chỉnh sửa
-                                                        <Edit size={16}/>
-                                                    </Button>
-                                                </td>
-                                                <td className="w-[120px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                    100.000đ
-                                                </td>
-                                                <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                    <div className="flex w-full items-center justify-center">
-                                                        <View
-                                                            size={20}
-                                                            className="cursor-pointer transition-all hover:scale-x-110 hover:text-secondaryDark"
-                                                        />
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            
-                                            {Array.from({ length: 10 }).map(
-                                                (_, index) => (
+                                            {serviceOrderDetail?.items?.map(
+                                                (item: any, index: number) => (
                                                     <tr key={index}>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Mã xét nghiệm
+                                                            {
+                                                                item?.service
+                                                                    ?.code
+                                                            }
                                                         </td>
                                                         <td className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Tên xét nghiệm
+                                                            {
+                                                                item?.service
+                                                                    ?.name
+                                                            }
                                                         </td>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondaryDark">
-                                                            Chưa cập nhật
+                                                            {item?.isUpdated
+                                                                ? 'Đã cập nhật'
+                                                                : 'Chưa cập nhật'}
                                                         </td>
                                                         <td className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            <Button
-                                                                type="primary"
-                                                                className="!bg-secondaryDark"
-                                                            >
-                                                                Viết kết quả
-                                                            </Button>
+                                                            {item?.isUpdated ? (
+                                                                <Button
+                                                                    type="primary"
+                                                                    className="!bg-[#15803D]"
+                                                                >
+                                                                    Chỉnh sửa
+                                                                    <Edit
+                                                                        size={
+                                                                            16
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    type="primary"
+                                                                    className="!bg-secondaryDark"
+                                                                >
+                                                                    Viết kết quả
+                                                                </Button>
+                                                            )}
                                                         </td>
                                                         <td className="w-[120px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            100.000đ
+                                                            {new Intl.NumberFormat(
+                                                                'vi-VN',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'VND',
+                                                                },
+                                                            ).format(
+                                                                item?.priceAtOrder,
+                                                            )}
                                                         </td>
                                                         <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                             <div className="flex w-full items-center justify-center">
@@ -148,18 +168,31 @@ export default function UpdateMedicalServiceModal({ open, setOpen }: TProps) {
                                             )}
                                         </tbody>
                                     </table>
-                                    {/* <div className='w-full h-full flex items-center justify-center'>
-                                      <p className='text-secondarySupperDarker font-bold text-[24px] text-opacity-40 select-none'>Chưa có dữ liệu</p>
-                                    </div> */}
+                                    {serviceOrderDetail?.items?.length ===
+                                        0 && (
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <p className="select-none text-[24px] font-bold text-secondarySupperDarker text-opacity-40">
+                                                Chưa có dữ liệu
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className='mt-5'>
-              <p className='text-[14px] font-semibold text-secondarySupperDarker'>Tổng số xét nghiệm: 6</p>
-              <p className='text-[14px] font-bold text-secondarySupperDarker'>Tổng phí xét nghiệm: 840.000 đ</p>
+            <div className="mt-5">
+                <p className="text-[14px] font-semibold text-secondarySupperDarker">
+                    Tổng số xét nghiệm: {serviceOrderDetail?.quantity}
+                </p>
+                <p className="text-[14px] font-bold text-secondarySupperDarker">
+                    Tổng phí xét nghiệm:{' '}
+                    {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                    }).format(serviceOrderDetail?.totalPrice)}
+                </p>
             </div>
         </Modal>
     )

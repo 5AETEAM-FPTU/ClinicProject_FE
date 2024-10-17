@@ -1,30 +1,92 @@
 'use client'
-import React from 'react'
-import { Button, Input, Modal } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Button, Input, message, Modal } from 'antd'
 import { set } from 'lodash'
 import { Search } from 'lucide-react'
 import { useGetAllServiceQuery } from '@/stores/services/report/medicalReport'
+import {
+    useAddServiceOrderMutation,
+    useGetServiceOrderDetailQuery,
+} from '@/stores/services/report/serviceOrder'
+import { TMedicalReport } from '../ViewMedialReportModule'
+import { useRouter } from 'next/navigation'
 
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    serviceOrderId?: string
 }
-
-export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
+export type ServiceOrderDetail = {
+    id: string
+    quantity: string
+    totalPrice: string
+    isAllUpdated: boolean
+    item: any
+}
+export default function CreateMedicalServiceModal({
+    open,
+    setOpen,
+    serviceOrderId,
+}: TProps) {
+    const router = useRouter()
+    const [searchValue, setSearchValue] = useState<string>('')
+    const [serviceOrder, setServiceOrder] = useState<any>([])
     const { services } = useGetAllServiceQuery(
         {
             pageIndex: 1,
             pageSize: 100,
-            key: '',
+            key: searchValue,
         },
         {
             skip: !open,
             selectFromResult: ({ data }) => ({
-                services: data?.body?.services?.contents ?? [],
+                services: data?.body?.services ?? [],
             }),
         },
     )
-    console.log('services', services)
+    const { serviceOrderDetail, refetch } = useGetServiceOrderDetailQuery(
+        serviceOrderId!,
+        {
+            skip: !open,
+            selectFromResult: ({ data }) => ({
+                serviceOrderDetail: data?.body?.serviceOrder,
+            }),
+        },
+    )
+
+    useEffect(() => {
+        if (open) {
+            refetch()
+        }
+        const dataList = serviceOrderDetail?.items?.map((item: any) => {
+            return {
+                id: item?.service?.id,
+                code: item?.service?.code,
+                name: item?.service?.name,
+                description: item?.service?.descripiton,
+            }
+        })
+        setServiceOrder(dataList)
+    }, [serviceOrderDetail, open])
+    const handleAddServiceItem = (item: any) => {
+        setServiceOrder([...serviceOrder, item])
+    }
+    const handleDeleteOrderItem = (item: any) => {
+        setServiceOrder(serviceOrder.filter((i: any) => i.id !== item.id))
+    }
+    const [addServiceOrder] = useAddServiceOrderMutation()
+    const handleUpdateOrderService = async () => {
+        try {
+            await addServiceOrder({
+                serviceOrderId: serviceOrderId!,
+                serviceIds: serviceOrder.map((item: any) => item.id),
+            }).unwrap()
+            setOpen(false)
+            message.success('Thành công!')
+        } catch (error) {
+            message.error('Đã xảy ra lỗi, vui lòng thử lại sau!')
+        }
+    }
     return (
         <Modal
             title={[
@@ -50,7 +112,9 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                     className="bg-secondaryDark"
                     key="submit"
                     type="primary"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                        handleUpdateOrderService()
+                    }}
                 >
                     Xác nhận
                 </Button>,
@@ -87,19 +151,24 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            {Array.from({ length: 10 }).map(
-                                                (_, index: number) => (
+                                            {serviceOrder?.map(
+                                                (item: any, index: number) => (
                                                     <tr key={index}>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            Mã xét nghiệm
+                                                            {item.code}
                                                         </td>
                                                         <td className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            Tên xét nghiệm
+                                                            {item.name}
                                                         </td>
                                                         <td className="border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
                                                             <Button
                                                                 type="default"
                                                                 className="border-red-600 text-red-600"
+                                                                onClick={() =>
+                                                                    handleDeleteOrderItem(
+                                                                        item,
+                                                                    )
+                                                                }
                                                             >
                                                                 Xóa
                                                             </Button>
@@ -109,9 +178,13 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                             )}
                                         </tbody>
                                     </table>
-                                    {/* <div className='w-full h-full flex items-center justify-center'>
-                                      <p className='text-secondarySupperDarker font-bold text-[24px] text-opacity-40 select-none'>Chưa có dữ liệu</p>
-                                    </div> */}
+                                    {serviceOrder?.length == 0 && (
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <p className="select-none text-[24px] font-bold text-secondarySupperDarker text-opacity-40">
+                                                Chưa có dữ liệu
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -121,7 +194,7 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <div className="flex flex-row justify-between">
                             <p className="text-[14px] font-bold text-secondarySupperDarker">
-                                Đã thêm vào danh sách
+                                Danh sách dịch vụ
                             </p>
                             <Input
                                 size="small"
@@ -133,6 +206,7 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                     />
                                 }
                                 placeholder="Tìm kiếm"
+                                onChange={(e) => setSearchValue(e.target.value)}
                             />
                         </div>
 
@@ -159,13 +233,17 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                 <div
                                     style={{
                                         maxHeight: '360px',
+                                        height: '360px',
                                         overflowY: 'auto',
                                     }}
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
                                             {services.map(
-                                                (service:any, index:number) => (
+                                                (
+                                                    service: any,
+                                                    index: number,
+                                                ) => (
                                                     <tr key={index}>
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
                                                             {service?.code}
@@ -176,10 +254,15 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
                                                         <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-medium text-secondarySupperDarker">
                                                             {service?.price} vnđ
                                                         </td>
-                                                        <td className=" border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
+                                                        <td className="border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
                                                             <Button
                                                                 type="primary"
                                                                 className="bg-secondaryDark"
+                                                                onClick={() =>
+                                                                    handleAddServiceItem(
+                                                                        service,
+                                                                    )
+                                                                }
                                                             >
                                                                 Thêm
                                                             </Button>
@@ -197,10 +280,14 @@ export default function CreateMedicalServiceModal({ open, setOpen }: TProps) {
             </div>
             <div className="mt-5">
                 <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                    Tổng số xét nghiệm: 6
+                    Tổng số xét nghiệm: {serviceOrderDetail?.quantity}
                 </p>
                 <p className="text-[14px] font-bold text-secondarySupperDarker">
-                    Tổng phí xét nghiệm: 840.000 đ
+                    Tổng phí xét nghiệm:{' '}
+                    {new Intl.NumberFormat('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND',
+                    }).format(serviceOrderDetail?.totalPrice)}
                 </p>
             </div>
         </Modal>

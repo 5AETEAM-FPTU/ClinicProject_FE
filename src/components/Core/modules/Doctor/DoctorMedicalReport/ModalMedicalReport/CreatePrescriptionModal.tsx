@@ -1,13 +1,90 @@
-import { Button, Input, Modal } from 'antd'
-import { ArrowUpDown, ClipboardPlus, PackageCheck, PackageMinus, Search } from 'lucide-react'
-import React from 'react'
+'use client'
+import {
+    useAddMedicineOrderItemMutation,
+    useDeleteMedicineOrderItemMutation,
+    useGetAllMedicineAvailableQuery,
+    useGetMedicineOrderByIdQuery,
+    useUpdateMedicineOrderItemMutation,
+} from '@/stores/services/report/medicineOrder'
+import { Button, Input, message, Modal } from 'antd'
+import {
+    ArrowUpDown,
+    ClipboardPlus,
+    PackageCheck,
+    PackageMinus,
+    Search,
+} from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    medicineOrderId?: string
+}
+export type MedicineType = {
+    medicineId: string
+    medicineName: string
+    manufacture: string
+    ingredient: string
+    type: {
+        typeId: string
+        name: string
+        constant: string
+    }
+    group: {
+        groupId: string
+        name: string
+        constant: string
+    }
 }
 
-export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
+export default function CreatePrescriptionModal({
+    open,
+    setOpen,
+    medicineOrderId,
+}: TProps) {
+    const [searchValue, setSearchValue] = useState<string>('')
+    const { medicines, refetch: refetchMedicines } =
+        useGetAllMedicineAvailableQuery(
+            { medicineName: searchValue },
+            {
+                skip: !open,
+                selectFromResult: ({ data }) => ({
+                    medicines: data?.body?.medicines ?? [],
+                }),
+            },
+        )
+
+    const { medicineOrder, refetch: refetchMedicineOrder } =
+        useGetMedicineOrderByIdQuery(medicineOrderId!, {
+            selectFromResult: ({ data }) => ({
+                medicineOrder: data?.body?.medicineOrder ?? {},
+            }),
+        })
+    useEffect(() => {
+        if (open) {
+            refetchMedicines()
+            refetchMedicineOrder()
+        }
+    }, [open])
+
+    const [addMedicineOrderItem] = useAddMedicineOrderItemMutation()
+    const handleAddMedicineOrder = async (medicineId: string) => {
+        try {
+            await addMedicineOrderItem({
+                medicineOrderId: medicineOrderId!,
+                medicineId: medicineId,
+            }).unwrap()
+            refetchMedicineOrder()
+            message.success('Thêm thành công!')
+        } catch (error:any) {
+            if(error?.data?.appCode == "OrderMedicinesFeature: MEDICINE_ALREADY_EXIST") {
+                message.error('Đã tồn tại thuốc này trong đơn chỉ định!')
+            } else 
+            message.error('Đã xảy ra lỗi, vui lòng thử lại sau!')
+        }
+    }
+
     return (
         <Modal
             title={[
@@ -76,47 +153,33 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            {Array.from({ length: 10 }).map(
-                                                (_, index) => (
-                                                    <tr key={index}>
-                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Tên thuốc
-                                                        </td>
-                                                        <td className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Dạng
-                                                        </td>
-                                                        <td className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            <Input
-                                                                type="text"
-                                                                placeholder="Nhập cách sử dụng..."
-                                                            ></Input>
-                                                        </td>
-                                                        <td className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            <Input
-                                                                type="number"
-                                                                placeholder="Nhập số lượng"
-                                                            />
-                                                        </td>
-                                                        <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            <div className='flex flex-row gap-2'>
-                                                                <Button type='primary' className='bg-secondaryDark rounded-lg'>
-                                                                    Lưu lại / <PackageCheck size={16} />
-                                                                </Button>
-                                                                <Button type='primary' className='bg-red-600 rounded-lg'>
-                                                                    Xóa / <PackageMinus size={16} />
-                                                                </Button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                            {medicineOrder?.items?.map(
+                                                (
+                                                    item: MedicinOrderedItemInfor,
+                                                    index: number,
+                                                ) => (
+                                                    <PrescriptionRow
+                                                        payload={item}
+                                                        key={index}
+                                                        index={index}
+                                                        medicineOrderId={
+                                                            medicineOrderId!
+                                                        }
+                                                        refetch={
+                                                            refetchMedicineOrder
+                                                        }
+                                                    />
                                                 ),
                                             )}
                                         </tbody>
                                     </table>
-                                    {/* <div className="flex h-full w-full items-center justify-center">
-                                        <p className="select-none text-[24px] font-bold text-secondarySupperDarker text-opacity-40">
-                                            Chưa có dữ liệu
-                                        </p>
-                                    </div> */}
+                                    {medicineOrder?.items?.length === 0 && (
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <p className="select-none text-[24px] font-bold text-secondarySupperDarker text-opacity-40">
+                                                Chưa có dữ liệu
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -146,7 +209,7 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
                                 <table className="w-full table-auto border-collapse">
                                     <thead className="sticky top-0 z-10 bg-white">
                                         <tr>
-                                            <th className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
+                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                 <div className="relative flex w-full flex-row items-center justify-center">
                                                     <p>Tên thuốc</p>
                                                     <div className="absolute right-0 cursor-pointer">
@@ -156,11 +219,11 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
                                                     </div>
                                                 </div>
                                             </th>
-                                            <th className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
+                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                 Dạng
                                             </th>
                                             <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px] text-secondarySupperDarker">
-                                                Thêm vào đơn
+                                                Thêm
                                             </th>
                                         </tr>
                                     </thead>
@@ -169,24 +232,38 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
                                     style={{
                                         maxHeight: '360px',
                                         overflowY: 'auto',
+                                        height: '360px',
                                     }}
                                 >
                                     <table className="w-full table-auto border-collapse">
                                         <tbody>
-                                            {Array.from({ length: 10 }).map(
-                                                (_, index) => (
+                                            {medicines?.map(
+                                                (
+                                                    medicine: MedicineType,
+                                                    index: number,
+                                                ) => (
                                                     <tr key={index}>
-                                                        <td className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Mã xét nghiệm
+                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                                                            {
+                                                                medicine?.medicineName
+                                                            }
                                                         </td>
-                                                        <td className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                                                            Dạng
+                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                                                            {
+                                                                medicine?.type
+                                                                    .name
+                                                            }
                                                         </td>
                                                         <td className="border-b-[1px] border-secondarySupperDarker text-center">
                                                             <div className="w-full items-center justify-center">
                                                                 <Button
                                                                     type="primary"
                                                                     className="rounded-lg bg-secondaryDark px-5 py-0"
+                                                                    onClick={() => {
+                                                                        handleAddMedicineOrder(
+                                                                            medicine?.medicineId,
+                                                                        )
+                                                                    }}
                                                                 >
                                                                     Thêm
                                                                     <ClipboardPlus
@@ -210,12 +287,112 @@ export default function CreatePrescriptionModal({ open, setOpen }: TProps) {
             </div>
             <div className="mt-5">
                 <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                    Tổng số xét nghiệm: 6
+                    Dặn dò
                 </p>
-                <p className="text-[14px] font-bold text-secondarySupperDarker">
-                    Tổng phí xét nghiệm: 840.000 đ
-                </p>
+                <Input.TextArea />
             </div>
         </Modal>
+    )
+}
+
+type PrescriptionRowProps = {
+    index: number
+    medicineOrderId: string
+    payload: MedicinOrderedItemInfor
+    refetch: () => void
+}
+type MedicinOrderedItemInfor = {
+    quantity: number
+    description: string
+    medicine: {
+        id: string
+        name: string
+        type: {
+            id: string
+            name: string
+            constant: string
+        }
+    }
+}
+
+const PrescriptionRow = ({
+    index,
+    medicineOrderId,
+    payload,
+    refetch,
+}: PrescriptionRowProps) => {
+    const [quantity, setQuantity] = useState(payload?.quantity)
+    const [description, setDescription] = useState(payload?.description)
+    const [deleteMedicineOrderItem] = useDeleteMedicineOrderItemMutation()
+    const handleDeleteOrderItem = async () => {
+        try {
+            await deleteMedicineOrderItem({
+                medicineOrderId: medicineOrderId,
+                medicineId: payload?.medicine?.id,
+            }).unwrap()
+            refetch()
+            message.success('Xoá thành công!')
+        } catch (error) {
+            message.error('Xóa không thành công')
+        }
+    }
+    const [updateMedicineOrderItem] = useUpdateMedicineOrderItemMutation()
+    const handleUpdateOrderItem = async () => {
+        try {
+            await updateMedicineOrderItem({
+                medicineOrderId: medicineOrderId,
+                medicineId: payload?.medicine?.id,
+                quantity: quantity.toString(),
+                description: description,
+            }).unwrap()
+            refetch()
+            message.success('Cập nhật thành công!')
+        } catch (error) {
+            message.error('Cập nhật không thành công')
+        }
+    }
+    return (
+        <tr key={index}>
+            <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                {payload?.medicine?.name}
+            </td>
+            <td className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                {payload?.medicine?.type?.name}
+            </td>
+            <td className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                <Input
+                    type="text"
+                    placeholder="Nhập cách sử dụng..."
+                    defaultValue={payload?.description}
+                    onChange={(e) => setDescription(e.target.value)}
+                ></Input>
+            </td>
+            <td className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                <Input
+                    type="number"
+                    placeholder="Nhập số lượng"
+                    defaultValue={payload?.quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                />
+            </td>
+            <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                <div className="flex flex-row gap-2">
+                    <Button
+                        type="primary"
+                        className="rounded-lg bg-secondaryDark"
+                        onClick={() => handleUpdateOrderItem()}
+                    >
+                        Lưu lại / <PackageCheck size={16} />
+                    </Button>
+                    <Button
+                        type="primary"
+                        className="rounded-lg bg-red-600"
+                        onClick={() => handleDeleteOrderItem()}
+                    >
+                        Xóa / <PackageMinus size={16} />
+                    </Button>
+                </div>
+            </td>
+        </tr>
     )
 }
