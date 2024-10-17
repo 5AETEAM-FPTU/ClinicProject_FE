@@ -1,11 +1,11 @@
-import { userEndpoint } from '@/settings/endpoints'
+import { chatEndpoint } from '@/settings/endpoints'
 import { baseApi } from '../base'
 
-export const userChats = baseApi.injectEndpoints({
+export const chats = baseApi.injectEndpoints({
     endpoints: (build) => ({
         getQueueRoomByUser: build.query<any, void>({
             query: () => ({
-                url: userEndpoint.GET_QUEUE_ROOM_BY_USER,
+                url: chatEndpoint.GET_QUEUE_ROOM_BY_USER,
                 flashError: true,
                 method: 'GET',
                 extraOptions: { skipAuth: false },
@@ -13,14 +13,14 @@ export const userChats = baseApi.injectEndpoints({
         }),
         removeQueueById: build.mutation<any, string>({
             query: (id: string) => ({
-                url: `${userEndpoint.REMOVE_QUEUE_ROOM_BY_ID.replace('{queueRoomId}', id)}`,
+                url: `${chatEndpoint.REMOVE_QUEUE_ROOM_BY_ID.replace('{queueRoomId}', id)}`,
                 flashError: true,
                 method: 'DELETE',
             }),
         }),
         addQueueRoom: build.mutation<any, { title: string; message: string }>({
             query: ({ title, message }) => ({
-                url: `${userEndpoint.ADD_QUEUE_ROOM}`,
+                url: `${chatEndpoint.ADD_QUEUE_ROOM}`,
                 flashError: true,
                 body: {
                     title: title,
@@ -31,7 +31,15 @@ export const userChats = baseApi.injectEndpoints({
         }),
         getChatRoomByUser: build.query<any, void>({
             query: () => ({
-                url: userEndpoint.GET_CHAT_ROOM_BY_USER,
+                url: chatEndpoint.GET_CHAT_ROOM_BY_USER,
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: false },
+            }),
+        }),
+        getChatRoomByDoctor: build.query<any, void>({
+            query: () => ({
+                url: chatEndpoint.GET_CHAT_ROOM_BY_DOCTOR,
                 flashError: true,
                 method: 'GET',
                 extraOptions: { skipAuth: false },
@@ -43,7 +51,7 @@ export const userChats = baseApi.injectEndpoints({
         >({
             query: (params) => ({
                 url:
-                    userEndpoint.GET_CHAT_CONTENT_BY_CHAT_ROOM +
+                    chatEndpoint.GET_CHAT_CONTENT_BY_CHAT_ROOM +
                     '?' +
                     `${params.lastReportDate ? `lastReportDate=${params.lastReportDate}&` : ''}` +
                     `${params.chatRoomId ? `chatRoomId=${params.chatRoomId}&` : ''}` +
@@ -51,6 +59,13 @@ export const userChats = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'GET',
                 extraOptions: { skipAuth: false },
+            }),
+        }),
+        removeChatContentById: build.mutation<any, string>({
+            query: (id: string) => ({
+                url: `${chatEndpoint.REMOVE_CHAT_CONTENT_BY_ID.replace('{chatContentId}', id)}`,
+                flashError: true,
+                method: 'DELETE',
             }),
         }),
     }),
@@ -62,4 +77,6 @@ export const {
     useAddQueueRoomMutation,
     useGetChatRoomByUserQuery,
     useLazyGetChatContentByChatRoomQuery,
-} = userChats
+    useRemoveChatContentByIdMutation,
+    useGetChatRoomByDoctorQuery
+} = chats

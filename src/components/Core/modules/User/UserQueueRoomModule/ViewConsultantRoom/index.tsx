@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { handleClientScriptLoad } from 'next/script'
 import { UserInformationQueueRoom, UserQueueRoom } from '..'
-import { useRemoveQueueByIdMutation } from '@/stores/services/user/userChats'
+import { useRemoveQueueByIdMutation } from '@/stores/services/chat/chats'
 
 interface IProps {
     data: UserQueueRoom

@@ -17,7 +17,7 @@ import { BadgePlus, Settings } from 'lucide-react'
 import _ from 'lodash'
 import CreateConsultantRoom from './CreateConsultantRoom'
 import ViewConsultantRoom from './ViewConsultantRoom'
-import { useGetQueueRoomByUserQuery } from '@/stores/services/user/userChats'
+import { useGetQueueRoomByUserQuery } from '@/stores/services/chat/chats'
 import { useGetUserProfileQuery } from '@/stores/services/user/userSettings'
 const { Header, Content } = Layout
 

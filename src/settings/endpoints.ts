@@ -24,11 +24,6 @@ const userEndpoint = {
     UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
 
-    GET_QUEUE_ROOM_BY_USER: '/queue-room/user-id',
-    REMOVE_QUEUE_ROOM_BY_ID: '/queue-room/{queueRoomId}',
-    ADD_QUEUE_ROOM: '/queue-room',
-    GET_CHAT_ROOM_BY_USER: '/chat-room/user',
-    GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
 }
 
 const doctorEndpoint = {
@@ -59,7 +54,16 @@ const enumEndpoint = {
     GET_POSITION: "/enum/getAllPosition",
     GET_GENDER: "/enum/getAllGender",
     GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+}
 
+const chatEndpoint = {
+    GET_QUEUE_ROOM_BY_USER: '/queue-room/user-id',
+    REMOVE_QUEUE_ROOM_BY_ID: '/queue-room/{queueRoomId}',
+    ADD_QUEUE_ROOM: '/queue-room',
+    GET_CHAT_ROOM_BY_USER: '/chat-room/user',
+    GET_CHAT_ROOM_BY_DOCTOR: '/chat-room/doctor',
+    GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
+    REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
 }
 
 const geminiEndpoint = {
@@ -70,4 +74,4 @@ const AppointmentEndpoint = {
     UPDATE_APPOINTMENT_STATUS: "/appointment/update-status"
 }
 
-export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint, geminiEndpoint, AppointmentEndpoint };
+export { demoEnpoints, authEndpoint, userEndpoint, doctorEndpoint, enumEndpoint, scheduleEndpoint, geminiEndpoint, AppointmentEndpoint, chatEndpoint };

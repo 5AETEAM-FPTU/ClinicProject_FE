@@ -42,10 +42,10 @@ export interface Message {
 
 export default function ChatRooms({
     chatRoomId,
-    doctorId,
+    userId,
 }: {
     chatRoomId: string
-    doctorId: string
+    userId: string
 }) {
     // State, ref, others
     const [messages, setMessages] = useState<Message[]>([])
@@ -90,12 +90,6 @@ export default function ChatRooms({
         }
     }
 
-    const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputMessage(e.target.value)
-        console.log('handleOnTyping');
-        sendTypingMessage(_userId, doctorId!)
-    }
-
     const handleFetchChatContent = async () => {
         const result = await useGetChatContentByUserQuery({
             lastReportDate: lastTimeMessage,
@@ -123,7 +117,7 @@ export default function ChatRooms({
         }
 
         fetchChatContent()
-    }, [chatRoomId, doctorId])
+    }, [chatRoomId, userId])
 
     useEffect(() => {
         if (inView) {
@@ -150,7 +144,7 @@ export default function ChatRooms({
             await sendMessage(
                 chatContentId,
                 _userId,
-                doctorId!,
+                userId!,
                 inputMessage,
                 chatRoomId!,
                 uploadedImageUrls,
@@ -198,6 +192,12 @@ export default function ChatRooms({
         setUploadedImageUrls((prevUrls) => prevUrls.filter((u) => u !== url))
     }
 
+    const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputMessage(e.target.value)
+        console.log('handleOnTyping');
+        sendTypingMessage(_userId, userId!)
+    }
+
     useEffect(() => {
         const initializeConnection = async () => {
             if (connectionRef.current) return
@@ -232,18 +232,19 @@ export default function ChatRooms({
                             ...prev,
                         ]
                     })
-
                     setTimeout(() => {
                         handleScrollToBottom()
-                    }, 100);
+                    }, 100)
                 },
                 (senderId: string) => {
-                    if (senderId == doctorId) {
+                    console.log('Not in set typing')
+                    if (senderId == userId) {
+                        console.log('In set typing')
                         setIsTyping(true)
                     }
                     setTimeout(() => {
                         setIsTyping(false)
-                    }, 3000)
+                    }, 5000)
                 },
             )
         }
@@ -263,9 +264,7 @@ export default function ChatRooms({
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            handleScrollToBottom()
-        }, 2000);
+        handleScrollToBottom()
     }, [])
 
     return (
@@ -401,7 +400,8 @@ export default function ChatRooms({
                                 </div>
                             ))}
                         <div ref={messagesEndRef} />
-                        {isTyping && <p>đang nhập tin nhắn</p>}
+                        {isTyping && <p>đang nhập tin nhắn</p>}{' '}
+
                     </div>
                     <div className="border-t p-4">
                         <div
@@ -438,9 +438,8 @@ export default function ChatRooms({
                             <Input
                                 placeholder="Nhập tin nhắn"
                                 value={inputMessage}
-                                onChange={(e) => 
+                                onChange={(e) =>
                                     handleOnTyping(e)
-
                                 }
                                 onPressEnter={handleSendMessage}
                                 style={{ flex: 1 }} // Chiếm hết không gian còn lại

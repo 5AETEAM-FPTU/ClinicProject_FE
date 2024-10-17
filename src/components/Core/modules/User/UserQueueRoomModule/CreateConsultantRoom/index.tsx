@@ -6,7 +6,7 @@ import { Button, Form, FormProps, Input, message } from 'antd'
 import { Save, SendHorizontal, SquarePen } from 'lucide-react'
 import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { useAddQueueRoomMutation } from '@/stores/services/user/userChats'
+import { useAddQueueRoomMutation } from '@/stores/services/chat/chats'
 
 export default function CreateConsultantRoom({
     refetch,

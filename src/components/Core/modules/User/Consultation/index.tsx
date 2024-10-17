@@ -22,7 +22,7 @@ import {
 } from '@/stores/services/user/userSettings'
 import dayjs from 'dayjs'
 import ChatContent from './ChatContent'
-import { useGetChatRoomByUserQuery } from '@/stores/services/user/userChats'
+import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
 const {  Text } = Typography
 
 export interface ChatRoom {
@@ -80,7 +80,7 @@ export default function ConsultationComponent() {
     )
 
     return (
-        <Layout className="flex h-[600px] flex-col bg-transparent">
+        <Layout className="flex h-[600px] flex-col bg-transparent overflow-y-hidden">
             <div className="relative mb-[85px] h-[150px]">
                 <Image
                     className="z-1 h-[100%] w-full rounded-2xl object-cover"

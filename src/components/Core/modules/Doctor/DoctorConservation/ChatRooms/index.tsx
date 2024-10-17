@@ -1,6 +1,6 @@
 'use client'
 import { Layout, List, Avatar, Input, Button, Space, Typography } from 'antd'
-import { ChatRoom, UserInformationChatRoom } from '..'
+import { ChatRoom } from '..'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -10,7 +10,7 @@ export default function ChatRooms({
     setChatRoomTransfer,
 }: {
     chatRooms: ChatRoom[]
-    setChatRoomTransfer: (chatRoomId: string, doctorId: string) => void
+    setChatRoomTransfer: (chatRoomId: string, userId: string) => void
 }) {
     return (
         <div>
@@ -21,9 +21,9 @@ export default function ChatRooms({
                 <List
                     itemLayout="horizontal"
                     dataSource={chatRooms}
-                    renderItem={(doctor) => (
+                    renderItem={(user) => (
                         <List.Item
-                            onClick={() => setChatRoomTransfer(doctor.chatRoomId, doctor.doctorId)}
+                            onClick={() => setChatRoomTransfer(user.chatRoomId, user.userId)}
                             className="group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r"
                         >
                             <List.Item.Meta
@@ -31,17 +31,17 @@ export default function ChatRooms({
                                     <Avatar
                                         size={48}
                                         shape="square"
-                                        src={doctor.avatar}
+                                        src={user.avatar}
                                     />
                                 }
                                 title={
                                     <span className="text-base font-semibold text-secondarySupperDarker group-hover:text-white">
-                                        {doctor.fullName}
+                                        {user.fullName}
                                     </span>
                                 }
                                 description={
                                     <span className="text-base text-secondarySupperDarker group-hover:text-white">
-                                        {doctor.isEndConversation
+                                        {user.isEndConversation
                                             ? 'Đã kết thuộc'
                                             : 'Bác sĩ tư vấn trực tuyến'}
                                     </span>
