@@ -195,7 +195,7 @@ export default function Component() {
                         key={day}
                         type='text'
                         onClick={() => !isDisable && handleSelectedRow(date)}
-                        className={`text-color-[#333333] font-semibold text-xl ${isDisable ? 'text-gray-400 cursor-not-allowed' : ''} ${isSelected ? 'bg-cyan-500 text-white' : ''} ${isToday && !isSelected ? 'border border-red-500 text-red-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-cyan-500 hover:text-white hover:border-0' : ''}`}
+                        className={` font-semibold text-xl ${isDisable ? 'text-gray-400 cursor-not-allowed' : 'text-secondarySupperDarker'} ${isSelected ? 'bg-secondaryDark text-white' : ''} ${isToday && !isSelected ? 'border border-red-500 text-red-500' : ''} ${!isSelected && !isDisable ? 'hover:bg-secondaryDark hover:bg-opacity-50 hover:text-white hover:border-0' : ''}`}
                         aria-label={`Select ${date.toDateString()}`}
                     >
                         {day}
@@ -208,13 +208,13 @@ export default function Component() {
     }
 
     return (
-        <div className='bg-gray-100 p-4'>
+        <div className=''>
             <div className="flex flex-col xl:flex-row gap-4 mx-auto">
                 <div className="w-full h-fit xl:w-1/3 rounded-lg shadow bg-transparent">
                     <Information fullName={params.get('fullName')} price={150000} specialties={params.get('specialties')} />
                 </div>
-                <div className="w-full xl:w-2/3 bg-white rounded-lg shadow p-4 h-fit">
-                    <h2 className="text-white text-xl font-bold text-center mb-4 bg-gradient-to-r from-[#54ADDA] from-0% to-[#0284C7] to-100% rounded-t-lg p-2">Vui lòng chọn ngày khám</h2>
+                <div className="w-full xl:w-2/3 bg-white rounded-lg shadow-third p-4 h-fit">
+                    <h2 className="text-white rounded-lg text-[20px] font-bold text-center mb-4 bg-gradient-to-r from-[#54ADDA] from-0% to-secondaryDark to-100% rounded-t-lg p-2">Vui lòng chọn ngày khám</h2>
                     <div className="flex items-center justify-between mb-4">
                         <button onClick={handlePrevMonth} className="p-2" aria-label="Previous month">
                             <ChevronLeft className="w-5 h-5" aria-hidden="true" />

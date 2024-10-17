@@ -12,6 +12,7 @@ import Image from 'next/image'
 import { Button, Col, Form, FormProps, Input, message, Row, Select } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
+import EditorTinymce from '@/components/Core/common/EditorTinymce'
 
 function Contact() {
     const params = useParams()
@@ -219,87 +220,7 @@ function Contact() {
                                                     },
                                                 ]}
                                             >
-                                                <Editor
-                                                    onInit={(_, editor) => {
-                                                        editorRef.current =
-                                                            editor
-                                                    }}
-                                                    ref={editorRef}
-                                                    apiKey="kf6v30dw6u6pqnzquj9slxf6eb3a3o1fauu1it6whe4zy9l6"
-                                                    init={{
-                                                        height: 200,
-                                                        statusbar: false,
-                                                        plugins: [
-                                                            // Core editing features
-                                                            'anchor',
-                                                            'autolink',
-                                                            'charmap',
-                                                            'codesample',
-                                                            'emoticons',
-                                                            'image',
-                                                            'link',
-                                                            'lists',
-                                                            'media',
-                                                            'searchreplace',
-                                                            'table',
-                                                            'visualblocks',
-                                                            'wordcount',
-                                                            // Your account includes a free trial of TinyMCE premium features
-                                                            // Try the most popular premium features until Sep 30, 2024:
-                                                            'checklist',
-                                                            'mediaembed',
-                                                            'casechange',
-                                                            'export',
-                                                            'formatpainter',
-                                                            'pageembed',
-                                                            'a11ychecker',
-                                                            'tinymcespellchecker',
-                                                            'permanentpen',
-                                                            'powerpaste',
-                                                            'advtable',
-                                                            'advcode',
-                                                            'editimage',
-                                                            'advtemplate',
-                                                            'ai',
-                                                            'mentions',
-                                                            'tinycomments',
-                                                            'tableofcontents',
-                                                            'footnotes',
-                                                            'mergetags',
-                                                            'autocorrect',
-                                                            'typography',
-                                                            'inlinecss',
-                                                            'markdown',
-                                                        ],
-                                                        menubar: false,
-                                                        toolbar:
-                                                            'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                                                        tinycomments_mode:
-                                                            'embedded',
-                                                        tinycomments_author:
-                                                            'Author name',
-                                                        mergetags_list: [
-                                                            {
-                                                                value: 'First.Name',
-                                                                title: 'First Name',
-                                                            },
-                                                            {
-                                                                value: 'Email',
-                                                                title: 'Email',
-                                                            },
-                                                        ],
-                                                        ai_request: (
-                                                            request: any,
-                                                            respondWith: any,
-                                                        ) =>
-                                                            respondWith.string(
-                                                                () =>
-                                                                    Promise.reject(
-                                                                        'See docs to implement AI Assistant',
-                                                                    ),
-                                                            ),
-                                                    }}
-                                                ></Editor>
+                                                <EditorTinymce editorRef={editorRef}/>
                                             </Form.Item>
                                         </Col>
                                     </Row>

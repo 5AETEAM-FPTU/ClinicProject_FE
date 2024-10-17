@@ -63,7 +63,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
                 }
                 return
             }
-            
+
             if (expiredAt! < Date.now() / 1000) {
                 console.log('Access token expired, signing out...')
                 webStorageClient.removeAll()

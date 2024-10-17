@@ -1,3 +1,5 @@
+import { GET } from "@/app/api/auth/[...nextauth]/route"
+
 const demoEnpoints = {
     GET_AMOUNT_OF_QUESTION: '',
 }
@@ -65,6 +67,22 @@ const AppointmentEndpoint = {
     UPDATE_APPOINTMENT_STATUS: '/appointment/update-status',
 }
 
+const medicalReportEndpoint = {
+    CREATE_NEW_MEDICAL_REPORT: "/medical-report/create",
+    GET_MEDICAL_REPORT_BY_ID: "/medical-report",
+    GET_ALL_MEDICAL_REPORT: "/medical-report/getAll",
+    UPDATE_MEDICAL_REPORT_PATIENT_INFORMATION: "/medical-report/update-patient-information",
+    UPDATE_MAIN_MEDICAL_REPORT_INFORMATION: "/medical-report/update-main-information",
+}
+
+const serviceEndpoint = {
+    GET_ALL_SERVICE: '/services/all',
+}
+
+const medicineEndpoint = {
+
+}
+
 const VnPayEndpoint = {
     CREATE_VNPAY_URL: '/payment/generate-link',
 }
@@ -78,6 +96,8 @@ const blogEndpoints = {
     UPDATE_POST: '/api/post/update',
     GET_POST_BY_SLUG: '/api/post/get/{:slug}',
     GET_POST_BY_ID: '/api/post/getById/{:id}',
+    GET_RELATE_POST: '/api/post/get-relate-posts/{:slug}',
+    GET_NEWEST_POST: '/api/post/get-new-posts',
 }
 
 export {
@@ -91,4 +111,6 @@ export {
     AppointmentEndpoint,
     VnPayEndpoint,
     blogEndpoints,
+    medicalReportEndpoint,
+    serviceEndpoint,
 }

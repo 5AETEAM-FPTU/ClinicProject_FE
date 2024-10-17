@@ -10,6 +10,13 @@ import { useGetAllAppointmentStatusQuery } from '@/stores/services/enum/enum'
 import { useUpdateAppointmentStatusMutation } from '@/stores/services/appointment'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { useMutation } from 'convex/react'
+import { api } from '@convex/_generated/api'
+import { constants } from '@/settings'
+import webStorageClient from '@/utils/webStorageClient'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../../Auth/SignIn'
+import { useAppSelector } from '@/hooks/redux-toolkit'
 
 interface Gender {
     id: string
@@ -52,7 +59,30 @@ interface IProps {
 }
 
 export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
-    const {handleTrigger, handleTriggerPayload, trigger} = useTrigger();
+    const { handleTrigger, handleTriggerPayload, trigger } = useTrigger()
+
+    const sendToUserNotification = useMutation(api._user_notifications.functions.sendUserNotification);
+
+    const userId = jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken() as string).sub;
+    console.log(payload.patients?.userId);
+    const {user} = useAppSelector((state) => state.auth);
+    const handlerSendToUserNotification = async () => {
+        try {
+            await sendToUserNotification({
+                receiverId: payload.patients.userId,
+                message: 'Bạn đã bị hủy lịch khám!',
+                type: constants.NOTIFICATION_TYPES.WARNING,
+                description: `Bạn đã bị hủy lịch khám vào lúc ${dayjs(payload.schedules.startDate).format('HH:mm A')}, ngày ${dayjs(payload.schedules.startDate).format('DD/MM/YYYY')} vì không có mặt tại phòng khám. Bạn vui lòng thay đổi lại khung giờ khám của lịch hẹn hoặc liên hệ với chúng tôi để được hỗ trợ! Hân hạnh!`,
+                senderAvatarUrl: `${user.avatarUrl}`,
+                senderId: userId!,
+                senderName: `Bác sĩ: ${user.fullName}`,
+                topic: "Vắng mặt"
+            })
+            message.success('Gửi thông báo thành công!');
+        } catch (error) {
+            message.error('Gửi thông báo thất bại!');
+        }
+    }
     return (
         <div className="flex h-fit w-full flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third sm:gap-0">
             <div className="w-full">
@@ -67,33 +97,35 @@ export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
                             {payload.appointmentStatus.statusName ??
                                 'Không xác định'}
                         </Button>
-                        <Button className="rounded-[10px] border-none bg-[#0284C7] font-semibold text-white">
+                        <Button className="rounded-[10px] border-none bg-[#0284C7] font-semibold text-white"
+                            onClick={handlerSendToUserNotification}
+                        >
                             Gửi thông báo <BellPlus size={18} />
                         </Button>
                         <Popover
-                                    trigger={'click'}
-                                    open={trigger}
-                                    content={
-                                        <AppointmentStatus
-                                            onClose={() => handleTriggerPayload(false)}
-                                            payload={payload}
-                                            refetch={refetch}
-                                        />
-                                    }
-                                    onOpenChange={handleTrigger}
-                                >
-                                    <Button
-                                        className={cn(
-                                            'w-fit rounded-[10px] border-none bg-opacity-50 !px-[8px] !py-4 text-[#003553]',
-                                            ` ${trigger ? 'bg-secondaryDark' : 'bg-white shadow-primary'} `,
-                                        )}
-                                    >
-                                        <Settings 
-                                            size={18}
-                                            className="transition-all duration-500 hover:rotate-180"
-                                        />
-                                    </Button>
-                                </Popover>
+                            trigger={'click'}
+                            open={trigger}
+                            content={
+                                <AppointmentStatus
+                                    onClose={() => handleTriggerPayload(false)}
+                                    payload={payload}
+                                    refetch={refetch}
+                                />
+                            }
+                            onOpenChange={handleTrigger}
+                        >
+                            <Button
+                                className={cn(
+                                    'w-fit rounded-[10px] border-none bg-opacity-50 !px-[8px] !py-4 text-[#003553]',
+                                    ` ${trigger ? 'bg-secondaryDark' : 'bg-white shadow-primary'} `,
+                                )}
+                            >
+                                <Settings
+                                    size={18}
+                                    className="transition-all duration-500 hover:rotate-180"
+                                />
+                            </Button>
+                        </Popover>
                     </div>
                 </div>
             </div>
@@ -162,7 +194,7 @@ type TProps = {
     onClose?: () => void
 }
 export function AppointmentStatus({ payload, refetch, onClose }: TProps) {
-    const [loadingId, setLoadingId] = useState<string|null>(null);
+    const [loadingId, setLoadingId] = useState<string | null>(null)
 
     const { statusOptions } = useGetAllAppointmentStatusQuery(undefined, {
         selectFromResult: ({ data }) => {
@@ -177,19 +209,18 @@ export function AppointmentStatus({ payload, refetch, onClose }: TProps) {
 
     const handlerUpdateAppointmentStatus = async (statusId: string) => {
         try {
-            setLoadingId(statusId);
+            setLoadingId(statusId)
             await updateScheduleByIdMutation({
                 appointmentId: payload.id,
                 statusId: statusId,
             })
             onClose!()
             message.success('Cập nhật trạng thái thành công!')
-           
         } catch (error) {
             setLoadingId(null)
             message.error('Cập nhật trạng thái thất bại')
         }
-        refetch!();
+        refetch!()
     }
 
     return (
@@ -198,7 +229,7 @@ export function AppointmentStatus({ payload, refetch, onClose }: TProps) {
                 <Button
                     key={option.id}
                     onClick={() => handlerUpdateAppointmentStatus(option.id)}
-                    className={`w-full border-none px-4 py-2 text-left  transition-colors font-bold`}
+                    className={`w-full border-none px-4 py-2 text-left font-bold transition-colors`}
                 >
                     {option.statusName}
                 </Button>
