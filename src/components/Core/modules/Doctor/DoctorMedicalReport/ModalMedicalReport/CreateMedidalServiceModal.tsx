@@ -119,26 +119,30 @@ export default function CreateMedicalServiceModal({
                     Xác nhận
                 </Button>,
             ]}
-            className="w-full max-w-fit rounded-xl !bg-white !shadow-third"
+            className="w-[1440px] rounded-xl !bg-white !shadow-third"
         >
-            <div className="mt-5 flex flex-row gap-5">
-                <div className="w-fit">
+            <div className="mt-5 flex w-full flex-row gap-5">
+                <div className="w-full">
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <p className="text-[14px] font-bold text-secondarySupperDarker">
                             Đã thêm vào danh sách
                         </p>
-                        <div>
-                            <div className="relative">
-                                <table className="w-full table-auto border-collapse">
+                        <div className="w-full">
+                            <div className="relative w-full">
+                                <table className="!w-full table-auto border-collapse">
                                     <thead className="sticky top-0 z-10 bg-white">
                                         <tr>
-                                            <th className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
-                                                Mã xét nghiệm
+                                            <th className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Mã xét nghiệm
+                                                </div>
                                             </th>
-                                            <th className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
-                                                Tên xét nghiệm
+                                            <th className="w-[50%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Tên xét nghiệm
+                                                </div>
                                             </th>
-                                            <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px]"></th>
+                                            <th className="w-[25%] border-b-[1px] border-secondarySupperDarker"></th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -154,24 +158,30 @@ export default function CreateMedicalServiceModal({
                                             {serviceOrder?.map(
                                                 (item: any, index: number) => (
                                                     <tr key={index}>
-                                                        <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            {item.code}
+                                                        <td className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                                                            <div className="py-2 text-center">
+                                                                {item.code}
+                                                            </div>
                                                         </td>
-                                                        <td className="w-[290px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            {item.name}
+                                                        <td className="w-[50%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                                                            <div className="py-2 text-center">
+                                                                {item.name}
+                                                            </div>
                                                         </td>
-                                                        <td className="border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
-                                                            <Button
-                                                                type="default"
-                                                                className="border-red-600 text-red-600"
-                                                                onClick={() =>
-                                                                    handleDeleteOrderItem(
-                                                                        item,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Xóa
-                                                            </Button>
+                                                        <td className="w-[25%] border-b-[1px] border-secondarySupperDarker">
+                                                            <div className="m-auto py-2 text-center">
+                                                                <Button
+                                                                    type="default"
+                                                                    className="border-red-600 text-red-600"
+                                                                    onClick={() =>
+                                                                        handleDeleteOrderItem(
+                                                                            item,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Xóa
+                                                                </Button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ),
@@ -190,7 +200,7 @@ export default function CreateMedicalServiceModal({
                         </div>
                     </div>
                 </div>
-                <div className="fit">
+                <div className="w-full">
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <div className="flex flex-row justify-between">
                             <p className="text-[14px] font-bold text-secondarySupperDarker">
@@ -215,17 +225,25 @@ export default function CreateMedicalServiceModal({
                                 <table className="w-full table-auto border-collapse">
                                     <thead className="sticky top-0 z-10 bg-white">
                                         <tr>
-                                            <th className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
-                                                Mã xét nghiệm
+                                            <th className="w-[20%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Mã xét nghiệm
+                                                </div>
                                             </th>
-                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
-                                                Tên xét nghiệm
+                                            <th className="w-[30%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Tên xết nghiệm
+                                                </div>
                                             </th>
-                                            <th className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-bold text-secondarySupperDarker">
-                                                Đơn giá
+                                            <th className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-start text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Đơn giá
+                                                </div>
                                             </th>
-                                            <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px] text-secondarySupperDarker">
-                                                Chỉ định
+                                            <th className="border-b-[1px] border-secondarySupperDarker text-secondarySupperDarker">
+                                                <div className="py-2 text-center">
+                                                    Chỉ định
+                                                </div>
                                             </th>
                                         </tr>
                                     </thead>
@@ -245,27 +263,36 @@ export default function CreateMedicalServiceModal({
                                                     index: number,
                                                 ) => (
                                                     <tr key={index}>
-                                                        <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            {service?.code}
+                                                        <td className="w-[20%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                                                            <div className="py-2 text-center">
+                                                                {service?.code}
+                                                            </div>
                                                         </td>
-                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-[14px] font-medium text-secondarySupperDarker">
-                                                            {service?.name}
+                                                        <td className="w-[30%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                                                            <div className="py-2 text-center">
+                                                                {service?.name}
+                                                            </div>
                                                         </td>
-                                                        <td className="w-[150px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-start text-[14px] font-medium text-secondarySupperDarker">
-                                                            {service?.price} vnđ
+                                                        <td className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                                                            <div className="py-2 text-center">
+                                                                {service?.price}{' '}
+                                                                vnđ
+                                                            </div>
                                                         </td>
-                                                        <td className="border-b-[1px] border-secondarySupperDarker px-20 py-[14px]">
-                                                            <Button
-                                                                type="primary"
-                                                                className="bg-secondaryDark"
-                                                                onClick={() =>
-                                                                    handleAddServiceItem(
-                                                                        service,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Thêm
-                                                            </Button>
+                                                        <td className="border-b-[1px] border-secondarySupperDarker">
+                                                            <div className='text-center py-2'>
+                                                                <Button
+                                                                    type="primary"
+                                                                    className="bg-secondaryDark"
+                                                                    onClick={() =>
+                                                                        handleAddServiceItem(
+                                                                            service,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Thêm
+                                                                </Button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ),

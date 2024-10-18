@@ -15,7 +15,7 @@ function LandingLayout({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const loadingTimeout = setTimeout(() => {
             setIsLoading(false);
-        }, 2000);
+        }, 1800);
 
         return () => {
             clearTimeout(loadingTimeout);

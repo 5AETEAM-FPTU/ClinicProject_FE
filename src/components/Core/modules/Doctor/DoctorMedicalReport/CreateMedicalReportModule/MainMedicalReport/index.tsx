@@ -237,7 +237,7 @@ export default function MainMedicalReport({
                                 className="!mb-0"
                             >
                                 <EditorTinymce
-                                    initContent={payload?.medicalReport?.diagnosis}
+                                    content={payload?.medicalReport?.diagnosis}
                                     editorRef={editorRef}
                                 />
                             </Form.Item>

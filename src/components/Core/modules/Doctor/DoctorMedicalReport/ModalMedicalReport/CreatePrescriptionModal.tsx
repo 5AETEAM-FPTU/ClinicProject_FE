@@ -77,11 +77,13 @@ export default function CreatePrescriptionModal({
             }).unwrap()
             refetchMedicineOrder()
             message.success('Thêm thành công!')
-        } catch (error:any) {
-            if(error?.data?.appCode == "OrderMedicinesFeature: MEDICINE_ALREADY_EXIST") {
+        } catch (error: any) {
+            if (
+                error?.data?.appCode ==
+                'OrderMedicinesFeature: MEDICINE_ALREADY_EXIST'
+            ) {
                 message.error('Đã tồn tại thuốc này trong đơn chỉ định!')
-            } else 
-            message.error('Đã xảy ra lỗi, vui lòng thử lại sau!')
+            } else message.error('Đã xảy ra lỗi, vui lòng thử lại sau!')
         }
     }
 
@@ -115,7 +117,7 @@ export default function CreatePrescriptionModal({
                     Xác nhận
                 </Button>,
             ]}
-            className="w-full max-w-fit rounded-xl !bg-white !shadow-third"
+            className="w-fit rounded-xl !bg-white !shadow-third"
         >
             <div className="mt-5 flex flex-row gap-5">
                 <div className="w-fit">
@@ -128,19 +130,27 @@ export default function CreatePrescriptionModal({
                                 <table className="w-full table-auto border-collapse">
                                     <thead className="sticky top-0 z-10 bg-white">
                                         <tr>
-                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                Tên thuốc
+                                            <th className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="px-2 py-4 text-center">
+                                                    Tên thuốc
+                                                </div>
                                             </th>
-                                            <th className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                Dạng
+                                            <th className="w-[15%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="px-2 py-4 text-center">
+                                                    Dạng
+                                                </div>
                                             </th>
-                                            <th className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                Cách sử dụng
+                                            <th className="w-[30%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="px-2 py-4 text-center">
+                                                    Cách sử dụng
+                                                </div>
                                             </th>
-                                            <th className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                Số lượng
+                                            <th className="w-[15%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-bold text-secondarySupperDarker">
+                                                <div className="px-2 py-4 text-center">
+                                                    Số lượng
+                                                </div>
                                             </th>
-                                            <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px]"></th>
+                                            <th className="w-[15%] border-b-[1px] border-secondarySupperDarker"></th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -185,7 +195,7 @@ export default function CreatePrescriptionModal({
                         </div>
                     </div>
                 </div>
-                <div className="fit">
+                <div className="w-[45%]">
                     <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <div className="flex flex-row justify-between">
                             <p className="text-[14px] font-bold text-secondarySupperDarker">
@@ -209,7 +219,7 @@ export default function CreatePrescriptionModal({
                                 <table className="w-full table-auto border-collapse">
                                     <thead className="sticky top-0 z-10 bg-white">
                                         <tr>
-                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
+                                            <th className="w-[50%] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                 <div className="relative flex w-full flex-row items-center justify-center">
                                                     <p>Tên thuốc</p>
                                                     <div className="absolute right-0 cursor-pointer">
@@ -219,10 +229,10 @@ export default function CreatePrescriptionModal({
                                                     </div>
                                                 </div>
                                             </th>
-                                            <th className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
+                                            <th className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                 Dạng
                                             </th>
-                                            <th className="border-b-[1px] border-secondarySupperDarker px-[50px] py-[14px] text-secondarySupperDarker">
+                                            <th className="w-[25%] border-b-[1px] border-secondarySupperDarker px-2 py-[14px] text-secondarySupperDarker">
                                                 Thêm
                                             </th>
                                         </tr>
@@ -243,29 +253,28 @@ export default function CreatePrescriptionModal({
                                                     index: number,
                                                 ) => (
                                                     <tr key={index}>
-                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                                                        <td className="w-[50%] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
                                                             {
                                                                 medicine?.medicineName
                                                             }
                                                         </td>
-                                                        <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+                                                        <td className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
                                                             {
                                                                 medicine?.type
                                                                     .name
                                                             }
                                                         </td>
-                                                        <td className="border-b-[1px] border-secondarySupperDarker text-center">
+                                                        <td className="w-[25%] border-b-[1px] border-secondarySupperDarker text-center">
                                                             <div className="w-full items-center justify-center">
                                                                 <Button
                                                                     type="primary"
-                                                                    className="rounded-lg bg-secondaryDark px-5 py-0"
+                                                                    className="rounded-lg bg-secondaryDark py-0"
                                                                     onClick={() => {
                                                                         handleAddMedicineOrder(
                                                                             medicine?.medicineId,
                                                                         )
                                                                     }}
                                                                 >
-                                                                    Thêm
                                                                     <ClipboardPlus
                                                                         size={
                                                                             16
@@ -353,43 +362,52 @@ const PrescriptionRow = ({
     }
     return (
         <tr key={index}>
-            <td className="w-[200px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                {payload?.medicine?.name}
+            <td className="w-[25%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                <div className="px-2 py-2 text-center">
+                    {payload?.medicine?.name}
+                </div>
             </td>
-            <td className="w-[100px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                {payload?.medicine?.type?.name}
+            <td className="w-[15%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                <div className="px-2 py-4 text-center">
+                    {payload?.medicine?.type?.name}
+                </div>
             </td>
-            <td className="w-[250px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                <Input
-                    type="text"
-                    placeholder="Nhập cách sử dụng..."
-                    defaultValue={payload?.description}
-                    onChange={(e) => setDescription(e.target.value)}
-                ></Input>
+            <td className="w-[30%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                <div className='px-2 py-2 text-center'>
+                    <Input
+                        type="text"
+                        placeholder="Nhập cách sử dụng..."
+                        defaultValue={payload?.description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    ></Input>
+                </div>
             </td>
-            <td className="w-[180px] border-b-[1px] border-r-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
+            <td className="w-[15%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                <div className='px-2 py-2 text-center'>
                 <Input
                     type="number"
+                    min={0}
                     placeholder="Nhập số lượng"
                     defaultValue={payload?.quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
                 />
+                </div>
             </td>
-            <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-[21.5px] py-[14px] text-center text-[14px] font-medium text-secondarySupperDarker">
-                <div className="flex flex-row gap-2">
+            <td className="w-[20%] border-b-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
+                <div className="flex flex-row gap-2 px-2">
                     <Button
                         type="primary"
-                        className="rounded-lg bg-secondaryDark"
+                        className="rounded-lg bg-secondaryDark px-2"
                         onClick={() => handleUpdateOrderItem()}
                     >
-                        Lưu lại / <PackageCheck size={16} />
+                        <PackageCheck size={16} />
                     </Button>
                     <Button
                         type="primary"
-                        className="rounded-lg bg-red-600"
+                        className="rounded-lg bg-red-600 px-2"
                         onClick={() => handleDeleteOrderItem()}
                     >
-                        Xóa / <PackageMinus size={16} />
+                        <PackageMinus size={16} />
                     </Button>
                 </div>
             </td>

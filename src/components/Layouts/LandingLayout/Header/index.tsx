@@ -1,26 +1,27 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
-import Image from 'next/image'
+import { CircleUserRound } from 'lucide-react'
 import { Irish_Grover } from 'next/font/google'
-import { ChevronsRight, CircleUserRound, Menu } from 'lucide-react'
+import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
-import themeColors from '@/style/themes/default/colors'
 import { useTranslation } from '@/app/i18n/client'
-import FacebookIcon from '@public/landing/icons/Facebook.svg'
-import ZaloLogo from '@public/landing/icons/Zalo.svg'
-import HeadPhoneIcon from '@public/landing/icons/HeadPhone.svg'
-import useDetectScroll from '@smakss/react-scroll-direction'
-import { cn } from '@/lib/utils'
-import webStorageClient from '@/utils/webStorageClient'
-import { useLocale } from 'next-intl'
-import { jwtDecode } from 'jwt-decode'
+import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
-import { signOut } from 'next-auth/react'
-import { useAppSelector } from '@/hooks/redux-toolkit'
 import { DefaultImage, UserRole } from '@/helpers/data/Default'
-import { Avatar, Button, Drawer, Grid } from 'antd'
+import { useAppSelector } from '@/hooks/redux-toolkit'
+import { cn } from '@/lib/utils'
+import themeColors from '@/style/themes/default/colors'
+import webStorageClient from '@/utils/webStorageClient'
+import FacebookIcon from '@public/landing/icons/Facebook.svg'
+import HeadPhoneIcon from '@public/landing/icons/HeadPhone.svg'
+import ZaloLogo from '@public/landing/icons/Zalo.svg'
+import useDetectScroll from '@smakss/react-scroll-direction'
+import { Button, Grid } from 'antd'
+import { jwtDecode } from 'jwt-decode'
+import { signOut } from 'next-auth/react'
+import { useLocale } from 'next-intl'
+import {motion} from 'framer-motion';
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -201,7 +202,7 @@ function Header() {
                                 <ul className="flex list-none flex-row gap-[40px] font-medium">
                                     <li className="relative">
                                         <a
-                                            href="#"
+                                            href="/home"
                                             className="text-secondaryDark"
                                         >
                                             {t('header_overview')}
@@ -209,12 +210,7 @@ function Header() {
                                         <span className="absolute bottom-[-4px] left-0 h-1 w-full bg-secondaryDark"></span>
                                     </li>
                                     <li>
-                                        <a href="#" className="text-black">
-                                            {t('header_clinic')}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" className="text-black">
+                                        <a href="/home/#our-team" className="text-black">
                                             {t('header_doctor')}
                                         </a>
                                     </li>
@@ -224,12 +220,12 @@ function Header() {
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" className="text-black">
+                                        <a href="blog" className="text-black">
                                             {t('header_news')}
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" className="text-black">
+                                        <a href="/home#contact" className="text-black">
                                             {t('header_contact')}
                                         </a>
                                     </li>

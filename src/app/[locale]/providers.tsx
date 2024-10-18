@@ -50,10 +50,10 @@ function Providers({ children }: { children: React.ReactNode }) {
                                         titleMarginTop: 0,
                                     },
                                     Table: {
-                                        headerBg: themes.default.colors.primary,
-                                        headerColor:
-                                            themes.default.colors.textWhite,
-                                        headerBorderRadius: 0,
+                                        headerBg: "#fff",
+                                        headerColor: "#000",
+                                        headerBorderRadius: 8,
+                                        footerBg: "#fff",
                                     },
                                     Select: {
                                         controlHeight: 40,
