@@ -74,6 +74,9 @@ const slice = createSlice({
                     webStorageClient.setToken(data.accessToken, {
                         maxAge: 60 * 60 * 24,
                     })
+                    webStorageClient.set(constants.CALL_ACCESS_TOKEN, data?.callAccessToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
                     webStorageClient.setRefreshToken(data.refreshToken, {
                         maxAge: 60 * 60 * 24,
                     })
@@ -95,6 +98,9 @@ const slice = createSlice({
                     const data = action.payload.body
 
                     webStorageClient.setToken(data.accessToken, {
+                        maxAge: 60 * 60 * 24,
+                    })
+                    webStorageClient.set(constants.CALL_ACCESS_TOKEN, data?.callAccessToken, {
                         maxAge: 60 * 60 * 24,
                     })
                     webStorageClient.setRefreshToken(data.refreshToken, {
