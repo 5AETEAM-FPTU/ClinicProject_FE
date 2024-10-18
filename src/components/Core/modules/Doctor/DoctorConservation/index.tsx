@@ -22,9 +22,12 @@ import {
 } from '@/stores/services/user/userSettings'
 import dayjs from 'dayjs'
 import ChatContent from './ChatContent'
-import { useGetChatRoomByDoctorQuery, useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
+import {
+    useGetChatRoomByDoctorQuery,
+    useGetChatRoomByUserQuery,
+} from '@/stores/services/chat/chats'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-const {  Text } = Typography
+const { Text } = Typography
 
 export interface ChatRoom {
     userId: string
@@ -67,7 +70,6 @@ export default function DoctorConservation() {
         },
     )
 
-
     const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByDoctorQuery(
         undefined,
         {
@@ -81,7 +83,7 @@ export default function DoctorConservation() {
     )
 
     return (
-        <Layout className="flex h-[600px] flex-col bg-transparent overflow-y-hidden">
+        <Layout className="flex h-fit flex-col bg-transparent">
             <div className="relative mb-[85px] h-[150px]">
                 <Image
                     className="z-1 h-[100%] w-full rounded-2xl object-cover"
@@ -128,7 +130,7 @@ export default function DoctorConservation() {
                         <Button
                             type="default"
                             className="border border-secondaryDarker"
-                            icon={<House />}
+                            icon={<House size={18} />}
                             onClick={() =>
                                 router.push(
                                     `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
@@ -152,25 +154,15 @@ export default function DoctorConservation() {
                     </Space>
                 </div>
             </div>
-            <div className="flex w-full">
+            <div className="flex-row flex w-full gap-5">
                 <ChatRooms
                     chatRooms={chatRoomResult}
                     setChatRoomTransfer={(chatRoomId, userId) =>
                         setChatRoomTransfer({ chatRoomId, userId })
                     }
                 />
-                <div className="flex-1">
-                    {chatRoomTransfer?.chatRoomId ? (
-                        <ChatContent
-                            chatRoomId={chatRoomTransfer?.chatRoomId!}
-                            userId={chatRoomTransfer?.userId!}
-                        />
-                    ) : (
-                        <p className="mt-8 text-center text-xl text-[#9E9E9E]">
-                            Vui lòng chọn đoạn hội thoại để có thể được bác sĩ
-                            tư vấn trực tiếp
-                        </p>
-                    )}
+                <div className="w-[calc(100%-370px)]">
+                    <ChatContent />
                 </div>
             </div>
         </Layout>

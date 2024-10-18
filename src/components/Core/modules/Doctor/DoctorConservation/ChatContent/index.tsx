@@ -12,7 +12,7 @@ import {
     Modal,
     message,
 } from 'antd'
-import { CircleX, Paperclip, Send, Settings } from 'lucide-react'
+import { CircleX, Paperclip, Phone, Send, Settings, Video } from 'lucide-react'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
 import {
@@ -25,9 +25,11 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { useInView } from 'react-intersection-observer'
 import axios from 'axios'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 
 const { Content } = Layout
-const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } = createChatService()
+const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
+    createChatService()
 
 let a = 0
 export interface Message {
@@ -40,13 +42,11 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatRooms({
-    chatRoomId,
-    userId,
-}: {
-    chatRoomId: string
-    userId: string
-}) {
+export default function ChatRooms() {
+    const searchParams = useSearchParams()
+    const chatRoomId = searchParams.get('chat')
+    const userId = searchParams.get('user')
+
     // State, ref, others
     const [messages, setMessages] = useState<Message[]>([])
     const [inputMessage, setInputMessage] = useState('')
@@ -70,6 +70,13 @@ export default function ChatRooms({
     const [deleteMessageIdFunc, { isLoading }] =
         useRemoveChatContentByIdMutation()
 
+    const divRef = useRef<HTMLDivElement | null>(null)
+    const [prevScrollTop, setPrevScrollTop] = useState(0)
+    const [isInitial, setIsInitial] = useState(false)
+    useEffect(() => {
+        setIsInitial(false)
+    }, [userId, chatRoomId])
+
     const handleDeleteChatContent = async () => {
         try {
             console.log('deleteMessageId', deleteMessageId)
@@ -90,40 +97,95 @@ export default function ChatRooms({
         }
     }
 
-    const handleFetchChatContent = async () => {
-        const result = await useGetChatContentByUserQuery({
-            lastReportDate: lastTimeMessage,
-            chatRoomId: chatRoomId!,
-            pageSize: 6,
-        })
-        const messages: Message[] = result.data.body.messages
-
-        if (messages.length > 0) {
-            setMessages((prev) => {
-                console.log('meessage', messages)
-                console.log('prev', prev)
-                return [...prev, ...messages]
-            })
-            console.log(messages[messages.length - 1]?.time)
-            setLastTimeMessage(messages[messages.length - 1]?.time)
+    const [currentDay, setCurrentDay] = useState(
+        dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'),
+    )
+    const handleScrollToBottomOnInitial = () => {
+        if (divRef.current) {
+            console.log(divRef.current)
+            const { current: container } = divRef
+            container.scrollTop = container.scrollHeight
         }
     }
 
+    const handleFetchChatContentInitial = async () => {
+        try {
+            const result = await useGetChatContentByUserQuery({
+                lastReportDate: currentDay,
+                chatRoomId: chatRoomId!,
+                pageSize: 10,
+            })
+            const resultMessages: Message[] = result.data.body.messages
+            if (result) {
+                setMessages(resultMessages)
+                setLastTimeMessage(
+                    resultMessages[resultMessages.length - 1]?.time,
+                )
+                setIsInitial(true)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    console.log('isInit:', isInitial)
     useEffect(() => {
-        const fetchChatContent = async () => {
-            setMessages([])
-            setLastTimeMessage(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
-            await handleFetchChatContent()
+        handleScrollToBottomOnInitial()
+    }, [isInitial])
+
+    useEffect(() => {
+        handleFetchChatContentInitial()
+    }, [currentDay, userId, chatRoomId])
+
+    useEffect(() => {
+        const handleScroll = (event: Event) => {
+            const target = event.target as HTMLDivElement
+            const currentScrollTop = target.scrollTop
+            setPrevScrollTop(currentScrollTop)
         }
 
-        fetchChatContent()
-    }, [chatRoomId, userId])
+        const divElement = divRef.current
 
-    useEffect(() => {
-        if (inView) {
-            handleFetchChatContent()
+        if (divElement) {
+            divElement.addEventListener('scroll', handleScroll)
         }
-    }, [inView])
+
+        return () => {
+            if (divElement) {
+                divElement.removeEventListener('scroll', handleScroll)
+            }
+        }
+    }, [prevScrollTop])
+
+    const handleFetchDataWithLastTimeMessage = async () => {
+        try {
+            const result = await useGetChatContentByUserQuery({
+                lastReportDate: lastTimeMessage,
+                chatRoomId: chatRoomId!,
+                pageSize: 6,
+            })
+            console.log(
+                'Continue fetching message => ',
+                result?.data?.body?.messages,
+            )
+            const resultMessages: Message[] = result.data.body.messages
+            if (resultMessages) {
+                setMessages((prev) => {
+                    return [...prev, ...resultMessages]
+                })
+                setLastTimeMessage(
+                    resultMessages[resultMessages.length - 1]?.time,
+                )
+            }
+        } catch (error) {}
+    }
+    useEffect(() => {
+        if (prevScrollTop) {
+            console.log(prevScrollTop)
+            if (prevScrollTop <= 1) {
+                handleFetchDataWithLastTimeMessage()
+            }
+        }
+    }, [prevScrollTop])
 
     const handleSendMessage = async () => {
         if (inputMessage.trim()) {
@@ -194,7 +256,7 @@ export default function ChatRooms({
 
     const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputMessage(e.target.value)
-        console.log('handleOnTyping');
+        console.log('handleOnTyping')
         sendTypingMessage(_userId, userId!)
     }
 
@@ -232,10 +294,10 @@ export default function ChatRooms({
                             ...prev,
                         ]
                     })
-                   
+
                     setTimeout(() => {
                         handleScrollToBottom()
-                    }, 100);
+                    }, 100)
                 },
                 (senderId: string) => {
                     console.log('Not in set typing')
@@ -248,15 +310,16 @@ export default function ChatRooms({
                     }, 5000)
                 },
                 (senderId: string, chatContentId: string) => {
-                    
                     if (senderId == userId) {
                         console.log('Not in remove typing')
-                        setMessages(messagePrev => messagePrev.map((msg) => {
-                            if (msg.chatContentId == chatContentId) {
-                                return { ...msg, isRemoved: true }
-                            }
-                            return msg
-                        }))
+                        setMessages((messagePrev) =>
+                            messagePrev.map((msg) => {
+                                if (msg.chatContentId == chatContentId) {
+                                    return { ...msg, isRemoved: true }
+                                }
+                                return msg
+                            }),
+                        )
                     }
                 },
             )
@@ -282,7 +345,7 @@ export default function ChatRooms({
 
     return (
         <div>
-            <Content className="w-100% ml-5 h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
+            <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
                 <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between border-b p-4">
                         <div className="flex items-center">
@@ -300,13 +363,29 @@ export default function ChatRooms({
                                 </p>
                             </div>
                         </div>
-                        <Button
-                            className="shadow-third"
-                            icon={<Settings className="h-4 w-4" />}
-                            type="text"
-                        >
-                            Cài đặt
-                        </Button>
+                        <div className='flex flex-row gap-2'>
+                            <Button
+                                className="shadow-third"
+                                icon={<Video className="h-4 w-4" />}
+                                type="text"
+                            >
+                               
+                            </Button>
+                            <Button
+                                className="shadow-third"
+                                icon={<Phone className='h-4 w-4' />}
+                                type="text"
+                            >
+                                
+                            </Button>
+                            <Button
+                                className="shadow-third"
+                                icon={<Settings className="h-4 w-4" />}
+                                type="text"
+                            >
+                                Cài đặt
+                            </Button>
+                        </div>
                     </div>
                     {isFetching &&
                         messages.length === 0 &&
@@ -314,7 +393,7 @@ export default function ChatRooms({
                             <>
                                 <Skeleton.Button
                                     active
-                                    size={'large'}
+                                    size={'default'}
                                     shape={'round'}
                                     block
                                     className="my-[5px]"
@@ -322,7 +401,10 @@ export default function ChatRooms({
                             </>
                         ))}
 
-                    <div className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4">
+                    <div
+                        ref={divRef}
+                        className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4"
+                    >
                         {messages.length > 0 && (
                             <div ref={ref}>
                                 {isFetching && (
@@ -337,9 +419,9 @@ export default function ChatRooms({
                         {messages
                             ?.slice()
                             .reverse()
-                            .map((message: Message) => (
+                            .map((message: Message, index: number) => (
                                 <div
-                                    key={message.chatContentId}
+                                    key={index}
                                     className={`relative flex overflow-x-hidden break-normal break-words ${message.senderId === _userId ? 'justify-end' : 'justify-start'}`}
                                     onMouseEnter={() =>
                                         setDeleteMessageId(
@@ -367,9 +449,9 @@ export default function ChatRooms({
                                                     </button>
                                                 )}
                                             <div
-                                                className={`max-w-[75%] rounded-lg px-4 py-2 shadow-primary ${
+                                                className={`max-w-[50%] rounded-lg px-4 h-fit py-2 shadow-primary ${
                                                     message.senderId === _userId
-                                                        ? 'bg-blue-500 text-white'
+                                                        ? 'bg-secondaryDark text-white'
                                                         : 'bg-gray-200 text-secondarySupperDarker'
                                                 }`}
                                             >
@@ -381,13 +463,12 @@ export default function ChatRooms({
                                                             <Image
                                                                 src={asset}
                                                                 alt="uploaded"
-                                                                className="z-1 mt-2 h-[80px] w-[80px] max-w-full rounded-lg object-cover"
-                                                                width={200}
-                                                                height={200}
+                                                                className="z-1 mt-2 max-h-[300px] max-w-[300px] w-full h-full rounded-lg object-cover"
+                                                                width={600}
+                                                                height={600}
                                                             />
                                                         ),
                                                     )}
-
                                                 <span
                                                     className={`mt-1 block text-xs ${
                                                         message.senderId ===
@@ -400,6 +481,7 @@ export default function ChatRooms({
                                                         'HH:mm',
                                                     )}
                                                 </span>
+                                                
                                             </div>
                                         </>
                                     ) : (
@@ -414,7 +496,6 @@ export default function ChatRooms({
                             ))}
                         <div ref={messagesEndRef} />
                         {isTyping && <p>đang nhập tin nhắn</p>}{' '}
-
                     </div>
                     <div className="border-t p-4">
                         <div
@@ -451,9 +532,7 @@ export default function ChatRooms({
                             <Input
                                 placeholder="Nhập tin nhắn"
                                 value={inputMessage}
-                                onChange={(e) =>
-                                    handleOnTyping(e)
-                                }
+                                onChange={(e) => handleOnTyping(e)}
                                 onPressEnter={handleSendMessage}
                                 style={{ flex: 1 }} // Chiếm hết không gian còn lại
                             />
@@ -508,7 +587,7 @@ export default function ChatRooms({
                         thấy lại được, hãy cân nhắc!
                     </p>
                 </Modal>
-            </Content>
+            </div>
         </div>
     )
 }
