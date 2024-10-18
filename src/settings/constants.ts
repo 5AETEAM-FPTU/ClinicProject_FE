@@ -6,7 +6,7 @@ const USER_AVATAR = "_avt";
 const USER_FULLNAME = "_fullname";
 const EMAIL = "_email";
 const VNPAY_PAYMENT_URL = "_vnpay_payment_url";
-
+const CALL_ACCESS_TOKEN = "_callAccessToken";
 
 const API_SERVER = process.env.NEXT_PUBLIC_API_SERVER;
 const SERVICE_API_SERVIER = process.env.NEXT_PUBLIC_SERVICE_API_SERVER;
@@ -30,6 +30,7 @@ const constants = {
     NOTIFICATION_TYPES,
     VNPAY_PAYMENT_URL,
     SERVICE_API_SERVIER,
+    CALL_ACCESS_TOKEN,
 }
 
 export default constants;

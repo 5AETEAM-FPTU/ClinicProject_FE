@@ -38,9 +38,9 @@ const patientDetail: PatientDetail = {
 export default function PatientDetailForm() {
     return (
         <div className="max-w-[795px] mx-auto p-4 bg-white rounded-[12px]">
-            <div className="flex items-start space-x-4 mb-4">
-                <img src={patientDetail.image} alt={patientDetail.name} className="w-20 h-20 rounded-[12px]" />
-                <div className="flex-grow">
+            <div className="flex flex-col sm:flex-row items-start mb-4">
+                <img src={patientDetail.image} alt={patientDetail.name} className="w-20 h-20 mx-auto rounded-[12px] mb-2" />
+                <div className="flex-grow sm:ml-4 ml-0">
                     <h2 className="text-base font-bold text-secondarySupperDarker">{patientDetail.name}</h2>
                     <p className="text-base text-secondarySupperDarker">
                         <span className="font-semibold">Địa chỉ: </span>{patientDetail.address}
@@ -58,7 +58,8 @@ export default function PatientDetailForm() {
 
             <p className="mb-4 text-base text-secondarySupperDarker">
                 <span className="text-base font-semibold text-secondarySupperDarker">Mô tả: </span>
-                {patientDetail.description}
+                <span className='line-clamp-3 xl:line-clamp-none'>{patientDetail.description}</span>
+
             </p>
 
             <div className="mb-4">
@@ -72,20 +73,22 @@ export default function PatientDetailForm() {
                 <h3 className="text-lg font-semibold text-secondarySupperDarker mb-[10px]">Lịch sử khám gần đây</h3>
                 <div className="space-y-4">
                     {patientDetail.examinationHistory.map((history, index) => (
-                        <div key={index} className="flex items-center space-x-4">
+                        <div key={index} className="flex items-center space-x-4 w-full">
                             <img
                                 src={`https://gravatar.com/avatar/e7f242ab6fb92ab2f4c3a372fc7bcd5c?s=400&d=retro&r=pg`}
                                 alt={history.doctorName}
                                 className="w-16 h-16 rounded-[12px]"
                             />
-                            <div className="flex-grow">
+                            <div className="w-[80%] lg:w-[70%]">
                                 <h4 className="font-semibold text-base text-secondarySupperDarker">{history.doctorName}</h4>
                                 <p className="text-sm text-secondarySupperDarker">{history.dateTime}</p>
-                                <p className="text-sm text-secondarySupperDarker truncate">{history.diagnosis}</p>
+                                <p className="text-sm text-secondarySupperDarker truncate w-full">{history.diagnosis}</p>
                             </div>
-                            <Button className="h-[34px] font-semibold rounded-[12px] border-[#0284C7] text-[#0284C7] text-[12px]">
+                            <Button className="h-[34px] hidden lg:block w-full font-semibold rounded-[12px] border-[#0284C7] text-[#0284C7] text-[12px]">
                                 Hồ sơ khám bệnh
                             </Button>
+
+
                         </div>
                     ))}
                 </div>

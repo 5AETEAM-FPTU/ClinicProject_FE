@@ -18,6 +18,7 @@ import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import UserProvider from '@/providers/UserProvider'
 import { ConvexClientProvider } from '@/providers/ConvexClientProvider'
+import CallProvier from '@/providers/CallProvider'
 
 function Providers({ children }: { children: React.ReactNode }) {
     const _accessToken = webStorageClient.getToken()
@@ -70,7 +71,9 @@ function Providers({ children }: { children: React.ReactNode }) {
                                     <SessionProvider>
                                         <UserProvider>
                                             <ConvexClientProvider>
-                                                {children}
+                                                <CallProvier>
+                                                    {children}
+                                                </CallProvier>
                                             </ConvexClientProvider>
                                         </UserProvider>
                                     </SessionProvider>

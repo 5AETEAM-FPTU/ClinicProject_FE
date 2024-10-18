@@ -2,7 +2,6 @@
 import React, { use, useEffect, useState } from 'react'
 import { Layout, List, Avatar, Input, Button, Modal } from 'antd'
 import { Phone, Send, Settings, Video, PhoneOff, User } from 'lucide-react'
-import { StringeeClient, StringeeCall } from "stringee";
 import { motion } from 'framer-motion';
 import './style.css'
 
@@ -102,89 +101,6 @@ export function IncomingCallPopup({
 export default function ConsultationComponent() {
     const [messages, setMessages] = useState<Message[]>(initialMessages)
     const [inputMessage, setInputMessage] = useState('')
-    const [stringeeClient, setStringeeClient] = useState(null);
-    const [call, setCall] = useState(null);
-    const userId = `887c65e7-274e-41c7-87ec-b48973a38883`;
-    const [accessToken, setAccessToken] = useState("eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3MjkwNDUxNDciLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzMxNjM3MTQ3LCJ1c2VySWQiOiI4ODdjNjVlNy0yNzRlLTQxYzctODdlYy1iNDg5NzNhMzg4ODMiLCJpY2NfYXBpIjp0cnVlfQ.aEDd-sGablO6Lg9dKlltikgNWSp3wgtQpaX-yQTrYpc");
-    const [callFrom, setCallFrom] = useState<{
-        userId: string;
-        displayName: string;
-        isVideoCall: boolean;
-        avatar: string;
-    } | null>(null);
-    useEffect(() => {
-        const client = new StringeeClient();
-
-        client.on("connect", () => {
-            console.log("Connected to StringeeServer");
-            setStringeeClient(client);
-        });
-
-        client.on("authen", (res: any) => {
-            if (res.r === 0) {
-                console.log("Authenticated", res);
-            } else {
-                console.log("Authentication failed", res.message);
-            }
-        });
-
-        client.on("incomingcall", (incomingCall: any) => {
-            setCall(incomingCall);
-            handleCallEvents(incomingCall);
-            setCallFrom(JSON.parse(incomingCall.fromNumber));
-        });
-
-        client.on('requestnewtoken', function () {
-            // call refreshtoken
-            // client.connect(accessToken);
-        });
-
-
-        client.on('otherdeviceauthen', function (data: any) {
-            console.log('on otherdeviceauthen:' + JSON.stringify(data));
-        });
-
-        client.connect(accessToken);
-
-        return () => {
-            if (client) {
-                client.disconnect();
-            }
-        };
-    }, []);
-
-    const handleCallEvents = (call: any) => {
-
-        call.on('mediastate', function (data: any) {
-            console.log('on mediastate', data);
-        });
-
-        call.on('signalingstate', function (data: any) {
-            console.log('on signalingstate', data);
-        });
-
-        call.on('info', function (data: any) {
-            console.log('on info', data);
-        });
-
-        call.on('otherdevice', function (data: any) {
-            console.log('on otherdevice:' + JSON.stringify(data));
-            if ((data.type === 'CALL_STATE' && data.code >= 200) || data.type === 'CALL_END') {
-                handleEndCall();
-            }
-        });
-
-    }
-
-    const handleEndCall = () => {
-        if (call) {
-            (call as any).hangup((res: any) => {
-                console.log("Call ended", res);
-                setCall(null);
-            });
-        }
-    };
-
 
     const handleSendMessage = () => {
         if (inputMessage.trim()) {
@@ -199,40 +115,10 @@ export default function ConsultationComponent() {
         }
     }
 
-    useEffect(() => {
-        let timer: any;
-        if (stringeeClient && callFrom && call) {
-            timer = setInterval(() => {
-                (stringeeClient as any).sendCustomMessage(callFrom.userId, { test: true }, (res: any) => {
-                    console.log('Send custom message: ', res);
-                    if (res.userNotOnline) {
-                        setCall(null);
-                        clearInterval(timer);
-                    }
-                })
-            }, 1000);
-        }
-        return () => {
-            clearInterval(timer);
-        };
-    }, [stringeeClient, call]);
 
     return (
         <Layout className="h-[600px] bg-transparent">
-            <IncomingCallPopup isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
-                console.log(callFrom);
-                window.open(
-                    `http://127.0.0.1:3000/vi/test?from=${userId}&to=${callFrom?.userId}&accessToken=${accessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}`,
-                    '_blank', 'width=800,height=600');
-                setCall(null);
-            }} onDecline={() => {
-                if (!call) return;
-                (call as any).reject((res: any) => {
-                    console.log("Call rejected", res);
-                    setCall(null);
-                });
-                setCall(null);
-            }} />
+
             <Sider width={300} className="bg-white p-4 rounded-[12px] shadow-third">
                 <List
                     itemLayout="horizontal"
