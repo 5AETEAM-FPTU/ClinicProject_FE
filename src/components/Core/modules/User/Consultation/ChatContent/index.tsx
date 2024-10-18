@@ -27,7 +27,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 const { Content } = Layout
-const { startConnection, sendMessage, sendTypingMessage } = createChatService()
+const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } = createChatService()
 
 let a = 0
 export interface Message {
@@ -85,6 +85,7 @@ export default function ChatRooms({
 
             setMessages(updateMessage)
             setIsDeleteConfirmModalVisible(false)
+            sendRemovedMessage(_userId, doctorId!, deleteMessageId!)
         } catch (error) {
             console.log(error)
         }
@@ -245,6 +246,16 @@ export default function ChatRooms({
                         setIsTyping(false)
                     }, 3000)
                 },
+                (senderId: string, chatContentId: string) => {
+                    if (senderId == doctorId) {
+                        setMessages(messages.map((msg) => {
+                            if (msg.chatContentId == chatContentId) {
+                                return { ...msg, isRemoved: true }
+                            }
+                            return msg
+                        }))
+                    }
+                },
             )
         }
 
@@ -263,9 +274,7 @@ export default function ChatRooms({
     }
 
     useEffect(() => {
-        setTimeout(() => {
             handleScrollToBottom()
-        }, 2000);
     }, [])
 
     return (

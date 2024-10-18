@@ -1,4 +1,5 @@
 import * as signalR from '@microsoft/signalr'
+import { message } from 'antd'
 
 interface ChatContent {
     chatContentId: string
@@ -17,7 +18,8 @@ const createChatService = () => {
     const startConnection = async (
         token: string,
         onMessageReceived: (content: ChatContent) => void,
-        onTypingReceived: (senderId: string) => void
+        onTypingReceived: (senderId: string) => void,
+        onRemovedMessageReceived: (senderId: string, chatContentId: string) => void
     ) => {
         if (
             connection &&
@@ -39,8 +41,8 @@ const createChatService = () => {
                 chatContentId: chatContentId,
                 senderId: sender,
                 message: message,
-                imageUrls: imageUrls, // Fix
-                time: new Date().toLocaleString(), // Fix
+                imageUrls: imageUrls, 
+                time: new Date().toLocaleString(),
                 videoUrls: [], // Fix
             }
             console.log(`Message received from ${sender}: ${message}`)
@@ -50,6 +52,22 @@ const createChatService = () => {
         connection.on('ReceiveTyping', (senderId) => {
             console.log(`Typing received from ${senderId}`);
             onTypingReceived(senderId)
+        })
+
+        connection.on('ReceiveRemovedMessage', (senderId, chatContentId) => {
+            onRemovedMessageReceived(senderId, chatContentId)
+        })
+
+        connection.onreconnecting((error) => {
+            message.warning("Đang thử kết nối lại...!")
+        })
+
+        connection.onreconnected((connectionId) => {
+            message.success("Đã kết nối lại thành công");
+        })
+
+        connection.onclose((error) => {
+            message.error("Kết nối đã bị đóng, hãy thử tải lại trang")
         })
 
         await connection
@@ -103,11 +121,24 @@ const createChatService = () => {
     }
 
     const sendTypingMessage = async (senderId: string, receiverId: string) => {
-        console.log("chua connect");
+        
         if (connection) {
-            console.log("da connect");
+           
             connection
                 .invoke('SendTypingAsync', senderId, receiverId)
+                .then(() => {
+                    console.log('true for sure', senderId, receiverId)
+                })
+                .catch((err) => {
+                    console.error(err)
+                })
+        }
+    }
+
+    const sendRemovedMessage = async (senderId: string, receiverId: string, chatContentId: string) => {
+        if (connection) {
+            connection
+                .invoke('SendRemovedMessageAsync', senderId, receiverId, chatContentId)
                 .then(() => {
                     console.log('true for sure', senderId, receiverId)
                 })
@@ -121,6 +152,7 @@ const createChatService = () => {
         startConnection,
         sendMessage,
         sendTypingMessage,
+        sendRemovedMessage
     }
 }
 

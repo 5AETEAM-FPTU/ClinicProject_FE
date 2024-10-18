@@ -27,7 +27,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 const { Content } = Layout
-const { startConnection, sendMessage, sendTypingMessage } = createChatService()
+const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } = createChatService()
 
 let a = 0
 export interface Message {
@@ -56,7 +56,6 @@ export default function ChatRooms({
     const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
     const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] =
         useState<boolean>(false)
-
     const connectionRef = useRef<any>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const [lastTimeMessage, setLastTimeMessage] = useState<string>(
@@ -85,6 +84,7 @@ export default function ChatRooms({
 
             setMessages(updateMessage)
             setIsDeleteConfirmModalVisible(false)
+            sendRemovedMessage(_userId, userId!, deleteMessageId!)
         } catch (error) {
             console.log(error)
         }
@@ -94,7 +94,7 @@ export default function ChatRooms({
         const result = await useGetChatContentByUserQuery({
             lastReportDate: lastTimeMessage,
             chatRoomId: chatRoomId!,
-            pageSize: 4,
+            pageSize: 6,
         })
         const messages: Message[] = result.data.body.messages
 
@@ -232,9 +232,10 @@ export default function ChatRooms({
                             ...prev,
                         ]
                     })
+                   
                     setTimeout(() => {
                         handleScrollToBottom()
-                    }, 100)
+                    }, 100);
                 },
                 (senderId: string) => {
                     console.log('Not in set typing')
@@ -245,6 +246,18 @@ export default function ChatRooms({
                     setTimeout(() => {
                         setIsTyping(false)
                     }, 5000)
+                },
+                (senderId: string, chatContentId: string) => {
+                    
+                    if (senderId == userId) {
+                        console.log('Not in remove typing')
+                        setMessages(messagePrev => messagePrev.map((msg) => {
+                            if (msg.chatContentId == chatContentId) {
+                                return { ...msg, isRemoved: true }
+                            }
+                            return msg
+                        }))
+                    }
                 },
             )
         }
