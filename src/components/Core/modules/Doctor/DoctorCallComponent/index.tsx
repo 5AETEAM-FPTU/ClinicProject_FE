@@ -7,7 +7,7 @@ import { constants } from '@/settings'
 import { JwtPayloadStringee } from '@/providers/CallProvider'
 import { jwtDecode } from 'jwt-decode'
 
-export default function CallComponent() {
+export default function CallComponent({ to }: { to: string | null }) {
     const [userId, setUserId] = useState('');
     const [callAccessToken, setCallAccessToken] = useState('');
 
@@ -22,8 +22,9 @@ export default function CallComponent() {
     return (
         <>
             <Button onClick={() => {
+                if (!to) return;
                 var newWindow = window.open(
-                    `http://127.0.0.1:3000/vi/test?from=${userId}&to=1a6c3e77-4097-40e2-b447-f00d1f82cf73&accessToken=${callAccessToken}&isCaller=true&video=on`,
+                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true&video=on`,
                     '_blank', 'width=800,height=600');
             }} className="shadow-third"
                 icon={<Video className="h-4 w-4" />}
@@ -33,8 +34,9 @@ export default function CallComponent() {
                 icon={<Phone className='h-4 w-4' />}
                 type="text"
                 onClick={() => {
+                    if (!to) return;
                     var newWindow = window.open(
-                        `http://127.0.0.1:3000/vi/test?from=${userId}&to=1a6c3e77-4097-40e2-b447-f00d1f82cf73&accessToken=${callAccessToken}&isCaller=true`,
+                        `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true`,
                         '_blank', 'width=800,height=600');
                 }}
             />

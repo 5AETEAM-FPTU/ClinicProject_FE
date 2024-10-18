@@ -365,7 +365,7 @@ export default function ChatRooms() {
                             </div>
                         </div>
                         <div className='flex flex-row gap-2'>
-                            <CallComponent />
+                            <CallComponent to={userId} />
                             <Button
                                 className="shadow-third"
                                 icon={<Settings className="h-4 w-4" />}

@@ -24,14 +24,19 @@ export default function CallProvier({ children }: { children: React.ReactNode })
     } | null>(null);
 
     useEffect(() => {
-        const stringeeAccessToken = webStorageClient.get(constants.CALL_ACCESS_TOKEN);
-        const accessToken = webStorageClient.getToken();
-        if (!accessToken || !stringeeAccessToken) return;
-        const role = jwtDecode<JwtPayloadUpdated>(accessToken).role;
-        if (role != 'user') return;
-        setCallAccessToken(stringeeAccessToken);
-        const userId = jwtDecode<JwtPayloadStringee>(stringeeAccessToken).userId;
-        setUserId(userId);
+        try {
+            const stringeeAccessToken = webStorageClient.get(constants.CALL_ACCESS_TOKEN);
+            const accessToken = webStorageClient.getToken();
+            if (!accessToken || !stringeeAccessToken) return;
+            const role = jwtDecode<JwtPayloadUpdated>(accessToken).role;
+            if (role != 'user') return;
+            setCallAccessToken(stringeeAccessToken);
+            const userId = jwtDecode<JwtPayloadStringee>(stringeeAccessToken).userId;
+            setUserId(userId);
+        } catch (e) {
+
+        }
+
     }, []);
 
 
@@ -130,7 +135,7 @@ export default function CallProvier({ children }: { children: React.ReactNode })
             {stringeeClient && <IncomingCallPopup isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
                 console.log(callFrom);
                 window.open(
-                    `http://127.0.0.1:3000/vi/test?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}`,
+                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}`,
                     '_blank', 'width=800,height=600');
                 setCall(null);
             }} onDecline={() => {
