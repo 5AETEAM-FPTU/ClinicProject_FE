@@ -75,7 +75,7 @@ export default function CallProvier({ children }: { children: React.ReactNode })
                 client.disconnect();
             }
         };
-    }, []);
+    }, [callAccessToken]);
 
     const handleCallEvents = (call: any) => {
 

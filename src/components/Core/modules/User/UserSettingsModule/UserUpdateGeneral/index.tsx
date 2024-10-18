@@ -41,7 +41,7 @@ export default function UserUpdateGeneral({
     
     const onFinish: FormProps<UserProfileTypes>['onFinish'] = async (
         values,
-    ) => {
+    ) => { 
         try {
             await updateUserPrivateInformation(values).unwrap();
             webStorageClient.set(constants.USER_FULLNAME, values?.fullName)
