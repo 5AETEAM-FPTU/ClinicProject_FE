@@ -16,8 +16,8 @@ export default function PatientViewInformation({
 }: TProps) {
     return (
         <motion.div className="flex flex-row items-center justify-between">
-            <div className="flex flex-row items-center gap-20">
-                <div className="flex flex-row items-center gap-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-20">
+                <div className="flex flex-row items-center gap-5 sm:gap-10">
                     <div>
                         {isFetching ? (
                             <Avatar size={80} />
@@ -52,7 +52,7 @@ export default function PatientViewInformation({
                         </p>
                     </div>
                 </div>
-                <div className="flex h-full flex-row gap-20">
+                <div className="flex h-full flex-col sm:flex-row gap-5 sm:gap-20">
                     <div className="flex flex-col gap-2">
                         {isFetching ? (
                             <Skeleton.Input className="w-[244px]" />
