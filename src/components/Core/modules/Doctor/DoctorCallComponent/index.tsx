@@ -9,6 +9,7 @@ import { jwtDecode } from 'jwt-decode'
 
 export default function CallComponent({ to }: { to: string | null }) {
     const [userId, setUserId] = useState('');
+    console.log(to);
     const [callAccessToken, setCallAccessToken] = useState('');
 
     useEffect(() => {
