@@ -80,6 +80,21 @@ export function IncomingCallPopup({
             audioRef.current.play()
         }
     }, [isVisible])
+    const handleAnswer = () => {
+        if (audioRef.current) {
+            audioRef.current.pause()  
+            audioRef.current.currentTime = 0 
+        }
+        onAnswer() 
+    }
+
+    const handleDecline = () => {
+        if (audioRef.current) {
+            audioRef.current.pause()  
+            audioRef.current.currentTime = 0  
+        }
+        onDecline() 
+    }
 
     return (
         <Modal
@@ -99,11 +114,6 @@ export function IncomingCallPopup({
                 </motion.div>
             )}
         >
-            <audio
-                ref={audioRef}
-                preload="auto"
-                src="https://res.cloudinary.com/dy1uuo6ql/video/upload/v1729341419/ngk3arezkkxsrkkxm720.wav"
-            />
             <div className="flex flex-col items-center rounded-t-lg bg-gradient-to-b from-blue-500 to-blue-600 p-6 text-white">
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white">
                     {avatar ? (
@@ -121,13 +131,18 @@ export function IncomingCallPopup({
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
             <div className="flex justify-around rounded-b-lg bg-gray-100 p-4">
+                <audio
+                    ref={audioRef}
+                    preload="auto"
+                    src="https://res.cloudinary.com/dy1uuo6ql/video/upload/v1729341419/ngk3arezkkxsrkkxm720.wav"
+                />
                 <Button
                     type="primary"
                     shape="circle"
                     icon={<Phone className="h-6 w-6" />}
                     size="large"
                     className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-green-500 hover:bg-green-600"
-                    onClick={onAnswer}
+                    onClick={handleAnswer}
                 />
                 <Button
                     type="primary"
@@ -136,7 +151,7 @@ export function IncomingCallPopup({
                     icon={<PhoneOff className="h-6 w-6" />}
                     size="large"
                     className="flex h-12 w-12 items-center justify-center rounded-full"
-                    onClick={onDecline}
+                    onClick={handleDecline}
                 />
             </div>
         </Modal>
