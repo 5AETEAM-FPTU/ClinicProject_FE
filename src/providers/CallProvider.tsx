@@ -5,7 +5,7 @@ import { constants } from "@/settings";
 import webStorageClient from "@/utils/webStorageClient";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useEffect, useState } from "react";
-import { StringeeClient, StringeeCall } from "stringee";
+import { StringeeClient } from "stringee";
 
 export interface JwtPayloadStringee extends JwtPayload {
     userId: string
@@ -22,7 +22,8 @@ export default function CallProvier({ children }: { children: React.ReactNode })
         isVideoCall: boolean;
         avatar: string;
     } | null>(null);
-
+    const avatar = webStorageClient.get(constants.USER_AVATAR);
+    const fullName = webStorageClient.get(constants.USER_FULLNAME);
     useEffect(() => {
         try {
             const stringeeAccessToken = webStorageClient.get(constants.CALL_ACCESS_TOKEN);
@@ -41,7 +42,10 @@ export default function CallProvier({ children }: { children: React.ReactNode })
 
 
     useEffect(() => {
-        if (!callAccessToken) return;
+        const accessToken = webStorageClient.getToken();
+        if (!accessToken || !callAccessToken) return;
+        const role = jwtDecode<JwtPayloadUpdated>(accessToken).role;
+        if (role != 'user') return;
         const client = new StringeeClient();
 
         client.on("connect", () => {
@@ -57,8 +61,9 @@ export default function CallProvier({ children }: { children: React.ReactNode })
             }
         });
 
-        client.on("incomingcall", (incomingCall: any) => {
+        client.on("incomingcall2", (incomingCall: any) => {
             setCall(incomingCall);
+            console.log("Incoming call", incomingCall);
             handleCallEvents(incomingCall);
             setCallFrom(JSON.parse(incomingCall.fromNumber));
         });
@@ -113,6 +118,7 @@ export default function CallProvier({ children }: { children: React.ReactNode })
             });
         }
     };
+
     useEffect(() => {
         let timer: any;
         if (stringeeClient && callFrom && call) {
@@ -132,10 +138,10 @@ export default function CallProvier({ children }: { children: React.ReactNode })
     }, [stringeeClient, call]);
     return (
         <>
-            {stringeeClient && <IncomingCallPopup isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
+            {stringeeClient && <IncomingCallPopup avatar={callFrom && callFrom.avatar} isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
                 console.log(callFrom);
                 window.open(
-                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}`,
+                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}&peerAvatar=${callFrom?.avatar}&peerFullName=${callFrom?.displayName}&avatar=${avatar}&fullName=${fullName}`,
                     '_blank', 'width=800,height=600');
                 setCall(null);
             }} onDecline={() => {

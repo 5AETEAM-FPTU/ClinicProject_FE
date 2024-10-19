@@ -7,10 +7,11 @@ import { constants } from '@/settings'
 import { JwtPayloadStringee } from '@/providers/CallProvider'
 import { jwtDecode } from 'jwt-decode'
 
-export default function CallComponent({ to }: { to: string | null }) {
+export default function CallComponent({ to, toAvatar, toFullName }: { to: string | null, toAvatar: string | null, toFullName: string | null }) {
     const [userId, setUserId] = useState('');
     const [callAccessToken, setCallAccessToken] = useState('');
-
+    const fullName = webStorageClient.get(constants.USER_FULLNAME);
+    const avatar = webStorageClient.get(constants.USER_AVATAR);
     useEffect(() => {
         const stringeeAccessToken = webStorageClient.get(constants.CALL_ACCESS_TOKEN);
         if (!stringeeAccessToken) return;
@@ -24,7 +25,7 @@ export default function CallComponent({ to }: { to: string | null }) {
             <Button onClick={() => {
                 if (!to) return;
                 var newWindow = window.open(
-                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true&video=on`,
+                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true&video=on&fullName=${fullName}&avatar=${avatar}&peerAvatar=${toAvatar}&peerFullName=${toFullName}`,
                     '_blank', 'width=800,height=600');
             }} className="shadow-third"
                 icon={<Video className="h-4 w-4" />}
@@ -36,7 +37,7 @@ export default function CallComponent({ to }: { to: string | null }) {
                 onClick={() => {
                     if (!to) return;
                     var newWindow = window.open(
-                        `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true`,
+                        `http://127.0.0.1:3000/vi/call?from=${userId}&to=${to}&accessToken=${callAccessToken}&isCaller=true&fullName=${fullName}&avatar=${avatar}&peerAvatar=${toAvatar}&peerFullName=${toFullName}`,
                         '_blank', 'width=800,height=600');
                 }}
             />

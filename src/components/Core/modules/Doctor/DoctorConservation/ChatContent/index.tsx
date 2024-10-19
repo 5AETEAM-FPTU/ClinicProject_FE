@@ -365,7 +365,7 @@ export default function ChatRooms() {
                             </div>
                         </div>
                         <div className='flex flex-row gap-2'>
-                            <CallComponent to={userId} />
+                            <CallComponent to={userId} toAvatar={`https://i.ibb.co/3yY77Yd/istockphoto-1288538088-612x612.jpg`} toFullName={"Nguyễn Văn Quốc Đạt"} />
                             <Button
                                 className="shadow-third"
                                 icon={<Settings className="h-4 w-4" />}
