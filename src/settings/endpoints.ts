@@ -65,6 +65,8 @@ const chatEndpoint = {
     GET_CHAT_ROOM_BY_DOCTOR: '/chat-room/doctor',
     GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
     REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
+    GET_ALL_QUEUE_ROOM: '/queue-room/all',
+    ADD_CHAT_ROOM: '/chat-room',
 }
 
 const geminiEndpoint = {
