@@ -47,8 +47,8 @@ export type TMedicine = {
 export type MedicalReportResponseBody = {
     patientInfor: TPatientInfo
     medicalReport: TMedicalReport
-    services: TService
-    medicines: TMedicine
+    service: TService
+    medicine: TMedicine
 }
 
 export default function ViewMedicalReportModule() {

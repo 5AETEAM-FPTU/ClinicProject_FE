@@ -67,7 +67,7 @@ const createChatService = () => {
         })
 
         connection.onclose((error) => {
-            message.error("Kết nối đã bị đóng, hãy thử tải lại trang")
+            // message.error("Kết nối đã bị đóng, hãy thử tải lại trang")
         })
 
         await connection

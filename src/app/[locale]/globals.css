@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  scroll-behavior: smooth;
 }
 
 
@@ -43,4 +44,3 @@ body {
   border-radius: 100vw;
   border: 3px solid #f5f3ea;
 }
-

@@ -129,7 +129,7 @@ export default function DoctorConservation() {
                     >
                         <Button
                             type="default"
-                            className="border border-secondaryDarker"
+                            className="border-secondaryDark border-2 text-secondaryDarker font-semibold"
                             icon={<House size={18} />}
                             onClick={() =>
                                 router.push(
@@ -141,7 +141,7 @@ export default function DoctorConservation() {
                         </Button>
                         <Button
                             type="default"
-                            className="border border-secondaryDarker"
+                            className="border-secondaryDark border-2 text-secondaryDarker font-semibold"
                             icon={<Settings size={18} />}
                             onClick={() =>
                                 router.push(

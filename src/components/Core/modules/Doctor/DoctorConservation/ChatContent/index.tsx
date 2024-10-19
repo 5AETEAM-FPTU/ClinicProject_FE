@@ -11,8 +11,18 @@ import {
     Upload,
     Modal,
     message,
+    Popover,
+    Image,
 } from 'antd'
-import { CircleX, Paperclip, Phone, Send, Settings, Video } from 'lucide-react'
+import {
+    CircleX,
+    EllipsisVertical,
+    Paperclip,
+    Phone,
+    Send,
+    Settings,
+    Video,
+} from 'lucide-react'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
 import {
@@ -24,9 +34,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { LoadingOutlined } from '@ant-design/icons'
 import { useInView } from 'react-intersection-observer'
 import axios from 'axios'
-import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import CallComponent from '../../DoctorCallComponent'
+import MessageFileShower from './ImageFileShower'
+import { cn } from '@/lib/utils'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -50,8 +61,9 @@ export default function ChatRooms() {
 
     // State, ref, others
     const [messages, setMessages] = useState<Message[]>([])
-    const [inputMessage, setInputMessage] = useState('')
-    const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null)
+    const [inputMessage, setInputMessage] = useState<string>('')
+    const [actionMessageId, setActionMessageId] = useState<string | null>(null)
+    const [threeDot, setThreeDot] = useState<boolean>(false)
     const [isTyping, setIsTyping] = useState<boolean>(false)
     const [isUploading, setIsUploading] = useState<boolean>(false)
     const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
@@ -80,21 +92,23 @@ export default function ChatRooms() {
 
     const handleDeleteChatContent = async () => {
         try {
-            console.log('deleteMessageId', deleteMessageId)
-            await deleteMessageIdFunc(deleteMessageId!).unwrap()
+            console.log('deleteMessageId', actionMessageId)
+            await deleteMessageIdFunc(actionMessageId!).unwrap()
             message.success('Xóa tin nhắn thành công')
 
             const updateMessage = messages.map((value) =>
-                value.chatContentId === deleteMessageId
+                value.chatContentId === actionMessageId
                     ? { ...value, isRemoved: true }
                     : value,
             )
 
             setMessages(updateMessage)
             setIsDeleteConfirmModalVisible(false)
-            sendRemovedMessage(_userId, userId!, deleteMessageId!)
+            sendRemovedMessage(_userId, userId!, actionMessageId!)
         } catch (error) {
             console.log(error)
+            message.error('Xóa tin nhắn thất bại!')
+            setIsDeleteConfirmModalVisible(false)
         }
     }
 
@@ -128,7 +142,6 @@ export default function ChatRooms() {
             console.log(error)
         }
     }
-    console.log('isInit:', isInitial)
     useEffect(() => {
         handleScrollToBottomOnInitial()
     }, [isInitial])
@@ -177,7 +190,7 @@ export default function ChatRooms() {
                     resultMessages[resultMessages.length - 1]?.time,
                 )
             }
-        } catch (error) { }
+        } catch (error) {}
     }
     useEffect(() => {
         if (prevScrollTop) {
@@ -189,6 +202,7 @@ export default function ChatRooms() {
     }, [prevScrollTop])
 
     const handleSendMessage = async () => {
+        handleGetListImageUrl()
         if (inputMessage.trim()) {
             const chatContentId = uuidv4()
 
@@ -212,47 +226,9 @@ export default function ChatRooms() {
                 chatRoomId!,
                 uploadedImageUrls,
             )
-
+            setFileStorage(null)
             handleScrollToBottom()
         }
-    }
-
-    const handleUpload = async ({
-        onSuccess,
-        onError,
-        file,
-        onProgress,
-    }: any) => {
-        const fmData = new FormData()
-        const config = {
-            headers: { 'content-type': 'multipart/form-data' },
-            onUploadProgress: (event: any) => {
-                onProgress({ percent: (event.loaded / event.total) * 100 })
-                setIsUploading(true)
-            },
-        }
-
-        fmData.append('image', file)
-        fmData.append('album', 'PClinic')
-        try {
-            const res = await axios.post(
-                'https://api.imgbb.com/1/upload?key=488e7d944b2bedd5020e1ace8585d1df',
-                fmData,
-                config,
-            )
-            const uploadedUrl = res?.data?.data?.url
-            setUploadedImageUrls((prevUrls) => [...prevUrls, uploadedUrl])
-            onSuccess('Ok')
-            console.log(uploadedUrl)
-            setIsUploading(false)
-        } catch (err) {
-            const error = new Error('Upload Failed.')
-            onError({ error })
-        }
-    }
-
-    const handleRemoveImage = (url: string) => {
-        setUploadedImageUrls((prevUrls) => prevUrls.filter((u) => u !== url))
     }
 
     const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -344,11 +320,108 @@ export default function ChatRooms() {
         handleScrollToBottom()
     }, [])
 
+    const [fileStorage, setFileStorage] = useState<FileList | null>(null)
+    const [isDragging, setIsDragging] = useState<boolean>(false)
+    console.log(fileStorage)
+    const handleOnChangeSeleteFile = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const files: FileList | null = event.target.files
+        if (files) {
+            setFileStorage((prevFileStorage) => {
+                if (prevFileStorage) {
+                    const combinedFiles = new DataTransfer()
+                    Array.from(prevFileStorage).forEach((file) =>
+                        combinedFiles.items.add(file),
+                    )
+                    Array.from(files).forEach((file) =>
+                        combinedFiles.items.add(file),
+                    )
+                    return combinedFiles.files
+                } else {
+                    return files
+                }
+            })
+        }
+    }
+    const removeItemFromStorage = (index: number) => {
+        if (fileStorage) {
+            const updatedFiles = new DataTransfer()
+            Array.from(fileStorage).forEach((file, i) => {
+                if (i !== index) {
+                    updatedFiles.items.add(file)
+                }
+            })
+            setFileStorage(updatedFiles.files)
+        }
+    }
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        setIsDragging(true)
+        event.dataTransfer.dropEffect = 'copy'
+    }
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        setIsDragging(false)
+    }
+
+    const handleDrogFile = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault()
+        setIsDragging(true)
+        const file = event.dataTransfer.files
+        if (file) {
+            setFileStorage(file)
+        }
+    }
+
+    const handleUploadAndGetImageUrl = async (file: File) => {
+        const CLOUD_NAME = 'dy1uuo6ql'
+        const UPLOAD_PRESET = 'pclinic'
+        try {
+            const formData = new FormData()
+            formData.append('file', file)
+            formData.append('upload_preset', UPLOAD_PRESET)
+            const responseData = await axios.post(
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+                formData,
+            )
+            if (responseData) {
+                setIsUploading(false)
+            }
+            return responseData.data.secure_url
+        } catch (error) {
+            return null
+        }
+    }
+    const handleGetListImageUrl = async () => {
+        const listImageUrl: string[] = []
+        if (fileStorage) {
+            setIsUploading(true)
+            for (let i = 0; i < fileStorage.length; i++) {
+                console.log(fileStorage[i])
+                const imageUrl = await handleUploadAndGetImageUrl(
+                    fileStorage[i],
+                )
+                if (imageUrl) {
+                    listImageUrl.push(imageUrl)
+                }
+            }
+            if (listImageUrl.length > 0) {
+                setUploadedImageUrls(listImageUrl)
+                return true
+            } else {
+                return false
+            }
+        }
+
+        return listImageUrl
+    }
+
     return (
         <div>
             <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
                 <div className="flex h-full flex-col">
-                    <div className="flex items-center justify-between border-b p-4">
+                    <div className="flex items-center justify-between border-b pb-4">
                         <div className="flex items-center">
                             <Avatar
                                 size={48}
@@ -364,7 +437,7 @@ export default function ChatRooms() {
                                 </p>
                             </div>
                         </div>
-                        <div className='flex flex-row gap-2'>
+                        <div className="flex flex-row gap-2">
                             <CallComponent to={userId} />
                             <Button
                                 className="shadow-third"
@@ -392,6 +465,15 @@ export default function ChatRooms() {
                     <div
                         ref={divRef}
                         className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4"
+                        onDrop={(event) => {
+                            handleDrogFile(event)
+                        }}
+                        onDragLeave={(event) => {
+                            handleDragLeave(event)
+                        }}
+                        onDragOver={(event) => {
+                            handleDragOver(event)
+                        }}
                     >
                         {messages.length > 0 && (
                             <div ref={ref}>
@@ -412,109 +494,116 @@ export default function ChatRooms() {
                                     key={index}
                                     className={`relative flex overflow-x-hidden break-normal break-words ${message.senderId === _userId ? 'justify-end' : 'justify-start'}`}
                                     onMouseEnter={() =>
-                                        setDeleteMessageId(
+                                        setActionMessageId(
                                             message.chatContentId,
                                         )
                                     }
                                 >
+                                    {message.isSending && (
+                                        <div className="ml-3 mr-5 mt-2">
+                                            <Spin />
+                                        </div>
+                                    )}
                                     {!message.isRemoved ? (
                                         <>
                                             {message.senderId === _userId &&
-                                                deleteMessageId ===
-                                                message.chatContentId && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setDeleteMessageId(
-                                                                message.chatContentId,
-                                                            )
-                                                            setIsDeleteConfirmModalVisible(
-                                                                !isDeleteConfirmModalVisible,
-                                                            )
-                                                        }}
-                                                        className="mr-2 cursor-pointer text-gray-500"
+                                                actionMessageId ===
+                                                    message.chatContentId && (
+                                                    <Popover
+                                                        trigger="click"
+                                                        content={
+                                                            <Button
+                                                                type="text"
+                                                                className="text-secondarySupperDarker"
+                                                                onClick={() => {
+                                                                    setActionMessageId(
+                                                                        message.chatContentId,
+                                                                    )
+                                                                    setIsDeleteConfirmModalVisible(
+                                                                        !isDeleteConfirmModalVisible,
+                                                                    )
+                                                                }}
+                                                            >
+                                                                Xóa tin nhắn
+                                                            </Button>
+                                                        }
+                                                        placement="left"
                                                     >
-                                                        <CircleX />
-                                                    </button>
+                                                        <button className="mr-2 cursor-pointer text-gray-500">
+                                                            <EllipsisVertical />
+                                                        </button>
+                                                    </Popover>
                                                 )}
                                             <div
-                                                className={`max-w-[50%] rounded-lg px-4 h-fit py-2 shadow-primary ${message.senderId === _userId
-                                                    ? 'bg-secondaryDark text-white'
-                                                    : 'bg-gray-200 text-secondarySupperDarker'
-                                                    }`}
+                                                className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
+                                                    message.senderId === _userId
+                                                        ? 'bg-secondaryDark text-white'
+                                                        : 'bg-slate-200 text-secondarySupperDarker'
+                                                }`}
                                             >
                                                 <p>{message.content}</p>
-                                                {message?.assetUrl?.length! >
-                                                    0 &&
-                                                    message?.assetUrl?.map(
-                                                        (asset) => (
-                                                            <Image
-                                                                src={asset}
-                                                                alt="uploaded"
-                                                                className="z-1 mt-2 max-h-[300px] max-w-[300px] w-full h-full rounded-lg object-cover"
-                                                                width={600}
-                                                                height={600}
-                                                            />
-                                                        ),
-                                                    )}
+                                                <div className={cn("flex w-full flex-wrap gap-[10px]", `${message?.assetUrl?.length! > 0 ? 'mt-2' : ''}`)}>
+                                                    {message?.assetUrl
+                                                        ?.length! > 0 &&
+                                                        message?.assetUrl?.map(
+                                                            (asset) => (
+                                                                <Image
+                                                                    src={asset}
+                                                                    alt="uploaded"
+                                                                    className="h-[150px] w-[150px] rounded-lg object-cover"
+                                                                />
+                                                            ),
+                                                        )}
+                                                </div>
                                                 <span
-                                                    className={`mt-1 block text-xs ${message.senderId ===
+                                                    className={`mt-1 block text-xs ${
+                                                        message.senderId ===
                                                         _userId
-                                                        ? 'text-white-200 float-right'
-                                                        : 'float-left text-gray-200'
-                                                        }`}
-                                                >
-                                                    {dayjs(message.time).format(
-                                                        'HH:mm',
-                                                    )}
-                                                </span>
-
+                                                            ? 'text-white-200 float-right'
+                                                            : 'float-left text-secondarySupperDarker'
+                                                    }`}
+                                                ></span>
                                             </div>
                                         </>
                                     ) : (
-                                        <p>tin nhắn đã bị xóa</p>
-                                    )}
-                                    {message.isSending && (
-                                        <div className="ml-3 mt-4">
-                                            <Spin />
-                                        </div>
+                                        <p className="rounded-lg border-2 bg-slate-100 px-4 py-2 italic shadow-primary">
+                                            Tin nhắn đã bị xóa
+                                        </p>
                                     )}
                                 </div>
                             ))}
                         <div ref={messagesEndRef} />
                         {isTyping && <p>đang nhập tin nhắn</p>}{' '}
                     </div>
-                    <div className="border-t p-4">
+                    <div className="border-t pt-4">
                         <div
-                            className="chat-input-container"
+                            className="chat-input-container relative"
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
                             }}
                         >
-                            {uploadedImageUrls.map(
-                                (url: string, index: number) => (
-                                    <div className="relative">
-                                        <Image
-                                            className="z-1 h-[32px] w-[32px] object-cover"
-                                            width={200}
-                                            height={200}
-                                            src={
-                                                'https://i.ibb.co/Z69GVwx/463388459-1005180744955626-6095023535141555471-n.jpg'
-                                            }
-                                            alt="background"
+                            <div>
+                                <input
+                                    type="file"
+                                    className="hidden"
+                                    id="image-input"
+                                    accept="image/*, audio/*, video/*, .txt,"
+                                    multiple
+                                    onChange={(event) =>
+                                        handleOnChangeSeleteFile(event)
+                                    }
+                                />
+                                <label htmlFor="image-input">
+                                    <div className="rounded-lg bg-slate-200 px-4 py-2">
+                                        <Paperclip
+                                            size={18}
+                                            className="cursor-pointer text-secondarySupperDarker"
                                         />
-                                        <Button
-                                            onClick={() =>
-                                                handleRemoveImage(url)
-                                            }
-                                            className="absolute right-0 top-0 h-4 w-5 rounded-full bg-gray-500 p-1 text-white transition hover:bg-gray-600"
-                                        >
-                                            <CircleX />
-                                        </Button>
                                     </div>
-                                ),
-                            )}
+                                </label>
+                            </div>
                             <Input
                                 placeholder="Nhập tin nhắn"
                                 value={inputMessage}
@@ -523,27 +612,8 @@ export default function ChatRooms() {
                                 style={{ flex: 1 }} // Chiếm hết không gian còn lại
                             />
 
-                            <Upload
-                                name="file"
-                                action={
-                                    'https://api.imgbb.com/1/upload/key=488e7d944b2bedd5020e1ace8585d1df'
-                                }
-                                headers={{
-                                    authorization: 'authorization-text',
-                                }}
-                                customRequest={handleUpload}
-                                multiple={false}
-                                fileList={[]}
-                            >
-                                <Button
-                                    type="default"
-                                    icon={<Paperclip size={20} />}
-                                    size="middle"
-                                    loading={isUploading}
-                                ></Button>
-                            </Upload>
                             <Button
-                                className="font-bold"
+                                className="bg-secondaryDarker font-bold"
                                 iconPosition="start"
                                 type="primary"
                                 icon={<Send className="h-4 w-4" />}
@@ -551,6 +621,15 @@ export default function ChatRooms() {
                             >
                                 Gửi
                             </Button>
+                            {fileStorage && (
+                                <MessageFileShower
+                                    fileStorage={fileStorage!}
+                                    setFileStorage={setFileStorage}
+                                    removeItemFromStorage={
+                                        removeItemFromStorage
+                                    }
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -567,6 +646,8 @@ export default function ChatRooms() {
                     okButtonProps={{
                         danger: true,
                     }}
+                    centered
+                    className="z-[1000]"
                 >
                     <p>
                         Khi xóa tin nhắn này bạn và đối phương không thể nhìn
