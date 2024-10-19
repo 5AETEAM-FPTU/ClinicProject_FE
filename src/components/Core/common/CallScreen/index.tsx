@@ -20,6 +20,7 @@ export default function VideoCall() {
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(searchParams.get("video") === "on");
     const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(searchParams.get("video") === "on");
+    const [isVoiceCall, setIsVoiceCall] = useState(searchParams.get("video") !== "on");
     const to = searchParams.get("to");
     const from = searchParams.get("from");
 
@@ -29,11 +30,12 @@ export default function VideoCall() {
     const [selfConnected, setSelfConnected] = useState(false);
     const [isEndCall, setIsEndCall] = useState(false);
 
-
     // Ref for managing local and remote video elements
     const localVideoRef = useRef<HTMLDivElement>(null);
     const remoteVideoRef = useRef<HTMLDivElement>(null);
 
+    const localVoiceRef = useRef<HTMLVideoElement>(null);
+    const remoteVoiceRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
         const client = new StringeeClient();
         setClient(client);
@@ -86,37 +88,44 @@ export default function VideoCall() {
     const handleCallEvents = (call: any) => {
         if (!call) return;
 
+        call.on('addremotestream', function (stream: any) {
+            console.log('addremotestream');
+            // reset srcObject to work around minor bugs in Chrome and Edge.
+            if (remoteVoiceRef.current) {
+                remoteVoiceRef.current.srcObject = stream;
+            }
+        });
+
+        call.on('addlocalstream', function (stream: any) {
+            console.log('addlocalstream');
+            if (localVoiceRef.current) {
+                localVoiceRef.current.srcObject = stream;
+            }
+        });
+
+
         call.on("addlocaltrack", (localTrack: any) => {
             const localElement = localTrack.attach();
             if (localVideoRef.current) {
                 localElement.style.width = "100%";
                 localElement.style.height = "100%";
-                localVideoRef.current.innerHTML = ""; // Clear previous video
-                localVideoRef.current.appendChild(localElement); // Attach the local video
+                localVideoRef.current.appendChild(localElement);
             }
-            console.log("Local track added: ", localTrack);
         });
 
         call.on("addremotetrack", (remoteTrack: any) => {
-            // try {
-            //     remoteTrack.on("mediastate", (data: any) => {
-            //         console.log("mediastate track media change: ", data);
-            //     });
-            // } catch (e) {
-            //     console.log(e);
-            // }
             const remoteElement = remoteTrack.attach();
             if (remoteVideoRef.current) {
                 remoteElement.style.width = "100%";
                 remoteElement.style.height = "100%";
-                remoteVideoRef.current.innerHTML = ""; // Clear previous video
-                remoteVideoRef.current.appendChild(remoteElement); // Attach the remote video
+                remoteVideoRef.current.appendChild(remoteElement);
             }
             console.log("Remote track added: ", remoteTrack);
         });
 
         call.on("removelocaltrack", (localTrack: any) => {
             localTrack.detachAndRemove();
+
             if (localVideoRef.current) {
                 localVideoRef.current.innerHTML = ""; // Clear video on remove
             }
@@ -135,9 +144,14 @@ export default function VideoCall() {
                 message.error("Người dùng ngắt kết nối");
                 endCall();
             }
-
+            // if (searchParams.get("video") === "on") call.enableLocalVideo(true);
+            // else {
+            //     call.enableLocalVideo(true);
+            //     setTimeout(() => {
+            //         call.enableLocalVideo(false);
+            //     }, 700);
+            // }
             setConnected(data.isConnected);
-
         });
 
         call.on("signalingstate", (state: any) => {
@@ -174,17 +188,12 @@ export default function VideoCall() {
             isVideoCall: searchParams.get("video") === "on",
         };
         if (client) {
-            const newCall = new StringeeCall2(client, JSON.stringify(from), to, true);
+            const newCall = new StringeeCall2(client, JSON.stringify(from), to, searchParams.get("video") === "on");
             setCall(newCall);
             handleCallEvents(newCall);
 
             newCall.makeCall((res: any) => {
-                if (searchParams.get("video") === "on") newCall.enableLocalVideo(true);
-                else {
-                    newCall.enableLocalVideo(true);
-                    newCall.enableLocalVideo(false);
-                }
-                console.log("Make call response: ", res);
+                // do no thing
             });
         }
     };
@@ -200,6 +209,7 @@ export default function VideoCall() {
 
     const handleToggleVideo = () => {
         if (!call) return;
+        if (!isVideoOn) setIsVoiceCall(false);
         (call as any).enableLocalVideo(!isVideoOn);
         (client as any).sendCustomMessage(to, { video: !isVideoOn }, (res: any) => {
             if (res.userNotOnline) {
@@ -254,7 +264,10 @@ export default function VideoCall() {
             <Content className="p-4 bg-gray-100">
                 <div className="relative h-full bg-black rounded-lg overflow-hidden">
                     {/* Remote video */}
-                    <div ref={remoteVideoRef} className={`w-full h-full ${connected && isRemoteVideoOn ? "block" : "hidden"}`} />
+
+                    <div ref={remoteVideoRef} className={`w-full h-full ${connected && isRemoteVideoOn ? "block" : "hidden"}`} >
+                        {isVoiceCall && <audio ref={remoteVoiceRef} autoPlay playsInline />}
+                    </div>
                     <div
                         className={`w-full h-full bg-gray-900 flex items-center justify-center text-white text-xl ${connected && !isRemoteVideoOn ? "block" : "hidden"
                             }`} >
@@ -272,7 +285,10 @@ export default function VideoCall() {
 
                     {/* Self-view (local video) */}
                     <div className="absolute bottom-4 right-4 w-48 h-36 bg-gray-800 rounded-lg overflow-hidden border-2 border-white">
-                        <div ref={localVideoRef} className={`w-full h-full ${isVideoOn ? "block" : "hidden"}`} />
+
+                        <div ref={localVideoRef} className={`w-full h-full ${isVideoOn ? "block" : "hidden"}`} >
+                            {isVoiceCall && <audio ref={localVoiceRef} autoPlay playsInline muted />}
+                        </div>
                         <div
                             className={`w-full h-full bg-gray-900 flex items-center justify-center text-white ${isVideoOn ? "hidden" : "flex"
                                 }`}
