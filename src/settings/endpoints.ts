@@ -1,4 +1,3 @@
-import { GET } from "@/app/api/auth/[...nextauth]/route"
 
 const demoEnpoints = {
     GET_AMOUNT_OF_QUESTION: '',
@@ -51,11 +50,21 @@ const scheduleEndpoint = {
 }
 
 const enumEndpoint = {
-    GET_SPECIALTY: '/enum/getAllSpecialty',
-    GET_RETREATMENT_TYPE: '/enum/getAllRetreatmentType',
-    GET_POSITION: '/enum/getAllPosition',
-    GET_GENDER: '/enum/getAllGender',
-    GET_APPOINTMENT_STATUS: '/enum/getAllAppointmentStatus',
+    GET_SPECIALTY: "/enum/getAllSpecialty",
+    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
+    GET_POSITION: "/enum/getAllPosition",
+    GET_GENDER: "/enum/getAllGender",
+    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+}
+
+const chatEndpoint = {
+    GET_QUEUE_ROOM_BY_USER: '/queue-room/user-id',
+    REMOVE_QUEUE_ROOM_BY_ID: '/queue-room/{queueRoomId}',
+    ADD_QUEUE_ROOM: '/queue-room',
+    GET_CHAT_ROOM_BY_USER: '/chat-room/user',
+    GET_CHAT_ROOM_BY_DOCTOR: '/chat-room/doctor',
+    GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
+    REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
 }
 
 const geminiEndpoint = {
@@ -121,6 +130,7 @@ export {
     blogEndpoints,
     medicalReportEndpoint,
     serviceEndpoint,
+    chatEndpoint,
     serviceOrderEndpoint,
     medicineOrderEndpoint
 }

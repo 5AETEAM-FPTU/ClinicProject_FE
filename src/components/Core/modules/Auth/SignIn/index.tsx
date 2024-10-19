@@ -44,7 +44,7 @@ export default function SignInComponent() {
         })
         dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
-
+        
         if (accessToken) {
             const role = jwtDecode<JwtPayloadUpdated>(accessToken).role
             if (role === 'admin') {
@@ -55,6 +55,8 @@ export default function SignInComponent() {
                 return
             }
         }
+
+        console.log(result);
 
         if (result.error) {
             console.log(result.error)
@@ -78,10 +80,11 @@ export default function SignInComponent() {
     const handleLoginWithGoogle = async () => {
         try {
             dispatch(setLoading());
-            await signIn('google', {
+            const googleLogin = await signIn('google', {
                 redirect: true,
                 prompt: 'select_account',
             })
+            console.log(googleLogin);
         } catch (error) {
             console.log(error)
         } finally {

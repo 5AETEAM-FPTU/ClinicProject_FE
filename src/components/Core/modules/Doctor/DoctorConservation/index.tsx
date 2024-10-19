@@ -1,17 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import {
-    Layout,
-    List,
-    Avatar,
-    Input,
-    Button,
-    Space,
-    Typography,
-    Modal,
-} from 'antd'
-import { House, Phone, PhoneOff, Send, Settings, User } from 'lucide-react'
+import { Layout, List, Avatar, Input, Button, Space, Typography } from 'antd'
+import { House, Send, Settings } from 'lucide-react'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import webStorageClient from '@/utils/webStorageClient'
 import Image from 'next/image'
@@ -32,18 +22,22 @@ import {
 } from '@/stores/services/user/userSettings'
 import dayjs from 'dayjs'
 import ChatContent from './ChatContent'
-import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
+import {
+    useGetChatRoomByDoctorQuery,
+    useGetChatRoomByUserQuery,
+} from '@/stores/services/chat/chats'
+import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
 const { Text } = Typography
 
 export interface ChatRoom {
-    doctorId: string
+    userId: string
     chatRoomId: string
     fullName: string
     isEndConversation: boolean
     avatar: string
 }
 
-export interface UserInformationChatRoom {
+export interface DoctorInformationChatRoom {
     fullName: string
     gender: {
         genderName: string
@@ -54,115 +48,29 @@ export interface UserInformationChatRoom {
 
 export interface ChatRoomTransfer {
     chatRoomId?: string
-    doctorId?: string
+    userId?: string
 }
 
-interface IncomingCallPopupProps {
-    isVisible: boolean
-    callerName: string | null
-    callerNumber: string | null
-    avatar: string | null
-    onAnswer: () => void
-    onDecline: () => void
-}
-
-export function IncomingCallPopup({
-    isVisible,
-    callerName,
-    callerNumber,
-    avatar,
-    onAnswer,
-    onDecline,
-}: IncomingCallPopupProps) {
-    const audioRef = useRef<HTMLAudioElement | null>(null)
-    useEffect(() => {
-        if (audioRef.current && isVisible) {
-            audioRef.current.play()
-        }
-    }, [isVisible])
-
-    return (
-        <Modal
-            open={isVisible}
-            footer={null}
-            closable={false}
-            centered
-            className="wave-effect w-[400px]"
-            modalRender={(modal) => (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    {modal}
-                </motion.div>
-            )}
-        >
-            <audio
-                ref={audioRef}
-                preload="auto"
-                src="https://res.cloudinary.com/dy1uuo6ql/video/upload/v1729341419/ngk3arezkkxsrkkxm720.wav"
-            />
-            <div className="flex flex-col items-center rounded-t-lg bg-gradient-to-b from-blue-500 to-blue-600 p-6 text-white">
-                <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white">
-                    {avatar ? (
-                        <img
-                            src={avatar}
-                            className="h-full w-full rounded-full object-cover text-blue-500"
-                        />
-                    ) : (
-                        <User className="h-12 w-12 text-blue-500" />
-                    )}
-                </div>
-                <h2 className="mb-1 text-center text-2xl font-bold">
-                    {callerName}
-                </h2>
-                <p className="text-lg opacity-80">{callerNumber}</p>
-            </div>
-            <div className="flex justify-around rounded-b-lg bg-gray-100 p-4">
-                <Button
-                    type="primary"
-                    shape="circle"
-                    icon={<Phone className="h-6 w-6" />}
-                    size="large"
-                    className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-green-500 hover:bg-green-600"
-                    onClick={onAnswer}
-                />
-                <Button
-                    type="primary"
-                    danger
-                    shape="circle"
-                    icon={<PhoneOff className="h-6 w-6" />}
-                    size="large"
-                    className="flex h-12 w-12 items-center justify-center rounded-full"
-                    onClick={onDecline}
-                />
-            </div>
-        </Modal>
-    )
-}
-
-export default function ConsultationComponent() {
+export default function DoctorConservation() {
     const router = useRouter()
     const locale = useLocale()
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
 
-    const { userInformationResult, isFetching } = useGetUserProfileQuery(
+    const { doctorInformationResult, isFetching } = useGetDoctorProfileQuery(
         undefined,
         {
             selectFromResult: ({ data, isFetching }) => {
                 return {
-                    userInformationResult: data?.body
-                        ?.user as UserInformationChatRoom,
+                    doctorInformationResult: data?.body
+                        ?.user as DoctorInformationChatRoom,
                     isFetching: isFetching,
                 }
             },
         },
     )
 
-    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByUserQuery(
+    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByDoctorQuery(
         undefined,
         {
             selectFromResult: ({ data, isFetching }) => {
@@ -191,27 +99,27 @@ export default function ConsultationComponent() {
                             shape="square"
                             className="size-16 rounded-xl sm:size-20"
                             icon={<UserOutlined />}
-                            src={`${userInformationResult?.avatarUrl ?? DefaultImage}`}
+                            src={`${doctorInformationResult?.avatarUrl ?? DefaultImage}`}
                         />
                         <div className="">
                             <p
                                 className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
                                 style={{ margin: 0 }}
                             >
-                                {`${userInformationResult?.fullName ?? 'Ẩn Danh'}`}
+                                {`${doctorInformationResult?.fullName ?? 'Ẩn Danh'}`}
                             </p>
                             <Text
                                 className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
                                 type="secondary"
                             >
-                                {`${userInformationResult?.gender?.genderName ?? 'Ẩn Danh'}`}
+                                {`${doctorInformationResult?.gender?.genderName ?? 'Ẩn Danh'}`}
                             </Text>
                             <br />
                             <Text
                                 className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
                                 type="secondary"
                             >
-                                {`${dayjs(userInformationResult?.dob).format('DD/MM/YYYY') ?? 'Ẩn ngày sinh'}`}
+                                {`${dayjs(doctorInformationResult?.dob).format('DD/MM/YYYY') ?? 'Ẩn ngày sinh'}`}
                             </Text>
                         </div>
                     </Space>
@@ -221,7 +129,7 @@ export default function ConsultationComponent() {
                     >
                         <Button
                             type="default"
-                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                            className="border-secondaryDark border-2 text-secondaryDarker font-semibold"
                             icon={<House size={18} />}
                             onClick={() =>
                                 router.push(
@@ -233,7 +141,7 @@ export default function ConsultationComponent() {
                         </Button>
                         <Button
                             type="default"
-                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                            className="border-secondaryDark border-2 text-secondaryDarker font-semibold"
                             icon={<Settings size={18} />}
                             onClick={() =>
                                 router.push(
@@ -246,11 +154,11 @@ export default function ConsultationComponent() {
                     </Space>
                 </div>
             </div>
-            <div className="flex w-full flex-row gap-5">
+            <div className="flex-row flex w-full gap-5">
                 <ChatRooms
                     chatRooms={chatRoomResult}
-                    setChatRoomTransfer={(chatRoomId, doctorId) =>
-                        setChatRoomTransfer({ chatRoomId, doctorId })
+                    setChatRoomTransfer={(chatRoomId, userId) =>
+                        setChatRoomTransfer({ chatRoomId, userId })
                     }
                 />
                 <div className="w-[calc(100%-370px)]">

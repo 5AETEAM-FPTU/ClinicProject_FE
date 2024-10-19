@@ -25,6 +25,7 @@ export default function UserUpdateDescription({
 
     const handleUpdate = async () => {
         const content = getEditorHtmlContent(editorRef)
+        console.log("edit", content)
         try {
             if(content){
                 await updateUserDescription({description: content}).unwrap()
