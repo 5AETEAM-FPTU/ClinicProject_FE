@@ -38,6 +38,8 @@ import { useSearchParams } from 'next/navigation'
 import CallComponent from '../../DoctorCallComponent'
 import MessageFileShower from './ImageFileShower'
 import { cn } from '@/lib/utils'
+import { BeatLoader } from 'react-spinners'
+import { motion } from 'framer-motion'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -203,9 +205,10 @@ export default function ChatRooms() {
     }, [prevScrollTop])
     const [isUpdateImageToCloud, setIsUpdateImageToCloud] = useState(false)
     const handleSendMessage = async () => {
-        setIsUpdateImageToCloud(true);
-        const urls = await handleGetListImageUrl()
         if (inputMessage.trim()) {
+            setIsUpdateImageToCloud(true)
+            const urls = await handleGetListImageUrl()
+            console.log(urls)
             const chatContentId = uuidv4()
 
             const newMessage = {
@@ -226,10 +229,10 @@ export default function ChatRooms() {
                 userId!,
                 inputMessage,
                 chatRoomId!,
-                uploadedImageUrls,
+                urls,
             )
-            setIsUpdateImageToCloud(false); 
-            setUploadedImageUrls([]);
+            setIsUpdateImageToCloud(false)
+            setUploadedImageUrls([])
             setFileStorage(null)
             handleScrollToBottom()
         }
@@ -414,245 +417,277 @@ export default function ChatRooms() {
         return listImageUrl
     }
 
+    useEffect(() => {
+        handleScrollToBottom()
+    }, [isTyping])
+
     return (
         <div>
-            <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
-                <div className="flex h-full flex-col">
-                    <div className="flex items-center justify-between border-b pb-4">
-                        <div className="flex items-center">
-                            <Avatar
-                                
-                                size={48}
-                                shape="square"
-                                src={peerAvatar}
-                            />
-                            <div className="ml-3">
-                                <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                    Tư vấn khám tổng quát
-                                </h2>
-                                <p className="text-[14px] text-secondarySupperDarker">
-                                    Bác sĩ: ...
-                                </p>
-                            </div>
-                        </div>
-                        <div className='flex flex-row gap-2'>
-                            <CallComponent to={userId} toAvatar={`https://i.ibb.co/3yY77Yd/istockphoto-1288538088-612x612.jpg`} toFullName={"Nguyễn Văn Quốc Đạt"} />
-                            <Button
-                                className="shadow-third"
-                                icon={<Settings className="h-4 w-4" />}
-                                type="text"
-                            >
-                                Cài đặt
-                            </Button>
-                        </div>
-                    </div>
-                    {isFetching &&
-                        messages.length === 0 &&
-                        Array.from({ length: 6 }).map(() => (
-                            <>
-                                <Skeleton.Button
-                                    active
-                                    size={'default'}
-                                    shape={'round'}
-                                    block
-                                    className="my-[5px]"
+            {chatRoomId && userId ? (
+                <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
+                    <div className="flex h-full flex-col">
+                        <div className="flex items-center justify-between border-b pb-4">
+                            <div className="flex items-center">
+                                <Avatar
+                                    size={48}
+                                    shape="square"
+                                    src={peerAvatar}
                                 />
-                            </>
-                        ))}
-
-                    <div
-                        ref={divRef}
-                        className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4"
-                        onDrop={(event) => {
-                            handleDrogFile(event)
-                        }}
-                        onDragLeave={(event) => {
-                            handleDragLeave(event)
-                        }}
-                        onDragOver={(event) => {
-                            handleDragOver(event)
-                        }}
-                    >
-                        {messages.length > 0 && (
-                            <div ref={ref}>
-                                {isFetching && (
-                                    <div className="my-2 text-center">
-                                        <Spin
-                                            indicator={<LoadingOutlined spin />}
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                        {messages
-                            ?.slice()
-                            .reverse()
-                            .map((message: Message, index: number) => (
-                                <div
-                                    key={index}
-                                    className={`relative flex overflow-x-hidden break-normal break-words ${message.senderId === _userId ? 'justify-end' : 'justify-start'}`}
-                                    onMouseEnter={() =>
-                                        setActionMessageId(
-                                            message.chatContentId,
-                                        )
-                                    }
-                                >
-                                    {message.isSending && (
-                                        <div className="ml-3 mr-5 mt-2">
-                                            <Spin />
-                                        </div>
-                                    )}
-                                    {!message.isRemoved ? (
-                                        <>
-                                            {message.senderId === _userId &&
-                                                actionMessageId ===
-                                                    message.chatContentId && (
-                                                    <Popover
-                                                        trigger="click"
-                                                        content={
-                                                            <Button
-                                                                type="text"
-                                                                className="text-secondarySupperDarker"
-                                                                onClick={() => {
-                                                                    setActionMessageId(
-                                                                        message.chatContentId,
-                                                                    )
-                                                                    setIsDeleteConfirmModalVisible(
-                                                                        !isDeleteConfirmModalVisible,
-                                                                    )
-                                                                }}
-                                                            >
-                                                                Xóa tin nhắn
-                                                            </Button>
-                                                        }
-                                                        placement="left"
-                                                    >
-                                                        <button className="mr-2 cursor-pointer text-gray-500">
-                                                            <EllipsisVertical />
-                                                        </button>
-                                                    </Popover>
-                                                )}
-                                            <div
-                                                className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
-                                                    message.senderId === _userId
-                                                        ? 'bg-secondaryDark text-white'
-                                                        : 'bg-slate-200 text-secondarySupperDarker'
-                                                }`}
-                                            >
-                                                <p>{message.content}</p>
-                                                <div className={cn("flex w-full flex-wrap gap-[10px]", `${message?.assetUrl?.length! > 0 ? 'mt-2' : ''}`)}>
-                                                    {message?.assetUrl
-                                                        ?.length! > 0 &&
-                                                        message?.assetUrl?.map(
-                                                            (asset) => (
-                                                                <Image
-                                                                    src={asset}
-                                                                    alt="uploaded"
-                                                                    className="h-[150px] w-[150px] rounded-lg object-cover"
-                                                                />
-                                                            ),
-                                                        )}
-                                                </div>
-                                                <span
-                                                    className={`mt-1 block text-xs ${
-                                                        message.senderId ===
-                                                        _userId
-                                                            ? 'text-white-200 float-right'
-                                                            : 'float-left text-secondarySupperDarker'
-                                                    }`}
-                                                ></span>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <p className="rounded-lg border-2 bg-slate-100 px-4 py-2 italic shadow-primary">
-                                            Tin nhắn đã bị xóa
-                                        </p>
-                                    )}
+                                <div className="ml-3">
+                                    <h2 className="text-base font-semibold text-secondarySupperDarker">
+                                        Tư vấn khám tổng quát
+                                    </h2>
+                                    <p className="text-[14px] text-secondarySupperDarker">
+                                        Bác sĩ: ...
+                                    </p>
                                 </div>
+                            </div>
+                            <div className="flex flex-row gap-2">
+                                <CallComponent
+                                    to={userId}
+                                    toAvatar={`https://i.ibb.co/3yY77Yd/istockphoto-1288538088-612x612.jpg`}
+                                    toFullName={'Nguyễn Văn Quốc Đạt'}
+                                />
+                                <Button
+                                    className="shadow-third"
+                                    icon={<Settings className="h-4 w-4" />}
+                                    type="text"
+                                >
+                                    Cài đặt
+                                </Button>
+                            </div>
+                        </div>
+                        {isFetching &&
+                            messages.length === 0 &&
+                            Array.from({ length: 6 }).map(() => (
+                                <>
+                                    <Skeleton.Button
+                                        active
+                                        size={'default'}
+                                        shape={'round'}
+                                        block
+                                        className="my-[5px]"
+                                    />
+                                </>
                             ))}
-                        <div ref={messagesEndRef} />
-                        {isTyping && <p>đang nhập tin nhắn</p>}{' '}
-                    </div>
-                    <div className="border-t pt-4">
+
                         <div
-                            className="chat-input-container relative"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
+                            ref={divRef}
+                            className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4"
+                            onDrop={(event) => {
+                                handleDrogFile(event)
+                            }}
+                            onDragLeave={(event) => {
+                                handleDragLeave(event)
+                            }}
+                            onDragOver={(event) => {
+                                handleDragOver(event)
                             }}
                         >
-                            <div>
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    id="image-input"
-                                    accept="image/*, audio/*, video/*, .txt,"
-                                    multiple
-                                    onChange={(event) =>
-                                        handleOnChangeSeleteFile(event)
-                                    }
-                                />
-                                <label htmlFor="image-input">
-                                    <div className="rounded-lg bg-slate-200 px-4 py-2">
-                                        <Paperclip
-                                            size={18}
-                                            className="cursor-pointer text-secondarySupperDarker"
-                                        />
-                                    </div>
-                                </label>
-                            </div>
-                            <Input
-                                placeholder="Nhập tin nhắn"
-                                value={inputMessage}
-                                onChange={(e) => handleOnTyping(e)}
-                                onPressEnter={handleSendMessage}
-                                style={{ flex: 1 }} // Chiếm hết không gian còn lại
-                            />
-
-                            <Button
-                                className="bg-secondaryDarker font-bold"
-                                iconPosition="start"
-                                type="primary"
-                                icon={<Send className="h-4 w-4" />}
-                                onClick={handleSendMessage}
-                            >
-                                Gửi
-                            </Button>
-                            {fileStorage && (
-                                <MessageFileShower
-                                    fileStorage={fileStorage!}
-                                    setFileStorage={setFileStorage}
-                                    removeItemFromStorage={
-                                        removeItemFromStorage
-                                    }
-                                />
+                            {messages.length > 0 && (
+                                <div ref={ref}>
+                                    {isFetching && (
+                                        <div className="my-2 text-center">
+                                            <Spin
+                                                indicator={
+                                                    <LoadingOutlined spin />
+                                                }
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             )}
+                            {messages
+                                ?.slice()
+                                .reverse()
+                                .map((message: Message, index: number) => (
+                                    <div
+                                        key={index}
+                                        className={`relative flex overflow-x-hidden break-normal break-words ${message.senderId === _userId ? 'justify-end' : 'justify-start'}`}
+                                        onMouseEnter={() =>
+                                            setActionMessageId(
+                                                message.chatContentId,
+                                            )
+                                        }
+                                    >
+                                        {message.isSending && (
+                                            <div className="ml-3 mr-5 mt-2">
+                                                <Spin />
+                                            </div>
+                                        )}
+                                        {!message.isRemoved ? (
+                                            <>
+                                                {message.senderId === _userId &&
+                                                    actionMessageId ===
+                                                        message.chatContentId && (
+                                                        <Popover
+                                                            trigger="click"
+                                                            content={
+                                                                <Button
+                                                                    type="text"
+                                                                    className="text-secondarySupperDarker"
+                                                                    onClick={() => {
+                                                                        setActionMessageId(
+                                                                            message.chatContentId,
+                                                                        )
+                                                                        setIsDeleteConfirmModalVisible(
+                                                                            !isDeleteConfirmModalVisible,
+                                                                        )
+                                                                    }}
+                                                                >
+                                                                    Xóa tin nhắn
+                                                                </Button>
+                                                            }
+                                                            placement="left"
+                                                        >
+                                                            <button className="mr-2 cursor-pointer text-gray-500">
+                                                                <EllipsisVertical />
+                                                            </button>
+                                                        </Popover>
+                                                    )}
+                                                <div
+                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
+                                                        message.senderId ===
+                                                        _userId
+                                                            ? 'bg-secondaryDark text-white'
+                                                            : 'bg-slate-200 text-secondarySupperDarker'
+                                                    }`}
+                                                >
+                                                    <p>{message.content}</p>
+                                                    <div
+                                                        className={cn(
+                                                            'flex w-full flex-wrap gap-[10px]',
+                                                            `${message?.assetUrl?.length! > 0 ? 'mt-2' : ''}`,
+                                                        )}
+                                                    >
+                                                        {message?.assetUrl
+                                                            ?.length! > 0 &&
+                                                            message?.assetUrl?.map(
+                                                                (asset) => (
+                                                                    <Image
+                                                                        src={
+                                                                            asset
+                                                                        }
+                                                                        alt="uploaded"
+                                                                        className="h-[150px] w-[150px] rounded-lg object-cover"
+                                                                    />
+                                                                ),
+                                                            )}
+                                                    </div>
+                                                    <span
+                                                        className={`mt-1 block text-xs ${
+                                                            message.senderId ===
+                                                            _userId
+                                                                ? 'text-white-200 float-right'
+                                                                : 'float-left text-secondarySupperDarker'
+                                                        }`}
+                                                    ></span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <p className="rounded-lg border-2 bg-slate-100 px-4 py-2 italic shadow-primary">
+                                                Tin nhắn đã bị xóa
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            <div ref={messagesEndRef} />
+                            {isTyping && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="w-fit rounded-lg bg-slate-200 px-4 py-2"
+                                >
+                                    <BeatLoader size={6} color="#0284C7" />
+                                </motion.div>
+                            )}{' '}
+                        </div>
+                        <div className="border-t pt-6">
+                            <div
+                                className="chat-input-container relative"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                }}
+                            >
+                                <div>
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        id="image-input"
+                                        accept="image/*, audio/*, video/*, .txt,"
+                                        multiple
+                                        onChange={(event) =>
+                                            handleOnChangeSeleteFile(event)
+                                        }
+                                    />
+                                    <label htmlFor="image-input">
+                                        <div className="rounded-lg bg-slate-200 px-4 py-2">
+                                            <Paperclip
+                                                size={18}
+                                                className="cursor-pointer text-secondarySupperDarker"
+                                            />
+                                        </div>
+                                    </label>
+                                </div>
+                                <Input
+                                    placeholder="Nhập tin nhắn"
+                                    value={inputMessage}
+                                    onChange={(e) => handleOnTyping(e)}
+                                    onPressEnter={handleSendMessage}
+                                    style={{ flex: 1 }} // Chiếm hết không gian còn lại
+                                />
+
+                                <Button
+                                    className="bg-secondaryDarker font-bold"
+                                    iconPosition="start"
+                                    type="primary"
+                                    icon={<Send className="h-4 w-4" />}
+                                    onClick={handleSendMessage}
+                                    loading={isUpdateImageToCloud}
+                                >
+                                    Gửi
+                                </Button>
+                                {fileStorage && (
+                                    <MessageFileShower
+                                        fileStorage={fileStorage!}
+                                        setFileStorage={setFileStorage}
+                                        removeItemFromStorage={
+                                            removeItemFromStorage
+                                        }
+                                    />
+                                )}
+                            </div>
                         </div>
                     </div>
+                    <Modal
+                        title="Bạn có muốn xóa tin nhắn này không?"
+                        open={isDeleteConfirmModalVisible}
+                        onOk={handleDeleteChatContent}
+                        confirmLoading={isLoading}
+                        onCancel={() =>
+                            setIsDeleteConfirmModalVisible(
+                                !isDeleteConfirmModalVisible,
+                            )
+                        }
+                        okButtonProps={{
+                            danger: true,
+                        }}
+                        centered
+                        className="z-[1000]"
+                    >
+                        <p>
+                            Khi xóa tin nhắn này bạn và đối phương không thể
+                            nhìn thấy lại được, hãy cân nhắc!
+                        </p>
+                    </Modal>
                 </div>
-                <Modal
-                    title="Bạn có muốn xóa tin nhắn này không?"
-                    open={isDeleteConfirmModalVisible}
-                    onOk={handleDeleteChatContent}
-                    confirmLoading={isLoading}
-                    onCancel={() =>
-                        setIsDeleteConfirmModalVisible(
-                            !isDeleteConfirmModalVisible,
-                        )
-                    }
-                    okButtonProps={{
-                        danger: true,
-                    }}
-                    centered
-                    className="z-[1000]"
-                >
-                    <p>
-                        Khi xóa tin nhắn này bạn và đối phương không thể nhìn
-                        thấy lại được, hãy cân nhắc!
-                    </p>
-                </Modal>
-            </div>
+            ) : (
+                <div className="h-[600px] w-full rounded-lg bg-white shadow-third"></div>
+            )}
         </div>
     )
 }

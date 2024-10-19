@@ -2,6 +2,7 @@
 import { Avatar, Layout, List, Typography } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
+import { useEffect } from 'react'
 
 const { Sider } = Layout
 export default function ChatRooms({
@@ -19,6 +20,14 @@ export default function ChatRooms({
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string) => {
         route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt)
     }
+    const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string) => {
+        handleChangeRoute(chatRoomId, userId, peerAvt)
+    }
+    useEffect(() => {
+        if(chatRooms?.length > 0) {
+            handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.doctorId, chatRooms[0]?.avatar)
+        }
+    }, [chatRooms])
     return (
         <div className="min-w-[350px]">
             <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">

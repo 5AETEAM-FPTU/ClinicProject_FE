@@ -7,6 +7,7 @@ import { Save, SendHorizontal, SquarePen } from 'lucide-react'
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useAddQueueRoomMutation } from '@/stores/services/chat/chats'
+import { useAppSelector } from '@/hooks/redux-toolkit'
 
 export default function CreateConsultantRoom({
     refetch,
@@ -29,6 +30,7 @@ export default function CreateConsultantRoom({
             message.error('Gửi yêu cầu thất bại!')
         }
     }
+    const {user} = useAppSelector((state) => state.auth)
 
     return (
         <div className="mt-4 flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
@@ -44,12 +46,12 @@ export default function CreateConsultantRoom({
                         <div className="flex items-center justify-center gap-4 text-[14px] font-medium text-[#003553]">
                             <Image
                                 src={
-                                    'https://kynguyenlamdep.com/wp-content/uploads/2022/06/avatar-de-thuong-cho-cap-doi.jpg'
+                                    user.avatarUrl!
                                 }
                                 alt={''}
-                                height={60}
-                                width={60}
-                                className="h-[60px] w-[60px] rounded-full"
+                                height={200}
+                                width={200}
+                                className="h-[60px] w-[60px] rounded-full object-cover"
                             />
                             <div className="text-[14px]">
                                 <p className="font-bold">Nguyễn Văn Đạt </p>

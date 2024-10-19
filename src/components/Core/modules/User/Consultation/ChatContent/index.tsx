@@ -35,6 +35,8 @@ import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import MessageFileShower from '../../../Doctor/DoctorConservation/ChatContent/ImageFileShower'
+import { BeatLoader } from 'react-spinners'
+import {motion} from 'framer-motion'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -83,6 +85,7 @@ export default function ChatRooms() {
 
     const divRef = useRef<HTMLDivElement | null>(null)
     const [prevScrollTop, setPrevScrollTop] = useState(0)
+    console.log(prevScrollTop)
     const [isInitial, setIsInitial] = useState(false)
     useEffect(() => {
         setIsInitial(false)
@@ -192,7 +195,7 @@ export default function ChatRooms() {
     useEffect(() => {
         if (prevScrollTop) {
             console.log(prevScrollTop)
-            if (prevScrollTop <= 1) {
+            if (prevScrollTop <= 3) {
                 handleFetchDataWithLastTimeMessage()
             }
         }
@@ -204,9 +207,10 @@ export default function ChatRooms() {
     }
     const [isUpdateImageToCloud, setIsUpdateImageToCloud] = useState(false)
     const handleSendMessage = async () => {
-        setIsUpdateImageToCloud(true);
-        const urls = await handleGetListImageUrl()
+       
         if (inputMessage.trim()) {
+            setIsUpdateImageToCloud(true);
+            const urls = await handleGetListImageUrl()
             const chatContentId = uuidv4()
 
             const newMessage = {
@@ -227,7 +231,7 @@ export default function ChatRooms() {
                 doctorId!,
                 inputMessage,
                 chatRoomId!,
-                uploadedImageUrls,
+                urls,
             )
             setIsUpdateImageToCloud(false); 
             setFileStorage(null)
@@ -408,7 +412,8 @@ export default function ChatRooms() {
 
     return (
         <div>
-            <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
+            {
+                doctorId && chatRoomId ? <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
                 <div className="flex h-full flex-col">
                     <div className="flex items-center justify-between border-b pb-4">
                         <div className="flex items-center">
@@ -560,7 +565,13 @@ export default function ChatRooms() {
                                 </div>
                             ))}
                         <div ref={messagesEndRef} />
-                        {isTyping && <p>đang nhập tin nhắn</p>}
+                        {isTyping && <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className='w-fit px-4 py-2 bg-slate-200 rounded-lg'
+                        ><BeatLoader                        size={6} color='#0284C7'/></motion.div>}{' '}
                     </div>
                     <div className="border-t pt-4">
                         <div
@@ -621,7 +632,9 @@ export default function ChatRooms() {
                         </div>
                     </div>
                 </div>
+            </div> : <div className='w-full h-[600px] bg-white shadow-third rounded-lg'>
             </div>
+            }
             <Modal
                 title="Bạn có muốn xóa tin nhắn này không?"
                 open={isDeleteConfirmModalVisible}

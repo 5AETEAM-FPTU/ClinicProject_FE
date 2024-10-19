@@ -74,6 +74,13 @@ export function IncomingCallPopup({
     onAnswer,
     onDecline,
 }: IncomingCallPopupProps) {
+    const audioRef = useRef<HTMLAudioElement | null>(null)
+    useEffect(() => {
+        if (audioRef.current && isVisible) {
+            audioRef.current.play()
+        }
+    }, [isVisible])
+
     return (
         <Modal
             open={isVisible}
@@ -92,6 +99,11 @@ export function IncomingCallPopup({
                 </motion.div>
             )}
         >
+            <audio
+                ref={audioRef}
+                preload="auto"
+                src="https://res.cloudinary.com/dy1uuo6ql/video/upload/v1729341419/ngk3arezkkxsrkkxm720.wav"
+            />
             <div className="flex flex-col items-center rounded-t-lg bg-gradient-to-b from-blue-500 to-blue-600 p-6 text-white">
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white">
                     {avatar ? (
@@ -234,7 +246,7 @@ export default function ConsultationComponent() {
                     </Space>
                 </div>
             </div>
-            <div className="flex w-full">
+            <div className="flex w-full flex-row gap-5">
                 <ChatRooms
                     chatRooms={chatRoomResult}
                     setChatRoomTransfer={(chatRoomId, doctorId) =>
