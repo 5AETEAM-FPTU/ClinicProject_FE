@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import { StringeeClient, StringeeCall2 } from "stringee";
 import { useSearchParams } from "next/navigation";
+import { Mic, MicOff, Phone, Video, VideoOff } from "lucide-react";
 
 const { Header, Footer, Content } = Layout;
 
@@ -284,14 +285,16 @@ export default function VideoCall() {
             <Footer className="bg-gray-200">
                 <div className="flex items-center justify-center gap-2">
                     <Button
-                        icon={isMuted ? <AudioMutedOutlined /> : <AudioOutlined />}
+                        className="text-secondaryDarker hover:bg-slate-50 transition-all rounded-full bg-white h-[50px] w-[50px]"
+                        icon={isMuted ? <MicOff size={26}/> : <Mic size={26}/>}
                         onClick={handleToggleMute}
                     />
                     <Button
-                        icon={isVideoOn ? <VideoCameraOutlined /> : <VideoCameraAddOutlined />}
+                        className="text-secondaryDarker hover:bg-slate-50 transition-all rounded-full bg-white h-[50px] w-[50px]"
+                        icon={isVideoOn ? <Video size={26} /> : <VideoOff size={26} />}
                         onClick={handleToggleVideo}
                     />
-                    <Button icon={<PhoneOutlined />} className="text-red-500" onClick={endCall} />
+                    <Button icon={<Phone size={24}/>} className="text-white rounded-full bg-red-600 h-[50px] w-[50px]" shape="circle" onClick={endCall} />
                 </div>
             </Footer>
         </Layout>

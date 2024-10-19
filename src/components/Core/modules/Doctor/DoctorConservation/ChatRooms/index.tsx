@@ -17,8 +17,8 @@ export default function ChatRooms({
     const chatRoomId = searchParams.get('chat');
     const userId = searchParams.get('user');
 
-    const handleChangeRoute = (chatRoomId: string, userId: string) => {
-        route.push('?chat=' + chatRoomId + '&user=' + userId)
+    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string) => {
+        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt )
     }
 
     return (
@@ -37,7 +37,7 @@ export default function ChatRooms({
                         return (
                             <List.Item
                                 onClick={() => {
-                                    handleChangeRoute(user.chatRoomId, user.userId)
+                                    handleChangeRoute(user.chatRoomId, user.userId, user.avatar)
                                 }}
                                 className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r
                                     ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'}
@@ -70,7 +70,7 @@ export default function ChatRooms({
                                             `}
                                         >
                                             {user.isEndConversation
-                                                ? 'Đã kết thuộc'
+                                                ? 'Đã kết thúc'
                                                 : 'Bác sĩ tư vấn trực tuyến'}
                                         </span>
                                     }

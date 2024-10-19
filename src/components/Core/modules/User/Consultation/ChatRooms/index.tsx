@@ -1,10 +1,9 @@
 'use client'
-import { Layout, List, Avatar, Input, Button, Space, Typography } from 'antd'
-import { ChatRoom, UserInformationChatRoom } from '..'
+import { Avatar, Layout, List, Typography } from 'antd'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { ChatRoom } from '..'
 
-const { Title, Text, Paragraph } = Typography
-
-const { Sider, Content } = Layout
+const { Sider } = Layout
 export default function ChatRooms({
     chatRooms,
     setChatRoomTransfer,
@@ -12,45 +11,66 @@ export default function ChatRooms({
     chatRooms: ChatRoom[]
     setChatRoomTransfer: (chatRoomId: string, doctorId: string) => void
 }) {
+    const route = useRouter()
+    const searchParams = useSearchParams()
+    const chatRoomId = searchParams.get('chat')
+    const userId = searchParams.get('user')
+
+    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string) => {
+        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt)
+    }
     return (
-        <div>
-            <Sider
-                width={320}
-                className="h-full rounded-[12px] bg-white p-4 shadow-third"
-            >
+        <div className="min-w-[350px]">
+            <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">
                 <List
                     itemLayout="horizontal"
                     dataSource={chatRooms}
-                    renderItem={(doctor) => (
-                        <List.Item
-                            onClick={() => setChatRoomTransfer(doctor.chatRoomId, doctor.doctorId)}
-                            className="group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r"
-                        >
-                            <List.Item.Meta
-                                avatar={
-                                    <Avatar
-                                        size={48}
-                                        shape="square"
-                                        src={doctor.avatar}
-                                    />
-                                }
-                                title={
-                                    <span className="text-base font-semibold text-secondarySupperDarker group-hover:text-white">
-                                        {doctor.fullName}
-                                    </span>
-                                }
-                                description={
-                                    <span className="text-base text-secondarySupperDarker group-hover:text-white">
-                                        {doctor.isEndConversation
-                                            ? 'Đã kết thuộc'
-                                            : 'Bác sĩ tư vấn trực tuyến'}
-                                    </span>
-                                }
-                            />
-                        </List.Item>
-                    )}
+                    renderItem={(doctor) => {
+                        const isSelected =
+                            doctor.chatRoomId === chatRoomId &&
+                            doctor.doctorId === userId
+
+                        return (
+                            <List.Item
+                                onClick={() => {
+                                    handleChangeRoute(
+                                        doctor.chatRoomId,
+                                        doctor.doctorId,
+                                        doctor.avatar
+                                    )
+                                }}
+                                className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'} transition-all duration-500 ease-in-out`}
+                            >
+                                <List.Item.Meta
+                                    avatar={
+                                        <Avatar
+                                            size={48}
+                                            shape="square"
+                                            src={doctor.avatar}
+                                        />
+                                    }
+                                    title={
+                                        <span
+                                            className={`text-base font-semibold text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
+                                        >
+                                            {doctor.fullName}
+                                        </span>
+                                    }
+                                    description={
+                                        <span
+                                            className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
+                                        >
+                                            {doctor.isEndConversation
+                                                ? 'Đã kết thúc'
+                                                : 'Bác sĩ tư vấn trực tuyến'}
+                                        </span>
+                                    }
+                                />
+                            </List.Item>
+                        )
+                    }}
                 />
-            </Sider>
+            </div>
         </div>
     )
 }

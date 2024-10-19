@@ -58,6 +58,7 @@ export default function ChatRooms() {
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
+    const peerAvatar = searchParams.get('peerAvt')
 
     // State, ref, others
     const [messages, setMessages] = useState<Message[]>([])
@@ -200,9 +201,10 @@ export default function ChatRooms() {
             }
         }
     }, [prevScrollTop])
-
+    const [isUpdateImageToCloud, setIsUpdateImageToCloud] = useState(false)
     const handleSendMessage = async () => {
-        handleGetListImageUrl()
+        setIsUpdateImageToCloud(true);
+        const urls = await handleGetListImageUrl()
         if (inputMessage.trim()) {
             const chatContentId = uuidv4()
 
@@ -212,7 +214,7 @@ export default function ChatRooms() {
                 content: inputMessage,
                 time: dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'),
                 isRemoved: false,
-                assetUrl: uploadedImageUrls,
+                assetUrl: urls,
                 isSending: true,
             }
             setInputMessage('')
@@ -226,6 +228,8 @@ export default function ChatRooms() {
                 chatRoomId!,
                 uploadedImageUrls,
             )
+            setIsUpdateImageToCloud(false); 
+            setUploadedImageUrls([]);
             setFileStorage(null)
             handleScrollToBottom()
         }
@@ -233,7 +237,6 @@ export default function ChatRooms() {
 
     const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputMessage(e.target.value)
-        console.log('handleOnTyping')
         sendTypingMessage(_userId, userId!)
     }
 
@@ -406,12 +409,6 @@ export default function ChatRooms() {
                     listImageUrl.push(imageUrl)
                 }
             }
-            if (listImageUrl.length > 0) {
-                setUploadedImageUrls(listImageUrl)
-                return true
-            } else {
-                return false
-            }
         }
 
         return listImageUrl
@@ -424,9 +421,10 @@ export default function ChatRooms() {
                     <div className="flex items-center justify-between border-b pb-4">
                         <div className="flex items-center">
                             <Avatar
+                                
                                 size={48}
                                 shape="square"
-                                src="/placeholder.svg?height=40&width=40"
+                                src={peerAvatar}
                             />
                             <div className="ml-3">
                                 <h2 className="text-base font-semibold text-secondarySupperDarker">

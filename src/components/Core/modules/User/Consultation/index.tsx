@@ -1,7 +1,16 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Layout, List, Avatar, Input, Button, Space, Typography, Modal } from 'antd'
+import {
+    Layout,
+    List,
+    Avatar,
+    Input,
+    Button,
+    Space,
+    Typography,
+    Modal,
+} from 'antd'
 import { House, Phone, PhoneOff, Send, Settings, User } from 'lucide-react'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import webStorageClient from '@/utils/webStorageClient'
@@ -49,12 +58,12 @@ export interface ChatRoomTransfer {
 }
 
 interface IncomingCallPopupProps {
-    isVisible: boolean;
-    callerName: string | null;
-    callerNumber: string | null;
-    avatar: string | null;
-    onAnswer: () => void;
-    onDecline: () => void;
+    isVisible: boolean
+    callerName: string | null
+    callerNumber: string | null
+    avatar: string | null
+    onAnswer: () => void
+    onDecline: () => void
 }
 
 export function IncomingCallPopup({
@@ -63,7 +72,7 @@ export function IncomingCallPopup({
     callerNumber,
     avatar,
     onAnswer,
-    onDecline
+    onDecline,
 }: IncomingCallPopupProps) {
     return (
         <Modal
@@ -71,7 +80,7 @@ export function IncomingCallPopup({
             footer={null}
             closable={false}
             centered
-            className='w-[400px] wave-effect'
+            className="wave-effect w-[400px]"
             modalRender={(modal) => (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -83,34 +92,43 @@ export function IncomingCallPopup({
                 </motion.div>
             )}
         >
-            <div className="flex flex-col items-center bg-gradient-to-b from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4">
-                    {avatar ? <img src={avatar} className="w-full h-full text-blue-500 object-cover rounded-full" /> : <User className="w-12 h-12 text-blue-500" />}
+            <div className="flex flex-col items-center rounded-t-lg bg-gradient-to-b from-blue-500 to-blue-600 p-6 text-white">
+                <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white">
+                    {avatar ? (
+                        <img
+                            src={avatar}
+                            className="h-full w-full rounded-full object-cover text-blue-500"
+                        />
+                    ) : (
+                        <User className="h-12 w-12 text-blue-500" />
+                    )}
                 </div>
-                <h2 className="text-2xl font-bold mb-1 text-center">{callerName}</h2>
+                <h2 className="mb-1 text-center text-2xl font-bold">
+                    {callerName}
+                </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="flex justify-around p-4 bg-gray-100 rounded-b-lg">
+            <div className="flex justify-around rounded-b-lg bg-gray-100 p-4">
                 <Button
                     type="primary"
                     shape="circle"
-                    icon={<Phone className="w-6 h-6" />}
+                    icon={<Phone className="h-6 w-6" />}
                     size="large"
-                    className="bg-green-500 hover:bg-green-600 border-none flex items-center justify-center w-12 h-12 rounded-full"
+                    className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-green-500 hover:bg-green-600"
                     onClick={onAnswer}
                 />
                 <Button
                     type="primary"
                     danger
                     shape="circle"
-                    icon={<PhoneOff className="w-6 h-6" />}
+                    icon={<PhoneOff className="h-6 w-6" />}
                     size="large"
-                    className="flex items-center justify-center w-12 h-12 rounded-full"
+                    className="flex h-12 w-12 items-center justify-center rounded-full"
                     onClick={onDecline}
                 />
             </div>
         </Modal>
-    );
+    )
 }
 
 export default function ConsultationComponent() {
@@ -132,7 +150,6 @@ export default function ConsultationComponent() {
         },
     )
 
-
     const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByUserQuery(
         undefined,
         {
@@ -145,9 +162,8 @@ export default function ConsultationComponent() {
         },
     )
 
-
     return (
-        <Layout className="flex h-[600px] flex-col bg-transparent overflow-y-hidden">
+        <Layout className="flex h-fit flex-col bg-transparent">
             <div className="relative mb-[85px] h-[150px]">
                 <Image
                     className="z-1 h-[100%] w-full rounded-2xl object-cover"
@@ -193,8 +209,8 @@ export default function ConsultationComponent() {
                     >
                         <Button
                             type="default"
-                            className="border border-secondaryDarker"
-                            icon={<House />}
+                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                            icon={<House size={18} />}
                             onClick={() =>
                                 router.push(
                                     `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
@@ -205,7 +221,7 @@ export default function ConsultationComponent() {
                         </Button>
                         <Button
                             type="default"
-                            className="border border-secondaryDarker"
+                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
                             icon={<Settings size={18} />}
                             onClick={() =>
                                 router.push(
@@ -216,8 +232,8 @@ export default function ConsultationComponent() {
                             Cài đặt
                         </Button>
                     </Space>
-                </div >
-            </div >
+                </div>
+            </div>
             <div className="flex w-full">
                 <ChatRooms
                     chatRooms={chatRoomResult}
@@ -225,20 +241,10 @@ export default function ConsultationComponent() {
                         setChatRoomTransfer({ chatRoomId, doctorId })
                     }
                 />
-                <div className="flex-1">
-                    {chatRoomTransfer?.chatRoomId ? (
-                        <ChatContent
-                            chatRoomId={chatRoomTransfer?.chatRoomId!}
-                            doctorId={chatRoomTransfer?.doctorId!}
-                        />
-                    ) : (
-                        <p className="mt-8 text-center text-xl text-[#9E9E9E]">
-                            Vui lòng chọn đoạn hội thoại để có thể được bác sĩ
-                            tư vấn trực tiếp
-                        </p>
-                    )}
+                <div className="w-[calc(100%-370px)]">
+                    <ChatContent />
                 </div>
             </div>
-        </Layout >
+        </Layout>
     )
 }
