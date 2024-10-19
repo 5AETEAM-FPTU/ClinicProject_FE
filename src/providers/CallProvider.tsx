@@ -142,12 +142,13 @@ export default function CallProvier({ children }: { children: React.ReactNode })
             clearInterval(timer);
         };
     }, [stringeeClient, call]);
+    const domain = process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://127.0.0.1:3000';
     return (
         <>
             {stringeeClient && <IncomingCallPopup avatar={callFrom && callFrom.avatar} isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
                 console.log(callFrom);
                 window.open(
-                    `http://127.0.0.1:3000/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}&peerAvatar=${callFrom?.avatar}&peerFullName=${callFrom?.displayName}&avatar=${avatar}&fullName=${fullName}`,
+                    `${domain}/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}&peerAvatar=${callFrom?.avatar}&peerFullName=${callFrom?.displayName}&avatar=${avatar}&fullName=${fullName}`,
                     '_blank', 'width=800,height=600');
                 setCall(null);
             }} onDecline={() => {

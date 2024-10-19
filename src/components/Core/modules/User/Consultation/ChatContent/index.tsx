@@ -175,7 +175,7 @@ export default function ChatRooms() {
             const result = await useGetChatContentByUserQuery({
                 lastReportDate: lastTimeMessage,
                 chatRoomId: chatRoomId!,
-                pageSize: 6,
+                pageSize: 10,
             })
             console.log(
                 'Continue fetching message => ',
