@@ -35,7 +35,7 @@ function Contact() {
     }
 
     return (
-        <div>
+        <div id='contact'>
             <CommonSection
                 title={'địa chỉ - thông tin - liên hệ'}
                 subtile={'Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng, Việt Nam'}

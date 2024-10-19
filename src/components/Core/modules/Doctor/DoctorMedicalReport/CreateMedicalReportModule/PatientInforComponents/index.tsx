@@ -1,5 +1,14 @@
 'use client'
-import { Avatar, Button, DatePicker, Form, Input, message, Select, Skeleton } from 'antd'
+import {
+    Avatar,
+    Button,
+    DatePicker,
+    Form,
+    Input,
+    message,
+    Select,
+    Skeleton,
+} from 'antd'
 import { FormProps } from 'antd/lib'
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -21,43 +30,44 @@ export default function PatientInforComponent({
 }: TProps) {
     const [isEditPatientInfor, setIsEditPatientInfor] = useState<boolean>(false)
     const [myForm] = Form.useForm()
-    const [updateMedicalReportPatientInformation, {isLoading, isSuccess}] = useUpdateMedicalReportPatientInformationMutation();
+    const [updateMedicalReportPatientInformation, { isLoading, isSuccess }] =
+        useUpdateMedicalReportPatientInformationMutation()
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
         // setIsEditPatientInfor(false)
         try {
             console.log(values)
             const data = {
                 ...values,
-                dob: values.dob ? dayjs(values.dob).format('YYYY-MM-DDTHH:mm:ss') : null,
-                patientId: payload?.patientId
+                dob: values.dob
+                    ? dayjs(values.dob).format('YYYY-MM-DDTHH:mm:ss')
+                    : null,
+                patientId: payload?.patientId,
             }
-            await updateMedicalReportPatientInformation(data).unwrap();
-            message.success("Cập nhật thành công!")
-            if(isSuccess) {
-                setIsEditPatientInfor(false)
-            }
-            refetch();
+            await updateMedicalReportPatientInformation(data).unwrap()
+            message.success('Cập nhật thành công!')
+            setIsEditPatientInfor(false)
+            refetch()
         } catch (error) {
-            message.error("Cập nhật thất bại!")
+            message.error('Cập nhật thất bại!')
         }
     }
     useEffect(() => {
-        myForm.setFieldsValue({ 
+        myForm.setFieldsValue({
             fullName: payload?.fullName,
             phoneNumber: payload?.phoneNumber,
             dob: payload?.dob !== null ? dayjs(payload?.dob) : null,
             gender: payload?.gender,
-            address: payload?.address
-         })
+            address: payload?.address,
+        })
     }, [payload])
 
     return (
         <div>
             {' '}
             {!isEditPatientInfor ? (
-                <motion.div className="flex flex-row items-center justify-between">
-                    <div className="flex flex-row items-center gap-20">
-                        <div className="flex flex-row items-center gap-10">
+                <motion.div className="flex flex-col items-center justify-between sm:flex-row">
+                    <div className="flex flex-col items-start sm:items-center gap-5 sm:flex-row sm:gap-20">
+                        <div className="flex flex-row items-center gap-5 sm:gap-10">
                             <div>
                                 {isFetching ? (
                                     <Avatar size={80} />
@@ -95,8 +105,8 @@ export default function PatientInforComponent({
                                 </p>
                             </div>
                         </div>
-                        <div className="flex flex-row gap-20">
-                            <div className="flex flex-col gap-2">
+                        <div className="flex flex-col sm:flex-row gap-5 sm:gap-20">
+                            <div className="flex flex-col gap-5 sm:gap-2">
                                 {isFetching ? (
                                     <Skeleton.Input className="w-[244px]" />
                                 ) : (
@@ -147,15 +157,10 @@ export default function PatientInforComponent({
                     </div>
                 </motion.div>
             ) : (
-                <motion.div className="flex w-full flex-row gap-10">
+                <motion.div className="flex w-full flex-col sm:flex-row gap-5 sm:gap-10">
                     <div className="flex flex-row gap-10">
                         <div>
-                            <Avatar
-                                size={80}
-                                src={
-                                    payload?.avatar
-                                }
-                            ></Avatar>
+                            <Avatar size={80} src={payload?.avatar}></Avatar>
                         </div>
                     </div>
                     <div className="w-full">
@@ -169,8 +174,8 @@ export default function PatientInforComponent({
                             }}
                             form={myForm}
                         >
-                            <div className="flex w-full flex-row justify-between">
-                                <div className="flex flex-row gap-10">
+                            <div className="flex w-full flex-col sm:gap-0 gap-5 sm:flex-row justify-between">
+                                <div className="flex flex-col sm:flex-row gap-5 sm:gap-10">
                                     <div className="flex flex-col gap-0">
                                         <Form.Item
                                             label="Tên bệnh nhân"
@@ -178,7 +183,7 @@ export default function PatientInforComponent({
                                         >
                                             <Input
                                                 placeholder="Nhập họ tên"
-                                                className="w-[240px]"
+                                                className="sm:w-[240px] w-full"
                                             ></Input>
                                         </Form.Item>
                                         <Form.Item
@@ -189,7 +194,7 @@ export default function PatientInforComponent({
                                             <DatePicker
                                                 size="large"
                                                 placeholder="Chọn ngày sinh"
-                                                className="w-[240px]"
+                                                className="sm:w-[240px] w-full"
                                             ></DatePicker>
                                         </Form.Item>
                                     </div>
@@ -200,7 +205,7 @@ export default function PatientInforComponent({
                                         >
                                             <Input
                                                 placeholder="Nhập địa chỉ"
-                                                className="w-[240px]"
+                                                className="sm:w-[240px] w-full"
                                             ></Input>
                                         </Form.Item>
                                         <Form.Item
@@ -209,9 +214,9 @@ export default function PatientInforComponent({
                                             style={{ marginBottom: '0px' }}
                                         >
                                             <Select
-                                                className="w-[240px]"
+                                                className="sm:w-[240px] w-full"
                                                 placeholder="Chọn giới tính"
-                                            >   
+                                            >
                                                 <Select.Option value="Khác">
                                                     Khác
                                                 </Select.Option>
@@ -232,12 +237,12 @@ export default function PatientInforComponent({
                                         >
                                             <Input
                                                 placeholder="Số điện thoại"
-                                                className="w-[240px]"
+                                                className="sm:w-[240px] w-full"
                                             ></Input>
                                         </Form.Item>
                                     </div>
                                 </div>
-                                <Form.Item>
+                                <Form.Item className='mb-0 flex justify-end '>
                                     <Button
                                         htmlType="submit"
                                         type="primary"

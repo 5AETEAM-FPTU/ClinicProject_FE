@@ -15,8 +15,8 @@ import InstagramLogo from '@public/landing/images/instagram.png'
 import BoCongThuong from '@public/landing/images/bocongthuong.webp'
 import DaDangKy from '@public/landing/images/dadangky.webp'
 
-
 import { motion } from 'framer-motion'
+import { Grid } from 'antd'
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -27,115 +27,117 @@ const irishGrover = Irish_Grover({
 function Footer() {
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
-
+    const screen = Grid.useBreakpoint()
     return (
         <div className="flex h-fit w-full flex-col justify-center">
-            <motion.div
-                initial={{
-                    y: 10,
-                    opacity: 0,
-                }}
-                whileInView={{
-                    y: 0,
-                    opacity: 1,
-                }}
-                transition={{
-                    type: 'spring',
-                    duration: 1,
-                    delay: 0.35,
-                }}
-                viewport={{
-                    once: true,
-                }}
-                className="relative h-[166px] w-full"
-            >
-                <div className="h-1/2 w-full bg-[#F7FCFE]"></div>
-                <div className="h-1/2 w-full bg-[#D8EBFA]"></div>
-                <div className="absolute left-0 top-0 flex h-full w-full justify-center">
-                    <div className="h-ful flex w-[1440px] max-w-[1440px] flex-col px-[80px]">
-                        <div className="h-[166px] w-full bg-none px-[20px]">
-                            <div className="relative h-full w-full overflow-hidden rounded-[20px] bg-black">
-                                <div className="h-[166px] w-[1240px] select-none">
-                                    <Image
-                                        src={ImageFooter}
-                                        width={1440}
-                                        alt="footerImg"
-                                        className="object-cover"
-                                    ></Image>
-                                </div>
-                                <div className="absolute left-0 top-0 flex h-full w-full flex-row">
-                                    <div className="flex h-full w-[80%] flex-col gap-3 p-[30px]">
-                                        <div>
-                                            <h1 className="text-[30px] font-bold leading-tight text-white">
-                                                {t('footer_banner_1')}
-                                            </h1>
-                                        </div>
-                                        <div className="flex flex-row items-center gap-5">
-                                            <h3 className="text-[20px] font-bold text-white">
-                                                {t('footer_banner_2')}
-                                            </h3>
-                                            <div className="flex flex-row items-center justify-center overflow-hidden rounded-[12px] bg-white p-[4px]">
-                                                <div className="h-[50px] w-[50px]">
-                                                    <Image
-                                                        src={QR}
-                                                        alt="QR"
-                                                        width={200}
-                                                        height={200}
-                                                        className="object-cover"
-                                                    ></Image>
-                                                </div>
-                                                <div className="h-[28px] w-[28px]">
-                                                    <Image
-                                                        src={ZaloLogo}
-                                                        alt="ZaloLogo"
-                                                        width={200}
-                                                        height={200}
-                                                        className="object-cover"
-                                                    ></Image>
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-row items-center justify-center overflow-hidden rounded-[12px] bg-white p-[4px]">
-                                                <div className="h-[50px] w-[50px]">
-                                                    <Image
-                                                        src={QR}
-                                                        alt="QR"
-                                                        width={200}
-                                                        height={200}
-                                                        className="object-cover"
-                                                    ></Image>
-                                                </div>
-                                                <div className="h-[32px] w-[32px]">
-                                                    <Image
-                                                        src={FacebookLogo}
-                                                        alt="FacebookLogo"
-                                                        width={200}
-                                                        height={200}
-                                                        className="object-cover"
-                                                    ></Image>
-                                                </div>
-                                            </div>
-                                            <div className="">
-                                                <h3 className="rounded-xl bg-white px-[20px] py-[12px] text-center text-[16px] font-bold text-secondaryDark">
-                                                    {t('footer_banner_3')}
-                                                </h3>
-                                            </div>
-                                        </div>
+            {screen.md && (
+                <motion.div
+                    initial={{
+                        y: 10,
+                        opacity: 0,
+                    }}
+                    whileInView={{
+                        y: 0,
+                        opacity: 1,
+                    }}
+                    transition={{
+                        type: 'spring',
+                        duration: 1,
+                        delay: 0.35,
+                    }}
+                    viewport={{
+                        once: true,
+                    }}
+                    className="relative h-[166px] w-full"
+                >
+                    <div className="h-1/2 w-full bg-[#F7FCFE]"></div>
+                    <div className="h-1/2 w-full bg-[#D8EBFA]"></div>
+                    <div className="absolute left-0 top-0 flex h-full w-full justify-center">
+                        <div className="h-ful flex w-[1440px] max-w-[1440px] flex-col px-[80px]">
+                            <div className="h-[166px] w-full bg-none px-[20px]">
+                                <div className="relative h-full w-full overflow-hidden rounded-[20px] bg-black">
+                                    <div className="h-[166px] w-[1240px] select-none">
+                                        <Image
+                                            src={ImageFooter}
+                                            width={1440}
+                                            alt="footerImg"
+                                            className="object-cover"
+                                        ></Image>
                                     </div>
-                                    <div className="flex h-full w-[20%] items-center justify-center">
-                                        <div className="h-[180px] w-[167px]">
-                                            <Image
-                                                src={FemaleDoctor}
-                                                alt="FemaleDoctor"
-                                                className="object-cover"
-                                            ></Image>
+                                    <div className="absolute left-0 top-0 flex h-full w-full flex-row">
+                                        <div className="flex h-full w-[80%] flex-col gap-3 p-[30px]">
+                                            <div>
+                                                <h1 className="text-[30px] font-bold leading-tight text-white">
+                                                    {t('footer_banner_1')}
+                                                </h1>
+                                            </div>
+                                            <div className="flex flex-row items-center gap-5">
+                                                <h3 className="text-[20px] font-bold text-white">
+                                                    {t('footer_banner_2')}
+                                                </h3>
+                                                <div className="flex flex-row items-center justify-center overflow-hidden rounded-[12px] bg-white p-[4px]">
+                                                    <div className="h-[50px] w-[50px]">
+                                                        <Image
+                                                            src={QR}
+                                                            alt="QR"
+                                                            width={200}
+                                                            height={200}
+                                                            className="object-cover"
+                                                        ></Image>
+                                                    </div>
+                                                    <div className="h-[28px] w-[28px]">
+                                                        <Image
+                                                            src={ZaloLogo}
+                                                            alt="ZaloLogo"
+                                                            width={200}
+                                                            height={200}
+                                                            className="object-cover"
+                                                        ></Image>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-row items-center justify-center overflow-hidden rounded-[12px] bg-white p-[4px]">
+                                                    <div className="h-[50px] w-[50px]">
+                                                        <Image
+                                                            src={QR}
+                                                            alt="QR"
+                                                            width={200}
+                                                            height={200}
+                                                            className="object-cover"
+                                                        ></Image>
+                                                    </div>
+                                                    <div className="h-[32px] w-[32px]">
+                                                        <Image
+                                                            src={FacebookLogo}
+                                                            alt="FacebookLogo"
+                                                            width={200}
+                                                            height={200}
+                                                            className="object-cover"
+                                                        ></Image>
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <h3 className="rounded-xl bg-white px-[20px] py-[12px] text-center text-[16px] font-bold text-secondaryDark">
+                                                        {t('footer_banner_3')}
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex h-full w-[20%] items-center justify-center">
+                                            <div className="h-[180px] w-[167px]">
+                                                <Image
+                                                    src={FemaleDoctor}
+                                                    alt="FemaleDoctor"
+                                                    className="object-cover"
+                                                ></Image>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </motion.div>
+                </motion.div>
+            )}
 
             <motion.div
                 initial={{
@@ -154,10 +156,10 @@ function Footer() {
                 viewport={{
                     once: true,
                 }}
-                className="relative flex h-fit w-full justify-center bg-[#D8EBFA] pb-[60px] pt-[40px]"
+                className="relative flex h-fit w-full justify-start bg-[#D8EBFA] pb-[60px] pt-[40px] sm:justify-center"
             >
-                <div className="w-[1440px] px-[80px]">
-                    <div className="flex flex-row justify-between">
+                <div className="w-full px-5 sm:w-[1440px] sm:px-[80px]">
+                    <div className="flex flex-col justify-between gap-5 sm:flex-row sm:gap-0">
                         <div className="flex flex-col gap-[15px]">
                             <div className="flex flex-col gap-[25px]">
                                 <h1
@@ -388,7 +390,7 @@ function Footer() {
                 </div>
             </motion.div>
             <div className="flex h-fit w-full justify-center bg-secondaryDark py-4">
-                <div className="flex w-[1440px] max-w-[1440px] items-center justify-center">
+                <div className="flex w-[1440px] max-w-[1440px] items-center justify-center px-5 sm:px-0">
                     <p className="text-white">
                         {`${t('liences')}`} © 2024, All Rights Reserved
                     </p>

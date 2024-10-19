@@ -1,7 +1,6 @@
 'use client'
 import { medicalReportEndpoint, serviceEndpoint } from '@/settings/endpoints'
 import { baseApi } from '../base'
-import { AnyAaaaRecord } from 'dns'
 
 export const medicalReportApi = baseApi.injectEndpoints({
     endpoints: (build) => ({

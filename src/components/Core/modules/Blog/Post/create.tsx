@@ -95,7 +95,7 @@ export default function BlogPostCreation() {
     };
 
     return (
-        <Form form={form} onFinish={handlePublish} className="mx-auto p-6 space-y-6 bg-gray-100">
+        <Form form={form} onFinish={handlePublish} className="mx-auto space-y-6">
             <Form.Item name="title" validateTrigger="onBlur" rules={[{ required: true, message: "Tiêu đề không được trống" }]}>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Tiêu đề:</label>

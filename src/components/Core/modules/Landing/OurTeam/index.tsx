@@ -109,7 +109,7 @@ function OurTeam() {
     ]
     return (
         <div
-            
+            id='our-team'
         >
             <CommonSection
                 title={'đội ngũ tại p-linic'}

@@ -56,17 +56,17 @@ export default function MainMedicalReportViewInformation({
                     </div>
                 </div>
                 <div className="flex w-full flex-col gap-5">
-                    <div className="flex h-fit w-full flex-row gap-5">
+                    <div className="flex h-fit w-full flex-col sm:flex-row gap-5">
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     {' '}
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Tiền sử bệnh án
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.medicalHistory
                                             ? payload?.medicalHistory
                                             : 'Chưa có thông tin'}
@@ -76,14 +76,14 @@ export default function MainMedicalReportViewInformation({
                         </div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     {' '}
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Tổng trạng chung
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.generalCondition
                                             ? payload?.generalCondition
                                             : 'Chưa có thông tin'}
@@ -93,14 +93,14 @@ export default function MainMedicalReportViewInformation({
                         </div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     {' '}
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Chiều cao
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.height
                                             ? payload?.height
                                             : 'Chưa có thông tin'}
@@ -110,13 +110,13 @@ export default function MainMedicalReportViewInformation({
                         </div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Cân nặng
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.weight
                                             ? payload?.weight
                                             : 'Chưa có thông tin'}
@@ -125,16 +125,16 @@ export default function MainMedicalReportViewInformation({
                             )}
                         </div>
                     </div>
-                    <div className="flex h-fit w-full flex-row gap-5">
+                    <div className="flex h-fit w-full flex-col sm:flex-row gap-5">
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Mạch
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.pulse
                                             ? payload?.pulse
                                             : 'Chưa có thông tin'}
@@ -144,14 +144,14 @@ export default function MainMedicalReportViewInformation({
                         </div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     {' '}
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Nhiệt
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.temperature
                                             ? payload?.temperature
                                             : 'Chưa có thông tin'}
@@ -161,13 +161,13 @@ export default function MainMedicalReportViewInformation({
                         </div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Huyết áp
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker">
                                         {payload?.bloodPressure
                                             ? payload?.bloodPressure
                                             : 'Chưa có thông tin'}
@@ -179,20 +179,20 @@ export default function MainMedicalReportViewInformation({
                     <div>
                         <div className="flex flex-col">
                             {isFetching ? (
-                                <Skeleton.Input className="w-[224px]" />
+                                <Skeleton.Input className="sm:w-[224px] w-full" />
                             ) : (
                                 <>
                                     {' '}
                                     <span className="text-[12px] text-secondarySupperDarker">
                                         Chuẩn đoán
                                     </span>
-                                    <p className="w-[224px] rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: payload?.diagnosis ? payload?.diagnosis : 'Chưa có thông tin' }}>
+                                    <p className="sm:w-[224px] w-full rounded-[6px] bg-[#E9ECEF] px-[10px] py-[4px] text-[12px] font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: payload?.diagnosis ? payload?.diagnosis : 'Chưa có thông tin' }}>
                                     </p>
                                 </>
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-row gap-5">
+                    <div className="flex flex-col sm:flex-row gap-5">
                         <Button
                             type="primary"
                             className="rounded-xl bg-secondaryDark !p-[20px] font-semibold shadow-third"
