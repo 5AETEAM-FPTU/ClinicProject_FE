@@ -32,6 +32,7 @@ export default function ChatRooms({
         <div className="min-w-[350px]">
             <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">
                 <List
+                    className='max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
                     dataSource={chatRooms}
                     renderItem={(doctor) => {

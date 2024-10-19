@@ -36,6 +36,7 @@ export default function ChatRooms({
                 className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third"
             >
                 <List
+                    className='max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
                     dataSource={chatRooms}
                     renderItem={(user) => {
@@ -44,7 +45,8 @@ export default function ChatRooms({
                             user.userId === userId;
 
                         return (
-                            <List.Item
+                           <>
+                             <List.Item
                                 onClick={() => {
                                     handleChangeRoute(user.chatRoomId, user.userId, user.avatar)
                                 }}
@@ -85,6 +87,8 @@ export default function ChatRooms({
                                     }
                                 />
                             </List.Item>
+                           
+                           </>
                         )
                     }}
                 />

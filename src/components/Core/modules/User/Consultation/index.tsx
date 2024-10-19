@@ -33,7 +33,6 @@ import {
 import dayjs from 'dayjs'
 import ChatContent from './ChatContent'
 import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
-
 const { Text } = Typography
 
 export interface ChatRoom {
@@ -83,29 +82,18 @@ export function IncomingCallPopup({
     }, [isVisible])
     const handleAnswer = () => {
         if (audioRef.current) {
-            audioRef.current.pause()
-            audioRef.current.currentTime = 0
+            audioRef.current.pause()  
+            audioRef.current.currentTime = 0 
         }
-        onAnswer()
+        onAnswer() 
     }
-
-    useEffect(() => {
-        if (audioRef.current && isVisible) {
-            audioRef.current.muted = false;
-            audioRef.current.play()
-        } else if (audioRef.current && !isVisible) {
-            audioRef.current.muted = true;
-            audioRef.current.pause()
-            audioRef.current.currentTime = 0
-        }
-    }, [isVisible])
 
     const handleDecline = () => {
         if (audioRef.current) {
-            audioRef.current.pause()
-            audioRef.current.currentTime = 0
+            audioRef.current.pause()  
+            audioRef.current.currentTime = 0  
         }
-        onDecline()
+        onDecline() 
     }
 
     return (
@@ -142,7 +130,7 @@ export function IncomingCallPopup({
                 </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-secondaryDark p-4">
+            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-seco p-4">
                 <audio
                     ref={audioRef}
                     preload="auto"

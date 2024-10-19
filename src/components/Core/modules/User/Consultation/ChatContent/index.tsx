@@ -427,28 +427,14 @@ export default function ChatRooms() {
                                 </p>
                             </div>
                         </div>
-                        <Button
+                        {/* <Button
                             className="shadow-third"
                             icon={<Settings className="h-4 w-4" />}
                             type="text"
                         >
                             Cài đặt
-                        </Button>
+                        </Button> */}
                     </div>
-                    {isFetching &&
-                        messages.length === 0 &&
-                        Array.from({ length: 6 }).map(() => (
-                            <>
-                                <Skeleton.Button
-                                    active
-                                    size={'large'}
-                                    shape={'round'}
-                                    block
-                                    className="my-[5px]"
-                                />
-                            </>
-                        ))}
-
                     <div
                         ref={divRef}
                         className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4 pb-0"

@@ -457,19 +457,6 @@ export default function ChatRooms() {
                                 </Button>
                             </div>
                         </div>
-                        {isFetching &&
-                            messages.length === 0 &&
-                            Array.from({ length: 6 }).map(() => (
-                                <>
-                                    <Skeleton.Button
-                                        active
-                                        size={'default'}
-                                        shape={'round'}
-                                        block
-                                        className="my-[5px]"
-                                    />
-                                </>
-                            ))}
 
                         <div
                             ref={divRef}
