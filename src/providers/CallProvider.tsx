@@ -78,6 +78,12 @@ export default function CallProvier({ children }: { children: React.ReactNode })
             console.log('on otherdeviceauthen:' + JSON.stringify(data));
         });
 
+        client.on('custommessage', function (msg: any) {
+            if (msg.message.requestClosePopUp) {
+                setCall(null);
+            }
+        });
+
         client.connect(callAccessToken);
 
         return () => {

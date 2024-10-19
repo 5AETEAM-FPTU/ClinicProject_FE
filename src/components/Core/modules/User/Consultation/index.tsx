@@ -33,6 +33,7 @@ import {
 import dayjs from 'dayjs'
 import ChatContent from './ChatContent'
 import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
+
 const { Text } = Typography
 
 export interface ChatRoom {
@@ -82,18 +83,18 @@ export function IncomingCallPopup({
     }, [isVisible])
     const handleAnswer = () => {
         if (audioRef.current) {
-            audioRef.current.pause()  
-            audioRef.current.currentTime = 0 
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
         }
-        onAnswer() 
+        onAnswer()
     }
 
     const handleDecline = () => {
         if (audioRef.current) {
-            audioRef.current.pause()  
-            audioRef.current.currentTime = 0  
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
         }
-        onDecline() 
+        onDecline()
     }
 
     return (
