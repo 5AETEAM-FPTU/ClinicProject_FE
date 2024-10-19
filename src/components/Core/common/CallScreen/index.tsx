@@ -55,6 +55,11 @@ export default function VideoCall() {
         client.on("incomingcall2", (incomingCall: any) => {
             if (call) return;
             console.log("Incoming call: ", incomingCall);
+            if (searchParams.get("video") === "on") incomingCall.enableLocalVideo(true);
+            else {
+                incomingCall.enableLocalVideo(true);
+                incomingCall.enableLocalVideo(false);
+            }
             setCall(incomingCall);
             incomingCall.answer((res: any) => {
                 console.log("Answer call response: ", res);
@@ -168,11 +173,16 @@ export default function VideoCall() {
             isVideoCall: searchParams.get("video") === "on",
         };
         if (client) {
-            const newCall = new StringeeCall2(client, JSON.stringify(from), to, isVideoOn);
+            const newCall = new StringeeCall2(client, JSON.stringify(from), to, true);
             setCall(newCall);
             handleCallEvents(newCall);
 
             newCall.makeCall((res: any) => {
+                if (searchParams.get("video") === "on") newCall.enableLocalVideo(true);
+                else {
+                    newCall.enableLocalVideo(true);
+                    newCall.enableLocalVideo(false);
+                }
                 console.log("Make call response: ", res);
             });
         }
