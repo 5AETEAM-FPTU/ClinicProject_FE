@@ -52,6 +52,7 @@ interface IncomingCallPopupProps {
     isVisible: boolean;
     callerName: string | null;
     callerNumber: string | null;
+    avatar: string | null;
     onAnswer: () => void;
     onDecline: () => void;
 }
@@ -60,6 +61,7 @@ export function IncomingCallPopup({
     isVisible,
     callerName,
     callerNumber,
+    avatar,
     onAnswer,
     onDecline
 }: IncomingCallPopupProps) {
@@ -83,9 +85,9 @@ export function IncomingCallPopup({
         >
             <div className="flex flex-col items-center bg-gradient-to-b from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4">
-                    <User className="w-12 h-12 text-blue-500" />
+                    {avatar ? <img src={avatar} className="w-full h-full text-blue-500 object-cover rounded-full" /> : <User className="w-12 h-12 text-blue-500" />}
                 </div>
-                <h2 className="text-2xl font-bold mb-1">{callerName}</h2>
+                <h2 className="text-2xl font-bold mb-1 text-center">{callerName}</h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
             <div className="flex justify-around p-4 bg-gray-100 rounded-b-lg">
@@ -216,27 +218,27 @@ export default function ConsultationComponent() {
                     </Space>
                 </div >
             </div >
-        <div className="flex w-full">
-            <ChatRooms
-                chatRooms={chatRoomResult}
-                setChatRoomTransfer={(chatRoomId, doctorId) =>
-                    setChatRoomTransfer({ chatRoomId, doctorId })
-                }
-            />
-            <div className="flex-1">
-                {chatRoomTransfer?.chatRoomId ? (
-                    <ChatContent
-                        chatRoomId={chatRoomTransfer?.chatRoomId!}
-                        doctorId={chatRoomTransfer?.doctorId!}
-                    />
-                ) : (
-                    <p className="mt-8 text-center text-xl text-[#9E9E9E]">
-                        Vui lòng chọn đoạn hội thoại để có thể được bác sĩ
-                        tư vấn trực tiếp
-                    </p>
-                )}
+            <div className="flex w-full">
+                <ChatRooms
+                    chatRooms={chatRoomResult}
+                    setChatRoomTransfer={(chatRoomId, doctorId) =>
+                        setChatRoomTransfer({ chatRoomId, doctorId })
+                    }
+                />
+                <div className="flex-1">
+                    {chatRoomTransfer?.chatRoomId ? (
+                        <ChatContent
+                            chatRoomId={chatRoomTransfer?.chatRoomId!}
+                            doctorId={chatRoomTransfer?.doctorId!}
+                        />
+                    ) : (
+                        <p className="mt-8 text-center text-xl text-[#9E9E9E]">
+                            Vui lòng chọn đoạn hội thoại để có thể được bác sĩ
+                            tư vấn trực tiếp
+                        </p>
+                    )}
+                </div>
             </div>
-        </div>
         </Layout >
     )
 }
