@@ -89,6 +89,17 @@ export function IncomingCallPopup({
         onAnswer()
     }
 
+    useEffect(() => {
+        if (audioRef.current && isVisible) {
+            audioRef.current.muted = false;
+            audioRef.current.play()
+        } else if (audioRef.current && !isVisible) {
+            audioRef.current.muted = true;
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+        }
+    }, [isVisible])
+
     const handleDecline = () => {
         if (audioRef.current) {
             audioRef.current.pause()

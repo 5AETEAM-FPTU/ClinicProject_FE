@@ -283,7 +283,7 @@ export default function VideoCall() {
                 console.log("Đã có stream từ camera/micro", stream);
                 // Bạn có thể dùng stream này để thực hiện cuộc gọi video
             } else {
-                client?.disconnect();
+                (client as any).disconnect();
                 console.log("Người dùng không cấp quyền hoặc không có thiết bị.");
             }
         });
