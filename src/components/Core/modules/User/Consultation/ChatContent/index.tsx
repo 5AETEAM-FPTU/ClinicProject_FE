@@ -409,7 +409,8 @@ export default function ChatRooms() {
         }
         return listImageUrl
     }
-
+    const peername = searchParams.get('peerName');
+    const title = searchParams.get('title');    
     return (
         <div>
             {
@@ -420,10 +421,10 @@ export default function ChatRooms() {
                             <Avatar size={48} shape="square" src={peerAvatar} />
                             <div className="ml-3">
                                 <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                    Tư vấn khám tổng quát
+                                    {title}
                                 </h2>
                                 <p className="text-[14px] text-secondarySupperDarker">
-                                    Bác sĩ: ...
+                                    Bác sĩ: {peername}
                                 </p>
                             </div>
                         </div>

@@ -17,15 +17,15 @@ export default function ChatRooms({
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
 
-    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string) => {
-        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt)
+    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullname: string, title: string) => {
+        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullname + '&title=' + title)
     }
-    const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string) => {
-        handleChangeRoute(chatRoomId, userId, peerAvt)
+    const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string,  fullname: string, title: string) => {
+        handleChangeRoute(chatRoomId, userId, peerAvt, fullname, title)
     }
     useEffect(() => {
         if(chatRooms?.length > 0) {
-            handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.doctorId, chatRooms[0]?.avatar)
+            handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.doctorId, chatRooms[0]?.avatar, chatRooms[0]?.fullName, chatRooms[0]?.title)
         }
     }, [chatRooms])
     return (
@@ -46,7 +46,9 @@ export default function ChatRooms({
                                     handleChangeRoute(
                                         doctor.chatRoomId,
                                         doctor.doctorId,
-                                        doctor.avatar
+                                        doctor.avatar,
+                                        doctor.fullName,
+                                        doctor.title
                                     )
                                 }}
                                 className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'} transition-all duration-500 ease-in-out`}
@@ -70,9 +72,7 @@ export default function ChatRooms({
                                         <span
                                             className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
                                         >
-                                            {doctor.isEndConversation
-                                                ? 'Đã kết thúc'
-                                                : 'Bác sĩ tư vấn trực tuyến'}
+                                            {doctor.title}
                                         </span>
                                     }
                                 />

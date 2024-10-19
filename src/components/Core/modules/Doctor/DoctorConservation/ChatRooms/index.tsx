@@ -3,6 +3,7 @@ import { Avatar, Layout, List } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
 import { useEffect } from 'react'
+import { useAppDispatch } from '@/hooks/redux-toolkit'
 
 const { Sider, Content } = Layout
 
@@ -17,18 +18,20 @@ export default function ChatRooms({
     const searchParams = useSearchParams();
     const chatRoomId = searchParams.get('chat');
     const userId = searchParams.get('user');
+    const dispatch = useAppDispatch();
 
-    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string) => {
-        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt )
+    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string, fullName:string, title: string) => {
+       
+        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt+ '&peerName=' + fullName + '&title=' + title)
     }
     const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string) => {
-        handleChangeRoute(chatRoomId, userId, peerAvt)
+        handleChangeRoute(chatRoomId, userId, peerAvt, '', '')
     }
-    useEffect(() => {
-        if(chatRooms?.length > 0) {
-            handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.userId, chatRooms[0]?.avatar)
-        }
-    }, [chatRooms])
+    // useEffect(() => {
+    //     if(chatRooms?.length > 0) {
+    //         handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.userId, chatRooms[0]?.avatar)
+    //     }
+    // }, [chatRooms])
 
     return (
         <div className='min-w-[350px]'>
@@ -48,7 +51,7 @@ export default function ChatRooms({
                            <>
                              <List.Item
                                 onClick={() => {
-                                    handleChangeRoute(user.chatRoomId, user.userId, user.avatar)
+                                    handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
                                 }}
                                 className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r
                                     ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'}
@@ -80,9 +83,7 @@ export default function ChatRooms({
                                                 transition-all duration-500 ease-in-out
                                             `}
                                         >
-                                            {user.isEndConversation
-                                                ? 'Đã kết thúc'
-                                                : 'Bác sĩ tư vấn trực tuyến'}
+                                            {user.title ? user.title : 'Không có tiêu đề'}
                                         </span>
                                     }
                                 />

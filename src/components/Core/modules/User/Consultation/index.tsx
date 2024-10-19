@@ -41,6 +41,7 @@ export interface ChatRoom {
     fullName: string
     isEndConversation: boolean
     avatar: string
+    title: string
 }
 
 export interface UserInformationChatRoom {
