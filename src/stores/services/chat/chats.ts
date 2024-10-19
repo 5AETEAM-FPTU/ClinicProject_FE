@@ -68,6 +68,33 @@ export const chats = baseApi.injectEndpoints({
                 method: 'DELETE',
             }),
         }),
+        getAllQueueRooms: build.query<
+            any,
+            { pageIndex: number, pageSize: number, }
+        >({
+            query: (params) => ({
+                url:
+                    chatEndpoint.GET_ALL_QUEUE_ROOM +
+                    '?' +
+                    `${params.pageIndex ? `pageIndex=${params.pageIndex}&` : ''}` +
+                    `${params.pageSize ? `pageSize=${params.pageSize}` : ''}`,
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: false },
+            }),
+        }),
+        addChatRoom: build.mutation<any, { patientId: string; queueRoomId: string; initialMessage: string }>({
+            query: ({ patientId, queueRoomId, initialMessage }) => ({
+                url: `${chatEndpoint.ADD_CHAT_ROOM}`,
+                flashError: true,
+                body: {
+                    patientId: patientId,
+                    queueRoomId: queueRoomId,
+                    initialMessage: initialMessage
+                },
+                method: 'POST',
+            }),
+        }),
     }),
 })
 
@@ -78,5 +105,7 @@ export const {
     useGetChatRoomByUserQuery,
     useLazyGetChatContentByChatRoomQuery,
     useRemoveChatContentByIdMutation,
-    useGetChatRoomByDoctorQuery
+    useGetChatRoomByDoctorQuery,
+    useLazyGetAllQueueRoomsQuery,
+    useAddChatRoomMutation
 } = chats
