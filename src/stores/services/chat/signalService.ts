@@ -14,7 +14,7 @@ interface ChatContent {
 
 const createChatService = () => {
     let connection: signalR.HubConnection
-
+    const hub = process.env.NEXT_PUBLIC_API_SERVER ?? "https://localhost:7161"
     const startConnection = async (
         token: string,
         onMessageReceived: (content: ChatContent) => void,
@@ -29,7 +29,7 @@ const createChatService = () => {
         }
 
         connection = new signalR.HubConnectionBuilder()
-            .withUrl('https://localhost:7161/chat-hub?token=' + token)
+            .withUrl(hub + '/chat-hub?token=' + token)
             .withAutomaticReconnect()
             .build()
 

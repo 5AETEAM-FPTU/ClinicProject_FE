@@ -20,7 +20,7 @@ export default function CallComponent({ to, toAvatar, toFullName }: { to: string
         setUserId(userId);
     }, []);
     console.log(to);
-    const domain = process.env.NEXT_PUBLIC_DOMAIN ?? 'http://127.0.0.1:3000';
+    const domain = process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://127.0.0.1:3000';
     return (
         <>
             <Button onClick={() => {
