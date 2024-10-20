@@ -17,6 +17,7 @@ import {
 import {
     CircleX,
     EllipsisVertical,
+    GripVertical,
     Paperclip,
     Phone,
     Send,
@@ -40,6 +41,7 @@ import MessageFileShower from './ImageFileShower'
 import { cn } from '@/lib/utils'
 import { BeatLoader } from 'react-spinners'
 import { motion } from 'framer-motion'
+import { useAppSelector } from '@/hooks/redux-toolkit'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -178,7 +180,7 @@ export default function ChatRooms() {
             const result = await useGetChatContentByUserQuery({
                 lastReportDate: lastTimeMessage,
                 chatRoomId: chatRoomId!,
-                pageSize: 6,
+                pageSize: 10,
             })
             console.log(
                 'Continue fetching message => ',
@@ -420,7 +422,8 @@ export default function ChatRooms() {
     useEffect(() => {
         handleScrollToBottom()
     }, [isTyping])
-
+    const peername = searchParams.get('peerName')
+    const title = searchParams.get('title')
     return (
         <div>
             {chatRoomId && userId ? (
@@ -435,10 +438,10 @@ export default function ChatRooms() {
                                 />
                                 <div className="ml-3">
                                     <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                        Tư vấn khám tổng quát
+                                        {title}
                                     </h2>
                                     <p className="text-[14px] text-secondarySupperDarker">
-                                        Bác sĩ: ...
+                                        {peername}
                                     </p>
                                 </div>
                             </div>
@@ -448,28 +451,26 @@ export default function ChatRooms() {
                                     toAvatar={`https://i.ibb.co/3yY77Yd/istockphoto-1288538088-612x612.jpg`}
                                     toFullName={'Nguyễn Văn Quốc Đạt'}
                                 />
-                                <Button
-                                    className="shadow-third"
-                                    icon={<Settings className="h-4 w-4" />}
-                                    type="text"
+                                <Popover
+                                    trigger={'click'}
+                                    content={
+                                        <div  className="flex flex-col gap-2">
+                                            <Button danger type="text">
+                                                Xóa cuộc trò chuyện
+                                            </Button>
+                                        </div>
+                                    }
                                 >
-                                    Cài đặt
-                                </Button>
+                                    <Button
+                                        className="shadow-third"
+                                        icon={
+                                            <GripVertical className="h-4 w-4" />
+                                        }
+                                        type="text"
+                                    ></Button>
+                                </Popover>
                             </div>
                         </div>
-                        {isFetching &&
-                            messages.length === 0 &&
-                            Array.from({ length: 6 }).map(() => (
-                                <>
-                                    <Skeleton.Button
-                                        active
-                                        size={'default'}
-                                        shape={'round'}
-                                        block
-                                        className="my-[5px]"
-                                    />
-                                </>
-                            ))}
 
                         <div
                             ref={divRef}

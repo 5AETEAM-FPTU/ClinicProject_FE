@@ -9,13 +9,14 @@ import {
     PhoneOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import { StringeeClient, StringeeCall2 } from "stringee";
+import { StringeeClient, StringeeCall2, StringeeUtil } from "stringee";
 import { useSearchParams } from "next/navigation";
 import { Mic, MicOff, Phone, Video, VideoOff } from "lucide-react";
 
 const { Header, Footer, Content } = Layout;
 
 export default function VideoCall() {
+    const [isAllowed, setIsAllowed] = useState(false);
     const searchParams = useSearchParams();
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoOn, setIsVideoOn] = useState(searchParams.get("video") === "on");
@@ -30,6 +31,34 @@ export default function VideoCall() {
     const [selfConnected, setSelfConnected] = useState(false);
     const [isEndCall, setIsEndCall] = useState(false);
 
+    const checkMediaPermissions = async () => {
+        console.log("support ? : ", StringeeUtil.isWebRTCSupported());
+
+        if (!StringeeUtil.isWebRTCSupported()) {
+            message.error("Trình duyệt không hỗ trợ cuộc gọi video");
+            return <div>Trình duyệt không hỗ trợ cuộc gọi video</div>;
+        }
+
+        try {
+            // Đợi người dùng cấp quyền truy cập micro và camera
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            console.log("Micro và camera đã được cấp quyền.");
+            // Khi người dùng cho phép, bạn có thể tiếp tục với logic cuộc gọi video
+            return stream;  // Trả về stream video/audio để dùng tiếp trong ứng dụng
+        } catch (err: any) {
+            // Xử lý lỗi nếu người dùng từ chối hoặc không có thiết bị
+            console.error("Lỗi khi yêu cầu quyền truy cập micro/camera: ", err);
+            if (err.name === "NotAllowedError") {
+                message.error("Bạn cần cho phép truy cập micro và camera để thực hiện cuộc gọi video.");
+            } else if (err.name === "NotFoundError") {
+                message.error("Không tìm thấy thiết bị micro hoặc camera.");
+            } else {
+                message.error("Đã xảy ra lỗi khi yêu cầu quyền truy cập micro/camera.");
+            }
+            return null;  // Trả về null nếu không có quyền truy cập
+        }
+    };
+
     // Ref for managing local and remote video elements
     const localVideoRef = useRef<HTMLDivElement>(null);
     const remoteVideoRef = useRef<HTMLDivElement>(null);
@@ -37,6 +66,7 @@ export default function VideoCall() {
     const localVoiceRef = useRef<HTMLVideoElement>(null);
     const remoteVoiceRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
+        if (!isAllowed) return;
         const client = new StringeeClient();
         setClient(client);
 
@@ -83,7 +113,7 @@ export default function VideoCall() {
         return () => {
             client.disconnect();
         };
-    }, []);
+    }, [isAllowed]);
 
     const handleCallEvents = (call: any) => {
         if (!call) return;
@@ -144,13 +174,6 @@ export default function VideoCall() {
                 message.error("Người dùng ngắt kết nối");
                 endCall();
             }
-            // if (searchParams.get("video") === "on") call.enableLocalVideo(true);
-            // else {
-            //     call.enableLocalVideo(true);
-            //     setTimeout(() => {
-            //         call.enableLocalVideo(false);
-            //     }, 700);
-            // }
             setConnected(data.isConnected);
         });
 
@@ -162,8 +185,20 @@ export default function VideoCall() {
                 setIsEndCall(true);
             } else if (state.code === 5) {
                 message.error("Từ chối cuộc gọi");
+                (client as any).sendCustomMessage(to, { requestClosePopUp: true }, (res: any) => {
+                    if (res.userNotOnline) {
+                        message.error("Người dùng ngắt kết nối");
+                    }
+                })
                 setIsEndCall(true);
                 setCall(null);
+            } else if (state.code === 3) {
+                (client as any).sendCustomMessage(to, { requestClosePopUp: true }, (res: any) => {
+                    if (res.userNotOnline) {
+                        message.error("Người dùng ngắt kết nối");
+                        endCall();
+                    }
+                })
             }
         });
 
@@ -179,6 +214,7 @@ export default function VideoCall() {
     };
 
     const makeCall = () => {
+        if (!isAllowed) return;
         if (!searchParams.get("isCaller")) return;
         console.log(searchParams.get("avatar"));
         const from = {
@@ -227,7 +263,7 @@ export default function VideoCall() {
             makeCall();
             console.log("Make call");
         }
-    });
+    }, [selfConnected, isEndCall, isAllowed]);
 
     const endCall = () => {
         if (call) {
@@ -239,7 +275,20 @@ export default function VideoCall() {
             setIsEndCall(true);
         }
     };
-
+    if (!isAllowed) {
+        checkMediaPermissions().then((stream) => {
+            if (stream) {
+                setIsAllowed(true);
+                // Thực hiện các thao tác khi đã có quyền truy cập micro/camera
+                console.log("Đã có stream từ camera/micro", stream);
+                // Bạn có thể dùng stream này để thực hiện cuộc gọi video
+            } else {
+                (client as any).disconnect();
+                console.log("Người dùng không cấp quyền hoặc không có thiết bị.");
+            }
+        });
+        return <div>Bạn chưa cho phép trình duyệt truy cập microphone và camera</div>;
+    }
     return isEndCall ? (
         <Layout className="h-screen">
             <Content className="p-4 bg-gray-100">
@@ -302,7 +351,7 @@ export default function VideoCall() {
                 <div className="flex items-center justify-center gap-2">
                     <Button
                         className="text-secondaryDarker hover:bg-slate-50 transition-all rounded-full bg-white h-[50px] w-[50px]"
-                        icon={isMuted ? <MicOff size={26}/> : <Mic size={26}/>}
+                        icon={isMuted ? <MicOff size={26} /> : <Mic size={26} />}
                         onClick={handleToggleMute}
                     />
                     <Button
@@ -310,7 +359,7 @@ export default function VideoCall() {
                         icon={isVideoOn ? <Video size={26} /> : <VideoOff size={26} />}
                         onClick={handleToggleVideo}
                     />
-                    <Button icon={<Phone size={24}/>} className="text-white rounded-full bg-red-600 h-[50px] w-[50px]" shape="circle" onClick={endCall} />
+                    <Button icon={<Phone size={24} />} className="text-white rounded-full bg-red-600 h-[50px] w-[50px]" shape="circle" onClick={endCall} />
                 </div>
             </Footer>
         </Layout>

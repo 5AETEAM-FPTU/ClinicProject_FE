@@ -175,7 +175,7 @@ export default function ChatRooms() {
             const result = await useGetChatContentByUserQuery({
                 lastReportDate: lastTimeMessage,
                 chatRoomId: chatRoomId!,
-                pageSize: 6,
+                pageSize: 10,
             })
             console.log(
                 'Continue fetching message => ',
@@ -409,7 +409,8 @@ export default function ChatRooms() {
         }
         return listImageUrl
     }
-
+    const peername = searchParams.get('peerName');
+    const title = searchParams.get('title');    
     return (
         <div>
             {
@@ -420,35 +421,21 @@ export default function ChatRooms() {
                             <Avatar size={48} shape="square" src={peerAvatar} />
                             <div className="ml-3">
                                 <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                    Tư vấn khám tổng quát
+                                    {title}
                                 </h2>
                                 <p className="text-[14px] text-secondarySupperDarker">
-                                    Bác sĩ: ...
+                                    Bác sĩ: {peername}
                                 </p>
                             </div>
                         </div>
-                        <Button
+                        {/* <Button
                             className="shadow-third"
                             icon={<Settings className="h-4 w-4" />}
                             type="text"
                         >
                             Cài đặt
-                        </Button>
+                        </Button> */}
                     </div>
-                    {isFetching &&
-                        messages.length === 0 &&
-                        Array.from({ length: 6 }).map(() => (
-                            <>
-                                <Skeleton.Button
-                                    active
-                                    size={'large'}
-                                    shape={'round'}
-                                    block
-                                    className="my-[5px]"
-                                />
-                            </>
-                        ))}
-
                     <div
                         ref={divRef}
                         className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden p-4 pb-0"

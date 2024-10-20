@@ -41,6 +41,7 @@ export interface ChatRoom {
     fullName: string
     isEndConversation: boolean
     avatar: string
+    title: string
 }
 
 export interface UserInformationChatRoom {
@@ -130,11 +131,12 @@ export function IncomingCallPopup({
                 </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="flex justify-around rounded-b-lg bg-gray-100 p-4">
+            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-seco p-4">
                 <audio
                     ref={audioRef}
                     preload="auto"
-                    src="https://res.cloudinary.com/dy1uuo6ql/video/upload/v1729341419/ngk3arezkkxsrkkxm720.wav"
+                    loop
+                    src="/assets/calling.wav"
                 />
                 <Button
                     type="primary"

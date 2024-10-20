@@ -27,6 +27,7 @@ import {
     useGetChatRoomByUserQuery,
 } from '@/stores/services/chat/chats'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
+import { useSearchParams } from 'next/navigation'
 const { Text } = Typography
 
 export interface ChatRoom {
@@ -35,6 +36,7 @@ export interface ChatRoom {
     fullName: string
     isEndConversation: boolean
     avatar: string
+    title: string
 }
 
 export interface DoctorInformationChatRoom {
@@ -53,6 +55,7 @@ export interface ChatRoomTransfer {
 
 export default function DoctorConservation() {
     const router = useRouter()
+    const searchParams = useSearchParams();
     const locale = useLocale()
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
@@ -69,8 +72,8 @@ export default function DoctorConservation() {
             },
         },
     )
-
-    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByDoctorQuery(
+    const newChatId = searchParams.get('chat');
+    const { chatRoomResult, isChatRoomFetching, refetch } = useGetChatRoomByDoctorQuery(
         undefined,
         {
             selectFromResult: ({ data, isFetching }) => {
@@ -80,8 +83,8 @@ export default function DoctorConservation() {
                 }
             },
         },
-    )
-
+    )    
+    useEffect(() => {refetch()}, [newChatId])
     return (
         <Layout className="flex h-fit flex-col bg-transparent">
             <div className="relative mb-[85px] h-[150px]">
