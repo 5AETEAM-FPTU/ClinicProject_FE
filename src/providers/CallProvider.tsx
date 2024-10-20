@@ -153,7 +153,16 @@ export default function CallProvier({
             clearInterval(timer)
         }
     }, [stringeeClient, call])
-    const domain = process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://127.0.0.1:3000'
+    // Kiểm tra domain
+    const domain = process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://127.0.0.1:3000';
+
+    const openWindow = (url: string) => {
+        // Chỉ chạy mã liên quan đến window trên client
+        if (typeof window !== 'undefined') {
+            window.open(url, '_blank', 'width=800,height=600');
+        }
+    };
+    
     return (
         <>
             {stringeeClient && (
@@ -167,11 +176,8 @@ export default function CallProvier({
                             : 'Đang gọi ...'
                     }
                     onAnswer={() => {
-                        window.open(
-                            `${domain}/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}&peerAvatar=${callFrom?.avatar}&peerFullName=${callFrom?.displayName}&avatar=${avatar}&fullName=${fullName}`,
-                            '_blank',
-                            'width=800,height=600',
-                        )
+                        const videoCallUrl = `${domain}/vi/call?from=${userId}&to=${callFrom?.userId}&accessToken=${callAccessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}&peerAvatar=${callFrom?.avatar}&peerFullName=${callFrom?.displayName}&avatar=${avatar}&fullName=${fullName}`
+                        openWindow(videoCallUrl)
                         setCall(null)
                     }}
                     onDecline={() => {
