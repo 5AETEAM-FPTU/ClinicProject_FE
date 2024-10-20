@@ -120,9 +120,9 @@ export default function ChatContent() {
     const [currentDay, setCurrentDay] = useState(
         dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'),
     )
+    console.log(currentDay);
     const handleScrollToBottomOnInitial = () => {
         if (divRef.current) {
-            console.log(divRef.current)
             const { current: container } = divRef
             container.scrollTop = container.scrollHeight
         }
@@ -152,6 +152,7 @@ export default function ChatContent() {
     }, [isInitial])
 
     useEffect(() => {
+        setCurrentDay(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'));
         handleFetchChatContentInitial()
     }, [currentDay, userId, chatRoomId])
 
