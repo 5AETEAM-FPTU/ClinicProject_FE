@@ -2,20 +2,53 @@
 import { Avatar, Layout, List, Typography } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import webStorageClient from '@/utils/webStorageClient'
+import createChatService from '@/stores/services/chat/signalService'
 
+const { startConnection } =
+    createChatService();
 const { Sider } = Layout
 export default function ChatRooms({
     chatRooms,
     setChatRoomTransfer,
 }: {
-    chatRooms: ChatRoom[]
+    chatRooms: ChatRoom[] 
     setChatRoomTransfer: (chatRoomId: string, doctorId: string) => void
 }) {
     const route = useRouter()
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
+    const _accessToken = webStorageClient.getToken()!.toString()
+    const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
+
+    useEffect(() => {
+        setChatRoomList(chatRooms)
+    },[chatRooms])
+
+    useEffect(() => {
+        startConnection(
+            _accessToken,
+            null!,
+            null!,
+            null!,
+            (chatRoomId, latestMessage) => {
+                console.log(`New message in chat room ${chatRoomId}: ${latestMessage}`);
+                setChatRoomList(prevRooms => {
+                    const updatedRooms = [...prevRooms];
+                    const roomIndex = updatedRooms.findIndex(room => room.chatRoomId === chatRoomId);
+
+                    if (roomIndex !== -1) {
+                        const [room] = updatedRooms.splice(roomIndex, 1);
+                        updatedRooms.unshift(room);
+                    }
+
+                    return updatedRooms;
+                });
+            }
+        );
+    }, [_accessToken])
 
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullname: string, title: string) => {
         route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullname + '&title=' + title)
@@ -34,7 +67,7 @@ export default function ChatRooms({
                 <List
                     className='max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
-                    dataSource={chatRooms}
+                    dataSource={chatRoomList}
                     renderItem={(doctor) => {
                         const isSelected =
                             doctor.chatRoomId === chatRoomId &&
