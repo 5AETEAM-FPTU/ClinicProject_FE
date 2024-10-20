@@ -58,7 +58,7 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatRooms() {
+export default function ChatContent() {
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')

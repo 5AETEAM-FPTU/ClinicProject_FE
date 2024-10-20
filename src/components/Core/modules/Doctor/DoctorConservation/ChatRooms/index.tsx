@@ -2,10 +2,16 @@
 import { Avatar, Layout, List } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
+import webStorageClient from '@/utils/webStorageClient'
+import { jwtDecode, JwtPayload } from 'jwt-decode'
+import createChatService from '@/stores/services/chat/signalService'
+import { set } from 'lodash'
 
 const { Sider, Content } = Layout
+const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
+    createChatService();
 
 export default function ChatRooms({
     chatRooms,
@@ -19,6 +25,9 @@ export default function ChatRooms({
     const chatRoomId = searchParams.get('chat');
     const userId = searchParams.get('user');
     const dispatch = useAppDispatch();
+    const _userId = jwtDecode<JwtPayload>(webStorageClient.getToken()!).sub!
+    const _accessToken = webStorageClient.getToken()!.toString()
+    const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
 
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string, fullName:string, title: string) => {
        
@@ -33,6 +42,33 @@ export default function ChatRooms({
     //     }
     // }, [chatRooms])
 
+    useEffect(() => {
+        startConnection(
+            _accessToken,
+            null!,
+            null!,
+            null!,
+            (chatRoomId, latestMessage) => {
+                console.log(`New message in chat room ${chatRoomId}: ${latestMessage}`);
+                setChatRoomList(prevRooms => {
+                    const updatedRooms = [...prevRooms];
+                    const roomIndex = updatedRooms.findIndex(room => room.chatRoomId === chatRoomId);
+
+                    if (roomIndex !== -1) {
+                        const [room] = updatedRooms.splice(roomIndex, 1);
+                        updatedRooms.unshift(room);
+                    }
+
+                    return updatedRooms;
+                });
+            }
+        );
+    }, [_accessToken])
+    
+    useEffect(() => {
+        setChatRoomList(chatRooms)
+    },[chatRooms])
+
     return (
         <div className='min-w-[350px]'>
             <div
@@ -41,7 +77,7 @@ export default function ChatRooms({
                 <List
                     className='max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
-                    dataSource={chatRooms}
+                    dataSource={chatRoomList}
                     renderItem={(user) => {
                         const isSelected =
                             user.chatRoomId === chatRoomId &&
