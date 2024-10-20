@@ -115,7 +115,7 @@ export default function DoctorQueueRoom() {
                                 key={queue.queueRoomId}
                                 className="shadow-sm flex h-[70px] items-center justify-between rounded-lg bg-white px-4"
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 min-w-[250px]">
                                     <Image
                                         src={queue.patientAvatar}
                                         alt="Avatar"
@@ -134,7 +134,7 @@ export default function DoctorQueueRoom() {
                                 </div>
                                 <div className="mt-2 flex w-[60%] items-center">
                                     <div className="mr-[6px] h-6 w-1 bg-[#003553]"></div>
-                                    <p className="">{queue.message}</p>
+                                    <p className="" dangerouslySetInnerHTML={{ __html: queue.message }}></p>
                                 </div>
                                 <Button
                                     onClick={() =>

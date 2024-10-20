@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { handleClientScriptLoad } from 'next/script'
 import { UserInformationQueueRoom, UserQueueRoom } from '..'
 import { useRemoveQueueByIdMutation } from '@/stores/services/chat/chats'
+import { useAppSelector } from '@/hooks/redux-toolkit'
 
 interface IProps {
     data: UserQueueRoom
@@ -33,6 +34,7 @@ export default function ViewConsultantRoom(payload: IProps) {
             message.error('Cập nhật thất bại!')
         }
     }
+    const {user} = useAppSelector((state) => state.auth)
 
     return (
         <div className="mt-4 flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
@@ -41,12 +43,12 @@ export default function ViewConsultantRoom(payload: IProps) {
                     <div className="flex flex-col items-center justify-center gap-4 text-[14px] font-medium text-[#003553] xl:flex-row">
                         <Image
                             src={
-                                'https://kynguyenlamdep.com/wp-content/uploads/2022/06/avatar-de-thuong-cho-cap-doi.jpg'
+                                user.avatarUrl!
                             }
                             alt={''}
-                            height={60}
-                            width={60}
-                            className="h-[60px] w-[60px] rounded-full"
+                            height={200}
+                            width={200}
+                            className="h-[60px] w-[60px] rounded-full object-cover"
                         />
                         <div className="text-[14px]">
                             <p className="font-bold">

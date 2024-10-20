@@ -7,8 +7,8 @@ import Header from './Header'
 import HeaderMobile from './HeaderMobile'
 
 function LandingLayout({ children }: { children: React.ReactNode }) {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     useEffect(() => {
         const loadingTimeout = setTimeout(() => {
@@ -19,6 +19,7 @@ function LandingLayout({ children }: { children: React.ReactNode }) {
             clearTimeout(loadingTimeout);
         };
     }, []);
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.matchMedia('(max-width: 768px)').matches);
