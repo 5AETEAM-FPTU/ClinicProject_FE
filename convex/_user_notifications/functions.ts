@@ -12,6 +12,7 @@ export const sendUserNotification = mutation({
         description: v.string(),
         type: v.string(),
         topic: v.string(),
+        href: v.string(),
     },
     handler: async (ctx, args) => {
         await ctx.db.insert('user_notifications', {
@@ -24,6 +25,7 @@ export const sendUserNotification = mutation({
             description: args.description,
             type: args.type,
             topic: args.topic,
+            href: args.href,
         })
     },
 })

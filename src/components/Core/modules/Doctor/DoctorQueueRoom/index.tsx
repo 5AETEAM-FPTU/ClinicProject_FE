@@ -12,8 +12,12 @@ import { useRouter } from 'next-nprogress-bar'
 import webStorageClient from '@/utils/webStorageClient'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import { jwtDecode } from 'jwt-decode'
-import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
 import { motion } from 'framer-motion'
+import { useMutation } from 'convex/react'
+import { api } from '@convex/_generated/api'
+import { constants } from '@/settings'
+import dayjs from 'dayjs'
 
 interface PatientQueue {
     patientId: string
@@ -57,7 +61,37 @@ export default function DoctorQueueRoom() {
             setTotalPages(apiResponse.totalPages)
         }
     }
-    const dispatch = useAppDispatch()
+    const { user } = useAppSelector((state) => state.auth)
+    const userId = jwtDecode<JwtPayloadUpdated>(
+        webStorageClient.getToken()!,
+    ).sub
+    const sendToUserNotification = useMutation(
+        api._user_notifications.functions.sendUserNotification,
+    )
+    const handleCreateNotificationToPatient = async (
+        patientId: string,
+        initialMessge: string,
+        chat: string,
+        peerAvatar: string,
+        peerName: string,
+    ) => {
+        try {
+            const domain =
+                process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://localhost:3000'
+            await sendToUserNotification({
+                receiverId: patientId,
+                message: 'Yêu cầu tư vấn đã được chấp nhận',
+                type: constants.NOTIFICATION_TYPES.SUCCESS,
+                description: `Yêu cần tư vấn "${initialMessge}" đã được phản hồi bởi bác sĩ ${user?.fullName}`,
+                senderAvatarUrl: `${user.avatarUrl}`,
+                senderId: `${userId}`,
+                senderName: 'Bác sĩ',
+                topic: 'Tư vấn',
+                href: `${domain}/consultation/conversation/?chat=${chat}&user=${patientId}&peerAvt=${peerAvatar}&peerName=${peerName}&title=${initialMessge}`,
+            })
+        } catch (error) {}
+    }
+
     const handleFetchChatRoom = async (
         patientId: string,
         queueRoomId: string,
@@ -79,7 +113,13 @@ export default function DoctorQueueRoom() {
             router.push(
                 `/${role}/consultation/conversation/?chat=${result?.body?.assignChatRoomId}&user=${patientId}&peerAvt=${peerAvatar}&peerName=${fullname}&title=${initialMessage}`,
             )
-
+            handleCreateNotificationToPatient(
+                patientId,
+                initialMessage,
+                result?.body?.assignChatRoomId,
+                peerAvatar,
+                fullname,
+            )
             message.success('Tạo đoạn hội thoại thành công!')
         } catch (error) {
             console.log(error)
@@ -121,70 +161,76 @@ export default function DoctorQueueRoom() {
                 </div>
             ) : (
                 <div className="w-full">
-                    <ul className="space-y-1">
-                        {patientQueues.map((queue) => (
-                            <li
-                                key={queue.queueRoomId}
-                                className="shadow-sm flex h-[70px] items-center justify-between rounded-lg bg-white px-4"
-                            >
-                                <div className="flex min-w-[250px] items-center gap-2">
-                                    <Image
-                                        src={queue.patientAvatar}
-                                        alt="Avatar"
-                                        width={200}
-                                        height={200}
-                                        className="mr-4 h-10 w-10 rounded-full object-cover"
-                                    />
-                                    <div className="flex flex-col gap-[2px]">
-                                        <div className="text-sm text-[#003553]">
-                                            Yêu cầu tư vấn từ:
-                                        </div>
-                                        <span className="ml-1 text-[16px] font-semibold text-black">
-                                            {queue.patientName}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="mt-2 flex w-[60%] items-center">
-                                    <div className="mr-[6px] h-6 w-1 bg-[#003553]"></div>
-                                    <p
-                                        className=""
-                                        dangerouslySetInnerHTML={{
-                                            __html: queue.message,
-                                        }}
-                                    ></p>
-                                </div>
-                                <Button
-                                    onClick={() =>
-                                        handleFetchChatRoom(
-                                            queue.patientId,
-                                            queue.queueRoomId,
-                                            queue.message,
-                                            queue.patientAvatar,
-                                            queue.patientName,
-                                        )
-                                    }
-                                    type="primary"
-                                    className="flex items-center rounded-xl bg-secondaryDark px-5 py-5 font-bold text-white"
-                                >
-                                    <MessageCircleReply size={24} />
-                                    Trả lời
-                                </Button>
-                            </li>
-                        ))}
-                    </ul>
+                    <div>
+                        {patientQueues.length > 0 ? (
+                            <div>
+                                <ul className="space-y-1">
+                                    {patientQueues.map((queue) => (
+                                        <li
+                                            key={queue.queueRoomId}
+                                            className="shadow-sm flex h-[70px] items-center justify-between rounded-lg bg-white px-4"
+                                        >
+                                            <div className="flex min-w-[250px] items-center gap-2">
+                                                <Image
+                                                    src={queue.patientAvatar}
+                                                    alt="Avatar"
+                                                    width={200}
+                                                    height={200}
+                                                    className="mr-4 h-10 w-10 rounded-full object-cover"
+                                                />
+                                                <div className="flex flex-col gap-[2px]">
+                                                    <div className="text-sm text-[#003553]">
+                                                        Yêu cầu tư vấn từ:
+                                                    </div>
+                                                    <span className="ml-1 text-[16px] font-semibold text-black">
+                                                        {queue.patientName}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="mt-2 flex w-[60%] items-center">
+                                                <div className="mr-[6px] h-6 w-1 bg-[#003553]"></div>
+                                                <p
+                                                    className=""
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: queue.message,
+                                                    }}
+                                                ></p>
+                                            </div>
+                                            <Button
+                                                onClick={() =>
+                                                    handleFetchChatRoom(
+                                                        queue.patientId,
+                                                        queue.queueRoomId,
+                                                        queue.message,
+                                                        queue.patientAvatar,
+                                                        queue.patientName,
+                                                    )
+                                                }
+                                                type="primary"
+                                                className="flex items-center rounded-xl bg-secondaryDark px-5 py-5 font-bold text-white"
+                                            >
+                                                <MessageCircleReply size={24} />
+                                                Trả lời
+                                            </Button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <div>Hiện không có yêu cầu tư vấn</div>
+                        )}
+                    </div>
                 </div>
             )}
             <div className="mt-5 flex w-full items-center justify-center">
-              {
-                  patientQueues.length > 1 && (
-                      <Pagination
-                          current={page}
-                          pageSize={pageSizeDefault}
-                          total={totalPages + 10}
-                          onChange={handlePageChange}
-                      />
-                  )
-              }
+                {patientQueues.length > 1 && (
+                    <Pagination
+                        current={page}
+                        pageSize={pageSizeDefault}
+                        total={totalPages + 10}
+                        onChange={handlePageChange}
+                    />
+                )}
             </div>
         </motion.div>
     )

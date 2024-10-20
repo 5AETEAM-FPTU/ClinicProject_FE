@@ -316,7 +316,7 @@ export default function MedicalDashboard() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col gap-4">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 xl:flex-row">
                 <div className="xl:flex-1">
                     <CustomCalendar />
