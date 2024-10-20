@@ -70,7 +70,6 @@ export default function UserQueueRoomModule() {
             exit={{ opacity: 0 }}
         >
             <Layout
-                style={{ minHeight: '100vh' }}
                 className="bg-dashboardBackground"
             >
                 <Content style={{ padding: '0px' }}>

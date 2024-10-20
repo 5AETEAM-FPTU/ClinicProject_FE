@@ -175,12 +175,16 @@ export default function DoctorQueueRoom() {
                 </div>
             )}
             <div className="mt-5 flex w-full items-center justify-center">
-                <Pagination
-                    current={page}
-                    pageSize={pageSizeDefault}
-                    total={totalPages + 10}
-                    onChange={handlePageChange}
-                />
+              {
+                  patientQueues.length > 1 && (
+                      <Pagination
+                          current={page}
+                          pageSize={pageSizeDefault}
+                          total={totalPages + 10}
+                          onChange={handlePageChange}
+                      />
+                  )
+              }
             </div>
         </motion.div>
     )
