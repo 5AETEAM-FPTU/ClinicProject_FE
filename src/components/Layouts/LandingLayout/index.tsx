@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic'
 import { Grid } from 'antd'
 import Footer from './Footer'
 import Reloading from './Reloading'
+import Header from './Header'
+import HeaderMobile from './HeaderMobile'
 
 const DynamicHeader = dynamic(() => import('./Header'), { ssr: false })
 const DynamicHeaderMobile = dynamic(() => import('./HeaderMobile'), { ssr: false })
@@ -24,7 +26,7 @@ function LandingLayout({ children }: { children: React.ReactNode }) {
     return (
         <div>
             {isLoading ? <Reloading /> : null}
-            {screen.md ? <DynamicHeader /> : <DynamicHeaderMobile />}
+            {screen.md ? <Header /> : <HeaderMobile />}
             {children}
             <Footer />
         </div>

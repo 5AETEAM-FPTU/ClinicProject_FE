@@ -28,7 +28,11 @@ const irishGrover = Irish_Grover({
 })
 export default function HeaderMobile() {
     const params = useParams()
-    const _accessToken = webStorageClient.getToken()
+    const [_accessToken, setAccessToken] = useState<string | null>(null);
+    useEffect(() => {
+        setAccessToken(webStorageClient.getToken() as string);
+    }, [])
+    
     const { user } = useAppSelector((state) => state.auth)
     const [openDrawer, setOpenDrawer] = useState(false)
     const { t } = useTranslation(params?.locale as string, 'Landing')
