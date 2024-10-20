@@ -83,7 +83,7 @@ export default function ChatRooms({
                                                 transition-all duration-500 ease-in-out
                                             `}
                                         >
-                                            {user.title ? user.title : 'Không có tiêu đề'}
+                                            {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
                                         </span>
                                     }
                                 />

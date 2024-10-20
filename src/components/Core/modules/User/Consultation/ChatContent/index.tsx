@@ -421,7 +421,7 @@ export default function ChatRooms() {
                             <Avatar size={48} shape="square" src={peerAvatar} />
                             <div className="ml-3">
                                 <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                    {title}
+                                    {title?.split(':')[0]}
                                 </h2>
                                 <p className="text-[14px] text-secondarySupperDarker">
                                     Bác sĩ: {peername}
@@ -515,7 +515,7 @@ export default function ChatRooms() {
                                                         : 'bg-slate-200 text-secondarySupperDarker'
                                                 }`}
                                             >
-                                                <p>{message.content}</p>
+                                                <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
                                                 <div
                                                     className={cn(
                                                         'flex w-full flex-wrap gap-[10px]',

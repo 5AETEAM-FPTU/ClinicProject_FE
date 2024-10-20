@@ -83,18 +83,18 @@ export function IncomingCallPopup({
     }, [isVisible])
     const handleAnswer = () => {
         if (audioRef.current) {
-            audioRef.current.pause()  
-            audioRef.current.currentTime = 0 
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
         }
-        onAnswer() 
+        onAnswer()
     }
 
     const handleDecline = () => {
         if (audioRef.current) {
-            audioRef.current.pause()  
-            audioRef.current.currentTime = 0  
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
         }
-        onDecline() 
+        onDecline()
     }
 
     return (
@@ -131,7 +131,7 @@ export function IncomingCallPopup({
                 </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-seco p-4">
+            <div className="to-seco flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 p-4">
                 <audio
                     ref={audioRef}
                     preload="auto"
@@ -192,88 +192,95 @@ export default function ConsultationComponent() {
     )
 
     return (
-        <Layout className="flex h-fit flex-col bg-transparent">
-            <div className="relative mb-[85px] h-[150px]">
-                <Image
-                    className="z-1 h-[100%] w-full rounded-2xl object-cover"
-                    src={ProfileBackground}
-                    alt="background"
-                />
-                <div
-                    className="z-2 absolute bottom-0 left-[50%] mb-0 flex w-[90%] translate-x-[-50%] translate-y-[50%] items-center justify-between rounded-2xl bg-white bg-opacity-85 p-5"
-                    style={{ marginBottom: '24px' }}
-                >
-                    <Space size="large" align="center">
-                        <Avatar
-                            shape="square"
-                            className="size-16 rounded-xl sm:size-20"
-                            icon={<UserOutlined />}
-                            src={`${userInformationResult?.avatarUrl ?? DefaultImage}`}
-                        />
-                        <div className="">
-                            <p
-                                className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
-                                style={{ margin: 0 }}
-                            >
-                                {`${userInformationResult?.fullName ?? 'Ẩn Danh'}`}
-                            </p>
-                            <Text
-                                className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
-                                type="secondary"
-                            >
-                                {`${userInformationResult?.gender?.genderName ?? 'Ẩn Danh'}`}
-                            </Text>
-                            <br />
-                            <Text
-                                className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
-                                type="secondary"
-                            >
-                                {`${dayjs(userInformationResult?.dob).format('DD/MM/YYYY') ?? 'Ẩn ngày sinh'}`}
-                            </Text>
-                        </div>
-                    </Space>
-                    <Space
-                        className="flex h-full flex-col sm:flex-row"
-                        style={{ marginLeft: 'auto' }}
+        <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            exit={{ opacity: 0 }}
+        >
+            <Layout className="flex h-fit flex-col bg-transparent">
+                <div className="relative mb-[85px] h-[150px]">
+                    <Image
+                        className="z-1 h-[100%] w-full rounded-2xl object-cover"
+                        src={ProfileBackground}
+                        alt="background"
+                    />
+                    <div
+                        className="z-2 absolute bottom-0 left-[50%] mb-0 flex w-[90%] translate-x-[-50%] translate-y-[50%] items-center justify-between rounded-2xl bg-white bg-opacity-85 p-5"
+                        style={{ marginBottom: '24px' }}
                     >
-                        <Button
-                            type="default"
-                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
-                            icon={<House size={18} />}
-                            onClick={() =>
-                                router.push(
-                                    `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
-                                )
-                            }
+                        <Space size="large" align="center">
+                            <Avatar
+                                shape="square"
+                                className="size-16 rounded-xl sm:size-20"
+                                icon={<UserOutlined />}
+                                src={`${userInformationResult?.avatarUrl ?? DefaultImage}`}
+                            />
+                            <div className="">
+                                <p
+                                    className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
+                                    style={{ margin: 0 }}
+                                >
+                                    {`${userInformationResult?.fullName ?? 'Ẩn Danh'}`}
+                                </p>
+                                <Text
+                                    className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
+                                    type="secondary"
+                                >
+                                    {`${userInformationResult?.gender?.genderName ?? 'Ẩn Danh'}`}
+                                </Text>
+                                <br />
+                                <Text
+                                    className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
+                                    type="secondary"
+                                >
+                                    {`${dayjs(userInformationResult?.dob).format('DD/MM/YYYY') ?? 'Ẩn ngày sinh'}`}
+                                </Text>
+                            </div>
+                        </Space>
+                        <Space
+                            className="flex h-full flex-col sm:flex-row"
+                            style={{ marginLeft: 'auto' }}
                         >
-                            Tổng quan
-                        </Button>
-                        <Button
-                            type="default"
-                            className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
-                            icon={<Settings size={18} />}
-                            onClick={() =>
-                                router.push(
-                                    `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/settings`,
-                                )
-                            }
-                        >
-                            Cài đặt
-                        </Button>
-                    </Space>
+                            <Button
+                                type="default"
+                                className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                                icon={<House size={18} />}
+                                onClick={() =>
+                                    router.push(
+                                        `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
+                                    )
+                                }
+                            >
+                                Tổng quan
+                            </Button>
+                            <Button
+                                type="default"
+                                className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                                icon={<Settings size={18} />}
+                                onClick={() =>
+                                    router.push(
+                                        `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/settings`,
+                                    )
+                                }
+                            >
+                                Cài đặt
+                            </Button>
+                        </Space>
+                    </div>
                 </div>
-            </div>
-            <div className="flex w-full flex-row gap-5">
-                <ChatRooms
-                    chatRooms={chatRoomResult}
-                    setChatRoomTransfer={(chatRoomId, doctorId) =>
-                        setChatRoomTransfer({ chatRoomId, doctorId })
-                    }
-                />
-                <div className="w-[calc(100%-370px)]">
-                    <ChatContent />
+                <div className="flex w-full flex-row gap-5">
+                    <ChatRooms
+                        chatRooms={chatRoomResult}
+                        setChatRoomTransfer={(chatRoomId, doctorId) =>
+                            setChatRoomTransfer({ chatRoomId, doctorId })
+                        }
+                    />
+                    <div className="w-[calc(100%-370px)]">
+                        <ChatContent />
+                    </div>
                 </div>
-            </div>
-        </Layout>
+            </Layout>
+        </motion.div>
     )
 }

@@ -13,6 +13,8 @@ import webStorageClient from '@/utils/webStorageClient'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import { jwtDecode } from 'jwt-decode'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { motion } from 'framer-motion'
+
 interface PatientQueue {
     patientId: string
     queueRoomId: string
@@ -73,7 +75,7 @@ export default function DoctorQueueRoom() {
             }).unwrap()
 
             console.log('assignChatRoomId', result.body.assignChatRoomId)
-           
+
             router.push(
                 `/${role}/consultation/conversation/?chat=${result?.body?.assignChatRoomId}&user=${patientId}&peerAvt=${peerAvatar}&peerName=${fullname}&title=${initialMessage}`,
             )
@@ -97,14 +99,24 @@ export default function DoctorQueueRoom() {
     const handleAcceptReply = (message: string) => {}
 
     return (
-        <div className="mx-auto max-w-full">
+        <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            exit={{ opacity: 0 }}
+            className="mx-auto max-w-full"
+        >
             <h3 className="mb-4 text-[20px] font-semibold text-[#003553]">
                 Tin nhắn chờ
             </h3>
             {isFetching ? (
-                <div className='w-full  flex flex-col gap-2'>
+                <div className="flex w-full flex-col gap-2">
                     {Array.from({ length: 7 }).map((_, index) => (
-                        <Skeleton.Button className='h-[70px] w-full' key={index} active />
+                        <Skeleton.Button
+                            className="h-[70px] w-full"
+                            key={index}
+                            active
+                        />
                     ))}
                 </div>
             ) : (
@@ -115,7 +127,7 @@ export default function DoctorQueueRoom() {
                                 key={queue.queueRoomId}
                                 className="shadow-sm flex h-[70px] items-center justify-between rounded-lg bg-white px-4"
                             >
-                                <div className="flex items-center gap-2 min-w-[250px]">
+                                <div className="flex min-w-[250px] items-center gap-2">
                                     <Image
                                         src={queue.patientAvatar}
                                         alt="Avatar"
@@ -134,7 +146,12 @@ export default function DoctorQueueRoom() {
                                 </div>
                                 <div className="mt-2 flex w-[60%] items-center">
                                     <div className="mr-[6px] h-6 w-1 bg-[#003553]"></div>
-                                    <p className="" dangerouslySetInnerHTML={{ __html: queue.message }}></p>
+                                    <p
+                                        className=""
+                                        dangerouslySetInnerHTML={{
+                                            __html: queue.message,
+                                        }}
+                                    ></p>
                                 </div>
                                 <Button
                                     onClick={() =>
@@ -146,8 +163,8 @@ export default function DoctorQueueRoom() {
                                             queue.patientName,
                                         )
                                     }
-                                    type='primary'
-                                    className="flex bg-secondaryDark items-center rounded-xl  px-5 py-5 font-bold text-white"
+                                    type="primary"
+                                    className="flex items-center rounded-xl bg-secondaryDark px-5 py-5 font-bold text-white"
                                 >
                                     <MessageCircleReply size={24} />
                                     Trả lời
@@ -165,6 +182,6 @@ export default function DoctorQueueRoom() {
                     onChange={handlePageChange}
                 />
             </div>
-        </div>
+        </motion.div>
     )
 }

@@ -72,7 +72,7 @@ export default function ChatRooms({
                                         <span
                                             className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
                                         >
-                                            {doctor.title}
+                                            {doctor.title ? doctor.title.split(':')[0] : 'Không có tiêu đề'}
                                         </span>
                                     }
                                 />

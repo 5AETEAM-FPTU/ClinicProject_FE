@@ -62,12 +62,11 @@ export default function UserQueueRoomModule() {
 
     console.log(queueRoomResult)
 
-    const handleCreateConsultantRoom = () => {}
-
     return (
         <motion.div
-            initial={{ opacity: 0, translateY: 10 }}
+            initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
         >
             <Layout
@@ -100,7 +99,7 @@ export default function UserQueueRoomModule() {
                                     <BadgePlus size={22} />
                                 </Button>
                                 {isCreateConsultantRoomVisible && (
-                                    <CreateConsultantRoom refetch={refetch}/>
+                                    <CreateConsultantRoom refetch={refetch} />
                                 )}
                             </div>
                         )}

@@ -424,6 +424,7 @@ export default function ChatRooms() {
     }, [isTyping])
     const peername = searchParams.get('peerName')
     const title = searchParams.get('title')
+    console.log(title);
     return (
         <div>
             {chatRoomId && userId ? (
@@ -437,9 +438,9 @@ export default function ChatRooms() {
                                     src={peerAvatar}
                                 />
                                 <div className="ml-3">
-                                    <h2 className="text-base font-semibold text-secondarySupperDarker">
-                                        {title}
-                                    </h2>
+                                    <p className="text-base font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: title!?.split(':')[0]}}>
+                                        
+                                    </p>
                                     <p className="text-[14px] text-secondarySupperDarker">
                                         {peername}
                                     </p>
@@ -554,7 +555,7 @@ export default function ChatRooms() {
                                                             : 'bg-slate-200 text-secondarySupperDarker'
                                                     }`}
                                                 >
-                                                    <p>{message.content}</p>
+                                                    <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
                                                     <div
                                                         className={cn(
                                                             'flex w-full flex-wrap gap-[10px]',
