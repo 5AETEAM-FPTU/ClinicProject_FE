@@ -41,7 +41,6 @@ function Header() {
 
 
     const { user } = useAppSelector((state) => state.auth)
-    console.log(user)
     const handleAccounts = () => {
         const isHasToken = webStorageClient.getToken()
         if (isHasToken) {
