@@ -17,9 +17,10 @@ const createChatService = () => {
     const hub = process.env.NEXT_PUBLIC_API_SERVER ?? "https://localhost:7161"
     const startConnection = async (
         token: string,
-        onMessageReceived: (content: ChatContent) => void,
-        onTypingReceived: (senderId: string) => void,
-        onRemovedMessageReceived: (senderId: string, chatContentId: string) => void
+        onMessageReceived?: (content: ChatContent) => void,
+        onTypingReceived?: (senderId: string) => void,
+        onRemovedMessageReceived?: (senderId: string, chatContentId: string) => void,
+        onChatRoomReceived?: (chatRoomId: string, latestMessage: string) => void
     ) => {
         if (
             connection &&
@@ -35,39 +36,56 @@ const createChatService = () => {
 
         connection.off('ReceiveMessage')
         connection.off("ReceiveTyping")
+        connection.off("ReceiveRemovedMessage")
 
-        connection.on('ReceiveMessage', (chatContentId, sender, message, chatRoomId, imageUrls) => {
-            let chatContent: ChatContent = {
-                chatContentId: chatContentId,
-                senderId: sender,
-                message: message,
-                imageUrls: imageUrls, 
-                time: new Date().toLocaleString(),
-                videoUrls: [], // Fix
-            }
-            console.log(`Message received from ${sender}: ${message}`)
-            onMessageReceived(chatContent)
-        })
+        if (onMessageReceived) {
+            connection.on('ReceiveMessage', (chatContentId, sender, message, chatRoomId, imageUrls) => {
+                let chatContent: ChatContent = {
+                    chatContentId: chatContentId,
+                    senderId: sender,
+                    message: message,
+                    imageUrls: imageUrls,
+                    time: new Date().toLocaleString(),
+                    videoUrls: [], // Fix
+                }
+                console.log(`Message received from ${sender}: ${message}`)
+                onMessageReceived(chatContent)
+            })
+        }
 
-        connection.on('ReceiveTyping', (senderId) => {
-            console.log(`Typing received from ${senderId}`);
-            onTypingReceived(senderId)
-        })
+        if (onTypingReceived) {
+            connection.on('ReceiveTyping', (senderId) => {
+                console.log(`Typing received from ${senderId}`);
+                onTypingReceived(senderId)
+            })
+        }
 
-        connection.on('ReceiveRemovedMessage', (senderId, chatContentId) => {
-            onRemovedMessageReceived(senderId, chatContentId)
-        })
+        if (onChatRoomReceived) {
+            connection.on('ReceiveChatRoom', (chatRoomId, latestTime) => {
+                console.log(`Typing received from ${chatRoomId}`);
+                onChatRoomReceived(chatRoomId, latestTime)
+            })
+        }
+
+        if (onRemovedMessageReceived) {
+            connection.on('ReceiveRemovedMessage', (senderId, chatContentId) => {
+                onRemovedMessageReceived(senderId, chatContentId)
+            })
+        }
+
+    
+
 
         connection.onreconnecting((error) => {
             message.warning("Đang thử kết nối lại...!")
         })
 
-        connection.onreconnected((connectionId) => {
+        connection.onreconnecting((connectionId) => {
             message.success("Đã kết nối lại thành công");
         })
 
         connection.onclose((error) => {
-            // message.error("Kết nối đã bị đóng, hãy thử tải lại trang")
+            message.error("Kết nối đã bị đóng, hãy thử tải lại trang")
         })
 
         await connection
@@ -82,10 +100,10 @@ const createChatService = () => {
     }
 
     const stopConnection = async () => {
-      if (connection) {
-          await connection.stop()
-      }
-  }
+        if (connection) {
+            await connection.stop()
+        }
+    }
 
     const sendMessage = async (
         chatContentId: string,
@@ -103,7 +121,7 @@ const createChatService = () => {
                 receiverId: receiverId,
                 message: content,
                 chatRoomId: chatRoomId,
-                imageUrls: imageUrls, 
+                imageUrls: imageUrls,
                 videoUrls: [], // Fix after
             }
 
@@ -121,9 +139,9 @@ const createChatService = () => {
     }
 
     const sendTypingMessage = async (senderId: string, receiverId: string) => {
-        
+
         if (connection) {
-           
+
             connection
                 .invoke('SendTypingAsync', senderId, receiverId)
                 .then(() => {

@@ -38,6 +38,7 @@ export interface ChatRoom {
     isEndConversation: boolean
     avatar: string
     title: string
+    latestMessageTime: string
 }
 
 export interface DoctorInformationChatRoom {
