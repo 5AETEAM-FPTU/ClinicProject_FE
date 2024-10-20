@@ -1,4 +1,3 @@
-import StringeeComponent from '@/components/Core/common/CallScreen'
 import dynamic from 'next/dynamic'
 const DynamicStringeeComponent = dynamic(
     () => import('@/components/Core/common/CallScreen'),
