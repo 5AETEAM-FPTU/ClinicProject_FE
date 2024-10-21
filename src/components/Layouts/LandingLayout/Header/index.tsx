@@ -2,7 +2,12 @@
 import { CircleUserRound } from 'lucide-react'
 import { Irish_Grover } from 'next/font/google'
 import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation'
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { useTranslation } from '@/app/i18n/client'
@@ -21,7 +26,7 @@ import { Button, Grid } from 'antd'
 import { jwtDecode } from 'jwt-decode'
 import { signOut } from 'next-auth/react'
 import { useLocale } from 'next-intl'
-import {motion} from 'framer-motion';
+import { motion } from 'framer-motion'
 
 const irishGrover = Irish_Grover({
     subsets: ['latin'],
@@ -36,9 +41,8 @@ function Header() {
     const locale = useLocale()
     const [_accessToken, setAccessToken] = useState<string | null>(null)
     useEffect(() => {
-        setAccessToken(webStorageClient.getToken() as string);
+        setAccessToken(webStorageClient.getToken() as string)
     }, [])
-
 
     const { user } = useAppSelector((state) => state.auth)
     const handleAccounts = () => {
@@ -51,9 +55,9 @@ function Header() {
             router.push(`/${locale}/sign-in`)
         }
     }
-    let role: string | null = null;
+    let role: string | null = null
     if (_accessToken) {
-        role = jwtDecode<JwtPayloadUpdated>(_accessToken).role || null;
+        role = jwtDecode<JwtPayloadUpdated>(_accessToken).role || null
     }
 
     const handleRenderUserType = () => {
@@ -67,6 +71,27 @@ function Header() {
     }
     const screen = Grid.useBreakpoint()
     const [openDrawer, setOpenDrawer] = useState(false)
+    const pathname = usePathname()
+    console.log(pathname)
+    const searchParams = useSearchParams()
+
+    useEffect(() => {
+        console.log(searchParams.get('section'))
+        if (searchParams.get('section') === 'doctor') {
+            const doctorSection = document.getElementById('our-team')
+            if (doctorSection) {
+                doctorSection.scrollIntoView({ behavior: 'smooth' })
+            }
+        }
+        if (searchParams.get('section') === 'contact') {
+            const contactSection = document.getElementById('contact')
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' })
+            }
+        }
+    }, [searchParams])
+    
+
     return (
         <>
             <div className="fixed left-0 top-0 z-[100] flex h-fit w-full justify-center bg-white drop-shadow-lg">
@@ -199,34 +224,88 @@ function Header() {
                             </div>
                             <ul className="flex list-none flex-row gap-[40px] font-medium">
                                 <ul className="flex list-none flex-row gap-[40px] font-medium">
-                                    <li className="relative">
-                                        <a
-                                            href="/home"
-                                            className="text-secondaryDark"
+                                    <li className="relative cursor-pointer">
+                                        <div
+                                            onClick={() => router.push('/home')}
+                                            className={cn(
+                                                `${pathname.includes('home') && searchParams.get('section') == null ? 'text-secondaryDark' : 'text-black'}`,
+                                            )}
                                         >
                                             {t('header_overview')}
-                                        </a>
-                                        <span className="absolute bottom-[-4px] left-0 h-1 w-full bg-secondaryDark"></span>
+                                        </div>
+                                        <span
+                                            className={cn(
+                                                'absolute bottom-[-4px] left-0 h-1 w-full',
+                                                `${pathname.includes('home') && searchParams.get('section') == null ? 'bg-secondaryDark' : ''}`,
+                                            )}
+                                        ></span>
                                     </li>
-                                    <li>
-                                        <a href="/home/#our-team" className="text-black">
+                                    <li className="relative cursor-pointer">
+                                        <div
+                                            onClick={() =>
+                                                router.push(
+                                                    '/home?section=doctor',
+                                                )
+                                            }
+                                            className={cn(`${searchParams.get('section') === 'doctor' && '!text-secondaryDark'}`)}
+                                        >
                                             {t('header_doctor')}
-                                        </a>
+                                        </div>
+                                        <span
+                                            className={cn(
+                                                'absolute bottom-[-4px] left-0 h-1 w-full',
+                                                `${searchParams.get('section') === 'doctor' && 'bg-secondaryDark'}`,
+                                            )}
+                                        ></span>
                                     </li>
-                                    <li>
-                                        <a href="#" className="text-black">
+                                    <li className="relative cursor-pointer">
+                                        <div
+                                            onClick={() =>
+                                                router.push('/booking-doctor?section=booking')
+                                            }
+                                            className={cn(`${searchParams.get('section') === 'booking' && '!text-secondaryDark'}`)}
+                                        >
                                             {t('header_booking')}
-                                        </a>
+                                        </div>
+                                        <span
+                                            className={cn(
+                                                'absolute bottom-[-4px] left-0 h-1 w-full',
+                                                `${searchParams.get('section') === 'booking' && 'bg-secondaryDark'}`,
+                                            )}
+                                        ></span>
                                     </li>
-                                    <li>
-                                        <a href="blog" className="text-black">
+                                    <li className="relative cursor-pointer">
+                                        <div
+                                            onClick={() => router.push('/blog?section=news')}
+                                            className={cn(`${searchParams.get('section') === 'news' && '!text-secondaryDark'}`)}
+                                        >
                                             {t('header_news')}
-                                        </a>
+                                        </div>
+                                        <span
+                                            className={cn(
+                                                'absolute bottom-[-4px] left-0 h-1 w-full',
+                                                `${searchParams.get('section') === 'news' && 'bg-secondaryDark'}`,
+                                            )}
+                                        ></span>
                                     </li>
-                                    <li>
-                                        <a href="/home#contact" className="text-black">
+                                    <li className="relative cursor-pointer">
+                                        <div
+                                            onClick={() =>
+                                                router.push(
+                                                    '/home?section=' +
+                                                        'contact',
+                                                )
+                                            }
+                                            className={cn(`${searchParams.get('section') === 'contact' && '!text-secondaryDark'}`)}
+                                        >
                                             {t('header_contact')}
-                                        </a>
+                                        </div>
+                                        <span
+                                            className={cn(
+                                                'absolute bottom-[-4px] left-0 h-1 w-full',
+                                                `${searchParams.get('section') === 'contact' && 'bg-secondaryDark'}`,
+                                            )}
+                                        ></span>
                                     </li>
                                 </ul>
                             </ul>

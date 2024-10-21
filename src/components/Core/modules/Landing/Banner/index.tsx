@@ -26,7 +26,7 @@ function Banner() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const screen = Grid.useBreakpoint();
     return (
-        <div className="z-0 mt-[60px] sm:mt-[126px] flex h-[600px] sm:h-fit w-full select-none justify-center">
+        <div className="z-0 mt-[56px] sm:mt-[126px] flex h-[600px] sm:h-fit w-full select-none justify-center">
             <div className="relative w-full sm:w-[1920px]">
                 <div className="relative flex h-fit w-full justify-center">
                     <Image
