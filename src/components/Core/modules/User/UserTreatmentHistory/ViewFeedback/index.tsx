@@ -1,9 +1,19 @@
+import { Modal } from "antd"
 import { Star } from "lucide-react"
 import Image from "next/image"
 
-export default function ViewFeedback() {
+
+interface IProps {
+    open: boolean
+    close: () => void
+}
+
+export default function ViewFeedback({ open, close }: IProps) {
     return (
-        <div
+        <Modal
+            open={open}
+            onCancel={close}
+            closeIcon={false}
             className="h-fit w-[65%]"
         >
             <div className="">
@@ -45,14 +55,14 @@ export default function ViewFeedback() {
                     <div className="w-full flex-col gap-5">
                         <div>
                             <div
-                                className="!mb-0"
+                                className="!mb-0 pl-1 font-semibold text-[#003553]"
                             >
-                                <p>Umbala</p>
+                                Nội dung đánh giá: <p className="font-normal" dangerouslySetInnerHTML={{ __html: "asdabshdjabdhjwdawj absdhajbwj awvdbh" }}></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Modal>
     )
 }
