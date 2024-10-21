@@ -25,6 +25,7 @@ const userEndpoint = {
     UPDATE_BOOKED_APPOINTMENT: '/appointment/user-update',
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
     CREATE_AN_APPOINTMENT: '/appointment/create',
+    CREATE_FEEDBACK: '/user/feedback/create',
 }
 
 const doctorEndpoint = {

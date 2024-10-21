@@ -70,6 +70,17 @@ export const userAppointments = baseApi.injectEndpoints({
                 },
                 extraOptions: { skipAuth: false }
             }),
+        }),
+        createFeedback: build.mutation<any, { comment: string, vote: number, appointmentId: string }>({
+            query: (params) => ({
+                url: userEndpoint.CREATE_FEEDBACK,
+                flashError: true,
+                method: 'POST',
+                body: {
+                    ...params,
+                },
+                extraOptions: { skipAuth: false }
+            }),
         })
     })
 })
@@ -80,5 +91,6 @@ export const {
     useGetBookedAppointmentsQuery,
     useUpdateBookedAppointmentMutation,
     useGetAppointmentUpcomingQuery,
-    useCreateAnAppointmentMutation
+    useCreateAnAppointmentMutation,
+    useCreateFeedbackMutation
 } = userAppointments;
