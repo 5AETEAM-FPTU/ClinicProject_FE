@@ -1,4 +1,3 @@
-
 const demoEnpoints = {
     GET_AMOUNT_OF_QUESTION: '',
 }
@@ -34,11 +33,11 @@ const doctorEndpoint = {
     PATCH_ACHIEVEMENT: '/doctor/achievement',
     PATCH_DESCRIPTION: '/doctor/description',
 
-    GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
-    GET_CANCEL_APPOINTMENTS: "/appointment/absent",
-    UPDATE_DUTY: "/doctor/duty",
-    GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
-    GET_MEDICAL_REPORT: "/medical-report/all",
+    GET_APPOINTMENTS_ON_DAY: '/doctor/appointments',
+    GET_CANCEL_APPOINTMENTS: '/appointment/absent',
+    UPDATE_DUTY: '/doctor/duty',
+    GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
+    GET_MEDICAL_REPORT: '/medical-report/all',
 }
 
 const scheduleEndpoint = {
@@ -51,11 +50,11 @@ const scheduleEndpoint = {
 }
 
 const enumEndpoint = {
-    GET_SPECIALTY: "/enum/getAllSpecialty",
-    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
-    GET_POSITION: "/enum/getAllPosition",
-    GET_GENDER: "/enum/getAllGender",
-    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+    GET_SPECIALTY: '/enum/getAllSpecialty',
+    GET_RETREATMENT_TYPE: '/enum/getAllRetreatmentType',
+    GET_POSITION: '/enum/getAllPosition',
+    GET_GENDER: '/enum/getAllGender',
+    GET_APPOINTMENT_STATUS: '/enum/getAllAppointmentStatus',
 }
 
 const chatEndpoint = {
@@ -77,14 +76,17 @@ const geminiEndpoint = {
 
 const AppointmentEndpoint = {
     UPDATE_APPOINTMENT_STATUS: '/appointment/update-status',
+    GET_ALL_USER_HISTORY_APPOINTMENTS: 'user/medical-report/all',
 }
 
 const medicalReportEndpoint = {
-    CREATE_NEW_MEDICAL_REPORT: "/medical-report/create",
-    GET_MEDICAL_REPORT_BY_ID: "/medical-report",
-    GET_ALL_MEDICAL_REPORT: "/medical-report/getAll",
-    UPDATE_MEDICAL_REPORT_PATIENT_INFORMATION: "/medical-report/update-patient-information",
-    UPDATE_MAIN_MEDICAL_REPORT_INFORMATION: "/medical-report/update-main-information",
+    CREATE_NEW_MEDICAL_REPORT: '/medical-report/create',
+    GET_MEDICAL_REPORT_BY_ID: '/medical-report',
+    GET_ALL_MEDICAL_REPORT: '/medical-report/getAll',
+    UPDATE_MEDICAL_REPORT_PATIENT_INFORMATION:
+        '/medical-report/update-patient-information',
+    UPDATE_MAIN_MEDICAL_REPORT_INFORMATION:
+        '/medical-report/update-main-information',
 }
 
 const serviceEndpoint = {
@@ -96,7 +98,8 @@ const medicineOrderEndpoint = {
     GET_MEDICINE_ORDER_DETAIL: '/medicine-order/detail',
     ADD_MEDICINE_ORDER_ITEM: '/medicine-order/item/add',
     UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
-    DELETE_MEDICINE_ORDER_ITEM: '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
+    DELETE_MEDICINE_ORDER_ITEM:
+        '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
 }
 const serviceOrderEndpoint = {
     SERVICE_ORDER_ADD: '/service-order/add',
@@ -135,5 +138,5 @@ export {
     serviceEndpoint,
     chatEndpoint,
     serviceOrderEndpoint,
-    medicineOrderEndpoint
+    medicineOrderEndpoint,
 }
