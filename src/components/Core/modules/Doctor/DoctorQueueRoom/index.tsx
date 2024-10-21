@@ -168,9 +168,9 @@ export default function DoctorQueueRoom() {
                                     {patientQueues.map((queue) => (
                                         <li
                                             key={queue.queueRoomId}
-                                            className="shadow-sm flex h-[70px] items-center justify-between rounded-lg bg-white px-4"
+                                            className="shadow-sm flex items-center justify-between rounded-lg bg-white px-4 lg:flex-row lg:h-[70px] flex-col h-fit"
                                         >
-                                            <div className="flex min-w-[250px] items-center gap-2">
+                                            <div className="flex pt-2 lg:pt-2 min-w-[250px] items-center gap-2">
                                                 <Image
                                                     src={queue.patientAvatar}
                                                     alt="Avatar"
@@ -187,7 +187,7 @@ export default function DoctorQueueRoom() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="mt-2 flex w-[60%] items-center">
+                                            <div className="mt-2 flex lg:w-[60%] w-[80%] items-center">
                                                 <div className="mr-[6px] h-6 w-1 bg-[#003553]"></div>
                                                 <p
                                                     className=""
@@ -207,7 +207,7 @@ export default function DoctorQueueRoom() {
                                                     )
                                                 }
                                                 type="primary"
-                                                className="flex items-center rounded-xl bg-secondaryDark px-5 py-5 font-bold text-white"
+                                                className="flex items-center rounded-xl bg-secondaryDark px-5 py-5 m-3 font-bold text-white"
                                             >
                                                 <MessageCircleReply size={24} />
                                                 Trả lời
