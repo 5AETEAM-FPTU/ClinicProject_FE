@@ -173,12 +173,12 @@ export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
                 </div>
             </div>
             <div className="mt-4">
-                <p className="line-clamp-2 h-[45px] text-[#003553]">
+                <div className=" h-[45px] flex flex-row text-[#003553]">
                     <span className="w-[50px] font-semibold text-[#003553]">
                         Mô tả:{' '}
                     </span>
-                    {payload.description ?? 'Không xác định'}
-                </p>
+                    <p className='line-clamp-2' dangerouslySetInnerHTML={{ __html: payload.description }}></p>
+                </div>
             </div>
         </div>
     )
