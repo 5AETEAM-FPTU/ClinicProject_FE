@@ -6,12 +6,14 @@ import TimeSlotSection from '../TimeSlot';
 import Information from '../Information';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next-nprogress-bar';
-import { useGetScheduleByMonthQuery, useLazyGetScheduleByDateQuery } from '@/stores/services/schedule/scheduleSettings';
-import { set } from 'lodash';
+import { useGetGuestScheduleByMonthQuery, useGetScheduleByMonthQuery, useLazyGetGuestScheduleByDateQuery, useLazyGetScheduleByDateQuery } from '@/stores/services/schedule/scheduleSettings';
 import { TimeSlot } from '@/components/Core/modules/Doctor/DoctorUpdateSchedules/TimeSlot';
 import { useUpdateBookedAppointmentMutation } from '@/stores/services/user/userAppointments';
 import webStorageClient from '@/utils/webStorageClient';
 import { constants } from '@/settings';
+import exp from 'constants';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayloadUpdated } from '../../Auth/SignIn';
 
 const daysOfWeek = ['CN', 'Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy']
 const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
@@ -55,6 +57,9 @@ const getFirstDayOfMonth = (date: Date) => {
 // end helper function
 
 export default function Component() {
+    const isLogined = webStorageClient.get(constants.ACCESS_TOKEN);
+    const role = isLogined ? jwtDecode<JwtPayloadUpdated>(isLogined).role : 'guest';
+
     const params = useSearchParams();
     const router = useRouter();
     const isUpdate = params.get('isUpdate') === 'true';
@@ -68,11 +73,11 @@ export default function Component() {
     if (isUpdate && !params.get('appointmentId')) router.back();
     const [currentDate, setCurrentDate] = useState(new Date(Date.now())) // September 2024
     if (!params.get('doctorId')) router.back();
-    const { data, isFetching, error, refetch: getScheduleByMonth } = useGetScheduleByMonthQuery({ month: currentDate.getMonth() + 1, year: currentDate.getFullYear(), doctorId: params.get('doctorId') })
+    const { data, isFetching, error, refetch: getScheduleByMonth } = role !== 'guest' ? useGetScheduleByMonthQuery({ month: currentDate.getMonth() + 1, year: currentDate.getFullYear(), doctorId: params.get('doctorId') }) : useGetGuestScheduleByMonthQuery({ month: currentDate.getMonth() + 1, year: currentDate.getFullYear(), doctorId: params.get('doctorId') });
     const [selectedSlot, setSelectedSlot] = useState<any>(null)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
-    const [getScheduleByDateQuery, { data: resultTimeSlots, isFetching: isTimeSlotLoading }] = useLazyGetScheduleByDateQuery()
+    const [getScheduleByDateQuery, { data: resultTimeSlots, isFetching: isTimeSlotLoading }] = role !== 'guest' ? useLazyGetScheduleByDateQuery() : useLazyGetGuestScheduleByDateQuery();
     const [updateBookedAppointment] = useUpdateBookedAppointmentMutation()
     const [timeSlotVisible, setTimeSlotVisible] = useState(false)
 
@@ -81,7 +86,17 @@ export default function Component() {
             message.error('Vui lòng chọn thời gian khám');
             return;
         }
-        router.push(`confirm?${new URLSearchParams({
+        if (!isLogined) {
+            router.push('/sign-in');
+            webStorageClient.set(constants.REDIRECT_URL, `/user/treatment-calendar/booking/confirm?${new URLSearchParams({
+                fullName: params.get('fullName') || '',
+                doctorId: params.get('doctorId') || '',
+                specialties: params.get('specialties') || '',
+                selectedSlot: JSON.stringify(selectedSlot),
+            }).toString()}`, { maxAge: 60 * 10 });
+            return;
+        }
+        router.push(`/user/treatment-calendar/booking/confirm?${new URLSearchParams({
             fullName: params.get('fullName') || '',
             doctorId: params.get('doctorId') || '',
             specialties: params.get('specialties') || '',
