@@ -25,7 +25,7 @@ export const PatientModal = ({ patientId, open, setOpen }: { patientId: string, 
                 loading={loading}
                 open={open}
                 onCancel={() => setOpen(false)}
-                className='min-w-fit shadow-third'
+                className='w-full lg:w-fit shadow-third'
             >
                 <PatientDetailForm />
             </Modal>

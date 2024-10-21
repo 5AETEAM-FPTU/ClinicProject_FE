@@ -7,8 +7,15 @@ import { constants } from '@/settings'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import { Inter } from 'next/font/google'
+import { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+    title: "P-CLINIC",
+    description: "P-CLINIC",
+    icons: "/icons/layout/p-clinic.png",
+};
 
 function DoctorRootLayout({ children }: { children: React.ReactNode }) {
     const _accessToken_Cookie = getCookie(constants.ACCESS_TOKEN, { cookies })

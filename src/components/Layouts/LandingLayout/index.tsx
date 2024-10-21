@@ -1,20 +1,43 @@
 'use client'
-import React from 'react'
-
-import Header from './Header'
-import Footer from './Footer'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-
-const DynamicHeader = dynamic(() => import('./Header'), { ssr: false })
+import Footer from './Footer'
+import Reloading from './Reloading'
+import Header from './Header'
+import HeaderMobile from './HeaderMobile'
 
 function LandingLayout({ children }: { children: React.ReactNode }) {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+
+    useEffect(() => {
+        const loadingTimeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 1800);
+
+        return () => {
+            clearTimeout(loadingTimeout);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     return (
         <div>
-            <Header />
+            {isLoading ? <Reloading /> : null}
+            {isMobile ? <HeaderMobile /> : <Header />}
             {children}
             <Footer />
         </div>
-    )
+    );
 }
 
-export default LandingLayout
+export default LandingLayout;

@@ -18,6 +18,7 @@ import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
 import UserProvider from '@/providers/UserProvider'
 import { ConvexClientProvider } from '@/providers/ConvexClientProvider'
+import CallProvier from '@/providers/CallProvider'
 
 function Providers({ children }: { children: React.ReactNode }) {
     const _accessToken = webStorageClient.getToken()
@@ -50,10 +51,10 @@ function Providers({ children }: { children: React.ReactNode }) {
                                         titleMarginTop: 0,
                                     },
                                     Table: {
-                                        headerBg: themes.default.colors.primary,
-                                        headerColor:
-                                            themes.default.colors.textWhite,
-                                        headerBorderRadius: 0,
+                                        headerBg: "#fff",
+                                        headerColor: "#000",
+                                        headerBorderRadius: 8,
+                                        footerBg: "#fff",
                                     },
                                     Select: {
                                         controlHeight: 40,
@@ -70,7 +71,9 @@ function Providers({ children }: { children: React.ReactNode }) {
                                     <SessionProvider>
                                         <UserProvider>
                                             <ConvexClientProvider>
-                                                {children}
+                                                <CallProvier>
+                                                    {children}
+                                                </CallProvier>
                                             </ConvexClientProvider>
                                         </UserProvider>
                                     </SessionProvider>

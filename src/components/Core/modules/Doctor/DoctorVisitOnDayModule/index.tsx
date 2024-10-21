@@ -12,8 +12,9 @@ const { Content } = Layout
 export default function DoctorVisitInDayModule() {
     const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), [])
 
-    const { appointments, refetch, isFetching } = useGetAppointmentOnDayQuery(
-        { date: '2024-10-18T08:30:00' },
+    const { appointments, refetch, isFetching } = 
+    useGetAppointmentOnDayQuery(
+        { date: now},
         {
             selectFromResult: ({ data, isFetching }) => ({
                 appointments: data?.body?.appointment ?? [],

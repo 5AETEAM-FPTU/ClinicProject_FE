@@ -1,4 +1,3 @@
-import { GET } from "@/app/api/auth/[...nextauth]/route"
 
 const demoEnpoints = {
     GET_AMOUNT_OF_QUESTION: '',
@@ -51,11 +50,23 @@ const scheduleEndpoint = {
 }
 
 const enumEndpoint = {
-    GET_SPECIALTY: '/enum/getAllSpecialty',
-    GET_RETREATMENT_TYPE: '/enum/getAllRetreatmentType',
-    GET_POSITION: '/enum/getAllPosition',
-    GET_GENDER: '/enum/getAllGender',
-    GET_APPOINTMENT_STATUS: '/enum/getAllAppointmentStatus',
+    GET_SPECIALTY: "/enum/getAllSpecialty",
+    GET_RETREATMENT_TYPE: "/enum/getAllRetreatmentType",
+    GET_POSITION: "/enum/getAllPosition",
+    GET_GENDER: "/enum/getAllGender",
+    GET_APPOINTMENT_STATUS: "/enum/getAllAppointmentStatus"
+}
+
+const chatEndpoint = {
+    GET_QUEUE_ROOM_BY_USER: '/queue-room/user-id',
+    REMOVE_QUEUE_ROOM_BY_ID: '/queue-room/{queueRoomId}',
+    ADD_QUEUE_ROOM: '/queue-room',
+    GET_CHAT_ROOM_BY_USER: '/chat-room/user',
+    GET_CHAT_ROOM_BY_DOCTOR: '/chat-room/doctor',
+    GET_CHAT_CONTENT_BY_CHAT_ROOM: '/chat-content/message',
+    REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
+    GET_ALL_QUEUE_ROOM: '/queue-room/all',
+    ADD_CHAT_ROOM: '/chat-room',
 }
 
 const geminiEndpoint = {
@@ -76,11 +87,19 @@ const medicalReportEndpoint = {
 }
 
 const serviceEndpoint = {
-    GET_ALL_SERVICE: '/services/all',
+    GET_ALL_SERVICE: '/services/available',
 }
 
-const medicineEndpoint = {
-
+const medicineOrderEndpoint = {
+    GET_MEDICINE_AVAILABLE: '/admin/medicine/available',
+    GET_MEDICINE_ORDER_DETAIL: '/medicine-order/detail',
+    ADD_MEDICINE_ORDER_ITEM: '/medicine-order/item/add',
+    UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
+    DELETE_MEDICINE_ORDER_ITEM: '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
+}
+const serviceOrderEndpoint = {
+    SERVICE_ORDER_ADD: '/service-order/add',
+    SERVICE_ORDER_DETAIL: '/service-order/detail',
 }
 
 const VnPayEndpoint = {
@@ -113,4 +132,7 @@ export {
     blogEndpoints,
     medicalReportEndpoint,
     serviceEndpoint,
+    chatEndpoint,
+    serviceOrderEndpoint,
+    medicineOrderEndpoint
 }

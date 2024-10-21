@@ -1,9 +1,11 @@
-import ConsultationComponent from '@/components/Core/modules/Doctor/Consultation'
+import DoctorConservation from '@/components/Core/modules/Doctor/DoctorConservation'
 import React from 'react'
 
 function Conversation() {
     return (
-        <ConsultationComponent />
+        <div>
+            <DoctorConservation />
+        </div>
     )
 }
 

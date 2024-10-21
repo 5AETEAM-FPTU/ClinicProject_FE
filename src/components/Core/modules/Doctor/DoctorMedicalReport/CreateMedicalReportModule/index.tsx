@@ -52,7 +52,7 @@ export default function CreateMedicalReport() {
                     <div className="h-fit w-full rounded-xl p-5 shadow-third bg-white">
                         <PatientInforComponent payload={report?.patientInfor} refetch={refetch} isFetching={isFetching}/>
                     </div>
-                    <MainMedicalReport payload={report?.medicalReport} refetch={refetch} isFetching={isFetching}/>
+                    <MainMedicalReport payload={report} refetch={refetch} isFetching={isFetching}/>
                 </motion.div>
             )}
         </motion.div>

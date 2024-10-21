@@ -1,63 +1,109 @@
-"use client"
-import React, { use, useEffect, useState } from 'react'
-import { Layout, List, Avatar, Input, Button, Modal } from 'antd'
-import { Phone, Send, Settings, Video, PhoneOff, User } from 'lucide-react'
-import { StringeeClient, StringeeCall } from "stringee";
-import { motion } from 'framer-motion';
-import './style.css'
+'use client'
+import React, { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import {
+    Layout,
+    List,
+    Avatar,
+    Input,
+    Button,
+    Space,
+    Typography,
+    Modal,
+} from 'antd'
+import { House, Phone, PhoneOff, Send, Settings, User } from 'lucide-react'
+import { jwtDecode, JwtPayload } from 'jwt-decode'
+import webStorageClient from '@/utils/webStorageClient'
+import Image from 'next/image'
+import ProfileBackground from '@public/landing/images/profile-background.png'
+import {
+    MessageOutlined,
+    SettingOutlined,
+    UserOutlined,
+} from '@ant-design/icons'
+import { DefaultImage, UserRole } from '@/helpers/data/Default'
+import { useRouter } from 'next-nprogress-bar'
+import { JwtPayloadUpdated } from '../../Auth/SignIn'
+import { useLocale } from 'next-intl'
+import ChatRooms from './ChatRooms'
+import {
+    useGetUserProfileQuery,
+    useLazyGetUserProfileQuery,
+} from '@/stores/services/user/userSettings'
+import dayjs from 'dayjs'
+import ChatContent from './ChatContent'
+import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
+const { Text } = Typography
 
-const { Sider, Content } = Layout
-
-interface Doctor {
-    id: number
-    name: string
-    title: string
+export interface ChatRoom {
+    doctorId: string
+    chatRoomId: string
+    fullName: string
+    isEndConversation: boolean
     avatar: string
+    title: string
 }
 
-interface Message {
-    id: number
-    text: string
-    sender: 'user' | 'doctor'
-    timestamp: string
+export interface UserInformationChatRoom {
+    fullName: string
+    gender: {
+        genderName: string
+    }
+    avatarUrl: string
+    dob: string
 }
 
-const doctors: Doctor[] = [
-    { id: 1, name: 'Nguyễn Văn Mạnh', title: 'Bác sĩ - Thạc sĩ', avatar: '/placeholder.svg?height=40&width=40' },
-    { id: 2, name: 'Đoàn Bích Ngọc', title: 'Bác sĩ - Thạc sĩ', avatar: '/placeholder.svg?height=40&width=40' },
-    { id: 3, name: 'Trần Thị Hoa', title: 'Bác sĩ - Tiến sĩ', avatar: '/placeholder.svg?height=40&width=40' },
-    { id: 4, name: 'Lê Văn Hùng', title: 'Bác sĩ - Thạc sĩ', avatar: '/placeholder.svg?height=40&width=40' },
-]
-
-const initialMessages: Message[] = [
-    { id: 1, text: 'It contains a lot of good lessons about effective practices', sender: 'doctor', timestamp: '3:14am' },
-    { id: 2, text: 'Can it generate daily design links that include essays and data visualizations ?', sender: 'user', timestamp: '4:42pm' },
-    { id: 3, text: 'Yeah! Responsive Design is geared towards those trying to build web apps', sender: 'doctor', timestamp: '4:31pm' },
-    { id: 4, text: 'Excellent, I want it now !', sender: 'user', timestamp: '4:42pm' },
-]
+export interface ChatRoomTransfer {
+    chatRoomId?: string
+    doctorId?: string
+}
 
 interface IncomingCallPopupProps {
-    isVisible: boolean;
-    callerName: string | null;
-    callerNumber: string | null;
-    onAnswer: () => void;
-    onDecline: () => void;
+    isVisible: boolean
+    callerName: string | null
+    callerNumber: string | null
+    avatar: string | null
+    onAnswer: () => void
+    onDecline: () => void
 }
 
 export function IncomingCallPopup({
     isVisible,
     callerName,
     callerNumber,
+    avatar,
     onAnswer,
-    onDecline
+    onDecline,
 }: IncomingCallPopupProps) {
+    const audioRef = useRef<HTMLAudioElement | null>(null)
+    useEffect(() => {
+        if (audioRef.current && isVisible) {
+            audioRef.current.play()
+        }
+    }, [isVisible])
+    const handleAnswer = () => {
+        if (audioRef.current) {
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+        }
+        onAnswer()
+    }
+
+    const handleDecline = () => {
+        if (audioRef.current) {
+            audioRef.current.pause()
+            audioRef.current.currentTime = 0
+        }
+        onDecline()
+    }
+
     return (
         <Modal
             open={isVisible}
             footer={null}
             closable={false}
             centered
-            className='w-[400px] wave-effect'
+            className="wave-effect w-[400px]"
             modalRender={(modal) => (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -69,230 +115,172 @@ export function IncomingCallPopup({
                 </motion.div>
             )}
         >
-            <div className="flex flex-col items-center bg-gradient-to-b from-blue-500 to-blue-600 text-white p-6 rounded-t-lg">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4">
-                    <User className="w-12 h-12 text-blue-500" />
+            <div className="flex flex-col items-center rounded-t-lg bg-gradient-to-b from-blue-500 to-blue-600 p-6 text-white">
+                <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white">
+                    {avatar ? (
+                        <img
+                            src={avatar}
+                            className="h-full w-full rounded-full object-cover text-blue-500"
+                        />
+                    ) : (
+                        <User className="h-12 w-12 text-blue-500" />
+                    )}
                 </div>
-                <h2 className="text-2xl font-bold mb-1">{callerName}</h2>
+                <h2 className="mb-1 text-center text-2xl font-bold">
+                    {callerName}
+                </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="flex justify-around p-4 bg-gray-100 rounded-b-lg">
+            <div className="to-seco flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 p-4">
+                <audio
+                    ref={audioRef}
+                    preload="auto"
+                    loop
+                    src="/assets/calling.wav"
+                />
                 <Button
                     type="primary"
                     shape="circle"
-                    icon={<Phone className="w-6 h-6" />}
+                    icon={<Phone className="h-6 w-6" />}
                     size="large"
-                    className="bg-green-500 hover:bg-green-600 border-none flex items-center justify-center w-12 h-12 rounded-full"
-                    onClick={onAnswer}
+                    className="flex h-12 w-12 items-center justify-center rounded-full border-none bg-green-500 hover:bg-green-600"
+                    onClick={handleAnswer}
                 />
                 <Button
                     type="primary"
                     danger
                     shape="circle"
-                    icon={<PhoneOff className="w-6 h-6" />}
+                    icon={<PhoneOff className="h-6 w-6" />}
                     size="large"
-                    className="flex items-center justify-center w-12 h-12 rounded-full"
-                    onClick={onDecline}
+                    className="flex h-12 w-12 items-center justify-center rounded-full"
+                    onClick={handleDecline}
                 />
             </div>
         </Modal>
-    );
+    )
 }
 
 export default function ConsultationComponent() {
-    const [messages, setMessages] = useState<Message[]>(initialMessages)
-    const [inputMessage, setInputMessage] = useState('')
-    const [stringeeClient, setStringeeClient] = useState(null);
-    const [call, setCall] = useState(null);
-    const userId = `887c65e7-274e-41c7-87ec-b48973a38883`;
-    const [accessToken, setAccessToken] = useState("eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13LTE3MjkwNDUxNDciLCJpc3MiOiJTSy4wLjFneU9yZWYzUVRjYmNpV1ZyOHVuaXlDTEpiWjY1WE13IiwiZXhwIjoxNzMxNjM3MTQ3LCJ1c2VySWQiOiI4ODdjNjVlNy0yNzRlLTQxYzctODdlYy1iNDg5NzNhMzg4ODMiLCJpY2NfYXBpIjp0cnVlfQ.aEDd-sGablO6Lg9dKlltikgNWSp3wgtQpaX-yQTrYpc");
-    const [callFrom, setCallFrom] = useState<{
-        userId: string;
-        displayName: string;
-        isVideoCall: boolean;
-        avatar: string;
-    } | null>(null);
-    useEffect(() => {
-        const client = new StringeeClient();
+    const router = useRouter()
+    const locale = useLocale()
+    const _accessToken = webStorageClient.getToken()!.toString()
+    const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
 
-        client.on("connect", () => {
-            console.log("Connected to StringeeServer");
-            setStringeeClient(client);
-        });
+    const { userInformationResult, isFetching } = useGetUserProfileQuery(
+        undefined,
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    userInformationResult: data?.body
+                        ?.user as UserInformationChatRoom,
+                    isFetching: isFetching,
+                }
+            },
+        },
+    )
 
-        client.on("authen", (res: any) => {
-            if (res.r === 0) {
-                console.log("Authenticated", res);
-            } else {
-                console.log("Authentication failed", res.message);
-            }
-        });
-
-        client.on("incomingcall", (incomingCall: any) => {
-            setCall(incomingCall);
-            handleCallEvents(incomingCall);
-            setCallFrom(JSON.parse(incomingCall.fromNumber));
-        });
-
-        client.on('requestnewtoken', function () {
-            // call refreshtoken
-            // client.connect(accessToken);
-        });
-
-
-        client.on('otherdeviceauthen', function (data: any) {
-            console.log('on otherdeviceauthen:' + JSON.stringify(data));
-        });
-
-        client.connect(accessToken);
-
-        return () => {
-            if (client) {
-                client.disconnect();
-            }
-        };
-    }, []);
-
-    const handleCallEvents = (call: any) => {
-
-        call.on('mediastate', function (data: any) {
-            console.log('on mediastate', data);
-        });
-
-        call.on('signalingstate', function (data: any) {
-            console.log('on signalingstate', data);
-        });
-
-        call.on('info', function (data: any) {
-            console.log('on info', data);
-        });
-
-        call.on('otherdevice', function (data: any) {
-            console.log('on otherdevice:' + JSON.stringify(data));
-            if ((data.type === 'CALL_STATE' && data.code >= 200) || data.type === 'CALL_END') {
-                handleEndCall();
-            }
-        });
-
-    }
-
-    const handleEndCall = () => {
-        if (call) {
-            (call as any).hangup((res: any) => {
-                console.log("Call ended", res);
-                setCall(null);
-            });
-        }
-    };
-
-
-    const handleSendMessage = () => {
-        if (inputMessage.trim()) {
-            const newMessage: Message = {
-                id: messages.length + 1,
-                text: inputMessage,
-                sender: 'user',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            }
-            setMessages([...messages, newMessage])
-            setInputMessage('')
-        }
-    }
-
-    useEffect(() => {
-        let timer: any;
-        if (stringeeClient && callFrom && call) {
-            timer = setInterval(() => {
-                (stringeeClient as any).sendCustomMessage(callFrom.userId, { test: true }, (res: any) => {
-                    console.log('Send custom message: ', res);
-                    if (res.userNotOnline) {
-                        setCall(null);
-                        clearInterval(timer);
-                    }
-                })
-            }, 1000);
-        }
-        return () => {
-            clearInterval(timer);
-        };
-    }, [stringeeClient, call]);
+    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByUserQuery(
+        undefined,
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    chatRoomResult: data?.body?.chatRooms as ChatRoom[],
+                    isChatRoomFetching: isFetching,
+                }
+            },
+        },
+    )
 
     return (
-        <Layout className="h-[600px] bg-transparent">
-            <IncomingCallPopup isVisible={call != null} callerName={callFrom && callFrom.displayName} callerNumber={callFrom && callFrom.isVideoCall ? 'Đang gọi video ...' : 'Đang gọi ...'} onAnswer={() => {
-                console.log(callFrom);
-                window.open(
-                    `http://127.0.0.1:3000/vi/test?from=${userId}&to=${callFrom?.userId}&accessToken=${accessToken}&video=${callFrom?.isVideoCall ? 'on' : 'off'}`,
-                    '_blank', 'width=800,height=600');
-                setCall(null);
-            }} onDecline={() => {
-                if (!call) return;
-                (call as any).reject((res: any) => {
-                    console.log("Call rejected", res);
-                    setCall(null);
-                });
-                setCall(null);
-            }} />
-            <Sider width={300} className="bg-white p-4 rounded-[12px] shadow-third">
-                <List
-                    itemLayout="horizontal"
-                    dataSource={doctors}
-                    renderItem={(doctor) => (
-                        <List.Item className="group cursor-pointer hover:bg-gradient-to-r from-[#00B5F1] to-[#0284C7] rounded-lg p-2 mb-[10px] border-none">
-                            <List.Item.Meta
-                                avatar={<Avatar size={48} shape="square" src={doctor.avatar} />}
-                                title={<span className="text-blue-600 text-secondarySupperDarker group-hover:text-white text-base font-semibold">{doctor.name}</span>}
-                                description={<span className='text-base text-secondarySupperDarker group-hover:text-white'>{doctor.title}</span>}
+        <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            exit={{ opacity: 0 }}
+        >
+            <Layout className="flex h-fit flex-col bg-transparent">
+                <div className="relative mb-[85px] h-[150px]">
+                    <Image
+                        className="z-1 h-[100%] w-full rounded-2xl object-cover"
+                        src={ProfileBackground}
+                        alt="background"
+                    />
+                    <div
+                        className="z-2 absolute bottom-0 left-[50%] mb-0 flex w-[90%] translate-x-[-50%] translate-y-[50%] items-center justify-between rounded-2xl bg-white bg-opacity-85 p-5"
+                        style={{ marginBottom: '24px' }}
+                    >
+                        <Space size="large" align="center">
+                            <Avatar
+                                shape="square"
+                                className="size-16 rounded-xl sm:size-20"
+                                icon={<UserOutlined />}
+                                src={`${userInformationResult?.avatarUrl ?? DefaultImage}`}
                             />
-                        </List.Item>
-                    )}
-                />
-            </Sider>
-            <Content className="bg-white p-4 ml-5 rounded-[12px] shadow-third">
-                <div className="h-full flex flex-col">
-                    <div className="p-4 border-b flex justify-between items-center">
-                        <div className="flex items-center">
-                            <Avatar size={48} shape="square" src="/placeholder.svg?height=40&width=40" />
-                            <div className="ml-3">
-                                <h2 className="text-base font-semibold text-secondarySupperDarker">Tư vấn khám tổng quát...</h2>
-                                <p className="text-[14px] text-gray-500 text-secondarySupperDarker">Bệnh nhân: Nguyễn Văn Toàn</p>
+                            <div className="">
+                                <p
+                                    className="font-bold text-secondarySupperDarker sm:text-lg md:text-2xl"
+                                    style={{ margin: 0 }}
+                                >
+                                    {`${userInformationResult?.fullName ?? 'Ẩn Danh'}`}
+                                </p>
+                                <Text
+                                    className="sm:text-md font-medium text-secondarySupperDarker md:text-lg"
+                                    type="secondary"
+                                >
+                                    {`${userInformationResult?.gender?.genderName ?? 'Ẩn Danh'}`}
+                                </Text>
+                                <br />
+                                <Text
+                                    className="md:text-md font-medium text-secondarySupperDarker sm:text-sm"
+                                    type="secondary"
+                                >
+                                    {`${dayjs(userInformationResult?.dob).format('DD/MM/YYYY') ?? 'Ẩn ngày sinh'}`}
+                                </Text>
                             </div>
-                        </div>
-                        <div className='flex justify-center items-center gap-4'>
-                            <Button className='shadow-third' icon={<Settings className="w-4 h-4" />} type="text">
+                        </Space>
+                        <Space
+                            className="flex h-full flex-col sm:flex-row"
+                            style={{ marginLeft: 'auto' }}
+                        >
+                            <Button
+                                type="default"
+                                className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                                icon={<House size={18} />}
+                                onClick={() =>
+                                    router.push(
+                                        `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
+                                    )
+                                }
+                            >
+                                Tổng quan
+                            </Button>
+                            <Button
+                                type="default"
+                                className="border-2 border-secondaryDark font-semibold text-secondaryDarker"
+                                icon={<Settings size={18} />}
+                                onClick={() =>
+                                    router.push(
+                                        `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/settings`,
+                                    )
+                                }
+                            >
                                 Cài đặt
                             </Button>
-                        </div>
-
-                    </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                        {messages.map((message: Message) => (
-                            <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div
-                                    className={`max-w-[75%] shadow-primary rounded-lg px-4 py-2 ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-secondarySupperDarker'
-                                        }`}
-                                >
-                                    <p className='text-base'>{message.text}</p>
-                                    <span className={`text-xs block mt-1 ${message.sender === 'user' ? 'float-right text-white-200' : 'float-left text-gray-500'}`}>{message.timestamp}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="p-4 border-t">
-                        <Input
-                            placeholder="Nhập tin nhắn"
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            onPressEnter={handleSendMessage}
-                            suffix={
-                                <Button className='font-bold' iconPosition='start' type="primary" icon={<Send className="w-4 h-4" />} onClick={handleSendMessage}>
-                                    Gửi
-                                </Button>
-                            }
-                        />
+                        </Space>
                     </div>
                 </div>
-            </Content>
-        </Layout>
+                <div className="flex w-full flex-row gap-5">
+                    <ChatRooms
+                        chatRooms={chatRoomResult}
+                        setChatRoomTransfer={(chatRoomId, doctorId) =>
+                            setChatRoomTransfer({ chatRoomId, doctorId })
+                        }
+                    />
+                    <div className="w-[calc(100%-370px)]">
+                        <ChatContent />
+                    </div>
+                </div>
+            </Layout>
+        </motion.div>
     )
 }

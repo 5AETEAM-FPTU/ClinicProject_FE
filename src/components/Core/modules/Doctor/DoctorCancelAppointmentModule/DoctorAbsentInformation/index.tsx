@@ -76,7 +76,8 @@ export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
                 senderAvatarUrl: `${user.avatarUrl}`,
                 senderId: userId!,
                 senderName: `Bác sĩ: ${user.fullName}`,
-                topic: "Vắng mặt"
+                topic: "Vắng mặt",
+                href: '',
             })
             message.success('Gửi thông báo thành công!');
         } catch (error) {

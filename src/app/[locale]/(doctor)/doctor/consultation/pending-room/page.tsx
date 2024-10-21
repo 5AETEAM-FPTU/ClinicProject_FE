@@ -1,9 +1,10 @@
 import React from 'react'
+import DoctorQueueRoom from '../../../../../../components/Core/modules/Doctor/DoctorQueueRoom'
 
 function PendingRoom() {
     return (
         <div>
-            Phòng chờ tư vấn
+            <DoctorQueueRoom />
         </div>
     )
 }

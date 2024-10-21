@@ -44,7 +44,7 @@ export default function EditorTinymce({
                     setIsInited(true);
                 }}
                 ref={editorRef}
-                apiKey="kf6v30dw6u6pqnzquj9slxf6eb3a3o1fauu1it6whe4zy9l6"
+                apiKey={process.env.NEXT_PUBLIC_TINYMCE}
                 init={{
                     content: initContent,
                     height: 200,

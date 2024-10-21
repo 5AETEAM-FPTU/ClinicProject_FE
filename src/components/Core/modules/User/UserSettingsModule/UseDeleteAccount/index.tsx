@@ -6,7 +6,7 @@ export default function UserDeleteAccount() {
     return (
         <div className="h-fit w-full rounded-xl bg-white p-5 shadow-third">
             <div
-                className='w-full flex flex-rwo gap-5 items-center'
+                className='w-full flex flex-col  sm:flex-row gap-5 items-start sm:items-center'
             >
                 <Button type="primary" danger>Xóa tài khoản</Button>
                 <div>

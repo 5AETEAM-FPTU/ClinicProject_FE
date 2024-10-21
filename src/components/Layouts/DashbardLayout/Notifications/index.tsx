@@ -67,8 +67,8 @@ function NotificationItem({ item }: { item: UserNofiticationPayload }) {
             <div
                 className="max-w-[500px] cursor-pointer border-t-[1px] px-2 py-2 transition hover:bg-slate-100"
                 onClick={() => {
-                  handleTrigger()
-                  handleMarkNotificationAsRead()
+                    handleTrigger()
+                    handleMarkNotificationAsRead()
                 }}
             >
                 <div className="flex w-full flex-row items-center justify-between">
@@ -78,9 +78,9 @@ function NotificationItem({ item }: { item: UserNofiticationPayload }) {
                                 <p className="w-fit text-[16px] font-semibold text-secondarySupperDarker">
                                     {item.topic}
                                 </p>
-                               {
-                                !item.isRead &&  <div className="absolute right-[-25px] top-[8px] h-[8px] w-[8px] rounded-full bg-secondaryDark"></div>
-                               }
+                                {
+                                    !item.isRead && <div className="absolute right-[-25px] top-[8px] h-[8px] w-[8px] rounded-full bg-secondaryDark"></div>
+                                }
                             </div>
                             <p className="px-5">
                                 {getTimeAgo(item._creationTime)}

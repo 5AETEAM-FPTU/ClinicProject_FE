@@ -1,9 +1,10 @@
+import UserQueueRoomModule from '@/components/Core/modules/User/UserQueueRoomModule'
 import React from 'react'
 
 function PendingRoom() {
     return (
         <div>
-            Phòng chờ tư vấn
+            <UserQueueRoomModule />
         </div>
     )
 }

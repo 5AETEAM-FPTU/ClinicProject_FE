@@ -15,6 +15,7 @@ import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
 import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
 import webStorageClient from '@/utils/webStorageClient'
 import { constants } from '@/settings'
+import {motion} from 'framer-motion'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
@@ -25,13 +26,15 @@ const formatSelectedSlot = (selectedSlot: TimeSlot) => {
 export default function AppointmentConfirmation() {
     const router = useRouter()
     const params = useSearchParams()
-    const [createVnPayUrl] = useGetVnPayUrlMutation();
-    const [createAnAppointment] = useCreateAnAppointmentMutation();
-    const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [createVnPayUrl] = useGetVnPayUrlMutation()
+    const [createAnAppointment] = useCreateAnAppointmentMutation()
+    const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false)
+    const [loading, setLoading] = useState(false)
     const handleBack = () => {
-        const currentParams = new URLSearchParams(window.location.search);
-        router.push(`/user/treatment-calendar/booking/schedule?${currentParams.toString()}`);
+        const currentParams = new URLSearchParams(window.location.search)
+        router.push(
+            `/user/treatment-calendar/booking/schedule?${currentParams.toString()}`,
+        )
     }
     if (
         !params.get('doctorId') ||
@@ -45,52 +48,73 @@ export default function AppointmentConfirmation() {
     }
 
     // in cookie
-    const vnPayUrl = webStorageClient.get(constants.VNPAY_PAYMENT_URL);
+    const vnPayUrl = webStorageClient.get(constants.VNPAY_PAYMENT_URL)
     if (vnPayUrl) {
         router.replace(vnPayUrl)
     }
 
-    const createAppointment = async ({ doctorId, selectedSlotId, description, isFollowUp }: { doctorId: string, selectedSlotId: string, description: string, isFollowUp: boolean }) => {
-
+    const createAppointment = async ({
+        doctorId,
+        selectedSlotId,
+        description,
+        isFollowUp,
+    }: {
+        doctorId: string
+        selectedSlotId: string
+        description: string
+        isFollowUp: boolean
+    }) => {
         if (!doctorId || !selectedSlotId) return
 
         console.log({ doctorId, selectedSlotId, description, isFollowUp })
 
-        const appointmentResponse = await createAnAppointment({ scheduleId: selectedSlotId, description, reExamination: isFollowUp }).unwrap()
-        return appointmentResponse.body.appointment;
+        const appointmentResponse = await createAnAppointment({
+            scheduleId: selectedSlotId,
+            description,
+            reExamination: isFollowUp,
+        }).unwrap()
+        return appointmentResponse.body.appointment
     }
 
     const handlePayment = async () => {
-        if (vnPayUrl) return;
+        if (vnPayUrl) return
         const doctorId = params.get('doctorId')
         const selectedSlot = JSON.parse(params.get('selectedSlot') || '{}')
         if (!doctorId || !selectedSlot) return
-        const description = getRawContent(editorRef);
+        const description = getRawContent(editorRef)
         const isFollowUp = isFollowUpAppointment
         console.log({ doctorId, selectedSlot, description, isFollowUp })
 
         // get link
         try {
-            setLoading(true);
+            setLoading(true)
             //tao appointmet ->
-            const appointment = await createAppointment({ doctorId, selectedSlotId: selectedSlot.slotId, description, isFollowUp });
+            const appointment = await createAppointment({
+                doctorId,
+                selectedSlotId: selectedSlot.slotId,
+                description,
+                isFollowUp,
+            })
             const data = await createVnPayUrl({
-                description: "thanh toan",
+                description: 'thanh toan',
                 amount: 150000,
                 appointmentId: appointment.id,
             }).unwrap()
 
-
             if (data) {
                 const vnPayUrl = data?.body?.paymentUrl
-                webStorageClient.set(constants.VNPAY_PAYMENT_URL, data?.body?.paymentUrl, { expires: new Date(Date.now() + 1000 * 60 * 1) })
+                webStorageClient.set(
+                    constants.VNPAY_PAYMENT_URL,
+                    data?.body?.paymentUrl,
+                    { expires: new Date(Date.now() + 1000 * 60 * 1) },
+                )
                 router.replace(vnPayUrl)
             }
         } catch (error) {
             console.log(error)
-            message.error('Có lỗi xảy ra, vui lòng thử lại sau');
+            message.error('Có lỗi xảy ra, vui lòng thử lại sau')
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     }
 
@@ -105,8 +129,14 @@ export default function AppointmentConfirmation() {
     )
     const editorRef = useRef(null)
     return (
-        <div className="bg-gray-100 p-4">
-            <div className="container mx-auto flex min-h-fit flex-col gap-4 xl:flex-row">
+        <motion.div
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            exit={{ opacity: 0 }}
+            className=""
+        >
+            <div className="mx-auto flex min-h-fit flex-col gap-4 xl:flex-row">
                 <div className="shadow h-fit w-full rounded-lg bg-transparent xl:w-1/3">
                     <Information
                         price={150000}
@@ -124,10 +154,11 @@ export default function AppointmentConfirmation() {
                                 Bạn sẽ dự khám vào:
                             </p>
                             <div className="flex flex-col items-center justify-center gap-[28px] xl:flex-row">
-                                <span className="min-h-10 w-full rounded-md bg-blue-500 px-4 py-2 text-base font-semibold text-white transition-colors hover:bg-blue-600 xl:w-auto xl:px-5">
+                                <span className="min-h-10 w-full rounded-md bg-secondaryDark px-4 py-2 text-base font-semibold text-white transition-colors hover:bg-secondaryDarker xl:w-auto xl:px-5">
                                     {formatSelectedSlot(timeSlotSelected)}
                                 </span>
                                 <Button
+                                    type="primary"
                                     onClick={handleBack}
                                     icon={<SquarePen />}
                                     className="min-h-10 w-full rounded-md bg-[#FF8058] px-4 py-2 text-base font-semibold text-white transition-colors xl:w-auto xl:px-5"
@@ -176,6 +207,6 @@ export default function AppointmentConfirmation() {
                     Thanh toán phí khám bệnh
                 </Button>
             </div>
-        </div>
+        </motion.div>
     )
 }
