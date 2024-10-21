@@ -18,7 +18,6 @@ interface AppointmentUpcoming {
 }
 
 export default function UserOverViewModule() {
-
     const { results } = useGetAppointmentUpcomingQuery(
         undefined,
         {
@@ -44,7 +43,7 @@ export default function UserOverViewModule() {
                         <div className="flex xl:w-1/2 w-full flex-col gap-5 order-2 xl:order-none">
                             <div className="flex h-[166px] w-full flex-row gap-5">
                                 <UserIncomingCalender upcomingDate={results.upcomingDate} />
-                                <UserExaminedTurn numberExaminedTurn={results.totalAppointmentedPation}/>
+                                <UserExaminedTurn numberExaminedTurn={results.totalAppointmentedPation} />
                             </div>
                             <UserAvailableDoctor />
                             <UserRecentlyAction />

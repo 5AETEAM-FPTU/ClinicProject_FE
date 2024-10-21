@@ -19,6 +19,7 @@ import { result } from 'lodash'
 import CustomInputPassword from '@/components/Core/common/CustomInputPassword'
 import { setLoaded, setLoading } from '@/stores/features/loading'
 import { error } from 'console'
+import { constants } from '@/settings'
 
 export interface JwtPayloadUpdated extends JwtPayload {
     role: string
@@ -44,7 +45,7 @@ export default function SignInComponent() {
         })
         dispatch(setLoaded());
         const accessToken = result?.data?.body?.accessToken ?? ''
-        
+
         if (accessToken) {
             const role = jwtDecode<JwtPayloadUpdated>(accessToken).role
             if (role === 'admin') {
@@ -70,9 +71,17 @@ export default function SignInComponent() {
             }
             message.error("Đăng nhập không thành công!")
         } else {
+            const accessToken = webStorageClient.get(constants.ACCESS_TOKEN);
+            const role = jwtDecode<JwtPayloadUpdated>(accessToken).role;
             message.success("Đăng nhập thành công!")
+            const redirectUrl = webStorageClient.get(constants.REDIRECT_URL);
+            if (redirectUrl && role == 'user') {
+                router.push(redirectUrl);
+                webStorageClient.remove(constants.REDIRECT_URL);
+                return;
+            }
             router.push(
-                `/${locale}/${jwtDecode<JwtPayloadUpdated>(accessToken).role}/overview`,
+                `/${locale}/${role}/overview`,
             )
         }
     }
