@@ -1,10 +1,10 @@
+import ViewAllTreatment from '@/components/Core/modules/User/UserTreatmentHistory'
 import React from 'react'
 
 function Recently() {
     return (
-        <div>
-            Lịch sửa khám
-        </div>
+        <ViewAllTreatment />
+        // "lich su kham"
     )
 }
 
