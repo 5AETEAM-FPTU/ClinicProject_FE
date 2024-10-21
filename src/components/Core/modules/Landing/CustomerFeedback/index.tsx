@@ -85,7 +85,7 @@ function CustomerFeedback() {
                 <Carousel settings={settings}>
                     {data.map((item, index) => (
                         <div
-                            className="!flex h-[400px] w-[360px] !flex-col !items-center !justify-center"
+                            className="!flex h-fit sm:h-[400px] sm:w-[360px] !flex-col !items-center !justify-center"
                             key={index}
                         >
                             <div className="h-[94%] w-[92%] overflow-hidden rounded-xl bg-white p-5 shadow-secondary">
@@ -128,7 +128,6 @@ type CarrouselProps = {
     settings: Settings
     children: React.ReactNode
 }
-
 function Carousel({ settings, children }: CarrouselProps) {
     return (
         <Slider
@@ -137,7 +136,7 @@ function Carousel({ settings, children }: CarrouselProps) {
                 (responsive) =>
                     responsive as import('react-slick').ResponsiveObject,
             )}
-            className="!flex items-center !gap-[30px]"
+            className="!flex items-center !gap-2 sm:!gap-[30px]"
         >
             {children}
         </Slider>
@@ -152,7 +151,7 @@ const NextArrow = (props: ArrowProps) => {
     const { onClick } = props
     return (
         <div
-            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-1 transition-all"
+            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-0 sm:p-1 transition-all"
             onClick={onClick}
         >
             <ChevronRight className="text-secondaryDarker" />
@@ -164,7 +163,7 @@ const PrevArrow = (props: ArrowProps) => {
     const { onClick } = props
     return (
         <div
-            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-1 transition-all"
+            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-0 sm:p-1 transition-all"
             onClick={onClick}
         >
             <ChevronLeft className="text-secondaryDarker" />

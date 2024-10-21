@@ -56,9 +56,9 @@ function MedicalNews() {
                 }
                 tailCustomStyle="bg-gradient-to-b from-secondary to-white"
             >
-                <div className="flex flex-row gap-[40px]">
-                    <div className="gap-[40px flex h-[600px] w-[480px] flex-col gap-[8px] rounded-xl bg-white p-5 shadow-primary">
-                        <div className="h-[280px] w-full">
+                <div className="flex flex-col sm:flex-row gap-5 sm:gap-[40px]">
+                    <div className="flex w-fit sm:h-[600px] sm:w-[480px] flex-col gap-[8px] rounded-xl bg-white p-5 shadow-primary">
+                        <div className="h-[160px] sm:h-[280px] w-full">
                             <Image
                                 src={data[0].thumbnails}
                                 alt="thumbnails"
@@ -68,13 +68,13 @@ function MedicalNews() {
                             ></Image>
                         </div>
                         <div className="flex flex-col gap-[4px]">
-                            <p className="text-[20px] font-bold">
+                            <p className="text-[16px] sm:text-[20px] font-bold">
                                 {data[0].title}
                             </p>
-                            <p className="text-[12px]">{data[0].updatedAt}</p>
+                            <p className="text-[10px] sm:text-[12px]">{data[0].updatedAt}</p>
                         </div>
                         <div>
-                            <p className="text-[14px]">{data[0].subcontent}</p>
+                            <p className="text-[10px] sm:text-[14px]">{data[0].subcontent}</p>
                         </div>
                         <div>
                             <a href="#" className="text-secondaryDark">
@@ -82,8 +82,8 @@ function MedicalNews() {
                             </a>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-[40px]">
-                        <div className="flex flex-row gap-[40px]">
+                    <div className="flex flex-col gap-5 sm:gap-[40px]">
+                        <div className="flex flex-col sm:flex-row gap-5 sm:gap-[40px]">
                             {' '}
                             {/* <div className="flex h-[280px] w-[360px] flex-col rounded-xl bg-slate-500"></div>
                             <div className="flex h-[280px] w-[360px] flex-col rounded-xl bg-slate-500"></div> */}
@@ -111,7 +111,7 @@ function MedicalNews() {
                                 )
                             })}
                         </div>
-                        <div className="flex flex-row gap-[40px]">
+                        <div className="flex flex-col sm:flex-row gap-5 sm:gap-[40px]">
                             {data.slice(3, 5).map((item, index) => {
                                 return (
                                     <div className="flex h-[280px] w-[360px] flex-col gap-[12px] rounded-xl bg-white p-[14px] shadow-primary" key={index}>

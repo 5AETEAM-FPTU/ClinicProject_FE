@@ -18,20 +18,20 @@ function WhoAreWe() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     return (
         <div
-            
         >
             <CommonSection
                 tailCustomStyle="bg-white !pt-0 bg-gradient-to-b from-white to-secondaryLight"
                 title={'Chúng tôi là ai ?'}
                 subtile={'Y đội ngũ bác sĩ đến từ phòng khám P-Clinic'}
             >
-                <div className="flex flex-row justify-between gap-[80px]">
+                <div className="flex flex-col sm:flex-row justify-between gap-[40px] sm:gap-[80px]">
                     <div
-                        className="max-w-[650px] text-[20px] font-semibold leading-[1.2]"
+                        className="max-w-[650px] text-[14px] sm:text-[20px] font-semibold leading-[1.2]"
                         dangerouslySetInnerHTML={{ __html: html.inner }}
                     ></div>
-                    <div className="relative w-[540px] max-w-[540px]">
-                        <div className="absolute bottom-0 right-0 flex h-[272px] w-[496px] flex-col gap-5 rounded-xl">
+                    <div className="relative w-full sm:w-[540px] sm:max-w-[540px]">
+                        <div className="sm:absolute bottom-0 right-0 flex h-[180px] w-full sm:h-[272px] sm:w-[496px] flex-col gap-5 rounded-xl">
+
                             <Image
                                 src={DoctorTeam}
                                 alt="banner"
@@ -40,7 +40,7 @@ function WhoAreWe() {
                                 className="h-full w-full rounded-xl object-cover blur-md"
                             />
                         </div>
-                        <div className="absolute left-2 top-2 flex h-[272px] w-[496px] flex-col gap-5 rounded-xl border-4 border-secondaryDark drop-shadow-2xl">
+                        <div className="absolute top-0 left-0 sm:left-2 sm:top-2 flex h-[180px] w-full sm:h-[272px] sm:w-[496px]  flex-col gap-5 rounded-xl border-4 border-secondaryDark drop-shadow-2xl">
                             <Image
                                 src={DoctorTeam}
                                 alt="banner"
