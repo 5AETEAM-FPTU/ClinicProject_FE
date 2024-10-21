@@ -3,6 +3,7 @@ import {
     BriefcaseMedical,
     CalendarHeart,
     CircleUserRound,
+    Headset,
     Home,
     StickyNote,
     UserSearch,
@@ -70,6 +71,21 @@ export const sidebarStaffData: IndividualMenuItemType[] = [
                 key: 'manual-created',
                 lable: 'Tạo thủ công',
             },
+        ],
+    },
+    {
+        key: 'consultation',
+        title: 'Tư vấn',
+        icon: React.createElement(Headset),
+        childrens: [
+            {
+                key: 'pending-room',
+                lable: 'Phòng chờ',
+            },
+            {
+                key: 'conversation',
+                lable: 'Trò chuyện',
+            }
         ],
     },
     {

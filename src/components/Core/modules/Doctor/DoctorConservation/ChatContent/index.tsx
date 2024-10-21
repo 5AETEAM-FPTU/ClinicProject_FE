@@ -120,9 +120,9 @@ export default function ChatContent() {
     const [currentDay, setCurrentDay] = useState(
         dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'),
     )
+    console.log(currentDay);
     const handleScrollToBottomOnInitial = () => {
         if (divRef.current) {
-            console.log(divRef.current)
             const { current: container } = divRef
             container.scrollTop = container.scrollHeight
         }
@@ -152,6 +152,7 @@ export default function ChatContent() {
     }, [isInitial])
 
     useEffect(() => {
+        setCurrentDay(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'));
         handleFetchChatContentInitial()
     }, [currentDay, userId, chatRoomId])
 
@@ -449,15 +450,15 @@ export default function ChatContent() {
                             <div className="flex flex-row gap-2">
                                 <CallComponent
                                     to={userId}
-                                    toAvatar={`https://i.ibb.co/3yY77Yd/istockphoto-1288538088-612x612.jpg`}
-                                    toFullName={'Nguyễn Văn Quốc Đạt'}
+                                    toAvatar={peerAvatar}
+                                    toFullName={peername}
                                 />
                                 <Popover
                                     trigger={'click'}
                                     content={
                                         <div  className="flex flex-col gap-2">
-                                            <Button danger type="text">
-                                                Xóa cuộc trò chuyện
+                                            <Button type="text">
+                                                Kết thúc cuộc trò chuyện
                                             </Button>
                                         </div>
                                     }

@@ -55,7 +55,7 @@ export interface ChatRoomTransfer {
     userId?: string
 }
 
-export default function DoctorConservation() {
+export default function StaffConservation() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const locale = useLocale()

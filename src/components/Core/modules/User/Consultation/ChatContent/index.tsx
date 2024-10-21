@@ -85,7 +85,6 @@ export default function ChatContent() {
 
     const divRef = useRef<HTMLDivElement | null>(null)
     const [prevScrollTop, setPrevScrollTop] = useState(0)
-    console.log(prevScrollTop)
     const [isInitial, setIsInitial] = useState(false)
     useEffect(() => {
         setIsInitial(false)
@@ -117,12 +116,10 @@ export default function ChatContent() {
     )
     const handleScrollToBottomOnInitial = () => {
         if (divRef.current) {
-            console.log(divRef.current)
             const { current: container } = divRef
             container.scrollTop = container.scrollHeight
         }
     }
-
 
     const handleFetchChatContentInitial = async () => {
         try {
