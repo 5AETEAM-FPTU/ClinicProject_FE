@@ -10,11 +10,10 @@ import dayjs from 'dayjs'
 const { Content } = Layout
 
 export default function DoctorVisitInDayModule() {
-    const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), []);
+    const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), [])
 
-    const { appointments, refetch, isFetching } = 
-    useGetAppointmentOnDayQuery(
-        { date: '2024-10-23T08:30:00' },
+    const { appointments, refetch, isFetching } = useGetAppointmentOnDayQuery(
+        { date: '2024-10-18T08:30:00' },
         {
             selectFromResult: ({ data, isFetching }) => ({
                 appointments: data?.body?.appointment ?? [],
@@ -22,7 +21,7 @@ export default function DoctorVisitInDayModule() {
             }),
         },
     )
-    
+
     const [appointmentPendingList, SetAppointmentPendingList] = useState<
         IAppointmentOnDay[] | null
     >(null)
@@ -83,7 +82,7 @@ export default function DoctorVisitInDayModule() {
                                 ) : (
                                     <>
                                         {appointmentPendingList?.length == 0 ? (
-                                            <p className='font-semibold text-secondarySupperDarker ml-2'>
+                                            <p className="ml-2 font-semibold text-secondarySupperDarker">
                                                 Chưa có lượt khám trong ngày hôm
                                                 nay.
                                             </p>
@@ -93,7 +92,9 @@ export default function DoctorVisitInDayModule() {
                                                     (appointment, index) => {
                                                         return (
                                                             <AppointmentPending
-                                                                refetch={refetch}
+                                                                refetch={
+                                                                    refetch
+                                                                }
                                                                 payload={
                                                                     appointment
                                                                 }
@@ -130,7 +131,7 @@ export default function DoctorVisitInDayModule() {
                                 ) : (
                                     <>
                                         {appointmentDoneList?.length == 0 ? (
-                                            <p className='ml-2 font-semibold text-secondarySupperDarker'>
+                                            <p className="ml-2 font-semibold text-secondarySupperDarker">
                                                 Chưa có bệnh nhân khám xong
                                                 trong ngày
                                             </p>
@@ -143,7 +144,9 @@ export default function DoctorVisitInDayModule() {
                                                                 payload={
                                                                     appointment
                                                                 }
-                                                                refetch={refetch}
+                                                                refetch={
+                                                                    refetch
+                                                                }
                                                                 key={index}
                                                             />
                                                         )
