@@ -12,7 +12,7 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, C
     baseUrl: constants.API_SERVER,
     prepareHeaders: (headers) => {
       const accessToken = webStorageClient.getToken();
-
+      headers.set('Access-Control-Allow-Origin', '*'); // Allow all origins
       // Skip setting the Authorization header if skipAuth is passed
       if (!extraOptions?.skipAuth && accessToken) {
         headers.set("Authorization", `Bearer ${accessToken}`);
@@ -20,6 +20,7 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, C
 
       return headers;
     },
+    mode: 'cors',
   });
 
   return baseQuery(args, api, extraOptions);

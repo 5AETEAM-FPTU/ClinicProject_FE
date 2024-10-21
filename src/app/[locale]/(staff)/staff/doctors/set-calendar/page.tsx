@@ -1,11 +1,10 @@
+import AllDoctorComponent from '@/components/Core/modules/Staff/StaffScheduleForDoctor/AllDoctorComponent'
 import React from 'react'
 
-function SetCalendar() {
+function SetCalendarPage() {
     return (
-        <div>
-            Lên lịch khám cho từng bác sĩ
-        </div>
+        <AllDoctorComponent />
     )
 }
 
-export default SetCalendar
+export default SetCalendarPage
