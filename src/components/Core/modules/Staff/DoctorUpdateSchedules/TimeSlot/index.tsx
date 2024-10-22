@@ -11,10 +11,6 @@ import AddingSchedulesForm from '../AddingSchedulesForm'
 import { useTrigger } from '@/hooks/useTrigger'
 import { cn } from '@/lib/utils'
 import webStorageClient from '@/utils/webStorageClient'
-import { jwtDecode } from 'jwt-decode'
-import { JwtPayloadUpdated } from '../../../Auth/SignIn'
-import useClickOutside from '@/hooks/useClickOutside'
-import { on } from 'events'
 
 export type TimeSlot = {
     startTime: string
@@ -30,6 +26,7 @@ type TimeSlotSectionProps = {
     onSelectSlot: (slot: TimeSlot) => void
     refetch: () => void
     date: Date | null
+    doctorId: string
 }
 
 export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
@@ -39,6 +36,7 @@ export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
     onSelectSlot,
     refetch,
     date,
+    doctorId
 }) => {
     return (
         <motion.div className="mb-6">
@@ -46,6 +44,7 @@ export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {slots.map((slot, index) => (
                     <PopoverOptionChange
+                        doctorId={doctorId}
                         refetch={refetch}
                         index={index}
                         onSelectSlot={onSelectSlot}
@@ -63,21 +62,22 @@ export const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
 export default function Component({
     handleClose,
     date,
+    doctorId,
 }: {
     handleClose: () => void
-    date: Date | null
+    date: Date | null,
+    doctorId: string
 }) {
     const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
     const [morningSlots, setMorningSlots] = useState<TimeSlot[]>([])
     const [afternoonSlots, setAfternoonSlots] = useState<TimeSlot[]>([])
 
     const _accessToken = webStorageClient.getToken()
-    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub
 
     const { result, isFetching, refetch } = useGetScheduleByDateQuery(
         {
             date: dayjs(date).format('YYYY-MM-DDTHH:mm:ss').toString(),
-            doctorId: userId!,
+            doctorId: doctorId,
         },
         {
             selectFromResult: ({ data, isFetching }) => {
@@ -142,6 +142,7 @@ export default function Component({
                 <div>
                     {morningSlots.length > 0 && (
                         <TimeSlotSection
+                            doctorId={doctorId}
                             title="Buổi sáng"
                             slots={morningSlots}
                             selectedSlot={selectedSlot}
@@ -152,6 +153,7 @@ export default function Component({
                     )}
                     {afternoonSlots.length > 0 && (
                         <TimeSlotSection
+                            doctorId={doctorId}
                             title="Buổi chiều"
                             slots={afternoonSlots}
                             selectedSlot={selectedSlot}
@@ -170,7 +172,7 @@ export default function Component({
                 )} */}
             </motion.div>
             <div className="px-4">
-                <AddingSchedulesForm date={date} refetch={refetch} />
+                <AddingSchedulesForm doctorId={doctorId} date={date} refetch={refetch} />
             </div>
         </>
     )
@@ -183,6 +185,7 @@ type TProps = {
     onSelectSlot: (slot: TimeSlot) => void
     refetch: () => void
     date: Date | null
+    doctorId: string
 }
 
 export function PopoverOptionChange({
@@ -192,6 +195,7 @@ export function PopoverOptionChange({
     onSelectSlot,
     refetch,
     date,
+    doctorId
 }: TProps) {
     const { trigger, handleTrigger, handleTriggerPayload } = useTrigger()
 
@@ -232,6 +236,7 @@ export function PopoverOptionChange({
         try {
             if (timeSlotAdding.length > 0) {
                 await updateScheduleByIdMutation({
+                    doctorId: doctorId,
                     schedularId: slot.slotId!,
                     startDate:
                         dayjs(date).format('YYYY-MM-DDT') +
@@ -254,8 +259,6 @@ export function PopoverOptionChange({
             }
         }
     }
-
-    console.log("Slott: ", slot);
 
     return (
         <>

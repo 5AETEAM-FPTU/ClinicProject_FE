@@ -38,15 +38,16 @@ const doctorEndpoint = {
     UPDATE_DUTY: "/doctor/duty",
     GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
     GET_MEDICAL_REPORT: "/medical-report/all",
+    GET_ALL_DOCTOR: "/doctor/staff/doctor/all",
 }
 
 const scheduleEndpoint = {
     GET_SCHEDULES_BY_DATE: '/schedules/date',
     POST_CREATE_SCHEDULES: '/schedules',
     GET_SCHEDULES_BY_MONTH: '/schedules/month',
-    REMOVE_SCHEDULE_BY_ID: '/schedules/remove/{scheduleId}',
+    REMOVE_SCHEDULE_BY_ID: '/schedules/remove?scheduleId={scheduleId}',
     REMOVE_SCHEDULE_BY_DATE: '/schedules/remove/{date}',
-    UPDATE_SCHEDULE_BY_ID: '/schedules/update/{scheduleId}',
+    UPDATE_SCHEDULE_BY_ID: '/schedules/update',
     GET_SCHEDULES_GUEST_BY_DATE: '/schedules/guest/date',
     GET_SCHEDULES_GUEST_BY_MONTH: '/schedules/guest/month',
 }
@@ -78,6 +79,8 @@ const geminiEndpoint = {
 
 const AppointmentEndpoint = {
     UPDATE_APPOINTMENT_STATUS: '/appointment/update-status',
+    GET_ALL_USER_FOLLOW_UP_APPOINTMENT: '/doctor/re-examination/users',
+    GET_USER_DETAIL_IN_FOLLOW_UP: '/doctor/user/detail/{userId}',
 }
 
 const medicalReportEndpoint = {
@@ -86,6 +89,7 @@ const medicalReportEndpoint = {
     GET_ALL_MEDICAL_REPORT: "/medical-report/getAll",
     UPDATE_MEDICAL_REPORT_PATIENT_INFORMATION: "/medical-report/update-patient-information",
     UPDATE_MAIN_MEDICAL_REPORT_INFORMATION: "/medical-report/update-main-information",
+    GET_ALL_MEDICAL_REPORT_RECENT_OF_USER: "/doctor/medicalreport/recent/{userId}",
 }
 
 const serviceEndpoint = {
@@ -121,6 +125,11 @@ const blogEndpoints = {
     GET_NEWEST_POST: '/api/post/get-new-posts',
 }
 
+const notificationEndpoints = {
+    GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',
+    CREATE_FOLLOW_UP_NOTIFICATION: '/notification/retreatment/create',
+}
+
 export {
     demoEnpoints,
     authEndpoint,
@@ -136,5 +145,6 @@ export {
     serviceEndpoint,
     chatEndpoint,
     serviceOrderEndpoint,
-    medicineOrderEndpoint
+    medicineOrderEndpoint,
+    notificationEndpoints
 }

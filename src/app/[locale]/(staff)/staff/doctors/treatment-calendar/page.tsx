@@ -1,11 +1,10 @@
+import AllDoctorComponent from '@/components/Core/modules/Staff/StaffAppointment/AllDoctoComponent'
 import React from 'react'
 
-function TreatmentCalendar() {
+function TreatmentCalendarPage() {
     return (
-        <div>
-            
-        </div>
+        <AllDoctorComponent />
     )
 }
 
-export default TreatmentCalendar
+export default TreatmentCalendarPage

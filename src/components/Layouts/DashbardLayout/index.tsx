@@ -112,22 +112,22 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const prevNotificationsLength = useRef(notifications?.length);
 
     useEffect(() => {
-      if (audioRef.current && notifications){
-        if (
-          prevNotificationsLength.current !== undefined &&
-          notifications?.length > prevNotificationsLength.current
-        ) {
-          if (notifications?.length > prevNotificationsLength.current) {
-            audioRef.current.play();
-          }
+        if (audioRef.current && notifications) {
+            if (
+                prevNotificationsLength.current !== undefined &&
+                notifications?.length > prevNotificationsLength.current
+            ) {
+                if (notifications?.length > prevNotificationsLength.current) {
+                    audioRef.current.play();
+                }
+            }
         }
-      }
-      prevNotificationsLength.current = notifications?.length;
+        prevNotificationsLength.current = notifications?.length;
     }, [notifications]);
 
-    const hasNewNotification =  !!notifications?.length
+    const hasNewNotification = !!notifications?.length
     const numberOfUnreadNotifications = notifications?.filter(
-      (notification) => !notification.isRead
+        (notification) => !notification.isRead
     )
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -143,8 +143,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                     `${collapsed ? '!min-w-[80px] translate-x-[-80px] sm:translate-x-0' : 'translate-x-0'}`,
                     'fixed z-[999] h-full sm:static',
                 )}
-            >   
-                <audio ref={audioRef} preload='auto' src='https://res.cloudinary.com/dy1uuo6ql/video/upload/v1728659255/paowhflbqnlzhj092x2z.mp3'/>
+            >
+                <audio ref={audioRef} preload='auto' src='https://res.cloudinary.com/dy1uuo6ql/video/upload/v1728659255/paowhflbqnlzhj092x2z.mp3' />
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
                         className="flex select-none flex-row gap-2 border-b-[2px] border-secondaryDark p-4"
