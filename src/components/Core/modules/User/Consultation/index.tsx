@@ -42,6 +42,7 @@ export interface ChatRoom {
     isEndConversation: boolean
     avatar: string
     title: string
+    latestMessageTime: string
 }
 
 export interface UserInformationChatRoom {
@@ -165,7 +166,8 @@ export default function ConsultationComponent() {
     const locale = useLocale()
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
-
+    const [lastChatRoomTime, setLastChatRoomTime] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
+    const [isLoadingChatRoom, setIsLoadingChatRoom] = useState<boolean>(false)
     const { userInformationResult, isFetching } = useGetUserProfileQuery(
         undefined,
         {
@@ -178,18 +180,20 @@ export default function ConsultationComponent() {
             },
         },
     )
+    const pageSize = 4;
 
-    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByUserQuery(
-        undefined,
-        {
-            selectFromResult: ({ data, isFetching }) => {
-                return {
-                    chatRoomResult: data?.body?.chatRooms as ChatRoom[],
-                    isChatRoomFetching: isFetching,
-                }
-            },
+    const { chatRoomResult, isChatRoomFetching, refetch } = useGetChatRoomByUserQuery({ lastConversationTime: lastChatRoomTime, pageSize: pageSize }, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                chatRoomResult: data?.body?.chatRooms as ChatRoom[],
+                isChatRoomFetching: isFetching,
+            }
         },
-    )
+    })
+
+    useEffect(() => {
+        refetch()
+    }, [isLoadingChatRoom])
 
     return (
         <motion.div
@@ -272,9 +276,12 @@ export default function ConsultationComponent() {
                 <div className="flex w-full flex-row gap-5">
                     <ChatRooms
                         chatRooms={chatRoomResult}
-                        setChatRoomTransfer={(chatRoomId, doctorId) =>
-                            setChatRoomTransfer({ chatRoomId, doctorId })
+                        setLastChatRoomTime={
+                            setLastChatRoomTime
                         }
+                        refetch={refetch}
+                        isChatRoomFetching={isChatRoomFetching}
+                        setIsLoadingChatRoom={setIsLoadingChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
                         <ChatContent />

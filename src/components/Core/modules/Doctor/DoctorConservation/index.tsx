@@ -60,7 +60,6 @@ export default function DoctorConservation() {
     const searchParams = useSearchParams()
     const locale = useLocale()
     const _accessToken = webStorageClient.getToken()!.toString()
-    const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
     const [lastChatRoomTime, setLastChatRoomTime] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
     const [isLoadingChatRoom, setIsLoadingChatRoom] = useState<boolean>(false)
     const { doctorInformationResult, isFetching } = useGetDoctorProfileQuery(
@@ -74,9 +73,9 @@ export default function DoctorConservation() {
                 }
             },
         },
-    )
+    ) 
     const newChatId = searchParams.get('chat')
-    const pageSize = 2;
+    const pageSize = 4;
     const { chatRoomResult, isChatRoomFetching, refetch } =
         useGetChatRoomByDoctorQuery({lastConversationTime: lastChatRoomTime, pageSize: pageSize}, {
             selectFromResult: ({ data, isFetching }) => {
@@ -87,9 +86,7 @@ export default function DoctorConservation() {
             },
         })
    
-        
-        console.log(lastChatRoomTime, 'lastChatRoomTime');
-
+    
     useEffect(() => {
         refetch()
     }, [isLoadingChatRoom])
