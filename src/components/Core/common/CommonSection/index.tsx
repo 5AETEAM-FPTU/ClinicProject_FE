@@ -16,7 +16,7 @@ function CommonSection({ title, subtile, tailCustomStyle, children }: TProps) {
     return (
         <div
             className={cn(
-                'flex h-fit w-full justify-center py-[60px]',
+                'flex h-fit w-full justify-center py-[30px] sm:py-[60px]',
                 tailCustomStyle,
             )}
         >
@@ -37,10 +37,10 @@ function CommonSection({ title, subtile, tailCustomStyle, children }: TProps) {
                 viewport={{
                     once: true,
                 }}
-                className={cn('h-fit w-[1440px] max-w-[1440px] px-[80px]')}
+                className={cn('h-fit w-full sm:w-[1440px] max-w-[1440px] px-5 sm:px-[80px]')}
             >
                 <CommonTitle title={title} subtile={subtile} />
-                <div className="mt-[40px]">{children}</div>
+                <div className="mt-[20px] sm:mt-[40px]">{children}</div>
             </motion.div>
         </div>
     )

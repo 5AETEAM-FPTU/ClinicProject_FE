@@ -25,8 +25,8 @@ function Specialty() {
                 title={'Chuyên khoa nội'}
                 subtile={'Tất cả các chuyên khoa tại P-Clinic'}
             >
-                <div className="flex flex-col gap-[30px] px-[80px]">
-                    <div className="flex flex-row justify-between">
+                <div className="flex flex-row w-full justify-center sm:flex-col gap-[16px] sm:gap-[30px] p-0 sm:px-[80px]">
+                    <div className="flex flex-col sm:flex-row justify-between">
                         <div className="flex flex-col items-center justify-center gap-[16px]">
                             <div className="h-[95px] w-[95px]">
                                 <Image
@@ -88,7 +88,7 @@ function Specialty() {
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-between">
+                    <div className="flex flex-col sm:flex-row justify-between">
                         <div className="ic flex flex-col gap-[16px] items-center justify-center">
                             <div className="h-[95px] w-[95px]">
                                 <Image
@@ -150,7 +150,6 @@ function Specialty() {
                             </p>
                         </div>
                     </div>
-                    <div></div>
                 </div>
             </CommonSection>
         </div>

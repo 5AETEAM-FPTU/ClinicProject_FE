@@ -120,12 +120,12 @@ function OurTeam() {
                     {doctors.map((doctor, index) => (
                         <div
                             key={index}
-                            className="!flex h-[430px] w-[260px] !flex-col !items-center !justify-center"
+                            className="!flex w-[282px] h-fit sm:h-[430px] sm:w-[260px] !flex-col !items-center !justify-center"
                         >
                             <div
                                 className="h-[94%] w-[92%] overflow-hidden rounded-xl shadow-secondary"
                             >
-                                <div className="h-[253px] w-full">
+                                <div className="h-[253px] sm:h-[253px] w-full">
                                     <div className="h-full w-full">
                                         <Image
                                             src={Doctor}
@@ -200,7 +200,7 @@ function Carousel({ settings, children }: CarrouselProps) {
                 (responsive) =>
                     responsive as import('react-slick').ResponsiveObject,
             )}
-            className="!flex items-center !gap-[30px]"
+            className="!flex items-center !gap-2 sm:!gap-[30px]"
         >
             {children}
         </Slider>
@@ -215,7 +215,7 @@ const NextArrow = (props: ArrowProps) => {
     const { onClick } = props
     return (
         <div
-            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-1 transition-all"
+            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-0 sm:p-1 transition-all"
             onClick={onClick}
         >
             <ChevronRight className="text-secondaryDarker" />
@@ -227,7 +227,7 @@ const PrevArrow = (props: ArrowProps) => {
     const { onClick } = props
     return (
         <div
-            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-1 transition-all"
+            className="flex cursor-pointer items-center justify-center rounded-full border border-secondaryDarker p-0 sm:p-1 transition-all"
             onClick={onClick}
         >
             <ChevronLeft className="text-secondaryDarker" />

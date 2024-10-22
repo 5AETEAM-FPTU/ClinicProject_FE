@@ -26,7 +26,7 @@ function Banner() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const screen = Grid.useBreakpoint();
     return (
-        <div className="z-0 mt-[60px] sm:mt-[126px] flex h-[600px] sm:h-fit w-full select-none justify-center">
+        <div className="z-0 mt-[56px] sm:mt-[126px] flex h-[600px] sm:h-fit w-full select-none justify-center">
             <div className="relative w-full sm:w-[1920px]">
                 <div className="relative flex h-fit w-full justify-center">
                     <Image
@@ -65,7 +65,7 @@ function Banner() {
                                     <Image src={EmailBulk} alt="icon"></Image>
                                 </div>
                                 <input
-                                    className="w-[65%] rounded-xl border-none py-2 sm:py-[15px] pr-2 focus:outline-none"
+                                    className="w-[65%] rounded-xl border-none py-2 sm:py-[15px] pr-2 focus:outline-none placeholder:text-[10px] sm:placeholder:text-[14px]"
                                     placeholder={t('banner_contact')}
                                     max={36}
                                 ></input>
