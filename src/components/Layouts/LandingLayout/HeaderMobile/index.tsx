@@ -3,7 +3,12 @@ import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Irish_Grover } from 'next/font/google'
 import { ChevronsRight, CircleUserRound, Menu } from 'lucide-react'
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation'
 
 import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
 import themeColors from '@/style/themes/default/colors'
@@ -55,7 +60,17 @@ export default function HeaderMobile() {
             }
         }
     }, [searchParams])
-
+    const locale = useLocale()
+    const handleAccounts = () => {
+        const isHasToken = webStorageClient.getToken()
+        if (isHasToken) {
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
+            )
+        } else {
+            router.push(`/${locale}/sign-in`)
+        }
+    }
     return (
         <div className="fixed left-0 top-0 z-[100] flex h-fit w-full justify-between bg-white px-5 py-3 drop-shadow-lg">
             <div className="flex items-center justify-center">
@@ -66,8 +81,28 @@ export default function HeaderMobile() {
                 </div>
             </div>
             <div className="flex items-center gap-4">
-                {_accessToken && (
-                    <Avatar src={user.avatarUrl} size={36}></Avatar>
+                {_accessToken ? (
+                    <Avatar
+                        onClick={() => {
+                            handleAccounts()
+                        }}
+                        src={user.avatarUrl}
+                        size={36}
+                    ></Avatar>
+                ) : (
+                    <div>
+                        <Button
+                            type="default"
+                            className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
+                            onClick={handleAccounts}
+                        >
+                            <CircleUserRound
+                                color={themeColors.secondaryDark}
+                                size={20}
+                            />
+                            {t('header_accounts')}
+                        </Button>
+                    </div>
                 )}
                 <Button className="px-2" onClick={() => setOpenDrawer(true)}>
                     <Menu className="text-secondaryDark" />
@@ -104,7 +139,7 @@ export default function HeaderMobile() {
                 </div>
                 <div>
                     <ul className="flex list-none flex-col gap-[40px] font-medium">
-                        <ul className="flex list-none flex-col gap-[40px] font-medium px-5">
+                        <ul className="flex list-none flex-col gap-[40px] px-5 font-medium">
                             <li className="relative cursor-pointer">
                                 <div
                                     onClick={() => router.push('/home')}
@@ -213,7 +248,13 @@ export default function HeaderMobile() {
                     </div>
                 </div>
                 {_accessToken && (
-                    <div className="p-5">
+                    <div
+                        className="p-5"
+                        onClick={() => {
+                            signOut()
+                            webStorageClient.removeAll()
+                        }}
+                    >
                         <div className="font-semibold text-secondaryDark">
                             Đăng xuất
                         </div>
