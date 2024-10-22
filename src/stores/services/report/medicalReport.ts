@@ -47,6 +47,13 @@ export const medicalReportApi = baseApi.injectEndpoints({
                 body: data,
                 flashError: true,
             }),
+        }),
+        getMedicalReportDetailById: build.query<any, string>({
+            query: (id) => ({
+                url: `${medicalReportEndpoint.GET_MEDICAL_REPORT_DETAIL}?reportId=${id}`,
+                method: 'GET',
+                flashError: true,
+            }),
         })
     }),
 })
@@ -56,5 +63,6 @@ export const {
     useUpdateMedicalReportPatientInformationMutation,
     useUpdateMainMedicalReportInformationMutation,
     useGetAllServiceQuery,
-    useCreateNewMedicalReportMutation
+    useCreateNewMedicalReportMutation,
+    useGetMedicalReportDetailByIdQuery
 } = medicalReportApi

@@ -89,6 +89,7 @@ const medicalReportEndpoint = {
         '/medical-report/update-patient-information',
     UPDATE_MAIN_MEDICAL_REPORT_INFORMATION:
         '/medical-report/update-main-information',
+    GET_MEDICAL_REPORT_DETAIL: '/user/medical-report/detail',
 }
 
 const serviceEndpoint = {
