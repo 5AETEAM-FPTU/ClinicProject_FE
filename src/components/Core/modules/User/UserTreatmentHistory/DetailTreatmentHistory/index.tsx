@@ -217,7 +217,7 @@ export default function DetailTreatmentHistory() {
                                                         Chuẩn đoán:
                                                     </td>
                                                     <td className="border px-4 py-2 block lg:table-cell w-full lg:w-auto">
-                                                        <div className="inline-block bg-white rounded-md px-2 py-1" dangerouslySetInnerHTML={{ __html: medicalRecord?.medicalReport?.diagnosis }}></div>
+                                                        <div className="inline-block bg-white rounded-md px-2 py-1" dangerouslySetInnerHTML={{ __html: medicalRecord?.medicalReport?.diagnosis || "Chưa có thông tin"}}></div>
                                                     </td>
                                                     <td className="border px-4 py-2 font-semibold block lg:table-cell w-full lg:w-auto">
                                                         Nhiệt:
@@ -326,7 +326,6 @@ export default function DetailTreatmentHistory() {
                                     form={myForm}
                                     className="flex w-full flex-col gap-4"
                                     onFinish={() => { }}
-
                                 >
                                     <div className="w-full flex-col gap-5">
                                         <div>

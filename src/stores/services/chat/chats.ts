@@ -37,11 +37,15 @@ export const chats = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false },
             }),
         }),
-        getChatRoomByDoctor: build.query<any, void>({
-            query: () => ({
+        getChatRoomByDoctor: build.query<any, {lastConversationTime: string, pageSize: number}>({
+            query: (param) => ({
                 url: chatEndpoint.GET_CHAT_ROOM_BY_DOCTOR,
                 flashError: true,
                 method: 'GET',
+                params: {
+                    lastConversationTime: param.lastConversationTime,
+                    pageSize: param.pageSize,
+                },
                 extraOptions: { skipAuth: false },
             }),
         }),
