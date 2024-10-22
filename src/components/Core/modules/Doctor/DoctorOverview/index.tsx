@@ -184,7 +184,7 @@ const ConsultationComponent = () => {
             </h2>
             { data ? (
             <List
-                dataSource={data}
+                dataSource={data.length === 1 ? [data[0], data[0]] : data}
                 renderItem={(item: any) => (
                     <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
                         <List.Item.Meta
