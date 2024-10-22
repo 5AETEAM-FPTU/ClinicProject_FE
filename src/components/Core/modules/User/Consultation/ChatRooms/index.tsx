@@ -110,10 +110,10 @@ export default function ChatRooms({
         }
     }, [chatRooms])
     return (
-        <div className="min-w-[350px]">
+        <div className="min-w-full sm:min-w-[350px]">
             <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">
                 <List
-                    className='max-h-[570px] overflow-y-auto'
+                    className=' max-h-[300px] sm:max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
                     dataSource={chatRoomList}
                     footer={
@@ -157,7 +157,7 @@ export default function ChatRooms({
                                         <span
                                             className={`text-base font-semibold text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
                                         >
-                                            {doctor.fullName}
+                                            {doctor.fullName ? doctor.fullName : 'Không tên'}
                                         </span>
                                     }
                                     description={

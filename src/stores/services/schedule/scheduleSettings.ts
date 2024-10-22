@@ -28,6 +28,21 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false },
         }),
+        getGuestScheduleByMonth: build.query<any, { month: number, year: number, doctorId: string | null }>({
+            query: (params) => ({
+                url: `${scheduleEndpoint.GET_SCHEDULES_GUEST_BY_MONTH}?month=${params.month}&year=${params.year}${params.doctorId && (`&doctorId=${params.doctorId}`)}`,
+                flashError: true,
+                method: 'GET',
+            }),
+            extraOptions: { skipAuth: false },
+        }),
+        getGuestScheduleByDate: build.query<any, { date: string, doctorId: string }>({
+            query: (query) => ({
+                url: `${scheduleEndpoint.GET_SCHEDULES_GUEST_BY_DATE}?&date=${query.date}${query.doctorId && `&doctorId=${query.doctorId}`}`,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
         removeScheduleById: build.mutation<any, string>({
             query: (id: string) => ({
                 url: `${scheduleEndpoint.REMOVE_SCHEDULE_BY_ID.replace('{scheduleId}', id)}`,
@@ -42,8 +57,8 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 method: 'DELETE',
             }),
         }),
-        updateScheduleById: build.mutation<any, {schedularId: string, startDate: string, endDate: string}>({
-            query: (data: {schedularId: string, startDate: string, endDate: string}) => ({
+        updateScheduleById: build.mutation<any, { schedularId: string, startDate: string, endDate: string }>({
+            query: (data: { schedularId: string, startDate: string, endDate: string }) => ({
                 url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID.replace('{scheduleId}', data.schedularId)}`,
                 flashError: true,
                 body: {
@@ -62,5 +77,7 @@ export const {
     useGetScheduleByMonthQuery,
     useRemoveScheduleByDateMutation,
     useRemoveScheduleByIdMutation,
-    useUpdateScheduleByIdMutation
+    useUpdateScheduleByIdMutation,
+    useLazyGetGuestScheduleByDateQuery,
+    useGetGuestScheduleByMonthQuery,
 } = scheduleSettingsApi

@@ -20,6 +20,7 @@ import {
     Paperclip,
     Send,
     Settings,
+    Video,
 } from 'lucide-react'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
@@ -188,7 +189,7 @@ export default function ChatContent() {
                     resultMessages[resultMessages.length - 1]?.time,
                 )
             }
-        } catch (error) { }
+        } catch (error) {}
     }
     useEffect(() => {
         if (prevScrollTop) {
@@ -205,9 +206,8 @@ export default function ChatContent() {
     }
     const [isUpdateImageToCloud, setIsUpdateImageToCloud] = useState(false)
     const handleSendMessage = async () => {
-
         if (inputMessage.trim()) {
-            setIsUpdateImageToCloud(true);
+            setIsUpdateImageToCloud(true)
             const urls = await handleGetListImageUrl()
             const chatContentId = uuidv4()
 
@@ -231,7 +231,7 @@ export default function ChatContent() {
                 chatRoomId!,
                 urls,
             )
-            setIsUpdateImageToCloud(false);
+            setIsUpdateImageToCloud(false)
             setFileStorage(null)
             setUploadedImageUrls([])
             handleScrollToBottom()
@@ -287,7 +287,6 @@ export default function ChatContent() {
                 },
                 (senderId: string, chatContentId: string) => {
                     if (senderId == doctorId) {
-
                         setMessages((messagePrev) =>
                             messagePrev.map((msg) => {
                                 if (msg.chatContentId == chatContentId) {
@@ -396,44 +395,64 @@ export default function ChatContent() {
         const listImageUrl: string[] = []
         if (fileStorage) {
             setIsUploading(true)
-            for (let i = 0; i < fileStorage.length; i++) {
-                console.log(fileStorage[i])
-                const imageUrl = await handleUploadAndGetImageUrl(
-                    fileStorage[i],
-                )
+            const filesArray = Array.from(fileStorage)
+            const uploadPromises = filesArray.map((file: File) =>
+                handleUploadAndGetImageUrl(file),
+            )
+            const results = await Promise.all(uploadPromises)
+            results.forEach((imageUrl) => {
                 if (imageUrl) {
                     listImageUrl.push(imageUrl)
                 }
-            }
+            })
+            setIsUploading(false)
         }
         return listImageUrl
     }
-    const peername = searchParams.get('peerName');
-    const title = searchParams.get('title');
+    const peername = searchParams.get('peerName')
+    const title = searchParams.get('title')
     return (
         <div>
-            {
-                doctorId && chatRoomId ? <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
+            {doctorId && chatRoomId ? (
+                <div className="h-[600px] w-full overflow-x-hidden rounded-[12px] bg-white p-4 shadow-third">
                     <div className="flex h-full flex-col">
                         <div className="flex items-center justify-between border-b pb-4">
                             <div className="flex items-center">
-                                <Avatar size={48} shape="square" src={peerAvatar} />
+                                <Avatar
+                                    size={48}
+                                    shape="square"
+                                    src={peerAvatar}
+                                />
                                 <div className="ml-3">
                                     <h2 className="text-base font-semibold text-secondarySupperDarker">
                                         {title?.split(':')[0]}
                                     </h2>
                                     <p className="text-[14px] text-secondarySupperDarker">
-                                        Bác sĩ: {peername}
+                                        {peername != 'null'
+                                            ? peername
+                                            : 'Không tên'}
                                     </p>
                                 </div>
                             </div>
-                            {/* <Button
-                            className="shadow-third"
-                            icon={<Settings className="h-4 w-4" />}
-                            type="text"
-                        >
-                            Cài đặt
-                        </Button> */}
+                            <Popover
+                                trigger={'click'}
+                                placement='left'
+                                content={
+                                    <div>
+                                        <p>
+                                            Hãy yêu cầu bác sĩ gọi điện với bạn!
+                                        </p>
+                                    </div>
+                                }
+                            >
+                                <Button
+                                    className="shadow-third"
+                                    icon={<Video className="h-4 w-4" />}
+                                    type="text"
+                                >
+                                    Gọi điện
+                                </Button>
+                            </Popover>
                         </div>
                         <div
                             ref={divRef}
@@ -453,7 +472,9 @@ export default function ChatContent() {
                                     {isFetching && (
                                         <div className="my-2 text-center">
                                             <Spin
-                                                indicator={<LoadingOutlined spin />}
+                                                indicator={
+                                                    <LoadingOutlined spin />
+                                                }
                                             />
                                         </div>
                                     )}
@@ -481,7 +502,7 @@ export default function ChatContent() {
                                             <>
                                                 {message.senderId === _userId &&
                                                     actionMessageId ===
-                                                    message.chatContentId && (
+                                                        message.chatContentId && (
                                                         <Popover
                                                             trigger="click"
                                                             content={
@@ -508,12 +529,18 @@ export default function ChatContent() {
                                                         </Popover>
                                                     )}
                                                 <div
-                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${message.senderId === _userId
+                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
+                                                        message.senderId ===
+                                                        _userId
                                                             ? 'bg-secondaryDark text-white'
                                                             : 'bg-slate-200 text-secondarySupperDarker'
-                                                        }`}
+                                                    }`}
                                                 >
-                                                    <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
+                                                    <p
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: message.content,
+                                                        }}
+                                                    ></p>
                                                     <div
                                                         className={cn(
                                                             'flex w-full flex-wrap gap-[10px]',
@@ -525,19 +552,22 @@ export default function ChatContent() {
                                                             message?.assetUrl?.map(
                                                                 (asset) => (
                                                                     <Image
-                                                                        src={asset}
+                                                                        src={
+                                                                            asset
+                                                                        }
                                                                         alt="uploaded"
-                                                                        className="h-[150px] w-[150px] rounded-lg object-cover"
+                                                                        className="h-full sm:h-[150px] w-full sm:w-[150px] rounded-lg object-cover"
                                                                     />
                                                                 ),
                                                             )}
                                                     </div>
                                                     <span
-                                                        className={`mt-1 block text-xs ${message.senderId ===
-                                                                _userId
+                                                        className={`mt-1 block text-xs ${
+                                                            message.senderId ===
+                                                            _userId
                                                                 ? 'text-white-200 float-right'
                                                                 : 'float-left text-secondarySupperDarker'
-                                                            }`}
+                                                        }`}
                                                     ></span>
                                                 </div>
                                             </>
@@ -549,13 +579,17 @@ export default function ChatContent() {
                                     </div>
                                 ))}
                             <div ref={messagesEndRef} />
-                            {isTyping && <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                                className='w-fit px-4 py-2 bg-slate-200 rounded-lg'
-                            ><BeatLoader size={6} color='#0284C7' /></motion.div>}{' '}
+                            {isTyping && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="w-fit rounded-lg bg-slate-200 px-4 py-2"
+                                >
+                                    <BeatLoader size={6} color="#0284C7" />
+                                </motion.div>
+                            )}{' '}
                         </div>
                         <div className="border-t pt-4">
                             <div
@@ -616,9 +650,10 @@ export default function ChatContent() {
                             </div>
                         </div>
                     </div>
-                </div> : <div className='w-full h-[600px] bg-white shadow-third rounded-lg'>
                 </div>
-            }
+            ) : (
+                <div className="h-[600px] w-full rounded-lg bg-white shadow-third"></div>
+            )}
             <Modal
                 title="Bạn có muốn xóa tin nhắn này không?"
                 open={isDeleteConfirmModalVisible}

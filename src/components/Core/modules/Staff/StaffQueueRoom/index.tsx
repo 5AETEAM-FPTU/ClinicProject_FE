@@ -82,7 +82,7 @@ export default function StaffQueueRoom() {
                 receiverId: patientId,
                 message: 'Yêu cầu tư vấn đã được chấp nhận',
                 type: constants.NOTIFICATION_TYPES.SUCCESS,
-                description: `Yêu cần tư vấn "${initialMessge}" đã được phản hồi bởi ${user?.fullName}`,
+                description: `Yêu cần tư vấn của bạn đã được phản hồi bởi ${user?.fullName}`,
                 senderAvatarUrl: `${user.avatarUrl}`,
                 senderId: `${userId}`,
                 senderName: 'Nhân viên y tế',

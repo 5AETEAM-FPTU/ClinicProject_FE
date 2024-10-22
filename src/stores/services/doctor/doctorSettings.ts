@@ -4,7 +4,7 @@ import { baseApi } from "../base";
 import { DoctorProfileTypes } from "@/components/Core/modules/Doctor/DoctorSettingsModule";
 
 export const doctorSettingsApi = baseApi.injectEndpoints({
-     endpoints: (build) => ({
+    endpoints: (build) => ({
         getDoctorProfile: build.query<any, void>({
             query: () => ({
                 url: doctorEndpoint.GET_PROFILE,
@@ -23,8 +23,8 @@ export const doctorSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        updateDoctorDescription: build.mutation<any, {description: string}>({
-            query: (params: {description: string} ) => ({
+        updateDoctorDescription: build.mutation<any, { description: string }>({
+            query: (params: { description: string }) => ({
                 url: doctorEndpoint.PATCH_DESCRIPTION,
                 flashError: true,
                 method: 'PATCH',
@@ -35,8 +35,8 @@ export const doctorSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        updateDoctorAchievement: build.mutation<any, {achievement: string}>({
-            query: (params: {achievement: string} ) => ({
+        updateDoctorAchievement: build.mutation<any, { achievement: string }>({
+            query: (params: { achievement: string }) => ({
                 url: doctorEndpoint.PATCH_ACHIEVEMENT,
                 flashError: true,
                 method: 'PATCH',
@@ -47,7 +47,7 @@ export const doctorSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-     })
+    })
 })
 
 export const {

@@ -38,9 +38,9 @@ export default function ViewConsultantRoom(payload: IProps) {
 
     return (
         <div className="mt-4 flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
-            <div className="flex w-full flex-col items-center justify-between xl:flex-row">
-                <div className="flex flex-col items-center justify-around gap-14 xl:flex-row">
-                    <div className="flex flex-col items-center justify-center gap-4 text-[14px] font-medium text-[#003553] xl:flex-row">
+            <div className="flex w-full flex-col items-start sm:items-center justify-between xl:flex-row">
+                <div className="flex w-full flex-col items-start sm:items-center justify-around gap-5 sm:gap-14 sm:flex-row">
+                    <div className="flex w-full flex-row items-start sm:items-center justify-start sm:justify-center gap-4 text-[14px] font-medium text-[#003553] xl:flex-row">
                         <Image
                             src={
                                 user.avatarUrl!
@@ -61,24 +61,24 @@ export default function ViewConsultantRoom(payload: IProps) {
                         </div>
                     </div>
 
-                    <div className="rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                    <div className="rounded-lg sm:w-fit w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                         <p>
                             Số điện thoại:{' '}
                             <span>{payload?.user?.phoneNumber}</span>
                         </p>{' '}
                     </div>
 
-                    <div className="rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                    <div className="rounded-lg sm:w-fit w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                         <p>
                             Địa chỉ: <span>{payload?.user?.address}</span>
                         </p>{' '}
                     </div>
                 </div>
-                <div className="!mb-0 !mr-8 mt-3 flex items-center justify-between xl:mt-0">
+                <div className="!mb-0 !mr-8 mt-3 flex w-full items-center justify-between xl:mt-0">
                     <Button
                         loading={isLoading}
                         type="primary"
-                        className="rounded-xl bg-[#DA0000] p-4 text-white shadow-third"
+                        className="rounded-lg sm:w-fit w-full bg-[#DA0000] p-4 text-white shadow-third"
                         onClick={handleRemoveQueueRoom}
                     >
                         Hủy bỏ tin nhắn này

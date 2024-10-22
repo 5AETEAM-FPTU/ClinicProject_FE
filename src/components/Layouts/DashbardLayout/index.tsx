@@ -252,7 +252,9 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                                         )}
                                     </div>
                                 </Popover>
-                                <div className="cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200">
+                                <div className="cursor-pointer rounded-lg bg-slate-100 p-[10px] transition-all duration-300 hover:bg-slate-200"
+                                    onClick={() => router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/account/settings`)}
+                                >
                                     <Settings size={24} />
                                 </div>
                                 <div className="h-[30px] w-[2px] bg-secondarySupperDarker"></div>

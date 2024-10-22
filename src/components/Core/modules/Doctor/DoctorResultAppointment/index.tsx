@@ -65,7 +65,8 @@ export default function DoctorResultAppointment() {
 
     useEffect(() => {
         handleFetchReports()
-    }, [inView])
+    }, [inView, lastReportDate])
+    console.log(inView)
 
     const debouncedFetchReports = useCallback(
         debounce((searchVal: string) => {
@@ -88,14 +89,13 @@ export default function DoctorResultAppointment() {
         setSearchValue(e.target.value)
     }
 
-    console.log(searchValue)
-
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
+            className='min-h-screen'
         >
             <Layout className="bg-dashboardBackground">
                 <Content style={{ padding: '0px' }}>

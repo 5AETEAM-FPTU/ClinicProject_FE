@@ -3,7 +3,12 @@ import { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Irish_Grover } from 'next/font/google'
 import { ChevronsRight, CircleUserRound, Menu } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import {
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation'
 
 import ChangeLanguages from '@/components/Core/common/ChangeLanguage'
 import themeColors from '@/style/themes/default/colors'
@@ -28,16 +33,45 @@ const irishGrover = Irish_Grover({
 })
 export default function HeaderMobile() {
     const params = useParams()
-    const [_accessToken, setAccessToken] = useState<string | null>(null);
+    const router = useRouter()
+    const [_accessToken, setAccessToken] = useState<string | null>(null)
     useEffect(() => {
-        setAccessToken(webStorageClient.getToken() as string);
+        setAccessToken(webStorageClient.getToken() as string)
     }, [])
-    
+
     const { user } = useAppSelector((state) => state.auth)
     const [openDrawer, setOpenDrawer] = useState(false)
     const { t } = useTranslation(params?.locale as string, 'Landing')
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
 
-  return (
+    useEffect(() => {
+        console.log(searchParams.get('section'))
+        if (searchParams.get('section') === 'doctor') {
+            const doctorSection = document.getElementById('our-team')
+            if (doctorSection) {
+                doctorSection.scrollIntoView({ behavior: 'smooth' })
+            }
+        }
+        if (searchParams.get('section') === 'contact') {
+            const contactSection = document.getElementById('contact')
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' })
+            }
+        }
+    }, [searchParams])
+    const locale = useLocale()
+    const handleAccounts = () => {
+        const isHasToken = webStorageClient.getToken()
+        if (isHasToken) {
+            router.push(
+                `/${locale}/${jwtDecode<JwtPayloadUpdated>(_accessToken!).role}/overview`,
+            )
+        } else {
+            router.push(`/${locale}/sign-in`)
+        }
+    }
+    return (
         <div className="fixed left-0 top-0 z-[100] flex h-fit w-full justify-between bg-white px-5 py-3 drop-shadow-lg">
             <div className="flex items-center justify-center">
                 <div className={irishGrover.className}>
@@ -47,13 +81,30 @@ export default function HeaderMobile() {
                 </div>
             </div>
             <div className="flex items-center gap-4">
-                {_accessToken && (
-                    <Avatar src={user.avatarUrl} size={36}></Avatar>
+                {_accessToken ? (
+                    <Avatar
+                        onClick={() => {
+                            handleAccounts()
+                        }}
+                        src={user.avatarUrl}
+                        size={36}
+                    ></Avatar>
+                ) : (
+                    <div>
+                        <Button
+                            type="default"
+                            className="!border-[2px] !border-secondaryDark !bg-white !font-semibold !text-secondaryDark"
+                            onClick={handleAccounts}
+                        >
+                            <CircleUserRound
+                                color={themeColors.secondaryDark}
+                                size={20}
+                            />
+                            {t('header_accounts')}
+                        </Button>
+                    </div>
                 )}
-                <Button
-                    className="px-2"
-                    onClick={() => setOpenDrawer(true)}
-                >
+                <Button className="px-2" onClick={() => setOpenDrawer(true)}>
                     <Menu className="text-secondaryDark" />
                 </Button>
             </div>
@@ -88,45 +139,103 @@ export default function HeaderMobile() {
                 </div>
                 <div>
                     <ul className="flex list-none flex-col gap-[40px] font-medium">
-                        <ul className="flex list-none flex-col gap-[20px] font-medium px-5">
-                            <li className="relative">
-                                <a
-                                    href="#"
-                                    className="text-secondaryDark"
+                        <ul className="flex list-none flex-col gap-[40px] px-5 font-medium">
+                            <li className="relative cursor-pointer">
+                                <div
+                                    onClick={() => router.push('/home')}
+                                    className={cn(
+                                        `${pathname.includes('home') && searchParams.get('section') == null ? 'text-secondaryDark' : 'text-black'}`,
+                                    )}
                                 >
                                     {t('header_overview')}
-                                </a>
-                                <span className="absolute bottom-[-4px] left-0 h-1 w-full bg-secondaryDark"></span>
+                                </div>
+                                <span
+                                    className={cn(
+                                        'absolute bottom-[-4px] left-0 h-1 w-full',
+                                        `${pathname.includes('home') && searchParams.get('section') == null ? 'bg-secondaryDark' : ''}`,
+                                    )}
+                                ></span>
                             </li>
-                            <li>
-                                <a href="#" className="text-black">
-                                    {t('header_clinic')}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="text-black">
+                            <li className="relative cursor-pointer">
+                                <div
+                                    onClick={() =>
+                                        router.push('/home?section=doctor')
+                                    }
+                                    className={cn(
+                                        `${searchParams.get('section') === 'doctor' && '!text-secondaryDark'}`,
+                                    )}
+                                >
                                     {t('header_doctor')}
-                                </a>
+                                </div>
+                                <span
+                                    className={cn(
+                                        'absolute bottom-[-4px] left-0 h-1 w-full',
+                                        `${searchParams.get('section') === 'doctor' && 'bg-secondaryDark'}`,
+                                    )}
+                                ></span>
                             </li>
-                            <li>
-                                <a href="#" className="text-black">
+                            <li className="relative cursor-pointer">
+                                <div
+                                    onClick={() =>
+                                        router.push(
+                                            '/booking-doctor?section=booking',
+                                        )
+                                    }
+                                    className={cn(
+                                        `${searchParams.get('section') === 'booking' && '!text-secondaryDark'}`,
+                                    )}
+                                >
                                     {t('header_booking')}
-                                </a>
+                                </div>
+                                <span
+                                    className={cn(
+                                        'absolute bottom-[-4px] left-0 h-1 w-full',
+                                        `${searchParams.get('section') === 'booking' && 'bg-secondaryDark'}`,
+                                    )}
+                                ></span>
                             </li>
-                            <li>
-                                <a href="#" className="text-black">
+                            <li className="relative cursor-pointer">
+                                <div
+                                    onClick={() =>
+                                        router.push('/blog?section=news')
+                                    }
+                                    className={cn(
+                                        `${searchParams.get('section') === 'news' && '!text-secondaryDark'}`,
+                                    )}
+                                >
                                     {t('header_news')}
-                                </a>
+                                </div>
+                                <span
+                                    className={cn(
+                                        'absolute bottom-[-4px] left-0 h-1 w-full',
+                                        `${searchParams.get('section') === 'news' && 'bg-secondaryDark'}`,
+                                    )}
+                                ></span>
                             </li>
-                            <li>
-                                <a href="#" className="text-black">
+                            <li className="relative cursor-pointer">
+                                <div
+                                    onClick={() =>
+                                        router.push(
+                                            '/home?section=' + 'contact',
+                                        )
+                                    }
+                                    className={cn(
+                                        `${searchParams.get('section') === 'contact' && '!text-secondaryDark'}`,
+                                    )}
+                                >
                                     {t('header_contact')}
-                                </a>
+                                </div>
+                                <span
+                                    className={cn(
+                                        'absolute bottom-[-4px] left-0 h-1 w-full',
+                                        `${searchParams.get('section') === 'contact' && 'bg-secondaryDark'}`,
+                                    )}
+                                ></span>
                             </li>
                         </ul>
                     </ul>
                 </div>
-                <div className="flex flex-col items-start gap-2 px-5 mt-5">
+                <div className="mt-5 flex flex-col items-start gap-2 px-5">
                     <div className="flex items-center gap-2">
                         <span className="font-semibold text-secondaryDark">
                             Liên hệ Facebook
@@ -138,12 +247,20 @@ export default function HeaderMobile() {
                         </span>
                     </div>
                 </div>
-                {
-                    _accessToken && <div className='p-5'>
-                    <div className='font-semibold text-secondaryDark'>Đăng xuất</div>
-                 </div>
-                }
+                {_accessToken && (
+                    <div
+                        className="p-5"
+                        onClick={() => {
+                            signOut()
+                            webStorageClient.removeAll()
+                        }}
+                    >
+                        <div className="font-semibold text-secondaryDark">
+                            Đăng xuất
+                        </div>
+                    </div>
+                )}
             </Drawer>
         </div>
-  )
+    )
 }

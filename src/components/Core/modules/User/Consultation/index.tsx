@@ -203,7 +203,7 @@ export default function ConsultationComponent() {
             exit={{ opacity: 0 }}
         >
             <Layout className="flex h-fit flex-col bg-transparent">
-                <div className="relative mb-[85px] h-[150px]">
+                <div className="hidden sm:block relative mb-[85px] h-[150px]">
                     <Image
                         className="z-1 h-[100%] w-full rounded-2xl object-cover"
                         src={ProfileBackground}
@@ -273,7 +273,7 @@ export default function ConsultationComponent() {
                         </Space>
                     </div>
                 </div>
-                <div className="flex w-full flex-row gap-5">
+                <div className="flex w-full flex-col sm:flex-row gap-5">
                     <ChatRooms
                         chatRooms={chatRoomResult}
                         setLastChatRoomTime={
@@ -283,7 +283,7 @@ export default function ConsultationComponent() {
                         isChatRoomFetching={isChatRoomFetching}
                         setIsLoadingChatRoom={setIsLoadingChatRoom}
                     />
-                    <div className="w-[calc(100%-370px)]">
+                    <div className="w-full sm:w-[calc(100%-370px)]">
                         <ChatContent />
                     </div>
                 </div>
