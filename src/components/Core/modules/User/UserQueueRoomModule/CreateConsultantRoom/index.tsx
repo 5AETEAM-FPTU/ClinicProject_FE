@@ -41,8 +41,8 @@ export default function CreateConsultantRoom({
                 className="flex w-full flex-col gap-4"
                 onFinish={onFinish}
             >
-                <div className="flex w-full flex-row items-center justify-between">
-                    <div className="flex flex-row items-center justify-around gap-14">
+                <div className="flex w-full flex-col  sm:flex-row items-start sm:items-center justify-start sm:justify-between">
+                    <div className="flex w-full flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-14">
                         <div className="flex items-center justify-center gap-4 text-[14px] font-medium text-[#003553]">
                             <Image
                                 src={
@@ -79,7 +79,7 @@ export default function CreateConsultantRoom({
                                 />
                             </Form.Item>
                         ) : (
-                            <div className="rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                            <div className="rounded-lg w-full sm:w-fit bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                                 <p>
                                     Số điện thoại: <span>09483712312</span>
                                 </p>{' '}
@@ -104,23 +104,13 @@ export default function CreateConsultantRoom({
                                 />
                             </Form.Item>
                         ) : (
-                            <div className="rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                            <div className="rounded-lg w-full sm:w-fit bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                                 <p>
                                     Địa chỉ: <span>Hòa hải, TP Đà Nẵng</span>
                                 </p>{' '}
                             </div>
                         )}
                     </div>
-                    <Form.Item className="!mb-0 !mr-8">
-                        <Button
-                            htmlType="submit"
-                            type="primary"
-                            className="rounded-lg bg-white p-4 text-[#003553] shadow-third"
-                        >
-                            Chỉnh sửa
-                            <SquarePen size={18} />
-                        </Button>
-                    </Form.Item>
                 </div>
                 <div className="w-full flex-col gap-5">
                     <div className="flex h-fit w-full flex-row gap-5">
