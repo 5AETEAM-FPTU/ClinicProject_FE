@@ -33,7 +33,7 @@ export default function Notifications({ payload }: TProps) {
             <h3 className="mb-2 text-[20px] font-semibold text-secondarySupperDarker">
                 Thông báo
             </h3>
-            <div className="flex max-h-[600px] min-w-[500px] flex-col overflow-hidden overflow-y-auto">
+            <div className="flex max-h-[600px] min-w-fit sm:min-w-[500px] flex-col overflow-hidden overflow-y-auto">
                 {payload.map((item, index) => {
                     return <NotificationItem key={index} item={item} />
                 })}
@@ -65,7 +65,7 @@ function NotificationItem({ item }: { item: UserNofiticationPayload }) {
     return (
         <>
             <div
-                className="max-w-[500px] cursor-pointer border-t-[1px] px-2 py-2 transition hover:bg-slate-100"
+                className="max-w-fit sm:max-w-[500px] cursor-pointer border-t-[1px] px-2 py-2 transition hover:bg-slate-100"
                 onClick={() => {
                     handleTrigger()
                     handleMarkNotificationAsRead()
