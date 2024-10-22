@@ -1,8 +1,8 @@
 'use client'
-import { Avatar, Layout, List } from 'antd'
+import { Avatar, Layout, List, Skeleton } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
 import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
@@ -15,19 +15,65 @@ const { startConnection } =
 
 export default function ChatRooms({
     chatRooms,
-    setChatRoomTransfer, 
+    setLastChatRoomTime,
+    refetch,
+    isChatRoomFetching,
+    setIsLoadingChatRoom
 }: {
     chatRooms: ChatRoom[]
-    setChatRoomTransfer: (chatRoomId: string, userId: string) => void
+    setLastChatRoomTime: (date: string) => void
+    refetch: () => void,
+    isChatRoomFetching: boolean
+    setIsLoadingChatRoom: any
 }) {
     const route = useRouter()
     const searchParams = useSearchParams();
     const chatRoomId = searchParams.get('chat');
     const userId = searchParams.get('user');
-    const dispatch = useAppDispatch();
-    const _userId = jwtDecode<JwtPayload>(webStorageClient.getToken()!).sub!
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
+    const observerRef = useRef<IntersectionObserver | null>(null)
+    const loadMoreRef = useRef<HTMLDivElement>(null)
+    
+    const handleLoadMore = async () => {
+        try {
+            setIsLoadingChatRoom((prev: boolean) => !prev);
+
+            if (chatRooms.length === 0) {
+                setIsLoadingChatRoom(false);
+                return;
+            }
+
+            setChatRoomList((prev) => Array.isArray(prev) ? [...prev, ...chatRooms] : [...chatRooms]);
+            if (chatRooms.length > 0) {
+                setLastChatRoomTime(chatRooms[chatRooms.length - 1].latestMessageTime)
+            }
+        } catch (error) {
+            console.error('Error loading more chat rooms:', error)
+        }
+    }
+
+    useEffect(() => {
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !isChatRoomFetching) {
+                    handleLoadMore()
+                }
+            },
+            { threshold: 1.0 }
+        )
+
+        if (loadMoreRef.current) {
+            observerRef.current.observe(loadMoreRef.current)
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect()
+            }
+        }
+    }, [isChatRoomFetching])
+
 
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string, fullName:string, title: string) => {
        
@@ -65,9 +111,9 @@ export default function ChatRooms({
         );
     }, [_accessToken])
     
-    useEffect(() => {
-        setChatRoomList(chatRooms)
-    },[chatRooms])
+    // useEffect(() => {
+    //     setChatRoomList(chatRooms)
+    // },[chatRooms])
 
     return (
         <div className='min-w-[350px]'>
@@ -78,6 +124,17 @@ export default function ChatRooms({
                     className='max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
                     dataSource={chatRoomList}
+                    footer={
+                        chatRooms && <>
+                            <div ref={loadMoreRef} className="" />
+                            {isChatRoomFetching && (<>
+                                <Skeleton active className='my-4 w-full' />
+                                <Skeleton active className='my-4 w-full' />
+                            </>
+                            )}
+                        </>
+
+                    }
                     renderItem={(user) => {
                         const isSelected =
                             user.chatRoomId === chatRoomId &&
