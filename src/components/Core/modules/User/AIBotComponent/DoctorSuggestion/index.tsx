@@ -32,9 +32,9 @@ export default function DoctorSuggestion({ doctorSpecialtyId }: { doctorSpecialt
         doctorSpecialtyId && (isDoctorFetching
             ?
             <DoctorSkeleton size={3} skeletonSize={64} /> :
-            (doctorsData?.length != 0 ? <Content className="bg-white p-4 ml-5 mt-4 rounded-[12px] shadow-third h-fit">
+            (doctorsData?.length != 0 ? <Content className="bg-white p-4  mt-4 rounded-[12px] shadow-third h-fit">
                 <h2 className="text-base font-bold">Gợi ý bác sĩ</h2>
-                <div className="mt-4 grid grid-cols-1 xl:grid-cols-3 gap-[20px] gap-6">
+                <div className="mt-4 grid grid-cols-1 xl:grid-cols-3 gap-[20px]">
                     {doctorsData?.map((doctor: any) => (
                         <div key={doctor.username} className="bg-white rounded-lg shadow-third p-6">
                             <div className="flex items-center mb-4">

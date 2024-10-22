@@ -2,9 +2,6 @@
 
 import dayjs from "dayjs"
 
-
-
-
 export default function UserIncomingCalender({upcomingDate}: {upcomingDate: string}) {
     return (
         <div className="relative w-full bg-gradient-to-r from-[#0284C7] to-[#00B5F1] rounded-xl shadow-third">
