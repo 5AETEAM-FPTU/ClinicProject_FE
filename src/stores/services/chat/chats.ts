@@ -116,5 +116,6 @@ export const {
     useRemoveChatContentByIdMutation,
     useGetChatRoomByDoctorQuery,
     useLazyGetAllQueueRoomsQuery,
+    useGetAllQueueRoomsQuery,
     useAddChatRoomMutation
 } = chats
