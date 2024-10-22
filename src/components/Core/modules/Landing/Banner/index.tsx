@@ -65,7 +65,7 @@ function Banner() {
                                     <Image src={EmailBulk} alt="icon"></Image>
                                 </div>
                                 <input
-                                    className="w-[65%] rounded-xl border-none py-2 sm:py-[15px] pr-2 focus:outline-none"
+                                    className="w-[65%] rounded-xl border-none py-2 sm:py-[15px] pr-2 focus:outline-none placeholder:text-[10px] sm:placeholder:text-[14px]"
                                     placeholder={t('banner_contact')}
                                     max={36}
                                 ></input>

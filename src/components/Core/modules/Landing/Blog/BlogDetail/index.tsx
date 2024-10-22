@@ -123,7 +123,7 @@ export default function BlogDetail({ slug }: { slug: string }) {
                         <div className="w-full">
                             <Title
                                 level={3}
-                                className="text-primary mb-2 sm:mb-8"
+                                className="text-primary mb-2 sm:mb-2"
                             >
                                 Tin mới nhất
                             </Title>
@@ -156,7 +156,7 @@ export default function BlogDetail({ slug }: { slug: string }) {
             </div>
 
             <div className="w-full overflow-clip p-5 sm:w-[1440px] sm:px-[80px]">
-                <Title level={3} className="text-primary mb-5 sm:mb-8">
+                <Title level={3} className="text-primary mb-5 sm:mb-2">
                     Bài viết liên quan
                 </Title>
                 <Row gutter={24}>

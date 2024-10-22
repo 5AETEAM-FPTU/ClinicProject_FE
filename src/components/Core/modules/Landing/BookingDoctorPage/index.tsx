@@ -62,12 +62,16 @@ export default function BookingDoctorLandingPage() {
     }, [doctorResult])
 
     return (
-        <div className="mt-[130px] flex flex-col items-center justify-center">
-            <div className="max-w-[1440ppx]">
-                <Image className="w-full px-[80px] object-cover"  src={BookingByDoctorBanner} alt="" />
+        <div className="mt-[56px] flex flex-col items-center justify-center sm:mt-[130px]">
+            <div className="max-w-full sm:max-w-[1440ppx]">
+                <Image
+                    className="w-full object-cover px-0 sm:px-[80px]"
+                    src={BookingByDoctorBanner}
+                    alt=""
+                />
             </div>
-            <div className='w-[1440px] max-w-[1440px] mb-[60px] px-[80px]'>
-                <div className="mx-auto mt-5 w-[500px] max-w-[500px] text-center">
+            <div className="mb-[60px] w-full max-w-[1440px] px-5 sm:w-[1440px] sm:px-[80px]">
+                <div className="mx-auto mt-5 w-full max-w-[500px] text-center sm:w-[500px]">
                     <Search
                         className="w-full"
                         placeholder="Tìm kiếm theo bác sĩ"
@@ -75,7 +79,7 @@ export default function BookingDoctorLandingPage() {
                         onSearch={(value) => setSearch(value)}
                     />
                 </div>
-                <div className=" mt-5 flex gap-4">
+                <div className="mt-5 flex gap-4">
                     <div className="w-full">
                         <div className="grid w-full grid-cols-1 gap-5">
                             {isFetching &&
@@ -102,20 +106,20 @@ export default function BookingDoctorLandingPage() {
                                         <div className="flex">
                                             <div>
                                                 <Avatar
-                                                    size={120}
                                                     shape="square"
                                                     src={doctor.avatarUrl}
+                                                    className="h-[80px] w-[80px] sm:h-[120px] sm:w-[120px]"
                                                 />
                                             </div>
                                             <div className="ml-4 w-full">
-                                                <p className="text-[24px] font-semibold text-secondaryDark">
+                                                <p className="text-[12px] font-semibold text-secondaryDark sm:text-[24px]">
                                                     BS. {doctor.fullName}
                                                 </p>
-                                                <p className="text-[16px] text-base text-secondarySupperDarker">
+                                                <p className="text-[10px] text-secondarySupperDarker sm:text-[16px]">
                                                     <strong>Giới tính: </strong>{' '}
                                                     {doctor.gender.genderName}
                                                 </p>
-                                                <p className="text-[16px] text-base text-secondarySupperDarker">
+                                                <p className="text-[10px] text-secondarySupperDarker sm:text-[16px]">
                                                     <strong>
                                                         Chuyên khoa:{' '}
                                                     </strong>{' '}
@@ -131,7 +135,7 @@ export default function BookingDoctorLandingPage() {
                                                               .join(', ')
                                                         : `Đang cật nhật`}
                                                 </p>
-                                                <p className="text-[16px] text-base text-secondarySupperDarker">
+                                                <p className="text-[10px] text-secondarySupperDarker sm:text-[16px]">
                                                     <strong>Giá khám: </strong>{' '}
                                                     150.000đ
                                                 </p>
@@ -139,11 +143,11 @@ export default function BookingDoctorLandingPage() {
                                         </div>
                                         <div className="mt-2">
                                             <Button
-                                                shape="round"
+                                                type='primary'
                                                 onClick={() => {
                                                     handleBookDoctor(doctor)
                                                 }}
-                                                className="float-end h-9 w-[150px] max-w-[150px] bg-gradient-to-r from-[#00B5F1] to-[#00E0FF] text-base text-white"
+                                                className="float-end h-fit w-fit max-w-[150px] bg-secondaryDark text-[12px] text-white sm:h-9 sm:w-[150px] sm:text-base"
                                             >
                                                 Đặt ngay
                                             </Button>
@@ -161,8 +165,12 @@ export default function BookingDoctorLandingPage() {
                             )}
                         </div>
                     </div>
-                    <div className="w-2/3">
-                        <Image src={BookingBanner} alt="" className='rounded-xl' />
+                    <div className="hidden w-2/3 sm:block">
+                        <Image
+                            src={BookingBanner}
+                            alt=""
+                            className="rounded-xl"
+                        />
                     </div>
                 </div>
             </div>
