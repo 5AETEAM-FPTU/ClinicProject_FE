@@ -3,7 +3,6 @@ import Script from 'next/script';
 
 const TinyMCEComponent = ({ content, handleScriptLoad }: { content: string, handleScriptLoad: () => void }) => {
     const [isMounted, setIsMounted] = useState(false);
-
     useEffect(() => {
         setIsMounted(true); // Đánh dấu component đã được mount
     }, []);
@@ -36,7 +35,7 @@ const useEditor = (initContent: string) => {
     const [content, setContent] = useState(initContent);
     const [rawContent, setRawContent] = useState(initContent);
     const [isScriptReady, setIsScriptReady] = useState(false);
-
+    console.log("Hi");
     useEffect(() => {
         let windowAny = window as any;
 
