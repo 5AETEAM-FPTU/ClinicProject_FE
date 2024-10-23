@@ -4,7 +4,7 @@ import { baseApi } from "../base";
 import { DoctorProfileTypes } from "@/components/Core/modules/Doctor/DoctorSettingsModule";
 
 export const staffSettingsApi = baseApi.injectEndpoints({
-     endpoints: (build) => ({
+    endpoints: (build) => ({
         getStaffProfile: build.query<any, void>({
             query: () => ({
                 url: doctorEndpoint.GET_PROFILE,
@@ -23,8 +23,8 @@ export const staffSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        updateStaffDescription: build.mutation<any, {description: string}>({
-            query: (params: {description: string} ) => ({
+        updateStaffDescription: build.mutation<any, { description: string }>({
+            query: (params: { description: string }) => ({
                 url: doctorEndpoint.PATCH_DESCRIPTION,
                 flashError: true,
                 method: 'PATCH',
@@ -35,24 +35,35 @@ export const staffSettingsApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        updateStaffAchievement: build.mutation<any, {achievement: string}>({
-            query: (params: {achievement: string} ) => ({
+        updateStaffAchievement: build.mutation<any, { achievement: string }>({
+            query: (params: { achievement: string }) => ({
                 url: doctorEndpoint.PATCH_ACHIEVEMENT,
                 flashError: true,
                 method: 'PATCH',
                 body: {
                     achievement: params.achievement
                 },
-                extraOptions: { skipAuth: true }
+                extraOptions: { skipAuth: false }
             }),
             extraOptions: { skipAuth: false }
         }),
-     })
+        getStaffGetAllDoctor: build.query<any, { pageIndex: number, pageSize: number, keyWord: string }>({
+            query: (query) => ({
+                url: doctorEndpoint.GET_ALL_DOCTOR + '?pageIndex=' + query.pageIndex + '&pageSize=' + query.pageSize + '&keyWord=' + query.keyWord,
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: false }
+            }),
+            extraOptions: { skipAuth: false }
+        })
+    })
 })
 
 export const {
-   useGetStaffProfileQuery,
-   useUpdateStaffPrivateInformationMutation,
-   useUpdateStaffAchievementMutation,
-   useUpdateStaffDescriptionMutation
+    useGetStaffProfileQuery,
+    useUpdateStaffPrivateInformationMutation,
+    useUpdateStaffAchievementMutation,
+    useUpdateStaffDescriptionMutation,
+    useGetStaffGetAllDoctorQuery,
+    useLazyGetStaffGetAllDoctorQuery,
 } = staffSettingsApi;

@@ -12,12 +12,12 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
-        createSchedules: build.mutation<any, TimeSlot[]>({
-            query: (data: TimeSlot[]) => ({
+        createSchedules: build.mutation<any, { timeSlots: TimeSlot[], doctorId?: string }>({
+            query: (data) => ({
                 url: scheduleEndpoint.POST_CREATE_SCHEDULES,
                 flashError: true,
                 method: 'POST',
-                body: { timeSlots: data },
+                body: data,
             }),
         }),
         getScheduleByMonth: build.query<any, { month: number, year: number, doctorId?: string | null }>({
@@ -57,11 +57,13 @@ export const scheduleSettingsApi = baseApi.injectEndpoints({
                 method: 'DELETE',
             }),
         }),
-        updateScheduleById: build.mutation<any, { schedularId: string, startDate: string, endDate: string }>({
-            query: (data: { schedularId: string, startDate: string, endDate: string }) => ({
-                url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID.replace('{scheduleId}', data.schedularId)}`,
+        updateScheduleById: build.mutation<any, { schedularId: string, startDate: string, endDate: string, doctorId?: string }>({
+            query: (data) => ({
+                url: `${scheduleEndpoint.UPDATE_SCHEDULE_BY_ID}`,
                 flashError: true,
                 body: {
+                    doctorId: data.doctorId,
+                    scheduleId: data.schedularId,
                     startDate: data.startDate,
                     endDate: data.endDate
                 },

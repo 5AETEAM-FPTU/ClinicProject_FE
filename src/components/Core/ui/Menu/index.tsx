@@ -18,7 +18,7 @@ function Menu({ items }: MenuProps) {
         <motion.div
             layout
             className={cn(
-                'h-fit w-full p-[20px] transition-all',
+                'w-full p-[20px] transition-all',
                 `${collapsed ? 'px-[10px]' : 'p-[20px]'}`,
             )}
         >
@@ -97,7 +97,7 @@ export function MenuItem({ item }: MenuItemTypesProps) {
     useEffect(() => {
         return handlePathSegments()
     }, [pathname])
-    
+
     return (
         <div className={cn("flex h-fit w-full select-none flex-col transition-all duration-500", `${collapsed && "items-center"}`)}>
             <div
@@ -151,8 +151,8 @@ export function MenuItem({ item }: MenuItemTypesProps) {
                 )}
             </div>
             <motion.div
-                initial={{ height: 0, opacity: 0}}
-                animate={{ height: isExpand ? 'auto' : 0, opacity:1}}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: isExpand ? 'auto' : 0, opacity: 1 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                 style={{ overflow: 'hidden' }}
                 layout
@@ -173,7 +173,7 @@ export function MenuItem({ item }: MenuItemTypesProps) {
                                     delay: isExpand
                                         ? index * 0.1
                                         : (item.childrens!.length - index - 1) *
-                                          0.1,
+                                        0.1,
                                 }}
                                 className={cn(
                                     'flex cursor-pointer flex-row items-center gap-2 py-[5px] pl-[25px] pr-5',
@@ -185,13 +185,13 @@ export function MenuItem({ item }: MenuItemTypesProps) {
                             >
                                 {!collapsed && <Dot />}
                                 {collapsed ? (
-                                    <p className={cn("text-secondarySupperDarker text-[16px] font-medium opacity-60", 
+                                    <p className={cn("text-secondarySupperDarker text-[16px] font-medium opacity-60",
                                         `${value.key == appLayoutState?.destination ? 'opacity-100' : 'opacity-60'}`
                                     )}>
                                         {value.lable.substring(0, 1)}
                                     </p>
                                 ) : (
-                                    <p className={cn("text-secondarySupperDarker text-[16px] font-medium opacity-60", 
+                                    <p className={cn("text-secondarySupperDarker text-[16px] font-medium opacity-60",
                                         `${value.key == appLayoutState?.destination ? 'opacity-100' : 'opacity-60'}`
                                     )}>
                                         {value.lable}
