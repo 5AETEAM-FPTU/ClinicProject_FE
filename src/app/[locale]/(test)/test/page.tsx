@@ -7,7 +7,7 @@ import AppointmentBooking from "@/components/Core/modules/User/BookingModule/App
 import BookedAppointmentList from "@/components/Core/modules/Doctor/DoctorBookedAppointmentsList"
 import FollowUpAppointment from "@/components/Core/modules/FollowUpAppointment"
 import StringeeComponent from "@/components/Core/common/CallScreen"
-
+import TinyMCEEditor from "@/components/Core/common/EditorTinymceLocal"
 export default function TestComponent() {
     // return <PaymentSuccess />
     // return <PaymentFailed />
@@ -17,6 +17,6 @@ export default function TestComponent() {
     // return <FollowUpAppointment />
     // return <DoctorFeedback />
     // return <DoctorAppointmentTimeLine />
-    return <StringeeComponent />
+    return <TinyMCEEditor />
     // return <DoctorAppointmentTimeLine />
 }

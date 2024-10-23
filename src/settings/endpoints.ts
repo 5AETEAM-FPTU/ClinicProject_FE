@@ -149,6 +149,10 @@ const notificationEndpoints = {
     CREATE_FOLLOW_UP_NOTIFICATION: '/notification/retreatment/create',
 }
 
+const contactEndpoints = {
+    CREATE_CONTACT: '/api/contact/create',
+}
+
 export {
     demoEnpoints,
     authEndpoint,
@@ -168,4 +172,5 @@ export {
     generatePdfEndpoint,
     formServiceEndpoint,
     notificationEndpoints,
+    contactEndpoints,
 }
