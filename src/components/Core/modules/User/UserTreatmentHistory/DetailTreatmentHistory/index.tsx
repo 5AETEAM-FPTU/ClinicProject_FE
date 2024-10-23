@@ -275,7 +275,9 @@ export default function DetailTreatmentHistory() {
                                                     </td>
                                                     <td className="block w-full border px-4 py-2 lg:table-cell lg:w-auto">
                                                         <div className="inline-block rounded-md bg-white px-2 py-1">
-                                                            {dayjs(detail?.date).format(
+                                                            {dayjs(
+                                                                detail?.date,
+                                                            ).format(
                                                                 'DD/MM/YYYY HH:mm:ss',
                                                             )}
                                                         </div>
@@ -563,6 +565,7 @@ export default function DetailTreatmentHistory() {
                         <ViewFeedback
                             close={() => setIsModalOpenView(!isModalOpenView)}
                             open={isModalOpenView}
+                            reportId={reportId}
                         />
                     </Layout>
                 </motion.div>

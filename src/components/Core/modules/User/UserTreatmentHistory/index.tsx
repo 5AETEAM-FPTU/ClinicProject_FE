@@ -104,7 +104,7 @@ export default function ViewAllTreatment() {
             },
         )
 
-    console.log(historyTreatments)
+    // console.log(historyTreatments)
 
     useEffect(() => {
         const result: TableAppointmentResultingType[] = historyTreatments.map(

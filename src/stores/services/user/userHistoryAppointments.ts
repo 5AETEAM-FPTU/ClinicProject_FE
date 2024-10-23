@@ -9,8 +9,6 @@ export const userHistoryTreatmentApis = baseApi.injectEndpoints({
                 pageIndex: string
                 pageSize: string
                 doctorName?: string
-                // medicineTypeId?: string
-                // medicineGroupId?: string
             }
         >({
             query: (params) => {
@@ -18,12 +16,6 @@ export const userHistoryTreatmentApis = baseApi.injectEndpoints({
                 if (params.doctorName && params.doctorName.trim()) {
                     url += `&keyword=${params.doctorName}`
                 }
-                // if (params.medicineTypeId && params.medicineTypeId.trim()) {
-                //     url += `&medicineTypeId=${params.medicineTypeId}`
-                // }
-                // if (params.medicineGroupId && params.medicineGroupId.trim()) {
-                //     url += `&medicineGroupId=${params.medicineGroupId}`
-                // }
                 return {
                     url: url,
                     flashError: true,
