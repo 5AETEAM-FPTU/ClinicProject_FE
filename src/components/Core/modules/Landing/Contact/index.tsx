@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 
 import CommonSection from '@/components/Core/common/CommonSection'
 
@@ -13,22 +13,28 @@ import { Button, Col, Form, FormProps, Input, message, Row, Select } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import EditorTinymce from '@/components/Core/common/EditorTinymce'
+import { useCreateNewContactMutation } from '@/stores/services/contact'
+import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 
 function Contact() {
+    const [createAContact, { isLoading }] = useCreateNewContactMutation();
+
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()
 
-    const editorRef = useRef<any>(null)
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent())
-        }
-    }
+    const [content, setContent] = useState('')
 
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
         try {
+            if (!content) {
+                message.error('Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn')
+                return;
+            }
+            await createAContact({ ...values, content })
             console.log('onFinishForm')
+            message.success("Gửi thông tin thành công")
+            myForm.resetFields();
         } catch (error) {
             message.error(t('updateError'))
         }
@@ -138,7 +144,7 @@ function Contact() {
                                             className="gutter-row"
                                         >
                                             <Form.Item
-                                                name={'Fullname'}
+                                                name={'fullName'}
                                                 label="Họ và Tên"
                                                 wrapperCol={{ span: 24 }}
                                                 rules={[
@@ -158,15 +164,35 @@ function Contact() {
                                             className="gutter-row"
                                         >
                                             <Form.Item
-                                                name={'Email'}
+                                                name={'emailOrPhone'}
                                                 label="Email hoặc số điện thoại"
                                                 wrapperCol={{ span: 24 }}
+                                                validateTrigger='onBlur'
                                                 rules={[
                                                     {
                                                         required: true,
                                                         message:
                                                             'Vui lòng nhập email hoặc số điện thoại',
                                                     },
+                                                    {
+                                                        validator(_, value) {
+                                                            if (!value) {
+                                                                return Promise.resolve(); // If empty, handled by 'required'
+                                                            }
+
+                                                            // Email regex
+                                                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                                                            // Vietnamese phone number regex (starts with +84 or 0 and has 9 or 10 digits)
+                                                            const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+
+                                                            if (emailRegex.test(value) || phoneRegex.test(value)) {
+                                                                return Promise.resolve();
+                                                            }
+
+                                                            return Promise.reject(new Error('Vui lòng nhập email hoặc số điện thoại hợp lệ'));
+                                                        }
+                                                    }
                                                 ]}
                                             >
                                                 <Input placeholder="Email hoặc số điện thoại" />
@@ -186,10 +212,10 @@ function Contact() {
                                                     size="large"
                                                     placeholder="Chọn giới tính của bạn"
                                                 >
-                                                    <Select.Option value="Nam">
+                                                    <Select.Option value="1">
                                                         Nam
                                                     </Select.Option>
-                                                    <Select.Option value="Nữ">
+                                                    <Select.Option value="2">
                                                         Nữ
                                                     </Select.Option>
                                                 </Select>
@@ -201,7 +227,7 @@ function Contact() {
                                             className="gutter-row"
                                         >
                                             <Form.Item
-                                                name={'birthday'}
+                                                name={'age'}
                                                 label="Tuổi"
                                                 wrapperCol={{ span: 24 }}
                                                 rules={[
@@ -227,28 +253,16 @@ function Contact() {
                                     </p>
                                     <Row gutter={24}>
                                         <Col span={24}>
-                                            <Form.Item
-                                                name={'content'}
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        message:
-                                                            'Vui lòng nhập nội dung',
-                                                    },
-                                                ]}
-                                            >
-                                                <EditorTinymce
-                                                    editorRef={editorRef}
-                                                />
-                                            </Form.Item>
+                                            <TinyMCEEditor content={content} setContent={setContent} />
                                         </Col>
                                     </Row>
                                 </div>
                                 <Form.Item className="!mb-0">
                                     <Button
+                                        className='float-end'
+                                        loading={isLoading}
                                         htmlType="submit"
                                         type="primary"
-                                        onClick={log}
                                     >
                                         Xác nhận gửi
                                     </Button>

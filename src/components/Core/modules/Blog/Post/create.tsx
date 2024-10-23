@@ -21,6 +21,7 @@ import {
     useGetAllActiveCategoriesQuery,
 } from '@/stores/services/blog/blog'
 import { motion } from 'framer-motion'
+import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 
 const { Option } = Select
 type TagRender = SelectProps['tagRender']
@@ -28,7 +29,6 @@ type TagRender = SelectProps['tagRender']
 export default function BlogPostCreation() {
     const [imageUrl, setImageUrl] = useState('')
     const [loading, setLoading] = useState(false)
-    const editorRef = React.useRef<any>(null)
     const [form] = Form.useForm()
     const [createPost, { isLoading: isCreateLoading }] = useCreatePostMutation()
     const {
@@ -36,6 +36,7 @@ export default function BlogPostCreation() {
         refetch,
         isFetching: isTableFetching,
     } = useGetAllActiveCategoriesQuery()
+    const [content, setContent] = useState('')
     const [categories, setCategories] = useState<any>([])
 
     useEffect(() => {
@@ -85,18 +86,18 @@ export default function BlogPostCreation() {
         if (!imageUrl) {
             message.error('Vui lòng tải ảnh thumbnail')
             return
-        } else if (!editorRef.current.getContent()) {
+        } else if (content) {
             message.error('Vui lòng nhập nội dung bài viết')
             return
         }
         const values = form.getFieldsValue()
         console.log('Form values:', {
-            ...{ content: editorRef.current.getContent(), image: imageUrl },
+            ...{ content, image: imageUrl },
             ...values,
         })
         try {
             await createPost({
-                ...{ content: editorRef.current.getContent(), image: imageUrl },
+                ...{ content, image: imageUrl },
                 ...values,
             }).unwrap()
             form.resetFields()
@@ -106,15 +107,6 @@ export default function BlogPostCreation() {
             message.error('Có lỗi xảy ra khi tạo bài viết')
             return
         }
-    }
-
-    const modules = {
-        toolbar: [
-            [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image', 'code-block'],
-        ],
     }
 
     return (
@@ -308,7 +300,7 @@ export default function BlogPostCreation() {
                     <label className="block text-sm font-medium text-gray-700">
                         Content
                     </label>
-                    <EditorTinymce content={''} editorRef={editorRef} />
+                    <TinyMCEEditor content={content} setContent={setContent} />
                 </div>
 
                 <Form.Item name="meta_title">

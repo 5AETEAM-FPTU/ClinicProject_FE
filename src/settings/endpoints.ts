@@ -135,6 +135,10 @@ const notificationEndpoints = {
     CREATE_FOLLOW_UP_NOTIFICATION: '/notification/retreatment/create',
 }
 
+const contactEndpoints = {
+    CREATE_CONTACT: '/api/contact/create',
+}
+
 export {
     demoEnpoints,
     authEndpoint,
@@ -152,4 +156,5 @@ export {
     serviceOrderEndpoint,
     medicineOrderEndpoint,
     notificationEndpoints,
+    contactEndpoints,
 }
