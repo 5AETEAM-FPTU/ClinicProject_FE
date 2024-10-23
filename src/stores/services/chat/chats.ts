@@ -29,19 +29,28 @@ export const chats = baseApi.injectEndpoints({
                 method: 'POST',
             }),
         }),
-        getChatRoomByUser: build.query<any, void>({
-            query: () => ({
+        getChatRoomByUser: build.query<any,  {lastConversationTime: string, pageSize: number}>({
+
+            query: (param) => ({
                 url: chatEndpoint.GET_CHAT_ROOM_BY_USER,
                 flashError: true,
                 method: 'GET',
+                params: {
+                    lastConversationTime: param.lastConversationTime,
+                    pageSize: param.pageSize,
+                },
                 extraOptions: { skipAuth: false },
             }),
         }),
-        getChatRoomByDoctor: build.query<any, void>({
-            query: () => ({
+        getChatRoomByDoctor: build.query<any, {lastConversationTime: string, pageSize: number}>({
+            query: (param) => ({
                 url: chatEndpoint.GET_CHAT_ROOM_BY_DOCTOR,
                 flashError: true,
                 method: 'GET',
+                params: {
+                    lastConversationTime: param.lastConversationTime,
+                    pageSize: param.pageSize,
+                },
                 extraOptions: { skipAuth: false },
             }),
         }),
@@ -107,5 +116,6 @@ export const {
     useRemoveChatContentByIdMutation,
     useGetChatRoomByDoctorQuery,
     useLazyGetAllQueueRoomsQuery,
+    useGetAllQueueRoomsQuery,
     useAddChatRoomMutation
 } = chats

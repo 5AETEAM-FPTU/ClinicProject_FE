@@ -24,6 +24,7 @@ import { useRouter } from 'next-nprogress-bar'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
+import { useGetAllQueueRoomsQuery, useGetQueueRoomByUserQuery } from '@/stores/services/chat/chats'
 
 function calculateAge(birthday: string) {
     const today = new Date();
@@ -45,7 +46,7 @@ const patients = [
     { name: 'Nguyễn Hoàng Anh', gender: 'Nữ', age: 32 },
 ]
 
-const consultations = [
+const consultations1 = [
     {
         name: 'Nguyễn Mai Phương',
         message: 'Hiện tại em đang muốn khám tổng quát, bác sĩ có thể...',
@@ -53,19 +54,6 @@ const consultations = [
     {
         name: 'Lê Đại Hoàng',
         message: 'Tư vấn giúp em về tình hình sức khỏe hiện tại của em...',
-    },
-]
-
-const appointments = [
-    {
-        name: 'Nguyễn Quang Quý',
-        time: '08:30 - 9:30 | T4 - 02/11/2024',
-        date: '21:24 - 22/10/2024',
-    },
-    {
-        name: 'Nguyễn Quang Quý',
-        time: '08:30 - 9:30 | T4 - 02/11/2024',
-        date: '21:24 - 22/10/2024',
     },
 ]
 
@@ -176,25 +164,39 @@ const AppointmentComponent = () => {
 }
 
 const ConsultationComponent = () => {
+   
+    const { data, isFetching } = useGetAllQueueRoomsQuery({pageIndex: 1, pageSize: 2}, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                data: data?.body.patientQueues?.contents,
+                isFetching: isFetching
+            }
+        }
+    })
+    
+
+    console.log("haha", data);
+
     return (
         <div className="shadow rounded-lg bg-white p-4 shadow-third">
             <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
                 Yêu cầu tư vấn
             </h2>
+            { data ? (
             <List
-                dataSource={consultations}
-                renderItem={(item) => (
+                dataSource={data.length === 1 ? [data[0], data[0]] : data}
+                renderItem={(item: any) => (
                     <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
                         <List.Item.Meta
                             avatar={
                                 <Avatar
                                     size={50}
-                                    src="/placeholder.svg?height=40&width=40"
+                                    src={item.patientAvatar}
                                 />
                             }
                             title={
                                 <span className="text-[14px] font-bold text-secondarySupperDarker">
-                                    {item.name}
+                                    {item.patientName}
                                 </span>
                             }
                             description={
@@ -211,7 +213,7 @@ const ConsultationComponent = () => {
                         </button>
                     </List.Item>
                 )}
-            />
+            />) : <div>Chưa có data</div>}
         </div>
     )
 }

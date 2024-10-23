@@ -47,13 +47,6 @@ export const medicalReportApi = baseApi.injectEndpoints({
                 body: data,
                 flashError: true,
             }),
-        }),
-        getAllMedicalReportRecentOfUser: build.query<any, { pageIndex: number, pageSize: number, userId: string }>({
-            query: (param) => ({
-                url: `${medicalReportEndpoint.GET_ALL_MEDICAL_REPORT_RECENT_OF_USER.replace("{userId}", param.userId)}?pageIndex=${param.pageIndex}&pageSize=${param.pageSize}`,
-                method: 'GET',
-                flashError: true,
-            }),
         })
     }),
 })
@@ -63,6 +56,5 @@ export const {
     useUpdateMedicalReportPatientInformationMutation,
     useUpdateMainMedicalReportInformationMutation,
     useGetAllServiceQuery,
-    useCreateNewMedicalReportMutation,
-    useGetAllMedicalReportRecentOfUserQuery
+    useCreateNewMedicalReportMutation
 } = medicalReportApi

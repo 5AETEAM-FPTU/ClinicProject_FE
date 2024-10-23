@@ -1,8 +1,8 @@
 'use client'
-import { Avatar, Layout, List, Typography } from 'antd'
+import { Avatar, Layout, List, Skeleton, Typography } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import webStorageClient from '@/utils/webStorageClient'
 import createChatService from '@/stores/services/chat/signalService'
 
@@ -11,10 +11,16 @@ const { startConnection } =
 const { Sider } = Layout
 export default function ChatRooms({
     chatRooms,
-    setChatRoomTransfer,
+    setLastChatRoomTime,
+    refetch,
+    isChatRoomFetching,
+    setIsLoadingChatRoom
 }: {
-    chatRooms: ChatRoom[] 
-    setChatRoomTransfer: (chatRoomId: string, doctorId: string) => void
+    chatRooms: ChatRoom[]
+    setLastChatRoomTime: (date: string) => void
+    refetch: () => void,
+    isChatRoomFetching: boolean
+    setIsLoadingChatRoom: any
 }) {
     const route = useRouter()
     const searchParams = useSearchParams()
@@ -22,10 +28,52 @@ export default function ChatRooms({
     const userId = searchParams.get('user')
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
+    const observerRef = useRef<IntersectionObserver | null>(null)
+    const loadMoreRef = useRef<HTMLDivElement>(null)
+
+    const handleLoadMore = async () => {
+        try {
+            setIsLoadingChatRoom((prev: boolean) => !prev);
+
+            if (chatRooms.length === 0) {
+                setIsLoadingChatRoom(false);
+                return;
+            }
+
+            setChatRoomList((prev) => Array.isArray(prev) ? [...prev, ...chatRooms] : [...chatRooms]);
+            if (chatRooms.length > 0) {
+                setLastChatRoomTime(chatRooms[chatRooms.length - 1].latestMessageTime)
+            }
+        } catch (error) {
+            console.error('Error loading more chat rooms:', error)
+        }
+    }
 
     useEffect(() => {
-        setChatRoomList(chatRooms)
-    },[chatRooms])
+        observerRef.current = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !isChatRoomFetching) {
+                    handleLoadMore()
+                }
+            },
+            { threshold: 1.0 }
+        )
+
+        if (loadMoreRef.current) {
+            observerRef.current.observe(loadMoreRef.current)
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect()
+            }
+        }
+    }, [isChatRoomFetching])
+
+
+    // useEffect(() => {
+    //     setChatRoomList(chatRooms)
+    // },[chatRooms])
 
     useEffect(() => {
         startConnection(
@@ -62,12 +110,23 @@ export default function ChatRooms({
         }
     }, [chatRooms])
     return (
-        <div className="min-w-[350px]">
+        <div className="min-w-full sm:min-w-[350px]">
             <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">
                 <List
-                    className='max-h-[570px] overflow-y-auto'
+                    className=' max-h-[300px] sm:max-h-[570px] overflow-y-auto'
                     itemLayout="horizontal"
                     dataSource={chatRoomList}
+                    footer={
+                        chatRooms && <>
+                            <div ref={loadMoreRef} className="" />
+                            {isChatRoomFetching && (<>
+                                <Skeleton active className='my-4 w-full' />
+                                <Skeleton active className='my-4 w-full' />
+                            </>
+                            )}
+                        </>
+
+                    }
                     renderItem={(doctor) => {
                         const isSelected =
                             doctor.chatRoomId === chatRoomId &&
@@ -98,7 +157,7 @@ export default function ChatRooms({
                                         <span
                                             className={`text-base font-semibold text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
                                         >
-                                            {doctor.fullName}
+                                            {doctor.fullName ? doctor.fullName : 'Không tên'}
                                         </span>
                                     }
                                     description={

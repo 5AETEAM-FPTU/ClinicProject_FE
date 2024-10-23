@@ -403,22 +403,23 @@ export default function ChatContent() {
         }
     }
     const handleGetListImageUrl = async () => {
-        const listImageUrl: string[] = []
+        const listImageUrl: string[] = [];
         if (fileStorage) {
-            setIsUploading(true)
-            for (let i = 0; i < fileStorage.length; i++) {
-                console.log(fileStorage[i])
-                const imageUrl = await handleUploadAndGetImageUrl(
-                    fileStorage[i],
-                )
+            setIsUploading(true);
+            const filesArray = Array.from(fileStorage);
+            const uploadPromises = filesArray.map((file: File) => 
+                handleUploadAndGetImageUrl(file)
+            );
+            const results = await Promise.all(uploadPromises);
+            results.forEach((imageUrl) => {
                 if (imageUrl) {
-                    listImageUrl.push(imageUrl)
+                    listImageUrl.push(imageUrl);
                 }
-            }
+            });
+            setIsUploading(false);
         }
-
-        return listImageUrl
-    }
+        return listImageUrl;
+    };
 
     useEffect(() => {
         handleScrollToBottom()
