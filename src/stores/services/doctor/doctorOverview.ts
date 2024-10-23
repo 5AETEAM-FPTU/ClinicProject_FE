@@ -14,10 +14,10 @@ export const doctorOverviewApi = baseApi.injectEndpoints({
             }),
             extraOptions: { skipAuth: false }
         }),
-        getAppointmentInWeek: build.query<any, { startDate: string, endDate: string }>({
+        getAppointmentInWeek: build.query<any, { startDate: string, endDate: string, doctorId?: string }>({
             query: (params) => ({
                 url: doctorEndpoint.GET_APPOINTMENTS_ON_DAY.concat(
-                    `?startDate=${params.startDate}&endDate=${params.endDate}`
+                    `?startDate=${params.startDate}&endDate=${params.endDate}${params.doctorId ? `&doctorId=${params.doctorId}` : ''}`
                 ),
                 flashError: true,
                 method: 'GET',

@@ -6,6 +6,7 @@ import './style.css'
 import {
     ChevronRight,
     ChevronsRight,
+    MoveLeft,
     Printer,
     SendHorizontal,
     Star,
@@ -24,6 +25,7 @@ import EditorTinymce, {
 import { useCreateFeedbackMutation } from '@/stores/services/user/userAppointments'
 import NotFound from '@/components/Core/common/NotFound'
 import ViewFeedback from '../ViewFeedback'
+import { useRouter } from 'next-nprogress-bar'
 
 interface DoctorSpecialty {
     specialtyId: string
@@ -72,6 +74,7 @@ interface ReportDetail {
 }
 
 export default function DetailTreatmentHistory() {
+    const router = useRouter()
     const [myForm] = Form.useForm()
     const editorRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
@@ -131,6 +134,10 @@ export default function DetailTreatmentHistory() {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     exit={{ opacity: 0 }}
                 >
+                    <div className='pb-4 flex justify-between select-none'>
+                        <h3 className='text-[20px] font-bold text-[#003553]'>Lịch sử khám của bạn</h3>
+                        <Button type='default' className='border-none shadow-third' onClick={() => { router.back() }}> <MoveLeft size={18} />Quay lại</Button>
+                    </div>
                     <Layout className="flex h-fit flex-col gap-2 rounded-lg bg-transparent p-4 shadow-third">
                         {isFetching ? (
                             Array.from({ length: 4 }).map((_, index) => (
@@ -143,6 +150,7 @@ export default function DetailTreatmentHistory() {
                             ))
                         ) : (
                             <>
+
                                 <div>
                                     <p className="py-1 text-xs font-bold text-[#003553]">
                                         Phiếu khám
@@ -511,18 +519,17 @@ export default function DetailTreatmentHistory() {
                                             >
                                                 <Star
                                                     size={30}
-                                                    className={`transition-all duration-300 ease-in-out ${
-                                                        hoveredStar >=
-                                                            starIndex ||
+                                                    className={`transition-all duration-300 ease-in-out ${hoveredStar >=
+                                                        starIndex ||
                                                         selectedStar >=
-                                                            starIndex
-                                                            ? 'text-yellow-400'
-                                                            : 'text-gray-400'
-                                                    }`}
+                                                        starIndex
+                                                        ? 'text-yellow-400'
+                                                        : 'text-gray-400'
+                                                        }`}
                                                     fill={
                                                         hoveredStar >=
                                                             starIndex ||
-                                                        selectedStar >=
+                                                            selectedStar >=
                                                             starIndex
                                                             ? 'currentColor'
                                                             : 'none'
@@ -538,7 +545,7 @@ export default function DetailTreatmentHistory() {
                                     layout="vertical"
                                     form={myForm}
                                     className="flex w-full flex-col gap-4"
-                                    onFinish={() => {}}
+                                    onFinish={() => { }}
                                 >
                                     <div className="w-full flex-col gap-5">
                                         <div>

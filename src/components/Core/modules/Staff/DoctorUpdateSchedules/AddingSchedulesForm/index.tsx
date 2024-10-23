@@ -9,9 +9,11 @@ import { useTrigger } from '@/hooks/useTrigger'
 export default function AddingSchedulesForm({
     date,
     refetch,
+    doctorId
 }: {
     date: Date | null
-    refetch: () => void
+    refetch: () => void,
+    doctorId: string
 }) {
     const [timeSlotAdding, setTimeSlotAdding] = useState<TimeSlot[]>([])
     const { handleTrigger, trigger } = useTrigger()
@@ -51,7 +53,7 @@ export default function AddingSchedulesForm({
             }
         })
 
-        var response = await createSchedules({ timeSlots: timeSlots })
+        var response = await createSchedules({ timeSlots: timeSlots, doctorId })
         if (response?.error) {
             message.error('Thêm ca khám thất bại')
             console.log(response);

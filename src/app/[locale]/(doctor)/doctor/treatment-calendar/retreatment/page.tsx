@@ -1,4 +1,4 @@
-import FollowUpAppointment from '@/components/Core/modules/Doctor/DoctorFollowUpAppointment'
+import FollowUpAppointment from '@/components/Core/modules/FollowUpAppointment'
 import React from 'react'
 
 function Retreatment() {
