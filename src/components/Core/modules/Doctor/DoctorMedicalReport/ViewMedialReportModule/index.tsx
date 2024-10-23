@@ -98,7 +98,10 @@ export default function ViewMedicalReportModule() {
                     </div>
                     <MainMedicalReportViewInformation
                         payload={report?.medicalReport}
+                        patientInfor={report?.patientInfor}
                         isFetching={isFetching}
+                        serviceOrderId={report?.service?.serviceOrderId}
+                        medicineOrderId={report?.medicine?.medicineOrderId}
                     />
                 </motion.div>
             )}

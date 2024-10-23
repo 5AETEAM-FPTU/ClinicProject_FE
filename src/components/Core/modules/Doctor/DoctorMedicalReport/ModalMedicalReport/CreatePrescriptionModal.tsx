@@ -5,6 +5,7 @@ import {
     useGetAllMedicineAvailableQuery,
     useGetMedicineOrderByIdQuery,
     useUpdateMedicineOrderItemMutation,
+    useUpdateMedicineOrderNoteMutation,
 } from '@/stores/services/report/medicineOrder'
 import { Button, Input, message, Modal } from 'antd'
 import {
@@ -86,6 +87,24 @@ export default function CreatePrescriptionModal({
             } else message.error('Đã xảy ra lỗi, vui lòng thử lại sau!')
         }
     }
+    const [updateMedicineOrderNote, { isLoading, isSuccess }] =
+        useUpdateMedicineOrderNoteMutation()
+    const [note, setNote] = useState<string>('')
+    useEffect(() => {
+        setNote(medicineOrder?.note)
+    }, [medicineOrder])
+    const handleUpdateMedicineFinish = async () => {
+        try {
+            await updateMedicineOrderNote({
+                medicineOrderId: medicineOrderId!,
+                note: note,
+            }).unwrap()
+            message.success('Lưu thông tin thành công')
+            isSuccess && setOpen(false)
+        } catch (error) {
+            message.error('Lưu thông tin thất bại')
+        }
+    }
 
     return (
         <Modal
@@ -109,10 +128,13 @@ export default function CreatePrescriptionModal({
                     Hủy bỏ
                 </Button>,
                 <Button
+                    loading={isLoading}
                     className="bg-secondaryDark"
                     key="submit"
                     type="primary"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                        handleUpdateMedicineFinish()
+                    }}
                 >
                     Xác nhận
                 </Button>,
@@ -121,7 +143,7 @@ export default function CreatePrescriptionModal({
         >
             <div className="mt-5 flex flex-row gap-5">
                 <div className="w-fit">
-                    <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
+                    <div className="flex h-fit w-[800px] flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <p className="text-[14px] font-bold text-secondarySupperDarker">
                             Đơn thuốc
                         </p>
@@ -196,7 +218,7 @@ export default function CreatePrescriptionModal({
                     </div>
                 </div>
                 <div className="w-[45%]">
-                    <div className="flex h-fit w-full flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
+                    <div className="flex h-fit w-[500px] flex-col gap-5 rounded-xl border-[1px] border-secondaryDark border-opacity-20 bg-white p-5 shadow-third">
                         <div className="flex flex-row justify-between">
                             <p className="text-[14px] font-bold text-secondarySupperDarker">
                                 Kho thuốc
@@ -296,9 +318,13 @@ export default function CreatePrescriptionModal({
             </div>
             <div className="mt-5">
                 <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                    Dặn dò
+                    Lưu ý
                 </p>
-                <Input.TextArea />
+                <Input.TextArea
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Nhập lưu ý"
+                />
             </div>
         </Modal>
     )
@@ -373,7 +399,7 @@ const PrescriptionRow = ({
                 </div>
             </td>
             <td className="w-[30%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
-                <div className='px-2 py-2 text-center'>
+                <div className="px-2 py-2 text-center">
                     <Input
                         type="text"
                         placeholder="Nhập cách sử dụng..."
@@ -383,14 +409,14 @@ const PrescriptionRow = ({
                 </div>
             </td>
             <td className="w-[15%] border-b-[1px] border-r-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">
-                <div className='px-2 py-2 text-center'>
-                <Input
-                    type="number"
-                    min={0}
-                    placeholder="Nhập số lượng"
-                    defaultValue={payload?.quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                />
+                <div className="px-2 py-2 text-center">
+                    <Input
+                        type="number"
+                        min={0}
+                        placeholder="Nhập số lượng"
+                        defaultValue={payload?.quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                    />
                 </div>
             </td>
             <td className="w-[20%] border-b-[1px] border-secondarySupperDarker text-[14px] font-medium text-secondarySupperDarker">

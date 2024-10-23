@@ -49,7 +49,6 @@ export default function MainMedicalReport({
             const data = {
                 ...values,
                 reportId: searchParam.get('id'),
-                diagnosis: getEditorHtmlContent(editorRef),
             }
             await updateMainMedicalReportInformation(data).unwrap()
             message.success('Cập nhật thành công!')
@@ -236,10 +235,11 @@ export default function MainMedicalReport({
                                 name={'diagnosis'}
                                 className="!mb-0"
                             >
-                                <EditorTinymce
+                                {/* <EditorTinymce
                                     content={payload?.medicalReport?.diagnosis}
                                     editorRef={editorRef}
-                                />
+                                /> */}
+                                <Input.TextArea placeholder="Nhập thông tin..."></Input.TextArea>
                             </Form.Item>
                         </div>
                     </div>
@@ -270,6 +270,7 @@ export default function MainMedicalReport({
                         open={openUpdateMedicalServiceModal}
                         setOpen={setOpenUpdateMedicalServiceModal}
                         serviceOrderId={payload?.service?.serviceOrderId}
+                        payload={payload}
                     />
                     <Button
                         type="primary"

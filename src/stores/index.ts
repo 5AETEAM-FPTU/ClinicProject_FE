@@ -22,7 +22,17 @@ export const createStore = (
             [geminiApis.reducerPath]: geminiApis.reducer,
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(baseApi.middleware).concat(geminiApis.middleware).concat(authApis.middleware).concat(nodeServicerBaseApi.middleware),
+            getDefaultMiddleware({
+                serializableCheck: {
+                    // Ignore these action paths and state paths
+                    ignoredActions: ['form/executeMutation/fulfilled'],
+                    ignoredPaths: ['form.mutations.xye7Zo4Zuh39L3q1Eivs2.data'],
+                },
+            })
+                .concat(baseApi.middleware)
+                .concat(geminiApis.middleware)
+                .concat(authApis.middleware)
+                .concat(nodeServicerBaseApi.middleware),
     })
 export const store = createStore()
 

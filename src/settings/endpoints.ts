@@ -103,6 +103,7 @@ const medicineOrderEndpoint = {
     UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
     DELETE_MEDICINE_ORDER_ITEM:
         '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
+    UPDATE_MEDICINE_NOTE: '/medicine-order/note/update'
 }
 const serviceOrderEndpoint = {
     SERVICE_ORDER_ADD: '/service-order/add',
@@ -126,6 +127,14 @@ const blogEndpoints = {
     GET_NEWEST_POST: '/api/post/get-new-posts',
 }
 
+const generatePdfEndpoint = {
+    GENERAL_PDF: '/api/generate-pdf/general-medical-report',
+}
+const formServiceEndpoint = {
+    CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',
+    UPDATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/update',
+}
+
 export {
     demoEnpoints,
     authEndpoint,
@@ -142,4 +151,6 @@ export {
     chatEndpoint,
     serviceOrderEndpoint,
     medicineOrderEndpoint,
+    generatePdfEndpoint,
+    formServiceEndpoint
 }

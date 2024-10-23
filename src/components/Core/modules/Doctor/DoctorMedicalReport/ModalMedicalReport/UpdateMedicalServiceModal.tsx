@@ -1,18 +1,29 @@
 'use client'
 import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
-import { Button, Input, Modal } from 'antd'
+import { Button, Input, message, Modal } from 'antd'
 import { Edit, Search, View } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import UpdateAdominalUtrasound from './UpdateForms/UpdateAdominalUtrasound'
+import { useCreateAdominalUltrasoundReportMutation } from '@/stores/services/report/formService'
+import webStorageClient from '@/utils/webStorageClient'
+import { constants } from '@/settings'
+import { MedicalReportResponseBody } from '../ViewMedialReportModule'
+import { generateReportCode } from '@/utils/generateCode'
+import dayjs from 'dayjs'
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     serviceOrderId?: string
+    payload: MedicalReportResponseBody
 }
 export default function UpdateMedicalServiceModal({
     open,
     setOpen,
     serviceOrderId,
+    payload,
 }: TProps) {
+    const [openUpdateadominalUtrasound, setOpenUpdateadominalUtrasound] =
+        useState<boolean>(false)
     const { serviceOrderDetail, refetch } = useGetServiceOrderDetailQuery(
         serviceOrderId!,
         {
@@ -27,6 +38,40 @@ export default function UpdateMedicalServiceModal({
             refetch()
         }
     }, [open])
+
+    const handleUpdateForm = (code: string) => {
+        if (code.toUpperCase() === 'SAB') {
+            setOpenUpdateadominalUtrasound(true)
+        }
+    }
+
+    const handleCreateForm = (code: string) => {
+        if (code.toUpperCase() === 'SAB') {
+            handleCreateAdominalUtrasoundReport()
+        }
+    }
+    const [createAdominalUltrasonics] =
+        useCreateAdominalUltrasoundReportMutation()
+    const handleCreateAdominalUtrasoundReport = async () => {
+        try {
+            await createAdominalUltrasonics({
+                serviceOrderedId: serviceOrderId!,
+                diagostic: payload?.medicalReport?.diagnosis,
+                doctorName: webStorageClient.get(constants.USER_FULLNAME),
+                patientName: payload?.patientInfor?.fullName,
+                reportCode: generateReportCode(),
+                treatmentDay: payload?.medicalReport?.date,
+                ages: dayjs().diff(payload?.patientInfor?.dob, 'year').toString(),
+                gender: payload?.patientInfor?.gender,
+                address: payload?.patientInfor?.address,
+            }).unwrap()
+            message.success('Tạo báo cáo thành công')
+            setOpenUpdateadominalUtrasound(true);
+        } catch (error) {
+            message.error('Tạo báo cáo thất bại')
+            return
+        }
+    }
 
     return (
         <Modal
@@ -138,6 +183,13 @@ export default function UpdateMedicalServiceModal({
                                                                 <Button
                                                                     type="primary"
                                                                     className="!bg-secondaryDark"
+                                                                    onClick={() => {
+                                                                        handleCreateForm(
+                                                                            item
+                                                                                ?.service
+                                                                                ?.code,
+                                                                        )
+                                                                    }}
                                                                 >
                                                                     Viết kết quả
                                                                 </Button>
@@ -158,10 +210,26 @@ export default function UpdateMedicalServiceModal({
                                                         <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
                                                             <div className="flex w-full items-center justify-center">
                                                                 <View
+                                                                    onClick={() => {
+                                                                        handleUpdateForm(
+                                                                            item
+                                                                                ?.service
+                                                                                ?.code,
+                                                                        )
+                                                                    }}
                                                                     size={20}
                                                                     className="cursor-pointer transition-all hover:scale-x-110 hover:text-secondaryDark"
                                                                 />
                                                             </div>
+                                                            <UpdateAdominalUtrasound
+                                                                open={
+                                                                    openUpdateadominalUtrasound
+                                                                }
+                                                                setOpen={
+                                                                    setOpenUpdateadominalUtrasound
+                                                                }
+                                                                serviceOrderedId={payload?.service?.serviceOrderId!}
+                                                            />
                                                         </td>
                                                     </tr>
                                                 ),

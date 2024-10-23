@@ -91,7 +91,8 @@ export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
                     <span className="font-semibold text-[#003553]">
                         {dayjs(payload.schedules.startDate).format('HH:mm') +
                             ' - ' +
-                            dayjs(payload.schedules.endDate).format('HH:mm')}
+                            dayjs(payload.schedules.endDate).format('HH:mm') + 
+                            ' | ' + dayjs(payload?.schedules?.startDate).format('DD/MM/YYYY')}
                     </span>
                     <div className="flex gap-[10px] font-semibold">
                         <Button className="rounded-[10px] border-none bg-[#FF0000] text-white">
