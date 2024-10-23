@@ -38,7 +38,7 @@ function MedicalNews() {
                     <div className="flex w-fit flex-col gap-[8px] rounded-xl bg-white p-5 shadow-primary sm:h-[600px] sm:w-[480px]">
                         <div className="h-[160px] w-full sm:h-[280px]">
                             <Image
-                                src={newestPosts[0]?.image}
+                                src={newestPosts[0]?.image ? newestPosts[0]?.image : ''}
                                 alt="thumbnails"
                                 width={500}
                                 height={500}

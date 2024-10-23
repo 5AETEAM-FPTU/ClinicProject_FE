@@ -27,7 +27,8 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
     const vnPayUrl = webStorageClient.remove(constants.VNPAY_PAYMENT_URL);
 
     const [dateAppointment, timeAppointment] = appointmentDate?.split(' ');
-    const formattedTime = timeAppointment.substring(0, 5);
+    const formattedTime = timeAppointment.substring(0, 4);
+    console.log(formattedTime + " " + timeAppointment)
     const formattedDateTimeAppointment = `${formattedTime} ${dateAppointment}`;
 
     const formattedDate = `${hours}:${minutes} ${day}/${month}/${year}`;

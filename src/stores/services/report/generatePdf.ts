@@ -9,8 +9,22 @@ export const generatePdfApis = formServiceBaseApi.injectEndpoints({
                 method: 'POST',
                 body: data
             }),  
+        }),
+        getAdominalUltrasoundPdf: build.mutation<any, any>({
+            query: (data) => ({
+                url: generatePdfEndpoint.ADOMINAL_PDF,
+                method: 'POST',
+                body: data
+            })
+        }),
+        getElectrocarDiographyPdf: build.mutation<any, any>({
+            query: (data) => ({
+                url: generatePdfEndpoint.ELECTROCAR_PDF,
+                method: 'POST',
+                body: data
+            })
         })
     })
 })
 
-export const {useGetGeneralMedicalReportPdfMutation} = generatePdfApis
+export const {useGetGeneralMedicalReportPdfMutation, useGetAdominalUltrasoundPdfMutation} = generatePdfApis

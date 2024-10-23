@@ -36,10 +36,20 @@ export const formServiceApis = formServiceBaseApi.injectEndpoints({
                 body: data.payload,
             }),
         }),
+        getAbdominalUltrasoundReport: build.query<any, string>({
+            query: (id) => ({
+                url: formServiceEndpoint.GET_ABDOMINAL_UNTRASOUND,
+                method: 'GET',
+                params: { serviceOrderedId: id },
+            })
+        }),
+        
+
     }),
 })
 
 export const {
     useCreateAdominalUltrasoundReportMutation,
     useUpdateAdominalUltrasoundReportMutation,
+    useGetAbdominalUltrasoundReportQuery
 } = formServiceApis

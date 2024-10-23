@@ -111,7 +111,6 @@ export default function AppointmentConfirmation() {
                 router.replace(vnPayUrl)
             }
         } catch (error) {
-            console.log(error)
             message.error('Có lỗi xảy ra, vui lòng thử lại sau')
         } finally {
             setLoading(false)

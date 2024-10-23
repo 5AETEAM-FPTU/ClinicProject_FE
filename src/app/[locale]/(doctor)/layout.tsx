@@ -1,13 +1,11 @@
 import DoctorLayout from '@/components/Layouts/DoctorLayout'
-import { getCookie } from 'cookies-next'
-import { redirect, usePathname } from 'next/navigation'
-import React from 'react'
-import { cookies } from 'next/headers'
 import { constants } from '@/settings'
-import { jwtDecode, JwtPayload } from 'jwt-decode'
-import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
-import { Inter } from 'next/font/google'
+import { getCookie } from 'cookies-next'
 import { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 

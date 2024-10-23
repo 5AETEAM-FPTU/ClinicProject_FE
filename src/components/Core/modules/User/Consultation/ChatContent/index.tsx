@@ -107,7 +107,6 @@ export default function ChatContent() {
             setIsDeleteConfirmModalVisible(false)
             sendRemovedMessage(_userId, doctorId!, actionMessageId!)
         } catch (error) {
-            console.log(error)
             message.error('Xóa tin nhắn thất bại!')
             setIsDeleteConfirmModalVisible(false)
         }
@@ -138,7 +137,6 @@ export default function ChatContent() {
                 setIsInitial(true)
             }
         } catch (error) {
-            console.log(error)
         }
     }
     useEffect(() => {
@@ -320,7 +318,6 @@ export default function ChatContent() {
 
     const [fileStorage, setFileStorage] = useState<FileList | null>(null)
     const [isDragging, setIsDragging] = useState<boolean>(false)
-    console.log(fileStorage)
     const handleOnChangeSeleteFile = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {

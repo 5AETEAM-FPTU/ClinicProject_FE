@@ -51,7 +51,7 @@ export default function AddingSchedulesForm({
             }
         })
 
-        var response = await createSchedules(timeSlots)
+        var response = await createSchedules({ timeSlots: timeSlots })
         if (response?.error) {
             message.error('Thêm ca khám thất bại')
             console.log(response);
@@ -163,7 +163,7 @@ export default function AddingSchedulesForm({
                     open={trigger}
                     content={
                         <div className="shadow-lg  max-w-md rounded-xl bg-white p-2">
-                           
+
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between gap-1">
                                     <div>

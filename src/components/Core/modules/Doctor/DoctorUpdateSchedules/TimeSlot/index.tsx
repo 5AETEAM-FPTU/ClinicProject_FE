@@ -14,6 +14,7 @@ import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../../Auth/SignIn'
 import useClickOutside from '@/hooks/useClickOutside'
+import { on } from 'events'
 
 export type TimeSlot = {
     startTime: string
@@ -119,6 +120,7 @@ export default function Component({
                     startTime: dayjs(slot.startTime),
                     endTime: dayjs(slot.endTime),
                     isHadAppointment: slot.isHadAppointment,
+                    slotId: slot.slotId,
                 })),
             )
         } else {
@@ -239,7 +241,7 @@ export function PopoverOptionChange({
                         dayjs(date).format('YYYY-MM-DDT') +
                         timeSlotAdding[0].endTime +
                         ':00',
-                })
+                }).unwrap()
                 console.log(dataUpdate)
                 refetch()
                 message.success('Cập nhật thời gian slot thành công!')
@@ -252,6 +254,8 @@ export function PopoverOptionChange({
             }
         }
     }
+
+    console.log("Slott: ", slot);
 
     return (
         <>
@@ -290,10 +294,9 @@ export function PopoverOptionChange({
                     key={index}
                     className={cn(
                         `relative border px-2 py-4 text-center`,
-                        `${
-                            selectedSlot === slot
-                                ? 'border-secondaryDark bg-secondaryDark text-white'
-                                : 'border-blue-200 bg-white text-secondarySupperDarker hover:border-secondaryDark'
+                        `${selectedSlot === slot
+                            ? 'border-secondaryDark bg-secondaryDark text-white'
+                            : 'border-blue-200 bg-white text-secondarySupperDarker hover:border-secondaryDark'
                         }`,
                         `${slot?.isHadAppointment ? '!cursor-not-allowed !opacity-50' : ''}`,
                     )}
@@ -331,7 +334,7 @@ export function PopoverOptionChange({
                                     Kết thúc
                                 </span>
                             </div>
-                            <Space  direction="vertical" className="p-1 !w-full">
+                            <Space direction="vertical" className="p-1 !w-full">
                                 <TimePicker.RangePicker
                                     size="large"
                                     onCalendarChange={(dates, dateStrings) => {
@@ -346,7 +349,7 @@ export function PopoverOptionChange({
                                         dayjs(slot.startTime, 'HH:mm'),
                                         dayjs(slot.endTime, 'HH:mm'),
                                     ]}
-                                    className="!w-full"  
+                                    className="!w-full"
                                 />
                             </Space>
                         </motion.div>

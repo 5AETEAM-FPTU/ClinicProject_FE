@@ -1,10 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 import Footer from './Footer'
-import Reloading from './Reloading'
 import Header from './Header'
 import HeaderMobile from './HeaderMobile'
+import Reloading from './Reloading'
 
 function LandingLayout({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState<boolean>(true);

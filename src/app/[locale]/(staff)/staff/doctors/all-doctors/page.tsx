@@ -1,4 +1,4 @@
-import AllDoctorComponent from '@/components/Core/modules/Staff/StaffScheduleForDoctor/AllDoctorComponent'
+import AllDoctorComponent from '@/components/Core/modules/Staff/DoctorUpdateSchedules/AllDoctorComponent'
 import React from 'react'
 
 function AllDoctor() {

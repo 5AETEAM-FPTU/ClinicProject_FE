@@ -38,15 +38,16 @@ const doctorEndpoint = {
     UPDATE_DUTY: '/doctor/duty',
     GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
     GET_MEDICAL_REPORT: '/medical-report/all',
+    GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
 }
 
 const scheduleEndpoint = {
     GET_SCHEDULES_BY_DATE: '/schedules/date',
     POST_CREATE_SCHEDULES: '/schedules',
     GET_SCHEDULES_BY_MONTH: '/schedules/month',
-    REMOVE_SCHEDULE_BY_ID: '/schedules/remove/{scheduleId}',
+    REMOVE_SCHEDULE_BY_ID: '/schedules/remove?scheduleId={scheduleId}',
     REMOVE_SCHEDULE_BY_DATE: '/schedules/remove/{date}',
-    UPDATE_SCHEDULE_BY_ID: '/schedules/update/{scheduleId}',
+    UPDATE_SCHEDULE_BY_ID: '/schedules/update',
     GET_SCHEDULES_GUEST_BY_DATE: '/schedules/guest/date',
     GET_SCHEDULES_GUEST_BY_MONTH: '/schedules/guest/month',
 }
@@ -78,6 +79,8 @@ const geminiEndpoint = {
 
 const AppointmentEndpoint = {
     UPDATE_APPOINTMENT_STATUS: '/appointment/update-status',
+    GET_ALL_USER_FOLLOW_UP_APPOINTMENT: '/doctor/re-examination/users',
+    GET_USER_DETAIL_IN_FOLLOW_UP: '/doctor/user/detail/{userId}',
     GET_ALL_USER_HISTORY_APPOINTMENTS: 'user/medical-report/all',
 }
 
@@ -90,6 +93,8 @@ const medicalReportEndpoint = {
     UPDATE_MAIN_MEDICAL_REPORT_INFORMATION:
         '/medical-report/update-main-information',
     GET_MEDICAL_REPORT_DETAIL: '/user/medical-report/detail',
+    GET_ALL_MEDICAL_REPORT_RECENT_OF_USER:
+        '/doctor/medicalreport/recent/{userId}',
 }
 
 const serviceEndpoint = {
@@ -103,11 +108,13 @@ const medicineOrderEndpoint = {
     UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
     DELETE_MEDICINE_ORDER_ITEM:
         '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
-    UPDATE_MEDICINE_NOTE: '/medicine-order/note/update'
+    UPDATE_MEDICINE_NOTE: '/medicine-order/note/update',
 }
+
 const serviceOrderEndpoint = {
     SERVICE_ORDER_ADD: '/service-order/add',
     SERVICE_ORDER_DETAIL: '/service-order/detail',
+    UPDATE_STATUS_ITEM: '/service-order/status/update',
 }
 
 const VnPayEndpoint = {
@@ -129,10 +136,17 @@ const blogEndpoints = {
 
 const generatePdfEndpoint = {
     GENERAL_PDF: '/api/generate-pdf/general-medical-report',
+    ADOMINAL_PDF: '/api/generate-pdf/abdominal-ultrasound-report',
+    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report'
 }
 const formServiceEndpoint = {
     CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',
     UPDATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/update',
+    GET_ABDOMINAL_UNTRASOUND: '/api/abdominal-ultrasound/get',
+}
+const notificationEndpoints = {
+    GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',
+    CREATE_FOLLOW_UP_NOTIFICATION: '/notification/retreatment/create',
 }
 
 export {
@@ -152,5 +166,6 @@ export {
     serviceOrderEndpoint,
     medicineOrderEndpoint,
     generatePdfEndpoint,
-    formServiceEndpoint
+    formServiceEndpoint,
+    notificationEndpoints,
 }

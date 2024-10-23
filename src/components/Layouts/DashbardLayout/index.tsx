@@ -12,25 +12,23 @@ import Menu, {
     TAppPathLayoutState,
 } from '../../Core/ui/Menu'
 
-import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
-import { setCollapsed, toggleSidebar } from '@/stores/features/sidebar'
-import { Bell, Home, LogOut, Logs, Search, Settings } from 'lucide-react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { Footer } from 'antd/es/layout/layout'
-import webStorageClient from '@/utils/webStorageClient'
-import { useLocale } from 'next-intl'
-import { signOut } from 'next-auth/react'
-import useClickOutside from '@/hooks/useClickOutside'
-import { AppProgressBar } from 'next-nprogress-bar'
-import themeColors from '@/style/themes/default/colors'
-import { useRouter } from 'next/navigation'
-import { DefaultImage } from '@/helpers/data/Default'
-import { useTrigger } from '@/hooks/useTrigger'
-import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '@/components/Core/modules/Auth/SignIn'
-import Notifications from './Notifications'
+import { DefaultImage } from '@/helpers/data/Default'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
+import useClickOutside from '@/hooks/useClickOutside'
+import { useTrigger } from '@/hooks/useTrigger'
+import { toggleSidebar } from '@/stores/features/sidebar'
+import themeColors from '@/style/themes/default/colors'
+import webStorageClient from '@/utils/webStorageClient'
 import { api } from '@convex/_generated/api'
-import { useMutation, useQuery } from 'convex/react'
+import { useQuery } from 'convex/react'
+import { jwtDecode } from 'jwt-decode'
+import { Bell, Home, LogOut, Logs, Search, Settings } from 'lucide-react'
+import { signOut } from 'next-auth/react'
+import { useLocale } from 'next-intl'
+import { AppProgressBar } from 'next-nprogress-bar'
+import { usePathname, useRouter } from 'next/navigation'
+import Notifications from './Notifications'
 
 const { Header, Sider, Content } = Layout
 const irishGrover = Irish_Grover({
@@ -112,22 +110,22 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
     const prevNotificationsLength = useRef(notifications?.length);
 
     useEffect(() => {
-      if (audioRef.current && notifications){
-        if (
-          prevNotificationsLength.current !== undefined &&
-          notifications?.length > prevNotificationsLength.current
-        ) {
-          if (notifications?.length > prevNotificationsLength.current) {
-            audioRef.current.play();
-          }
+        if (audioRef.current && notifications) {
+            if (
+                prevNotificationsLength.current !== undefined &&
+                notifications?.length > prevNotificationsLength.current
+            ) {
+                if (notifications?.length > prevNotificationsLength.current) {
+                    audioRef.current.play();
+                }
+            }
         }
-      }
-      prevNotificationsLength.current = notifications?.length;
+        prevNotificationsLength.current = notifications?.length;
     }, [notifications]);
 
-    const hasNewNotification =  !!notifications?.length
+    const hasNewNotification = !!notifications?.length
     const numberOfUnreadNotifications = notifications?.filter(
-      (notification) => !notification.isRead
+        (notification) => !notification.isRead
     )
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -143,8 +141,8 @@ function DashboardLayout({ children, sidebarItems }: DashboardProps) {
                     `${collapsed ? '!min-w-[80px] translate-x-[-80px] sm:translate-x-0' : 'translate-x-0'}`,
                     'fixed z-[999] h-full sm:static',
                 )}
-            >   
-                <audio ref={audioRef} preload='auto' src='https://res.cloudinary.com/dy1uuo6ql/video/upload/v1728659255/paowhflbqnlzhj092x2z.mp3'/>
+            >
+                <audio ref={audioRef} preload='auto' src='https://res.cloudinary.com/dy1uuo6ql/video/upload/v1728659255/paowhflbqnlzhj092x2z.mp3' />
                 <div className="flex h-fit w-full flex-row items-center justify-center gap-2">
                     <div
                         className="flex select-none flex-row gap-2 border-b-[2px] border-secondaryDark p-4"

@@ -61,7 +61,9 @@ export default function StaffConservation() {
     const locale = useLocale()
     const _accessToken = webStorageClient.getToken()!.toString()
     const [chatRoomTransfer, setChatRoomTransfer] = useState<ChatRoomTransfer>()
-
+    const [lastChatRoomTime, setLastChatRoomTime] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
+    const [isLoadingChatRoom, setIsLoadingChatRoom] = useState<boolean>(false)
+    let pageSize = 10
     const { doctorInformationResult, isFetching } = useGetDoctorProfileQuery(
         undefined,
         {
@@ -76,7 +78,7 @@ export default function StaffConservation() {
     )
     const newChatId = searchParams.get('chat')
     const { chatRoomResult, isChatRoomFetching, refetch } =
-        useGetChatRoomByDoctorQuery(undefined, {
+        useGetChatRoomByDoctorQuery({lastConversationTime: lastChatRoomTime, pageSize: pageSize}, {
             selectFromResult: ({ data, isFetching }) => {
                 return {
                     chatRoomResult: data?.body?.chatRooms as ChatRoom[],
@@ -168,9 +170,12 @@ export default function StaffConservation() {
                 <div className="flex w-full flex-row gap-5">
                     <ChatRooms
                         chatRooms={chatRoomResult}
-                        setChatRoomTransfer={(chatRoomId, userId) =>
-                            setChatRoomTransfer({ chatRoomId, userId })
+                        setLastChatRoomTime={(time: string) =>
+                            setLastChatRoomTime(time)
                         }
+                        refetch={refetch}
+                        isChatRoomFetching={isChatRoomFetching}
+                        setIsLoadingChatRoom={setIsLoadingChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
                         <ChatContent />

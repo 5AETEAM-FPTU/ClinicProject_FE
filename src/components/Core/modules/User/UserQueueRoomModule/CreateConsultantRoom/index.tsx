@@ -26,7 +26,6 @@ export default function CreateConsultantRoom({
             message.success('Gửi yêu cầu thành công!')
             refetch()
         } catch (error) {
-            console.log(error)
             message.error('Gửi yêu cầu thất bại!')
         }
     }

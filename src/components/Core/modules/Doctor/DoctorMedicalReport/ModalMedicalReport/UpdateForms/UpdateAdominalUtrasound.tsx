@@ -1,5 +1,8 @@
 'use client'
-import { useUpdateAdominalUltrasoundReportMutation } from '@/stores/services/report/formService'
+import {
+    useGetAbdominalUltrasoundReportQuery,
+    useUpdateAdominalUltrasoundReportMutation,
+} from '@/stores/services/report/formService'
 import {
     Button,
     Col,
@@ -13,7 +16,7 @@ import {
 } from 'antd'
 import axios from 'axios'
 import { Paperclip } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -33,10 +36,20 @@ export type UpdateAdominalReportType = {
     image: string | null
 }
 
-export default function UpdateAdominalUtrasound({ open, setOpen, serviceOrderedId }: TProps) {
+export default function UpdateAdominalUtrasound({
+    open,
+    setOpen,
+    serviceOrderedId,
+}: TProps) {
     const [myForm] = Form.useForm()
     const [isUploading, setIsUploading] = useState(false)
     const [fileStorage, setFileStorage] = useState<File | null>(null)
+
+    const { report } = useGetAbdominalUltrasoundReportQuery(serviceOrderedId, {
+        selectFromResult: ({ data }) => ({
+            report: (data?.body?.result as any) || {},
+        }),
+    })
     const handleOnChangeSelectFile = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
@@ -85,12 +98,25 @@ export default function UpdateAdominalUtrasound({ open, setOpen, serviceOrderedI
             const response = await updateAdominalUltrasoundReport({
                 payload: updateLoadData,
             }).unwrap()
-            console.log(response)
             message.success('Cập nhật thành công!')
+            setOpen(false)
         } catch (error) {
             message.error('Cập nhật thất bại!')
         }
     }
+    useEffect(() => {
+        myForm.setFieldsValue({
+            liver: report?.liver,
+            gallbladderBiliaryTract: report?.gallbladderBiliaryTract,
+            bladder: report?.bladder,
+            milt: report?.milt,
+            pancreas: report?.pancreas,
+            mucus: report?.mucus,
+            kidney: report?.kidney,
+            other: report?.other,
+            finalConclusion: report?.finalConclusion,
+        })
+    }, [report])
 
     return (
         <Modal
@@ -238,7 +264,8 @@ export default function UpdateAdominalUtrasound({ open, setOpen, serviceOrderedI
                                 src={
                                     fileStorage
                                         ? URL.createObjectURL(fileStorage)
-                                        : 'https://www.contentviewspro.com/wp-content/uploads/2017/07/default_image.png'
+                                        : report?.image ? report?.image
+                                        : 'https://www.contentviewspro.com/wp-content/uploads/2017/07/default_image.png' 
                                 }
                                 className="rounded-lg object-cover"
                             />

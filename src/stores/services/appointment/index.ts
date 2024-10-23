@@ -1,12 +1,12 @@
 'use client'
 
 import { baseApi } from '../base'
-
+import { AppointmentEndpoint } from '@/settings/endpoints'
 export const appointmentApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         updateAppointmentStatus: build.mutation<any, { appointmentId: string, statusId: string }>({
             query: (body) => ({
-                url: 'appointment/update-status',
+                url: AppointmentEndpoint.UPDATE_APPOINTMENT_STATUS,
                 flashError: true,
                 method: 'PATCH',
                 body: {
@@ -15,9 +15,26 @@ export const appointmentApi = baseApi.injectEndpoints({
                 },
             }),
         }),
+        getAllUserFollowUpAppointment: build.query<any, { pageIndex: number, pageSize: number, keyword: string }>({
+            query: (query) => ({
+                url: AppointmentEndpoint.GET_ALL_USER_FOLLOW_UP_APPOINTMENT + `?pageIndex=${query.pageIndex}&pageSize=${query.pageSize}&keyword=${query.keyword}`,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
+        getUserDetailInMedicalReport: build.query<any, { userId: string }>({
+            query: (query) => ({
+                url: AppointmentEndpoint.GET_USER_DETAIL_IN_FOLLOW_UP.replace('{userId}', query.userId),
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
     }),
 })
 
 export const {
-    useUpdateAppointmentStatusMutation
+    useUpdateAppointmentStatusMutation,
+    useGetAllUserFollowUpAppointmentQuery,
+    useLazyGetAllUserFollowUpAppointmentQuery,
+    useGetUserDetailInMedicalReportQuery
 } = appointmentApi

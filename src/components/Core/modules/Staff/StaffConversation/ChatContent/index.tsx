@@ -111,7 +111,6 @@ export default function ChatContent() {
             setIsDeleteConfirmModalVisible(false)
             sendRemovedMessage(_userId, userId!, actionMessageId!)
         } catch (error) {
-            console.log(error)
             message.error('Xóa tin nhắn thất bại!')
             setIsDeleteConfirmModalVisible(false)
         }
@@ -144,7 +143,6 @@ export default function ChatContent() {
                 setIsInitial(true)
             }
         } catch (error) {
-            console.log(error)
         }
     }
     useEffect(() => {

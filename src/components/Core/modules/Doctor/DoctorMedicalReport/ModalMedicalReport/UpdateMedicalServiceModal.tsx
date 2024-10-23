@@ -1,7 +1,7 @@
 'use client'
 import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
 import { Button, Input, message, Modal } from 'antd'
-import { Edit, Search, View } from 'lucide-react'
+import { Edit, Printer, Search, View } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import UpdateAdominalUtrasound from './UpdateForms/UpdateAdominalUtrasound'
 import { useCreateAdominalUltrasoundReportMutation } from '@/stores/services/report/formService'
@@ -10,6 +10,7 @@ import { constants } from '@/settings'
 import { MedicalReportResponseBody } from '../ViewMedialReportModule'
 import { generateReportCode } from '@/utils/generateCode'
 import dayjs from 'dayjs'
+import { useGetAdominalUltrasoundPdfMutation } from '@/stores/services/report/generatePdf'
 type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -47,29 +48,65 @@ export default function UpdateMedicalServiceModal({
 
     const handleCreateForm = (code: string) => {
         if (code.toUpperCase() === 'SAB') {
-            handleCreateAdominalUtrasoundReport()
+            handleUpdateAdominalUtrasoundReport()
         }
     }
-    const [createAdominalUltrasonics] =
+    const handleGeneratePdf = (code: string) => {
+        if (code.toUpperCase() === 'SAB') {
+            handleGetAbdominalUltraSoundReportPdf()
+        }
+    }
+    const [updateAdominalUltrasonics] =
         useCreateAdominalUltrasoundReportMutation()
-    const handleCreateAdominalUtrasoundReport = async () => {
+
+    const handleUpdateAdominalUtrasoundReport = async () => {
         try {
-            await createAdominalUltrasonics({
+            await updateAdominalUltrasonics({
                 serviceOrderedId: serviceOrderId!,
                 diagostic: payload?.medicalReport?.diagnosis,
                 doctorName: webStorageClient.get(constants.USER_FULLNAME),
                 patientName: payload?.patientInfor?.fullName,
                 reportCode: generateReportCode(),
                 treatmentDay: payload?.medicalReport?.date,
-                ages: dayjs().diff(payload?.patientInfor?.dob, 'year').toString(),
+                ages: dayjs()
+                    .diff(payload?.patientInfor?.dob, 'year')
+                    .toString(),
                 gender: payload?.patientInfor?.gender,
                 address: payload?.patientInfor?.address,
             }).unwrap()
             message.success('Tạo báo cáo thành công')
-            setOpenUpdateadominalUtrasound(true);
+            setOpenUpdateadominalUtrasound(true)
         } catch (error) {
             message.error('Tạo báo cáo thất bại')
             return
+        }
+    }
+
+    const [getAbdominalUltrasoundPdfMutation] =
+        useGetAdominalUltrasoundPdfMutation()
+    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
+    const handleGetAbdominalUltraSoundReportPdf = async () => {
+        try {
+            const loadingMessage = message.loading('Đang tiến hành phân tích...', 0)
+            const res = await getAbdominalUltrasoundPdfMutation({
+                serviceOrderedId: serviceOrderId!,  
+            }).unwrap();
+            if (res instanceof Blob) {
+                setPdfBlob(res)
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+            loadingMessage();
+            message.success('Tạo kết quả dịch vụ thành công!')
+        } catch (error) {
+            message.error('Tạo kết quả dịch vụ thất bại')
         }
     }
 
@@ -208,10 +245,21 @@ export default function UpdateMedicalServiceModal({
                                                             )}
                                                         </td>
                                                         <td className="w-[120px] border-b-[1px] border-secondarySupperDarker px-5 py-[14px] text-center text-[14px] font-bold text-secondarySupperDarker">
-                                                            <div className="flex w-full items-center justify-center">
+                                                            <div className="flex w-full items-center justify-center gap-5">
                                                                 <View
                                                                     onClick={() => {
                                                                         handleUpdateForm(
+                                                                            item
+                                                                                ?.service
+                                                                                ?.code,
+                                                                        )
+                                                                    }}
+                                                                    size={20}
+                                                                    className="cursor-pointer transition-all hover:scale-x-110 hover:text-secondaryDark"
+                                                                />
+                                                                <Printer
+                                                                    onClick={() => {
+                                                                        handleGeneratePdf(
                                                                             item
                                                                                 ?.service
                                                                                 ?.code,
@@ -228,7 +276,11 @@ export default function UpdateMedicalServiceModal({
                                                                 setOpen={
                                                                     setOpenUpdateadominalUtrasound
                                                                 }
-                                                                serviceOrderedId={payload?.service?.serviceOrderId!}
+                                                                serviceOrderedId={
+                                                                    payload
+                                                                        ?.service
+                                                                        ?.serviceOrderId!
+                                                                }
                                                             />
                                                         </td>
                                                     </tr>

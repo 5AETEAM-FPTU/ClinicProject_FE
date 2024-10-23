@@ -40,7 +40,6 @@ export const getUserNofitication = query({
             .filter((q) => q.eq(q.field('receiverId'), args.receiverId))
             .order('desc')
             .take(99)
-        console.log('result: ', result)
         return result
     },
 })

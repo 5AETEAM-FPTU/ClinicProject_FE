@@ -1,5 +1,5 @@
 'use client'
-import { Button, Skeleton } from 'antd'
+import { Button, message, Skeleton } from 'antd'
 import { Edit, FileDown, Printer } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
@@ -90,6 +90,7 @@ export default function MainMedicalReportViewInformation({
     const handlePrintMedicalReport = async () => {
         try {
             setIsLoadingPdf(true)
+            const loadingMessage = message.loading("Đang tiến hành phân tích...", 0);
             const servicesList: Services[] = serviceOrder?.items?.map(
                 (item: any, index: number) => ({
                     index: index + 1,
@@ -129,6 +130,7 @@ export default function MainMedicalReportViewInformation({
             }
             console.log(data)
             const res = await generateGeneralMedicalReportPdf(data).unwrap()
+            loadingMessage();
             setIsLoadingPdf(false)
             if (res instanceof Blob) {
                 setPdfBlob(res)

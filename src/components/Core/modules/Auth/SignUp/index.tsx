@@ -53,7 +53,6 @@ export default function SignUpComponent() {
                 prompt: 'select_account',
             })
         } catch (error) {
-            console.log(error)
         }
     }
 

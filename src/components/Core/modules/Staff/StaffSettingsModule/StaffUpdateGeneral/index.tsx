@@ -76,7 +76,6 @@ export default function StaffUpdateGeneral({
             message.success('Cập nhật thành công!')
             refetch && refetch()
         } catch (error) {
-            console.log(error)
             refetch && refetch()
             message.error('Cập nhật thất bại!')
         }

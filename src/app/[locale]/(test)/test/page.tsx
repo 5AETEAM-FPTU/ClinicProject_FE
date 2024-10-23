@@ -5,7 +5,7 @@ import DoctorAppointmentTimeLine from "@/components/Core/modules/Doctor/DoctorAp
 import BookingConfirmation from "@/components/Core/modules/User/BookingModule/ConfirmAppointment"
 import AppointmentBooking from "@/components/Core/modules/User/BookingModule/AppointmentBooking"
 import BookedAppointmentList from "@/components/Core/modules/Doctor/DoctorBookedAppointmentsList"
-import FollowUpAppointment from "@/components/Core/modules/Doctor/DoctorFollowUpAppointment"
+import FollowUpAppointment from "@/components/Core/modules/FollowUpAppointment"
 import StringeeComponent from "@/components/Core/common/CallScreen"
 
 export default function TestComponent() {

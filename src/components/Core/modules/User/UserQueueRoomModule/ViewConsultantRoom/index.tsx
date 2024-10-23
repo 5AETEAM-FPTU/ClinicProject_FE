@@ -29,7 +29,6 @@ export default function ViewConsultantRoom(payload: IProps) {
             payload.refetch()
             
         } catch (error) {
-            console.log(error)
             payload.refetch()
             message.error('Cập nhật thất bại!')
         }
