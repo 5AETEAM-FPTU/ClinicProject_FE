@@ -42,6 +42,7 @@ const doctorEndpoint = {
     GET_MEDICAL_REPORT: '/medical-report/all',
     GET_MEDICAL_REPORT_STAFF: "/medical-report/staff/all",
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
+    GET_ALL_FEEDBACKS: '/doctor/feedbacks/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
     GET_AVAILABLE_DOCTOR: "/doctor/available",
 
