@@ -34,7 +34,7 @@ const doctorEndpoint = {
     PATCH_PRIVATE_INFOR: '/doctor/private-info',
     PATCH_ACHIEVEMENT: '/doctor/achievement',
     PATCH_DESCRIPTION: '/doctor/description',
-
+    GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
     GET_APPOINTMENTS_ON_DAY: '/doctor/appointments',
     GET_CANCEL_APPOINTMENTS: '/appointment/absent',
     GET_CANCLE_APPOINTMENTS_STAFF: '/appointment/staff/absent',
