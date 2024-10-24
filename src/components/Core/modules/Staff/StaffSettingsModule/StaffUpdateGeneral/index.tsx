@@ -10,9 +10,9 @@ import { FormProps } from 'antd/lib'
 import dayjs from 'dayjs'
 import { ChevronDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { StaffProfileTypes } from '../..'
 import { useGetAllGenderQuery, useGetAllPositionQuery, useGetAllSpecicaltiesQuery } from '@/stores/services/enum/enum'
 import { GenderEnumType, MultipleSelectionType, PositionEnumType, SpecialtyEnumType } from '../../../Doctor/DoctorSettingsModule/DoctorUpdateGeneral'
+import { StaffProfileTypes } from '../../StaffProfileModule'
 
 export type StaffSettingProfileComponetProps = {
     isProfileFetching: boolean
