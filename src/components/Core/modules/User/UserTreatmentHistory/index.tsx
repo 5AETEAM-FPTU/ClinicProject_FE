@@ -12,6 +12,7 @@ import { text } from 'stream/consumers'
 export type AppointmentResultingType = {
     // key: React.Key
     id: string
+    title: string
     examinedDate: Date
     diagnosis: string
     doctorInfo: {
@@ -126,8 +127,6 @@ export default function ViewAllTreatment() {
                 },
             },
         )
-
-    console.log(historyTreatments)
 
     useEffect(() => {
         const result: TableAppointmentResultingType[] = historyTreatments.map(

@@ -25,7 +25,8 @@ const userEndpoint = {
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
     CREATE_AN_APPOINTMENT: '/appointment/create',
     CREATE_FEEDBACK: '/user/feedback/create',
-    VIEW_FEEDBACK: '/user/feedback/view'
+    VIEW_FEEDBACK: '/user/feedback/view',
+    GET_DOCTORSTAFF_PROFILE: '/admin/profile/doctor-staff',
 }
 
 const doctorEndpoint = {
@@ -36,12 +37,14 @@ const doctorEndpoint = {
 
     GET_APPOINTMENTS_ON_DAY: '/doctor/appointments',
     GET_CANCEL_APPOINTMENTS: '/appointment/absent',
+    GET_CANCLE_APPOINTMENTS_STAFF: '/appointment/staff/absent',
     UPDATE_DUTY: '/doctor/duty',
-    GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
     GET_MEDICAL_REPORT: '/medical-report/all',
+    GET_MEDICAL_REPORT_STAFF: "/medical-report/staff/all",
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
     GET_AVAILABLE_DOCTOR: "/doctor/available",
+
 }
 
 const scheduleEndpoint = {
