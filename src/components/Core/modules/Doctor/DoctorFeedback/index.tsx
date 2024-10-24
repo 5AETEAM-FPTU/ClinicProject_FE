@@ -5,7 +5,7 @@ import { Star } from 'lucide-react'
 import { useGetAllFeedbacksQuery } from '@/stores/services/doctor/doctorFeedback'
 import { useRouter, useSearchParams } from 'next/navigation'
 import dayjs from 'dayjs'
-import { Pagination, Skeleton } from 'antd'
+import { Avatar, Pagination, Skeleton } from 'antd'
 
 interface IFeedback {
     id: string
@@ -19,10 +19,10 @@ interface IFeedback {
 const ReviewItem = ({ review }: { review: IFeedback }) => (
     <div className="shadow-md hover:shadow-lg mb-4 rounded-[12px] border-b border-gray-200 bg-white p-4 shadow-third transition-shadow duration-200 last:border-b-0">
         <div className="mb-3 flex items-center">
-            <img
+            <Avatar
                 src={review.avatarUrl}
                 alt={review.patientName}
-                className="shadow-sm mr-4 h-14 w-14 rounded-full border-2 border-gray-300"
+                className="shadow-sm mr-4 h-14 w-14 rounded-full border-2 border-gray-300 object-cover"
             />
             <div>
                 <div className="mb-1 flex items-center">
