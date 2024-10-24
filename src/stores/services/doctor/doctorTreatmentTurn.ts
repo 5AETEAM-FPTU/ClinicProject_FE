@@ -44,6 +44,14 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: true },
             }),
             extraOptions: { skipAuth: false },
+    })
+          ,  
+        getAvailableDoctor: build.query<any, void>({
+            query: () => ({
+                url: doctorEndpoint.GET_AVAILABLE_DOCTOR,
+                flashError: true,
+                method: 'GET',
+            }),
         }),
     }),
 })
@@ -52,5 +60,6 @@ export const {
     useGetAppointmentOnDayQuery,
     useLazyGetAllMedicalReportQuery,
     useGetCancelAppointmentQuery,
-    useGetAppointmentOnDayForStaffQuery
+    useGetAppointmentOnDayForStaffQuery,
+    useGetAvailableDoctorQuery
 } = doctorTreatmentTurnApi

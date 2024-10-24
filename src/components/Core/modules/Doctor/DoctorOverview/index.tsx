@@ -185,63 +185,56 @@ const AppointmentComponent = () => {
 }
 
 const ConsultationComponent = () => {
-    const { data, isFetching } = useGetAllQueueRoomsQuery(
-        { pageIndex: 1, pageSize: 2 },
-        {
-            selectFromResult: ({ data, isFetching }) => {
-                return {
-                    data: data?.body.patientQueues?.contents,
-                    isFetching: isFetching,
-                }
-            },
-        },
-    )
-
+    const router = useRouter()
+    const locale = useLocale()
+    const { data, isFetching } = useGetAllQueueRoomsQuery({pageIndex: 1, pageSize: 2}, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                data: data?.body.patientQueues?.contents,
+                isFetching: isFetching
+            }
+        }
+    })
+    
 
     return (
-        <Skeleton loading={isFetching} active>
-            <div className="shadow rounded-lg bg-white p-4 shadow-third">
-                <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
-                    Yêu cầu tư vấn
-                </h2>
-                {data ? (
-                    <List
-                        dataSource={
-                            data.length === 1 ? [data[0], data[0]] : data
+        <Skeleton loading={isFetching} avatar>
+        <div className="shadow rounded-lg bg-white p-4 shadow-third">
+            <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
+                Yêu cầu tư vấn
+            </h2>
+            { data ? (
+            <List
+                dataSource={data.length === 1 ? [data[0], data[0]] : data}
+                renderItem={(item: any) => (
+                    <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
+                    <List.Item.Meta
+                        avatar={
+                            <Avatar
+                                size={50}
+                                src={item.patientAvatar}
+                            />
                         }
-                        renderItem={(item: any) => (
-                            <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
-                                <List.Item.Meta
-                                    avatar={
-                                        <Avatar
-                                            size={50}
-                                            src={item.patientAvatar}
-                                        />
-                                    }
-                                    title={
-                                        <span className="text-[14px] font-bold text-secondarySupperDarker">
-                                            {item.patientName}
-                                        </span>
-                                    }
-                                    description={
-                                        <span className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker">
-                                            {item.message}
-                                        </span>
-                                    }
-                                />
-                                <button className="h-8 w-11 rounded-[8px] bg-[#00B5F1]">
-                                    <MessageCircleReply
-                                        className="mx-auto text-white"
-                                        size={20}
-                                    />
-                                </button>
-                            </List.Item>
-                        )}
+                        title={
+                            <span className="text-[14px] font-bold text-secondarySupperDarker">
+                                {item.patientName}
+                            </span>
+                        }
+                        description={
+                            <span className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html:  item.message }}>
+                            </span>
+                        }
                     />
-                ) : (
-                    <div>Chưa có data</div>
+                    <Button className="h-8 w-11 rounded-[8px] bg-[#00B5F1]" onClick={() => { router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/consultation/pending-room`) }}>
+                        <MessageCircleReply
+                            className="mx-auto text-white"
+                            size={20}
+                        />
+                    </Button>
+                </List.Item>
                 )}
-            </div>
+            />) : <div>Chưa có data</div>}
+        </div>
         </Skeleton>
     )
 }

@@ -41,6 +41,7 @@ const doctorEndpoint = {
     GET_MEDICAL_REPORT: '/medical-report/all',
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
+    GET_AVAILABLE_DOCTOR: "/doctor/available",
 }
 
 const scheduleEndpoint = {
@@ -72,6 +73,7 @@ const chatEndpoint = {
     REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
     GET_ALL_QUEUE_ROOM: '/queue-room/all',
     ADD_CHAT_ROOM: '/chat-room',
+    SWITCH_TO_END_CHAT_ROOM: '/chat-room/switch-to-end/{chatRoomId}',
 }
 
 const geminiEndpoint = {
@@ -84,6 +86,8 @@ const AppointmentEndpoint = {
     GET_ALL_USER_FOLLOW_UP_APPOINTMENT: '/doctor/re-examination/users',
     GET_USER_DETAIL_IN_FOLLOW_UP: '/doctor/user/detail/{userId}',
     GET_ALL_USER_HISTORY_APPOINTMENTS: 'user/medical-report/all',
+    GET_RECENT_ABSENT_APPOINTMENTS: '/appointment/recent-absent',
+    GET_RECENT_PENDING_APPOINTMENTS: '/appointment/recent-pending',
 }
 
 const medicalReportEndpoint = {

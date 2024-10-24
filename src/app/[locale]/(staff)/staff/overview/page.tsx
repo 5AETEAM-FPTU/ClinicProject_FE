@@ -1,11 +1,9 @@
+import StaffOverviewModule from '@/components/Core/modules/Staff/StaffOverviewModule'
 import React from 'react'
 
-function StaffOverview() {
+export default function StaffOverview() {
     return (
-        <div>
-            Xem thông tin overview của staff
-        </div>
+        <StaffOverviewModule />
     )
 }
 
-export default StaffOverview
