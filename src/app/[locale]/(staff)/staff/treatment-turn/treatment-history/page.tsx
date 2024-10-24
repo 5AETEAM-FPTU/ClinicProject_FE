@@ -1,9 +1,10 @@
+import StaffDoctorResultAppointment from '@/components/Core/modules/Staff/StaffTreatmentResults'
 import React from 'react'
 
 function TreatmentHistory() {
     return (
         <div>
-            Kết quả khám
+            <StaffDoctorResultAppointment/>
         </div>
     )
 }

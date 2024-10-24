@@ -146,7 +146,8 @@ export default function Component() {
                                 />
                                 <div>
                                     <h3 className="font-semibold text-secondarySupperDarker">
-                                        Bác sĩ: {appointment.doctorDetails.fullName}
+                                        Bác sĩ:{' '}
+                                        {appointment.doctorDetails.fullName}
                                     </h3>
                                     <p className="text-[12px] text-secondarySupperDarker opacity-80">
                                         {formatDateRange(
@@ -156,7 +157,7 @@ export default function Component() {
                                     </p>
                                 </div>
                                 <Button
-                                    type='primary'
+                                    type="primary"
                                     onClick={() =>
                                         handleUpdateAppointment({
                                             ...appointment.doctorDetails,
@@ -234,13 +235,13 @@ export default function Component() {
                         {doctorsData?.map((doctor: any) => (
                             <div
                                 key={doctor.username}
-                                className="shadow-md shadow-third rounded-lg bg-white p-6"
+                                className="shadow-md rounded-lg bg-white p-6 shadow-third"
                             >
                                 <div className="mb-4 flex items-center">
                                     <Image
                                         src={`${doctor.avatarUrl}`}
                                         alt="Doctor"
-                                        className="w-[64px] h-[64px] mr-4 rounded-[12px] object-cover"
+                                        className="mr-4 h-[64px] w-[64px] rounded-[12px] object-cover"
                                         width={400}
                                         height={400}
                                     />
@@ -267,8 +268,8 @@ export default function Component() {
                                         </p>
                                     </div>
                                 </div>
-                                <p className="mb-4 line-clamp-3 h-[72px] text-base text-secondarySupperDarker">
-                                    {doctor.description}
+                                <p className="mb-4 line-clamp-3 h-[72px] text-base text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: doctor.description }}>
+                                  
                                 </p>
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -276,7 +277,7 @@ export default function Component() {
                                             Đánh giá
                                         </p>
                                         <div className="flex text-[14px] font-semibold text-secondarySupperDarker">
-                                            {doctor.rating}{' '}
+                                            {doctor.rating.toFixed(1)}{' '}
                                             <Star
                                                 fill="#FAFF00"
                                                 className="ml-1 text-[#FAFF00]"

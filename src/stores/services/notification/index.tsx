@@ -1,4 +1,4 @@
-import { notificationEndpoints } from '@/settings/endpoints'
+import { doctorEndpoint, notificationEndpoints } from '@/settings/endpoints'
 import { baseApi } from '../base'
 
 export const notificationApi = baseApi.injectEndpoints({
@@ -20,11 +20,19 @@ export const notificationApi = baseApi.injectEndpoints({
                 flashError: true,
                 method: 'GET',
             }),
+        }),
+        getAllDoctorIds: build.query<any, void>({
+            query: () => ({
+                url: doctorEndpoint.GET_ALL_DOCTOR_IDS,
+                flashError: true,
+                method: 'GET',
+            }),
         })
     }),
 })
 
 export const {
     useCreateFollowUpNotificationMutation,
-    useGetUpcommingFollowUpNotificationQuery
+    useGetUpcommingFollowUpNotificationQuery,
+    useLazyGetAllDoctorIdsQuery
 } = notificationApi

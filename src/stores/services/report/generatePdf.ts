@@ -27,4 +27,4 @@ export const generatePdfApis = formServiceBaseApi.injectEndpoints({
     })
 })
 
-export const {useGetGeneralMedicalReportPdfMutation, useGetAdominalUltrasoundPdfMutation} = generatePdfApis
+export const {useGetGeneralMedicalReportPdfMutation, useGetAdominalUltrasoundPdfMutation, useGetElectrocarDiographyPdfMutation} = generatePdfApis

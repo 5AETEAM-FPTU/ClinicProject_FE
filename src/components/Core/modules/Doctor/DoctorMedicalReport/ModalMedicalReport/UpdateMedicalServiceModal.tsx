@@ -14,7 +14,7 @@ import { constants } from '@/settings'
 import { MedicalReportResponseBody } from '../ViewMedialReportModule'
 import { generateReportCode } from '@/utils/generateCode'
 import dayjs from 'dayjs'
-import { useGetAdominalUltrasoundPdfMutation } from '@/stores/services/report/generatePdf'
+import { useGetAdominalUltrasoundPdfMutation, useGetElectrocarDiographyPdfMutation, useGetGeneralMedicalReportPdfMutation } from '@/stores/services/report/generatePdf'
 import UpdateAdominalUtrasound from './UpdateFormAdominalUltrasound'
 import UpdateElectrocarDiogram from './UpdateFormElectrocarDiogram'
 import { updateSelectedId } from '@/stores/features/auth'
@@ -70,6 +70,8 @@ export default function UpdateMedicalServiceModal({
     const handleGeneratePdf = (code: string) => {
         if (code.toUpperCase() === 'SAB') {
             handleGetAbdominalUltraSoundReportPdf()
+        } else if (code.toUpperCase() === 'DTD') {
+            handleGetElectrocarDiogramReportPdf()
         }
     }
     const [updateAdominalUltrasonics] =
@@ -135,6 +137,33 @@ export default function UpdateMedicalServiceModal({
                 0,
             )
             const res = await getAbdominalUltrasoundPdfMutation({
+                serviceOrderedId: serviceOrderId!,
+            }).unwrap()
+            if (res instanceof Blob) {
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+            loadingMessage()
+            message.success('Tạo kết quả dịch vụ thành công!')
+        } catch (error) {
+            message.error('Tạo kết quả dịch vụ thất bại')
+        }
+    }
+    const [getElectrocarDiogramPdfMutation] = useGetElectrocarDiographyPdfMutation();
+    const handleGetElectrocarDiogramReportPdf = async () => {
+        try {
+            const loadingMessage = message.loading(
+                'Đang tiến hành phân tích...',
+                0,
+            )
+            const res = await getElectrocarDiogramPdfMutation({
                 serviceOrderedId: serviceOrderId!,
             }).unwrap()
             if (res instanceof Blob) {

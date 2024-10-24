@@ -8,6 +8,13 @@ import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useAddQueueRoomMutation } from '@/stores/services/chat/chats'
 import { useAppSelector } from '@/hooks/redux-toolkit'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../../../Auth/SignIn'
+import webStorageClient from '@/utils/webStorageClient'
+import { useMutation } from 'convex/react'
+import { api } from '@convex/_generated/api'
+import { constants } from '@/settings'
+import { useLazyGetAllDoctorIdsQuery } from '@/stores/services/notification'
 
 export default function CreateConsultantRoom({
     refetch,
@@ -18,18 +25,55 @@ export default function CreateConsultantRoom({
     const [addQueueRoomFunc, { isLoading }] = useAddQueueRoomMutation()
     const editorRef = useRef<any>(null)
     const [isEditVisible, setIsEditVisible] = useState<boolean>(false)
+
+    const { user } = useAppSelector((state) => state.auth)
+
+    const userId = jwtDecode<JwtPayloadUpdated>(
+        webStorageClient.getToken()!,
+    ).sub
+    const sendToUserNotification = useMutation(
+        api._user_notifications.functions.sendUserNotification,
+    )
+    const [lazyGetAllDoctorIds] = useLazyGetAllDoctorIdsQuery()
     const onFinish: FormProps<any>['onFinish'] = async (values: any) => {
         try {
             const editorContent = getEditorHtmlContent(editorRef)
             const payload = { title: values.title, message: editorContent }
             await addQueueRoomFunc(payload).unwrap()
+            //notification here
+            const doctorIds = await (await lazyGetAllDoctorIds()).data?.body?.doctors
+            console.log(doctorIds)
+            for (const doctorId of doctorIds) {
+                await handleCreateNotificationToAllDoctorStaff(doctorId?.id);
+            }
             message.success('Gửi yêu cầu thành công!')
             refetch()
         } catch (error) {
             message.error('Gửi yêu cầu thất bại!')
         }
     }
-    const {user} = useAppSelector((state) => state.auth)
+    const handleCreateNotificationToAllDoctorStaff = async (
+        doctorId: string,
+    ) => {
+        try {
+        
+            const domain =
+                process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://localhost:3000'
+            await sendToUserNotification({
+                receiverId: doctorId,
+                message: 'Yêu cầu tư vấn mới',
+                type: constants.NOTIFICATION_TYPES.SUCCESS,
+                description: `Có yêu cầu tư vấn mới từ người dùng ${user?.fullName}, hãy vào phòng chờ và chấp nhận yêu cầu tư vấn này!`,
+                senderAvatarUrl: `${user.avatarUrl}`,
+                senderId: `${userId}`,
+                senderName: 'Người dùng',
+                topic: 'Tư vấn',
+                href: `/`,
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className="mt-4 flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
@@ -40,13 +84,11 @@ export default function CreateConsultantRoom({
                 className="flex w-full flex-col gap-4"
                 onFinish={onFinish}
             >
-                <div className="flex w-full flex-col  sm:flex-row items-start sm:items-center justify-start sm:justify-between">
-                    <div className="flex w-full flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-14">
+                <div className="flex w-full flex-col items-start justify-start sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex w-full flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-14">
                         <div className="flex items-center justify-center gap-4 text-[14px] font-medium text-[#003553]">
                             <Image
-                                src={
-                                    user.avatarUrl!
-                                }
+                                src={user.avatarUrl!}
                                 alt={''}
                                 height={200}
                                 width={200}
@@ -78,7 +120,7 @@ export default function CreateConsultantRoom({
                                 />
                             </Form.Item>
                         ) : (
-                            <div className="rounded-lg w-full sm:w-fit bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                            <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
                                 <p>
                                     Số điện thoại: <span>09483712312</span>
                                 </p>{' '}
@@ -103,7 +145,7 @@ export default function CreateConsultantRoom({
                                 />
                             </Form.Item>
                         ) : (
-                            <div className="rounded-lg w-full sm:w-fit bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                            <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
                                 <p>
                                     Địa chỉ: <span>Hòa hải, TP Đà Nẵng</span>
                                 </p>{' '}

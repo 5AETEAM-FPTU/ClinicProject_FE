@@ -34,6 +34,17 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        getAppointmentOnDayForStaff: build.query<any, { date: string, doctorId: string }>({
+            query: (query) => ({
+                url: doctorEndpoint.GET_APPOINTMENTS_ON_DAY.concat(
+                    `?startDate=${query.date}&doctorId=${query.doctorId}`,
+                ),
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: true },
+            }),
+            extraOptions: { skipAuth: false },
+        }),
     }),
 })
 
@@ -41,4 +52,5 @@ export const {
     useGetAppointmentOnDayQuery,
     useLazyGetAllMedicalReportQuery,
     useGetCancelAppointmentQuery,
+    useGetAppointmentOnDayForStaffQuery
 } = doctorTreatmentTurnApi

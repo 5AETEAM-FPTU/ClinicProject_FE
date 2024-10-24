@@ -40,6 +40,7 @@ const doctorEndpoint = {
     GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
     GET_MEDICAL_REPORT: '/medical-report/all',
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
+    GET_ALL_DOCTOR_IDS: '/doctor/ids',
 }
 
 const scheduleEndpoint = {

@@ -110,7 +110,7 @@ export default function DetailPrescription() {
             },
         )
         setPrescriptionData(result)
-    })
+    }, [medicineOrder])
 
     return (
         <>
@@ -167,7 +167,7 @@ export default function DetailPrescription() {
                         </Card>
                     </div>
                     <div className="gap-4 pt-8">
-                        <Button type="primary" className="py-4 font-bold">
+                        <Button type="primary" className="py-4 font-bold bg-secondaryDark">
                             In đơn thuốc <Printer size={20} />
                         </Button>
                     </div>

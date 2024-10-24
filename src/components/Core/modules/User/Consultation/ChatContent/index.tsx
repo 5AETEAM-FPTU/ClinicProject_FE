@@ -197,7 +197,7 @@ export default function ChatContent() {
             }
         }
     }, [prevScrollTop])
-
+    console.log(prevScrollTop);
     const handleOnTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputMessage(e.target.value)
         sendTypingMessage(_userId, doctorId!)

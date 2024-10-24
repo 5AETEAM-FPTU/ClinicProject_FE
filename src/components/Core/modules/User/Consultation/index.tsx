@@ -132,7 +132,7 @@ export function IncomingCallPopup({
                 </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="to-seco flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 p-4">
+            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-secondaryDark p-4">
                 <audio
                     ref={audioRef}
                     preload="auto"

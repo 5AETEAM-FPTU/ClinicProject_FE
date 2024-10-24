@@ -67,10 +67,6 @@ export const sidebarStaffData: IndividualMenuItemType[] = [
                 key: 'all-patients',
                 lable: 'Tất cả',
             },
-            {
-                key: 'manual-created',
-                lable: 'Tạo thủ công',
-            },
         ],
     },
     {

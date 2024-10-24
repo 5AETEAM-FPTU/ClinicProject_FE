@@ -37,7 +37,7 @@ export default function FollowUpAppointment() {
     const [pageIndex, setPageIndex] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [keyword, setKeyword] = useState('')
-    const [pageSize, setPageSize] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
     const getAllUserDebounce = useCallback(debounce(({ pageIndex, pageSize, keyword }) => {
         getAllUser({ pageIndex, pageSize, keyword });
     }, 1000), [])

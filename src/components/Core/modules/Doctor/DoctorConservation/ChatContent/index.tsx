@@ -199,7 +199,7 @@ export default function ChatContent() {
     useEffect(() => {
         if (prevScrollTop) {
             console.log(prevScrollTop)
-            if (prevScrollTop <= 1) {
+            if (prevScrollTop <= 3) {
                 handleFetchDataWithLastTimeMessage()
             }
         }

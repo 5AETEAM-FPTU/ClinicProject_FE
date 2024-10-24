@@ -44,3 +44,18 @@ body {
   border-radius: 100vw;
   border: 3px solid #f5f3ea;
 }
+
+::selection {
+  background: #0284C7;
+  /* Background color of the selected text */
+  color: #ffffff;
+  /* Text color of the selected text */
+}
+
+/* For Firefox */
+::-moz-selection {
+  background: #0284C7;
+  /* Background color of the selected text */
+  color: #ffffff;
+  /* Text color of the selected text */
+}

@@ -7,7 +7,7 @@ import { useLazyGetStaffGetAllDoctorQuery } from '@/stores/services/staff/staffS
 import Paginate from '@/components/Core/common/Paginate'
 import { debounce } from 'lodash'
 
-export default function AllDoctorPageForTreamentOnDay() {
+export default function AllDoctorPage() {
     const [totalPages, setTotalPages] = useState(0)
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(6)
@@ -49,12 +49,20 @@ export default function AllDoctorPageForTreamentOnDay() {
     const router = useRouter()
 
     // Handle doctor selection and redirect to the calendar setting page
-    const handleChangeDoctorForTreatmentOnDay = (doctor: any) => {
+    const handleChangeDoctorForSetCalendar = (doctor: any) => {
         const specialties = doctor.specialties
-            ?.map((specialty: any) => specialty.specialtyName)
+            .map((specialty: any) => specialty.specialtyName)
             .join(', ')
         router.push(
-            `treatment-onday/${doctor.id}?doctorName=${doctor.fullName}&specialties=${specialties}&isOnDuty=${doctor.isOnDuty}&avatarUrl=${doctor.avatarUrl}`,
+            `set-calendar/${doctor.id}?doctorName=${doctor.fullName}&specialties=${specialties}&isOnDuty=${doctor.isOnDuty}&avatarUrl=${doctor.avatarUrl}`,
+        )
+    }
+    const handleChangeDoctorForAppointment = (doctor: any) => {
+        const specialties = doctor.specialties
+            .map((specialty: any) => specialty.specialtyName)
+            .join(', ')
+        router.push(
+            `treatment-calendar/${doctor.id}?doctorName=${doctor.fullName}&specialties=${specialties}&isOnDuty=${doctor.isOnDuty}&avatarUrl=${doctor.avatarUrl}`,
         )
     }
 
@@ -65,7 +73,7 @@ export default function AllDoctorPageForTreamentOnDay() {
                     Tất cả bác sĩ
                 </h3>
                 <p className="text-[16px] font-semibold text-secondarySupperDarker text-opacity-60">
-                    Chọn bác sĩ để theo dõi các lịch khám trong ngày
+                    Chọn hành động của từng bác sĩ có trong danh sách bác sĩ
                 </p>
                 <Input
                     className="mt-5 w-[224px]"
@@ -93,8 +101,7 @@ export default function AllDoctorPageForTreamentOnDay() {
                 {!isFetching &&
                     doctors?.map((doctor: any) => (
                         <div
-                            key={doctor.id}
-                            onClick={() => handleChangeDoctorForTreatmentOnDay(doctor)}
+                            key={doctor.id} // Thêm key để cải thiện hiệu suất
                             className="relative w-[100%] cursor-pointer flex-row gap-5 rounded-xl bg-white p-5 shadow-third transition-all hover:bg-slate-50"
                         >
                             <div className="flex">
@@ -129,16 +136,42 @@ export default function AllDoctorPageForTreamentOnDay() {
                                     className={`absolute right-5 top-5 h-[12px] w-[12px] rounded-full bg-secondaryDarker ${!doctor.isOnDuty && 'opacity-30'}`}
                                 ></div>
                             </div>
+                            <div className="mt-4 flex flex-row gap-5">
+                                <Button
+                                    type="primary"
+                                    onClick={() => handleChangeDoctorForSetCalendar(doctor)}
+                                    className="float-end h-[33px] bg-[#0284C7] text-white"
+                                    iconPosition="end"
+                                    icon={<CalendarCog size={18} />}
+                                >
+                                    Cài đặt lịch
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    onClick={() => handleChangeDoctorForAppointment(doctor)}
+                                    className="float-end h-[33px] bg-[#0284C7] text-white"
+                                    iconPosition="end"
+                                    icon={<Calendar size={18} />}
+                                >
+                                    Xem lịch khám
+                                </Button>
+                                <Button
+                                    type="primary"
+                                    // onClick={() => handleChangeDoctor(doctor)}
+                                    className="float-end h-[33px] bg-white text-secondarySupperDarker"
+                                    iconPosition="end"
+                                    icon={<View size={18} />}
+                                >
+                                </Button>
+                            </div>
                         </div>
                     ))}
             </div>
-            {totalPages > 1 && (
-                <Paginate
-                    totalPages={totalPages}
-                    page={page}
-                    onPageChange={(page) => setPage(page)}
-                />
-            )}
+            <Paginate
+                totalPages={totalPages}
+                page={page}
+                onPageChange={(page) => setPage(page)}
+            />
         </div>
     )
 }
