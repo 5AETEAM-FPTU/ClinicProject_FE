@@ -99,10 +99,10 @@ export const userAppointments = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false },
             }),
         }),
-        getFeedback: build.query<any, { reportId: string }>({
+        getFeedback: build.query<any, { appointmentId: string }>({
             query: (query) => ({
                 url: userEndpoint.VIEW_FEEDBACK.concat(
-                    `?reportId=${query.reportId}`,
+                    `?appointmentId=${query.appointmentId}`,
                 ),
                 flashError: true,
                 method: 'GET',
