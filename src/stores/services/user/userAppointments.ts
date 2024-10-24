@@ -1,8 +1,7 @@
 'use client'
-import { userEndpoint } from "@/settings/endpoints";
-import { baseApi } from "../base";
-import { UserProfileTypes } from "@/components/Core/modules/User";
-
+import { userEndpoint } from '@/settings/endpoints'
+import { baseApi } from '../base'
+import { UserProfileTypes } from '@/components/Core/modules/User'
 
 export const userAppointments = baseApi.injectEndpoints({
     endpoints: (build) => ({
@@ -10,24 +9,33 @@ export const userAppointments = baseApi.injectEndpoints({
             query: (params) => ({
                 url: userEndpoint.CHANGE_AVATAR,
                 body: {
-                    avatar: params.avatarUrl
+                    avatar: params.avatarUrl,
                 },
                 flashError: true,
                 method: 'PATCH',
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
-        getAllDoctorForBooking: build.query<any, { doctorName?: string, doctorGender?: string, doctorSpecialtyId?: string, pageIndex: number }>({
+        getAllDoctorForBooking: build.query<
+            any,
+            {
+                doctorName?: string
+                doctorGender?: string
+                doctorSpecialtyId?: string
+                pageIndex: number
+            }
+        >({
             query: (params) => ({
-                url: userEndpoint.GET_DOCTORS_FOR_APPOINTMENT + "?" +
+                url:
+                    userEndpoint.GET_DOCTORS_FOR_APPOINTMENT +
+                    '?' +
                     `${params.doctorName ? `doctorName=${params.doctorName}&` : ''}` +
                     `${params.doctorGender ? `doctorGender=${params.doctorGender}&` : ''}` +
                     `${params.doctorSpecialtyId ? `doctorSpecialtyId=${params.doctorSpecialtyId}&` : ''}` +
-                    `pageSize=1&pageIndex=${params.pageIndex}`
-                ,
+                    `pageSize=1&pageIndex=${params.pageIndex}`,
                 flashError: true,
                 method: 'GET',
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
         getBookedAppointments: build.query<any, void>({
@@ -35,19 +43,22 @@ export const userAppointments = baseApi.injectEndpoints({
                 url: userEndpoint.GET_BOOKED_APPOINTMENTS,
                 flashError: true,
                 method: 'GET',
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
-        updateBookedAppointment: build.mutation<any, { appointmentId: string, selectedSlotId: string }>({
+        updateBookedAppointment: build.mutation<
+            any,
+            { appointmentId: string; selectedSlotId: string }
+        >({
             query: (params) => ({
                 url: userEndpoint.UPDATE_BOOKED_APPOINTMENT,
                 body: {
                     appointmentId: params.appointmentId,
-                    selectedSlotId: params.selectedSlotId
+                    selectedSlotId: params.selectedSlotId,
                 },
                 flashError: true,
                 method: 'PATCH',
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
         getAppointmentUpcoming: build.query<any, void>({
@@ -55,10 +66,13 @@ export const userAppointments = baseApi.injectEndpoints({
                 url: userEndpoint.GET_UPCOMING_DATE,
                 flashError: true,
                 method: 'GET',
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
-        createAnAppointment: build.mutation<any, { scheduleId: string, description: string, reExamination: boolean }>({
+        createAnAppointment: build.mutation<
+            any,
+            { scheduleId: string; description: string; reExamination: boolean }
+        >({
             query: (params) => ({
                 url: userEndpoint.CREATE_AN_APPOINTMENT,
                 flashError: true,
@@ -68,10 +82,13 @@ export const userAppointments = baseApi.injectEndpoints({
                     depositPayment: false,
                     examinationDate: new Date().toISOString(),
                 },
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
         }),
-        createFeedback: build.mutation<any, { comment: string, vote: number, appointmentId: string }>({
+        createFeedback: build.mutation<
+            any,
+            { comment: string; vote: number; appointmentId: string }
+        >({
             query: (params) => ({
                 url: userEndpoint.CREATE_FEEDBACK,
                 flashError: true,
@@ -79,18 +96,31 @@ export const userAppointments = baseApi.injectEndpoints({
                 body: {
                     ...params,
                 },
-                extraOptions: { skipAuth: false }
+                extraOptions: { skipAuth: false },
             }),
-        })
-    })
+        }),
+        getFeedback: build.query<any, { appointmentId: string }>({
+            query: (query) => ({
+                url: userEndpoint.VIEW_FEEDBACK.concat(
+                    `?appointmentId=${query.appointmentId}`,
+                ),
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: true },
+            }),
+            extraOptions: { skipAuth: false },
+        }),
+    }),
 })
 
 export const {
     useChangeProfileAvatarMutation,
-    useGetAllDoctorForBookingQuery, useLazyGetAllDoctorForBookingQuery,
+    useGetAllDoctorForBookingQuery,
+    useLazyGetAllDoctorForBookingQuery,
     useGetBookedAppointmentsQuery,
     useUpdateBookedAppointmentMutation,
     useGetAppointmentUpcomingQuery,
     useCreateAnAppointmentMutation,
-    useCreateFeedbackMutation
-} = userAppointments;
+    useCreateFeedbackMutation,
+    useGetFeedbackQuery,
+} = userAppointments

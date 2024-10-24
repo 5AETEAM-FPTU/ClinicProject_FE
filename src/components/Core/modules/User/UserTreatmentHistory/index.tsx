@@ -54,7 +54,9 @@ export default function ViewAllTreatment() {
             dataIndex: 'examinedDate',
             key: 'examinedDate',
             render: (value: any, record: any) => (
-                <p className='text-[#474e58]'>{dayjs(record.examinedDate).format('DD/MM/YYYY')}</p>
+                <p className="text-[#474e58]">
+                    {dayjs(record.examinedDate).format('DD/MM/YYYY')}
+                </p>
             ),
         },
         {
@@ -62,7 +64,12 @@ export default function ViewAllTreatment() {
             dataIndex: 'diagnosis',
             key: 'diagnosis',
             render: (value: any, record: any) => (
-                <p className='text-[#474e58] break-words ' dangerouslySetInnerHTML={{ __html: record.diagnosis || 'Chưa có thông tin' }}></p>
+                <p
+                    className="break-words text-[#474e58]"
+                    dangerouslySetInnerHTML={{
+                        __html: record.diagnosis || 'Chưa có thông tin',
+                    }}
+                ></p>
             ),
         },
         {
@@ -71,7 +78,12 @@ export default function ViewAllTreatment() {
             key: 'fullName',
             render: (value: any, record: any) => (
                 <div className="flex flex-row items-center gap-2 text-[#474e58]">
-                    <Avatar size="large" shape='square' src={record.avatarUrl} className='rounded-xl'></Avatar>{' '}
+                    <Avatar
+                        size="large"
+                        shape="square"
+                        src={record.avatarUrl}
+                        className="rounded-xl"
+                    ></Avatar>{' '}
                     <p>{record.fullName}</p>
                 </div>
             ),
@@ -79,7 +91,18 @@ export default function ViewAllTreatment() {
         {
             title: 'Chi tiết',
             dataIndex: 'detail',
-            render: (value: any, record: any) => <button onClick={() => router.push(`treatment-history/view?reportId=${record.id}`)} className='text-[14px] text-[#474e58] [text-shadow:_0_4px_4px_rgb(1_0_0_/_0.3)]'>Xem hồ sơ</button>,
+            render: (value: any, record: any) => (
+                <button
+                    onClick={() =>
+                        router.push(
+                            `treatment-history/view?reportId=${record.id}`,
+                        )
+                    }
+                    className="text-[14px] text-[#474e58] [text-shadow:_0_4px_4px_rgb(1_0_0_/_0.3)]"
+                >
+                    Xem hồ sơ
+                </button>
+            ),
         },
     ]
 
@@ -153,9 +176,15 @@ export default function ViewAllTreatment() {
                     className="flex w-full flex-row justify-between"
                     layout="horizontal"
                 >
-                    <Form.Item label={<p className='text-[#003A66] pl-1 font-bold text-xl'>Lịch sử khám bệnh</p>}>
+                    <Form.Item
+                        label={
+                            <p className="pl-1 text-xl font-bold text-[#003A66]">
+                                Lịch sử khám bệnh
+                            </p>
+                        }
+                    >
                         <Input
-                            prefix={<Search size={18}/>}
+                            prefix={<Search size={18} />}
                             placeholder="Nhập tên bác sĩ"
                             onChange={(e) =>
                                 changeRoute(

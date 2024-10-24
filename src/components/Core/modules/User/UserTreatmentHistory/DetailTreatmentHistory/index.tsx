@@ -59,6 +59,7 @@ interface PatientInfo {
 
 interface ReportDetail {
     reportId: string
+    appointmentId: string
     date: string
     medicalHistory: string
     generalCondition: string
@@ -111,7 +112,7 @@ export default function DetailTreatmentHistory() {
         createFeedbackFunc({
             comment: editorContent,
             vote: selectedStar,
-            appointmentId: detail.reportId,
+            appointmentId: detail.appointmentId,
         })
             .then(() => {
                 refetch()
@@ -134,9 +135,21 @@ export default function DetailTreatmentHistory() {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     exit={{ opacity: 0 }}
                 >
-                    <div className='pb-4 flex justify-between select-none'>
-                        <h3 className='text-[20px] font-bold text-[#003553]'>Lịch sử khám của bạn</h3>
-                        <Button type='default' className='border-none shadow-third' onClick={() => { router.back() }}> <MoveLeft size={18} />Quay lại</Button>
+                    <div className="flex select-none justify-between pb-4">
+                        <h3 className="text-[20px] font-bold text-[#003553]">
+                            Lịch sử khám của bạn
+                        </h3>
+                        <Button
+                            type="default"
+                            className="border-none shadow-third"
+                            onClick={() => {
+                                router.back()
+                            }}
+                        >
+                            {' '}
+                            <MoveLeft size={18} />
+                            Quay lại
+                        </Button>
                     </div>
                     <Layout className="flex h-fit flex-col gap-2 rounded-lg bg-transparent p-4 shadow-third">
                         {isFetching ? (
@@ -150,7 +163,6 @@ export default function DetailTreatmentHistory() {
                             ))
                         ) : (
                             <>
-
                                 <div>
                                     <p className="py-1 text-xs font-bold text-[#003553]">
                                         Phiếu khám
@@ -226,7 +238,7 @@ export default function DetailTreatmentHistory() {
                                                         )}{' '}
                                                         -{' '}
                                                         {
-                                                            patientInfor?.patientGender
+                                                            dayjs().diff(dayjs(patientInfor?.dob), 'year')
                                                         }{' '}
                                                         tuổi
                                                     </span>
@@ -283,7 +295,9 @@ export default function DetailTreatmentHistory() {
                                                     </td>
                                                     <td className="block w-full border px-4 py-2 lg:table-cell lg:w-auto">
                                                         <div className="inline-block rounded-md bg-white px-2 py-1">
-                                                            {dayjs(detail?.date).format(
+                                                            {dayjs(
+                                                                detail?.date,
+                                                            ).format(
                                                                 'DD/MM/YYYY HH:mm:ss',
                                                             )}
                                                         </div>
@@ -382,11 +396,25 @@ export default function DetailTreatmentHistory() {
                                                 Chỉ định:
                                             </p>
                                             <div className="m-auto mt-2 flex w-full flex-col justify-center px-3">
-                                                <Button className="flex justify-between border-none">
+                                                <Button
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `view/service-indication?serviceOrderId=${detail?.serviceOrderId}&reportId=${detail?.reportId}&doctor=${doctorInfor.doctorName}&date=${dayjs(detail.date).format('DD/MM/YYYY')}`,
+                                                        )
+                                                    }
+                                                    className="flex justify-between border-none"
+                                                >
                                                     <p>Dịch vụ đã khám</p>
                                                     <ChevronsRight />
                                                 </Button>
-                                                <Button className="my-2 flex justify-between border-none">
+                                                <Button
+                                                    className="my-2 flex justify-between border-none"
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `view/prescription?medicineOrderId=${detail?.medicineOrderId}&reportId=${detail?.reportId}&doctor=${doctorInfor.doctorName}&date=${dayjs(detail.date).format('DD/MM/YYYY')}`,
+                                                        )
+                                                    }
+                                                >
                                                     <p>
                                                         Đơn thuốc bác sĩ cung
                                                         cấp
@@ -517,17 +545,18 @@ export default function DetailTreatmentHistory() {
                                             >
                                                 <Star
                                                     size={30}
-                                                    className={`transition-all duration-300 ease-in-out ${hoveredStar >=
-                                                        starIndex ||
+                                                    className={`transition-all duration-300 ease-in-out ${
+                                                        hoveredStar >=
+                                                            starIndex ||
                                                         selectedStar >=
-                                                        starIndex
-                                                        ? 'text-yellow-400'
-                                                        : 'text-gray-400'
-                                                        }`}
+                                                            starIndex
+                                                            ? 'text-yellow-400'
+                                                            : 'text-gray-400'
+                                                    }`}
                                                     fill={
                                                         hoveredStar >=
                                                             starIndex ||
-                                                            selectedStar >=
+                                                        selectedStar >=
                                                             starIndex
                                                             ? 'currentColor'
                                                             : 'none'
@@ -543,7 +572,7 @@ export default function DetailTreatmentHistory() {
                                     layout="vertical"
                                     form={myForm}
                                     className="flex w-full flex-col gap-4"
-                                    onFinish={() => { }}
+                                    onFinish={() => {}}
                                 >
                                     <div className="w-full flex-col gap-5">
                                         <div>
@@ -570,6 +599,7 @@ export default function DetailTreatmentHistory() {
                         <ViewFeedback
                             close={() => setIsModalOpenView(!isModalOpenView)}
                             open={isModalOpenView}
+                            appointmentId={detail?.appointmentId}
                         />
                     </Layout>
                 </motion.div>
