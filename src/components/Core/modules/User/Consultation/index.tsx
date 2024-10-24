@@ -180,6 +180,8 @@ export default function ConsultationComponent() {
             },
         },
     )
+    const [isEndChatRoom, setIsEndChatRoom] = useState<boolean>(false)
+
     const pageSize = 4;
 
     const { chatRoomResult, isChatRoomFetching, refetch } = useGetChatRoomByUserQuery({ lastConversationTime: lastChatRoomTime, pageSize: pageSize }, {
@@ -282,9 +284,10 @@ export default function ConsultationComponent() {
                         refetch={refetch}
                         isChatRoomFetching={isChatRoomFetching}
                         setIsLoadingChatRoom={setIsLoadingChatRoom}
+                        setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-full sm:w-[calc(100%-370px)]">
-                        <ChatContent />
+                        <ChatContent  isEndConversation={isEndChatRoom}/>
                     </div>
                 </div>
             </Layout>

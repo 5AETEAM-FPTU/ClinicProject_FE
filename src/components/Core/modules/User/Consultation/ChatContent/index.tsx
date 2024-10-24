@@ -54,7 +54,7 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatContent() {
+export default function ChatContent({ isEndConversation }: { isEndConversation: boolean }) {
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const doctorId = searchParams.get('user')
@@ -87,9 +87,12 @@ export default function ChatContent() {
     const divRef = useRef<HTMLDivElement | null>(null)
     const [prevScrollTop, setPrevScrollTop] = useState(0)
     const [isInitial, setIsInitial] = useState(false)
-    useEffect(() => {
-        setIsInitial(false)
-    }, [doctorId, chatRoomId])
+    
+    // useEffect(() => {
+    //     setIsInitial(false)
+    // }, [doctorId, chatRoomId])
+
+
 
     const handleDeleteChatContent = async () => {
         try {
@@ -187,7 +190,7 @@ export default function ChatContent() {
                     resultMessages[resultMessages.length - 1]?.time,
                 )
             }
-        } catch (error) {}
+        } catch (error) { }
     }
     useEffect(() => {
         if (prevScrollTop) {
@@ -499,7 +502,7 @@ export default function ChatContent() {
                                             <>
                                                 {message.senderId === _userId &&
                                                     actionMessageId ===
-                                                        message.chatContentId && (
+                                                    message.chatContentId && (
                                                         <Popover
                                                             trigger="click"
                                                             content={
@@ -526,12 +529,11 @@ export default function ChatContent() {
                                                         </Popover>
                                                     )}
                                                 <div
-                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
-                                                        message.senderId ===
-                                                        _userId
+                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${message.senderId ===
+                                                            _userId
                                                             ? 'bg-secondaryDark text-white'
                                                             : 'bg-slate-200 text-secondarySupperDarker'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <p
                                                         dangerouslySetInnerHTML={{
@@ -559,12 +561,11 @@ export default function ChatContent() {
                                                             )}
                                                     </div>
                                                     <span
-                                                        className={`mt-1 block text-xs ${
-                                                            message.senderId ===
-                                                            _userId
+                                                        className={`mt-1 block text-xs ${message.senderId ===
+                                                                _userId
                                                                 ? 'text-white-200 float-right'
                                                                 : 'float-left text-secondarySupperDarker'
-                                                        }`}
+                                                            }`}
                                                     ></span>
                                                 </div>
                                             </>
@@ -588,7 +589,8 @@ export default function ChatContent() {
                                 </motion.div>
                             )}{' '}
                         </div>
-                        <div className="border-t pt-4">
+
+                        {!isEndConversation && <div className="border-t pt-4">
                             <div
                                 className="chat-input-container relative"
                                 style={{
@@ -645,7 +647,7 @@ export default function ChatContent() {
                                     />
                                 )}
                             </div>
-                        </div>
+                        </div>}
                     </div>
                 </div>
             ) : (

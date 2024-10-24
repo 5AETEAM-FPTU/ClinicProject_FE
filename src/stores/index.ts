@@ -8,6 +8,7 @@ import sidebar from './features/sidebar'
 import { authApis } from './services/auth'
 import { geminiApis } from './services/ai/gemini'
 import { formServiceBaseApi as nodeServicerBaseApi } from './services/formServiceBase'
+import chatControl from './features/chatControl'
 export const createStore = (
     option?: ConfigureStoreOptions['preloadedState'] | undefined,
 ) =>
@@ -18,6 +19,7 @@ export const createStore = (
             auth,
             sidebar,
             loading,
+            chatControl,
             [geminiApis.reducerPath]: geminiApis.reducer,
         },
         middleware: (getDefaultMiddleware) =>
