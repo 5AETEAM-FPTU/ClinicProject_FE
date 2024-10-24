@@ -25,7 +25,7 @@ const userEndpoint = {
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
     CREATE_AN_APPOINTMENT: '/appointment/create',
     CREATE_FEEDBACK: '/user/feedback/create',
-    VIEW_FEEDBACK: '/user/feedback/view'
+    VIEW_FEEDBACK: '/user/feedback/view',
 }
 
 const doctorEndpoint = {
@@ -40,6 +40,7 @@ const doctorEndpoint = {
     GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
     GET_MEDICAL_REPORT: '/medical-report/all',
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
+    GET_ALL_FEEDBACKS: '/doctor/feedbacks/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
     GET_AVAILABLE_DOCTOR: "/doctor/available",
 }
