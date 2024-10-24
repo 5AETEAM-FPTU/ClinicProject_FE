@@ -42,7 +42,8 @@ import MessageFileShower from './ImageFileShower'
 import { cn } from '@/lib/utils'
 import { BeatLoader } from 'react-spinners'
 import { motion } from 'framer-motion'
-import { useAppSelector } from '@/hooks/redux-toolkit'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -59,7 +60,7 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatContent({ isEndConversation }: { isEndConversation: boolean }) {
+export default function ChatContent() {
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
@@ -88,12 +89,14 @@ export default function ChatContent({ isEndConversation }: { isEndConversation: 
         useLazyGetChatContentByChatRoomQuery()
     const [deleteMessageIdFunc, { isLoading }] =
         useRemoveChatContentByIdMutation()
-
+    const { isEndConversation } = useAppSelector((state) => state.chatControl)
+    const dispatch = useAppDispatch()
     const [switchEndChatFunc, { isLoading: endChatLoading }] = useSwitchEndChatRoomMutation()
     const handleToEndChat = async () => {
         try {
             await switchEndChatFunc({ chatRoomId: chatRoomId! }).unwrap()
             message.success('Đã kết thúc cuộc trò chuyện thành công!')
+            dispatch(setEndConversation(true))
 
         } catch (error) {
             console.log(error)
@@ -622,7 +625,7 @@ export default function ChatContent({ isEndConversation }: { isEndConversation: 
                                 </motion.div>
                             )}{' '}
                         </div>
-                        {!isEndConversation  &&
+                        {!isEndConversation &&
                             <div className="border-t pt-6">
                                 <div
                                     className="chat-input-container relative"

@@ -593,7 +593,7 @@ export default function ChatContent({ isEndConversation }: { isEndConversation: 
                             )}{' '}
                         </div>
 
-                        {isEndConversation && <div className="border-t pt-4">
+                        {!isEndConversation && <div className="border-t pt-4">
                             <div
                                 className="chat-input-container relative"
                                 style={{

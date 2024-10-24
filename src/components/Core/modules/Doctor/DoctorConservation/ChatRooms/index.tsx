@@ -10,6 +10,7 @@ import createChatService from '@/stores/services/chat/signalService'
 import { set } from 'lodash'
 import dayjs from 'dayjs'
 import { ClockCircleOutlined } from '@ant-design/icons';
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Sider } = Layout
 const { startConnection } =
@@ -38,7 +39,7 @@ export default function ChatRooms({
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
     const observerRef = useRef<IntersectionObserver | null>(null)
     const loadMoreRef = useRef<HTMLDivElement>(null)
-
+    const dispatch = useAppDispatch();
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullName: string, title: string) => {
         route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullName + '&title=' + title)
     }
@@ -66,18 +67,22 @@ export default function ChatRooms({
 
     const handleSelectChatRoom = (user: ChatRoom) => {
         handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
-        setIsEndChatRoom(user.isEndConversation)
+        console.log("isEndConversation-user", user.isEndConversation)
+        dispatch(setEndConversation(user.isEndConversation))
+        // setIsEndChatRoom(user.isEndConversation)
     }
 
+
+
     useEffect(() => {
-        if (chatRoomId && chatRooms?.length > 0) {  
+        if (chatRoomId && chatRooms?.length > 0) {
             const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
             console.log('selectedChatRoom', selectedChatRoom);
             if (selectedChatRoom) {
-                setIsEndChatRoom(selectedChatRoom.isEndConversation);
-            } else {
-                setIsEndChatRoom(false);
+                // setIsEndChatRoom(selectedChatRoom.isEndConversation);
+                dispatch(setEndConversation(selectedChatRoom.isEndConversation));
             }
+
         }
     }, [chatRoomId, chatRooms]);
 
@@ -189,7 +194,7 @@ export default function ChatRooms({
                                                 >
                                                     {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
                                                 </span>
-                                                <Badge count={user.isEndConversation ? <ClockCircleOutlined style={{ color: '#f5222d' }} /> : <ClockCircleOutlined style={{ color: '#52c41a' }} />} />
+                                                <Badge count={user.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity' /> : null} />
                                             </div>
                                         }
                                     />

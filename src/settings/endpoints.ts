@@ -39,6 +39,7 @@ const doctorEndpoint = {
     GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
     GET_MEDICAL_REPORT: "/medical-report/all",
     GET_ALL_DOCTOR: "/doctor/staff/doctor/all",
+    GET_AVAILABLE_DOCTOR: "/doctor/available",
 }
 
 const scheduleEndpoint = {
@@ -83,6 +84,8 @@ const AppointmentEndpoint = {
     GET_ALL_USER_FOLLOW_UP_APPOINTMENT: '/doctor/re-examination/users',
     GET_USER_DETAIL_IN_FOLLOW_UP: '/doctor/user/detail/{userId}',
     GET_ALL_USER_HISTORY_APPOINTMENTS: 'user/medical-report/all',
+    GET_RECENT_ABSENT_APPOINTMENTS: '/appointment/recent-absent',
+    GET_RECENT_PENDING_APPOINTMENTS: '/appointment/recent-pending',
 }
 
 const medicalReportEndpoint = {

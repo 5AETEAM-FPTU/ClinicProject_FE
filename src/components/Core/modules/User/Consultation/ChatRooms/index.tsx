@@ -1,10 +1,11 @@
 'use client'
-import { Avatar, Layout, List, Skeleton, Typography } from 'antd'
+import { Avatar, Badge, Layout, List, Skeleton, Typography } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
 import { useEffect, useRef, useState } from 'react'
 import webStorageClient from '@/utils/webStorageClient'
 import createChatService from '@/stores/services/chat/signalService'
+import { ClockCircleOutlined } from '@ant-design/icons';
 
 const { startConnection } =
     createChatService();
@@ -73,9 +74,9 @@ export default function ChatRooms({
     }, [isChatRoomFetching])
 
 
-    
+
     useEffect(() => {
-        if (chatRoomId && chatRooms?.length > 0) {  
+        if (chatRoomId && chatRooms?.length > 0) {
             const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
             console.log('selectedChatRoom', selectedChatRoom);
             if (selectedChatRoom) {
@@ -86,7 +87,7 @@ export default function ChatRooms({
         }
     }, [chatRoomId, chatRooms]);
 
-    
+
     const handleSelectChatRoom = (user: ChatRoom) => {
         handleChangeRoute(user.chatRoomId, user.doctorId, user.avatar, user.fullName, user.title)
         setIsEndChatRoom(user.isEndConversation)
@@ -176,11 +177,16 @@ export default function ChatRooms({
                                         </span>
                                     }
                                     description={
-                                        <span
-                                            className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
-                                        >
-                                            {doctor.title ? doctor.title.split(':')[0] : 'Không có tiêu đề'}
-                                        </span>
+                                        <div className='flex items-center justify-between'>
+                                            <span
+                                                className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
+                                            >
+                                                {doctor.title ? doctor.title.split(':')[0] : 'Không có tiêu đề'}
+                                            </span>
+                                            <Badge count={doctor.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity' /> : null} />
+
+                                        </div>
+
                                     }
                                 />
                             </List.Item>

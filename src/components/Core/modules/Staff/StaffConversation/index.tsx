@@ -182,7 +182,7 @@ export default function StaffConservation() {
                         setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
-                        <ChatContent isEndConversation={isEndChatRoom}  />
+                        <ChatContent isEndConversation={isEndChatRoom} setIsEndConversation={setIsEndChatRoom} />
                     </div>
                 </div>
             </Layout>

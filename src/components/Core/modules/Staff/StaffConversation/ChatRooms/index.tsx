@@ -8,6 +8,7 @@ import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
 import { set } from 'lodash'
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Sider, Content } = Layout
 const { startConnection } =
@@ -19,14 +20,12 @@ export default function ChatRooms({
     refetch,
     isChatRoomFetching,
     setIsLoadingChatRoom,
-    setIsEndChatRoom
 }: {
     chatRooms: ChatRoom[]
     setLastChatRoomTime: (date: string) => void
     refetch: () => void,
     isChatRoomFetching: boolean
     setIsLoadingChatRoom: any
-    setIsEndChatRoom: any
 }) {
     const route = useRouter()
     const searchParams = useSearchParams();
@@ -36,6 +35,7 @@ export default function ChatRooms({
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
     const observerRef = useRef<IntersectionObserver | null>(null)
     const loadMoreRef = useRef<HTMLDivElement>(null)
+    const dispatch = useAppDispatch()
 
     const handleLoadMore = async () => {
         try {
@@ -57,7 +57,7 @@ export default function ChatRooms({
 
     const handleSelectChatRoom = (user: ChatRoom) => {
         handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
-        setIsEndChatRoom(user.isEndConversation)
+        dispatch(setEndConversation(user.isEndConversation))
     }
 
     useEffect(() => {
@@ -65,10 +65,8 @@ export default function ChatRooms({
             const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
             console.log('selectedChatRoom', selectedChatRoom);
             if (selectedChatRoom) {
-                setIsEndChatRoom(selectedChatRoom.isEndConversation);
-            } else {
-                setIsEndChatRoom(false);
-            }
+                dispatch(setEndConversation(selectedChatRoom.isEndConversation))
+            } 
         }
     }, [chatRoomId, chatRooms]);
 

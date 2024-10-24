@@ -187,7 +187,8 @@ export default function DoctorConservation() {
                         setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
-                        <ChatContent isEndConversation={isEndChatRoom}
+                        <ChatContent isEndConversation1={isEndChatRoom}
+                        setIsEndChatRoom={setIsEndChatRoom}
                         />
                     </div>
                 </div>

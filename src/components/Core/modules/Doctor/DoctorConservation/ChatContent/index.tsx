@@ -42,8 +42,9 @@ import MessageFileShower from './ImageFileShower'
 import { cn } from '@/lib/utils'
 import { BeatLoader } from 'react-spinners'
 import { motion } from 'framer-motion'
-import { useAppSelector } from '@/hooks/redux-toolkit'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
 import { set } from 'lodash'
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Content } = Layout
 const { startConnection, sendMessage, sendTypingMessage, sendRemovedMessage } =
@@ -60,15 +61,16 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatContent({ isEndConversation}: {
-    isEndConversation: boolean}) {
+export default function ChatContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
     const peerAvatar = searchParams.get('peerAvt')
+    const { isEndConversation } = useAppSelector((state) => state.chatControl)
+    const dispatch = useAppDispatch()
 
-    // State, ref, others
+     // State, ref, others
     const [messages, setMessages] = useState<Message[]>([])
     const [inputMessage, setInputMessage] = useState<string>('')
     const [actionMessageId, setActionMessageId] = useState<string | null>(null)
@@ -91,7 +93,6 @@ export default function ChatContent({ isEndConversation}: {
         useLazyGetChatContentByChatRoomQuery()
     const [deleteMessageIdFunc, { isLoading }] =
         useRemoveChatContentByIdMutation()
-
     const divRef = useRef<HTMLDivElement | null>(null)
     const [prevScrollTop, setPrevScrollTop] = useState(0)
     const [isInitial, setIsInitial] = useState(false)
@@ -104,6 +105,7 @@ export default function ChatContent({ isEndConversation}: {
         try {
             await switchEndChatFunc({ chatRoomId: chatRoomId! }).unwrap()
             message.success('Đã kết thúc cuộc trò chuyện thành công!')
+            dispatch(setEndConversation(true))
         } catch (error) {
             console.log(error)
             message.error('Đã xảy ra vui lòng thử lại sau!')
