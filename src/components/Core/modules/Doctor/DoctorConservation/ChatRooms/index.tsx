@@ -194,7 +194,7 @@ export default function ChatRooms({
                                                 >
                                                     {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
                                                 </span>
-                                                <Badge count={user.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity' /> : null} />
+                                                <Badge count={user.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity mb-[2px] mr-2'  /> : null} />
                                             </div>
                                         }
                                     />
