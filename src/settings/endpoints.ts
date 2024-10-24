@@ -70,6 +70,7 @@ const chatEndpoint = {
     REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
     GET_ALL_QUEUE_ROOM: '/queue-room/all',
     ADD_CHAT_ROOM: '/chat-room',
+    SWITCH_TO_END_CHAT_ROOM: '/chat-room/switch-to-end/{chatRoomId}',
 }
 
 const geminiEndpoint = {

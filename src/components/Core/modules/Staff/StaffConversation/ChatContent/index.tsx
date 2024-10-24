@@ -29,6 +29,7 @@ import createChatService from '@/stores/services/chat/signalService'
 import {
     useLazyGetChatContentByChatRoomQuery,
     useRemoveChatContentByIdMutation,
+    useSwitchEndChatRoomMutation,
 } from '@/stores/services/chat/chats'
 import dayjs from 'dayjs'
 import { v4 as uuidv4 } from 'uuid'
@@ -58,7 +59,7 @@ export interface Message {
     isSending: boolean
 }
 
-export default function ChatContent() {
+export default function ChatContent({ isEndConversation }: { isEndConversation: boolean }) {
     const searchParams = useSearchParams()
     const chatRoomId = searchParams.get('chat')
     const userId = searchParams.get('user')
@@ -87,6 +88,18 @@ export default function ChatContent() {
         useLazyGetChatContentByChatRoomQuery()
     const [deleteMessageIdFunc, { isLoading }] =
         useRemoveChatContentByIdMutation()
+
+    const [switchEndChatFunc, { isLoading: endChatLoading }] = useSwitchEndChatRoomMutation()
+    const handleToEndChat = async () => {
+        try {
+            await switchEndChatFunc({ chatRoomId: chatRoomId! }).unwrap()
+            message.success('Đã kết thúc cuộc trò chuyện thành công!')
+
+        } catch (error) {
+            console.log(error)
+            message.error('Đã xảy ra vui lòng thử lại sau!')
+        }
+    }
 
     const divRef = useRef<HTMLDivElement | null>(null)
     const [prevScrollTop, setPrevScrollTop] = useState(0)
@@ -195,7 +208,7 @@ export default function ChatContent() {
                     resultMessages[resultMessages.length - 1]?.time,
                 )
             }
-        } catch (error) {}
+        } catch (error) { }
     }
     useEffect(() => {
         if (prevScrollTop) {
@@ -244,6 +257,8 @@ export default function ChatContent() {
         setInputMessage(e.target.value)
         sendTypingMessage(_userId, userId!)
     }
+
+    console.log("isEndConversation", isEndConversation);
 
     useEffect(() => {
         const initializeConnection = async () => {
@@ -406,7 +421,7 @@ export default function ChatContent() {
         if (fileStorage) {
             setIsUploading(true);
             const filesArray = Array.from(fileStorage);
-            const uploadPromises = filesArray.map((file: File) => 
+            const uploadPromises = filesArray.map((file: File) =>
                 handleUploadAndGetImageUrl(file)
             );
             const results = await Promise.all(uploadPromises);
@@ -439,8 +454,8 @@ export default function ChatContent() {
                                     src={peerAvatar}
                                 />
                                 <div className="ml-3">
-                                    <p className="text-base font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: title!?.split(':')[0]}}>
-                                        
+                                    <p className="text-base font-semibold text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html: title!?.split(':')[0] }}>
+
                                     </p>
                                     <p className="text-[14px] text-secondarySupperDarker">
                                         {peername}
@@ -456,9 +471,11 @@ export default function ChatContent() {
                                 <Popover
                                     trigger={'click'}
                                     content={
-                                        <div  className="flex flex-col gap-2">
-                                            <Button danger type="text">
-                                                Xóa cuộc trò chuyện
+                                        <div className="flex flex-col gap-2">
+                                            <Button
+                                                onClick={handleToEndChat}
+                                                type="text">
+                                                Kết thúc cuộc trò chuyện
                                             </Button>
                                         </div>
                                     }
@@ -522,7 +539,7 @@ export default function ChatContent() {
                                             <>
                                                 {message.senderId === _userId &&
                                                     actionMessageId ===
-                                                        message.chatContentId && (
+                                                    message.chatContentId && (
                                                         <Popover
                                                             trigger="click"
                                                             content={
@@ -549,12 +566,11 @@ export default function ChatContent() {
                                                         </Popover>
                                                     )}
                                                 <div
-                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${
-                                                        message.senderId ===
+                                                    className={`h-fit w-fit max-w-[650px] rounded-lg px-[10px] py-[6px] ${message.senderId ===
                                                         _userId
-                                                            ? 'bg-secondaryDark text-white'
-                                                            : 'bg-slate-200 text-secondarySupperDarker'
-                                                    }`}
+                                                        ? 'bg-secondaryDark text-white'
+                                                        : 'bg-slate-200 text-secondarySupperDarker'
+                                                        }`}
                                                 >
                                                     <p dangerouslySetInnerHTML={{ __html: message.content }}></p>
                                                     <div
@@ -578,12 +594,11 @@ export default function ChatContent() {
                                                             )}
                                                     </div>
                                                     <span
-                                                        className={`mt-1 block text-xs ${
-                                                            message.senderId ===
+                                                        className={`mt-1 block text-xs ${message.senderId ===
                                                             _userId
-                                                                ? 'text-white-200 float-right'
-                                                                : 'float-left text-secondarySupperDarker'
-                                                        }`}
+                                                            ? 'text-white-200 float-right'
+                                                            : 'float-left text-secondarySupperDarker'
+                                                            }`}
                                                     ></span>
                                                 </div>
                                             </>
@@ -607,64 +622,65 @@ export default function ChatContent() {
                                 </motion.div>
                             )}{' '}
                         </div>
-                        <div className="border-t pt-6">
-                            <div
-                                className="chat-input-container relative"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                }}
-                            >
-                                <div>
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        id="image-input"
-                                        accept="image/*, audio/*, video/*, .txt,"
-                                        multiple
-                                        onChange={(event) =>
-                                            handleOnChangeSeleteFile(event)
-                                        }
-                                    />
-                                    <label htmlFor="image-input">
-                                        <div className="rounded-lg bg-slate-200 px-4 py-2">
-                                            <Paperclip
-                                                size={18}
-                                                className="cursor-pointer text-secondarySupperDarker"
-                                            />
-                                        </div>
-                                    </label>
-                                </div>
-                                <Input
-                                    placeholder="Nhập tin nhắn"
-                                    value={inputMessage}
-                                    onChange={(e) => handleOnTyping(e)}
-                                    onPressEnter={handleSendMessage}
-                                    style={{ flex: 1 }} // Chiếm hết không gian còn lại
-                                />
-
-                                <Button
-                                    className="bg-secondaryDarker font-bold"
-                                    iconPosition="start"
-                                    type="primary"
-                                    icon={<Send className="h-4 w-4" />}
-                                    onClick={handleSendMessage}
-                                    loading={isUpdateImageToCloud}
+                        {!isEndConversation  &&
+                            <div className="border-t pt-6">
+                                <div
+                                    className="chat-input-container relative"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
                                 >
-                                    Gửi
-                                </Button>
-                                {fileStorage && (
-                                    <MessageFileShower
-                                        fileStorage={fileStorage!}
-                                        setFileStorage={setFileStorage}
-                                        removeItemFromStorage={
-                                            removeItemFromStorage
-                                        }
+                                    <div>
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            id="image-input"
+                                            accept="image/*, audio/*, video/*, .txt,"
+                                            multiple
+                                            onChange={(event) =>
+                                                handleOnChangeSeleteFile(event)
+                                            }
+                                        />
+                                        <label htmlFor="image-input">
+                                            <div className="rounded-lg bg-slate-200 px-4 py-2">
+                                                <Paperclip
+                                                    size={18}
+                                                    className="cursor-pointer text-secondarySupperDarker"
+                                                />
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <Input
+                                        placeholder="Nhập tin nhắn"
+                                        value={inputMessage}
+                                        onChange={(e) => handleOnTyping(e)}
+                                        onPressEnter={handleSendMessage}
+                                        style={{ flex: 1 }} // Chiếm hết không gian còn lại
                                     />
-                                )}
-                            </div>
-                        </div>
+
+                                    <Button
+                                        className="bg-secondaryDarker font-bold"
+                                        iconPosition="start"
+                                        type="primary"
+                                        icon={<Send className="h-4 w-4" />}
+                                        onClick={handleSendMessage}
+                                        loading={isUpdateImageToCloud}
+                                    >
+                                        Gửi
+                                    </Button>
+                                    {fileStorage && (
+                                        <MessageFileShower
+                                            fileStorage={fileStorage!}
+                                            setFileStorage={setFileStorage}
+                                            removeItemFromStorage={
+                                                removeItemFromStorage
+                                            }
+                                        />
+                                    )}
+                                </div>
+                            </div>}
                     </div>
                     <Modal
                         title="Bạn có muốn xóa tin nhắn này không?"

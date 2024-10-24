@@ -175,9 +175,8 @@ const ConsultationComponent = () => {
     })
     
 
-    console.log("haha", data);
-
     return (
+        <Skeleton loading={isFetching} avatar>
         <div className="shadow rounded-lg bg-white p-4 shadow-third">
             <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
                 Yêu cầu tư vấn
@@ -215,6 +214,7 @@ const ConsultationComponent = () => {
                 )}
             />) : <div>Chưa có data</div>}
         </div>
+        </Skeleton>
     )
 }
 

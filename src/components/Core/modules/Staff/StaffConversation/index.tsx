@@ -64,6 +64,9 @@ export default function StaffConservation() {
     const [lastChatRoomTime, setLastChatRoomTime] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
     const [isLoadingChatRoom, setIsLoadingChatRoom] = useState<boolean>(false)
     let pageSize = 10
+    const [isEndChatRoom, setIsEndChatRoom] = useState<boolean>(false)
+
+
     const { doctorInformationResult, isFetching } = useGetDoctorProfileQuery(
         undefined,
         {
@@ -176,9 +179,10 @@ export default function StaffConservation() {
                         refetch={refetch}
                         isChatRoomFetching={isChatRoomFetching}
                         setIsLoadingChatRoom={setIsLoadingChatRoom}
+                        setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
-                        <ChatContent />
+                        <ChatContent isEndConversation={isEndChatRoom}  />
                     </div>
                 </div>
             </Layout>
