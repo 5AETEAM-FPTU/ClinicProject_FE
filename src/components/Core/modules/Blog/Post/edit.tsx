@@ -19,12 +19,13 @@ import EditorTinymce, {
 } from '@/components/Core/common/EditorTinymce'
 import axios from 'axios'
 import {
-    useCreatePostMutation,
     useGetAllActiveCategoriesQuery,
     useGetPostByIdQuery,
     useUpdatePostMutation,
 } from '@/stores/services/blog/blog'
 import { motion } from 'framer-motion'
+import useEditor from '@/hooks/useEditor'
+import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 
 const { Option } = Select
 type TagRender = SelectProps['tagRender']
@@ -33,13 +34,12 @@ export default function BlogPostEditing({ id }: { id: string }) {
     const [imageUrl, setImageUrl] = useState('')
     const [loading, setLoading] = useState(false)
     const [post, setPost] = useState<any>(null)
-    const editorRef = React.useRef<any>(null)
+    const { content, setContent, TinyMCEComponent } = useEditor('Hello World!');
     const [form] = Form.useForm()
     const { data: postResult, isFetching, refetch } = useGetPostByIdQuery(id)
     const [updatePost, { isLoading: isUpdateLoading }] = useUpdatePostMutation()
     const { data: categoriesResult } = useGetAllActiveCategoriesQuery()
     const [categories, setCategories] = useState<any>([])
-    const [content, setContent] = useState('')
     useEffect(() => {
         if (categoriesResult?.body?.result) {
             setCategories(categoriesResult?.body?.result)
@@ -53,16 +53,6 @@ export default function BlogPostEditing({ id }: { id: string }) {
             form.setFieldsValue(postResult?.body?.result)
             setImageUrl(postResult?.body?.result?.image)
             setContent(postResult?.body?.result?.content)
-            try {
-                if (editorRef.current) {
-                    setEditorContent(
-                        editorRef,
-                        postResult?.body?.result?.content,
-                    )
-                }
-            } catch (error) {
-                console.log('Error:', error)
-            }
         }
     }, [postResult])
 
@@ -107,14 +97,14 @@ export default function BlogPostEditing({ id }: { id: string }) {
         if (!imageUrl) {
             message.error('Vui lòng tải ảnh thumbnail')
             return
-        } else if (!editorRef.current.getContent()) {
+        } else if (!content) {
             message.error('Vui lòng nhập nội dung bài viết')
             return
         }
         const values = form.getFieldsValue()
         console.log('Form values:', {
             ...{
-                content: editorRef.current.getContent(),
+                content: content,
                 image: imageUrl,
                 _id: post._id,
             },
@@ -123,7 +113,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
         try {
             await updatePost({
                 ...{
-                    content: editorRef.current.getContent(),
+                    content: content,
                     image: imageUrl,
                     id: post._id,
                 },
@@ -136,15 +126,6 @@ export default function BlogPostEditing({ id }: { id: string }) {
             message.error('Có lỗi xảy ra khi tạo bài viết')
             return
         }
-    }
-
-    const modules = {
-        toolbar: [
-            [{ header: [1, 2, 3, false] }],
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'image', 'code-block'],
-        ],
     }
 
     return (
@@ -349,13 +330,9 @@ export default function BlogPostEditing({ id }: { id: string }) {
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">
-                            Content
+                            Nội dung
                         </label>
-                        <EditorTinymce
-                            onChange={(value) => setContent(value)}
-                            content={content}
-                            editorRef={editorRef}
-                        />
+                        <TinyMCEEditor content={content} setContent={setContent} />
                     </div>
 
                     <Form.Item name="meta_title">
