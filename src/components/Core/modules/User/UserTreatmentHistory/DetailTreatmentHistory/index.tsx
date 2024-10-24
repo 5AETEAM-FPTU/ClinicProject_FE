@@ -26,6 +26,10 @@ import { useCreateFeedbackMutation } from '@/stores/services/user/userAppointmen
 import NotFound from '@/components/Core/common/NotFound'
 import ViewFeedback from '../ViewFeedback'
 import { useRouter } from 'next-nprogress-bar'
+import { useGetGeneralMedicalReportPdfMutation } from '@/stores/services/report/generatePdf'
+import { generateReportCode } from '@/utils/generateCode'
+import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
+import { useGetMedicineOrderByIdQuery } from '@/stores/services/report/medicineOrder'
 
 interface DoctorSpecialty {
     specialtyId: string
@@ -72,6 +76,40 @@ interface ReportDetail {
     serviceOrderId: string
     medicineOrderId: string
     hasFeedback: boolean
+}
+
+type Services = {
+    index: number
+    code: string
+    name: string
+    price: string
+}
+type Medicines = {
+    index: number
+    name: string
+    quantity: string
+    usage: string
+}
+type GenderalMedicalReport = {
+    reportCode: string
+    patientName: string
+    age: string
+    gender: string
+    patientAddress: string
+    historyOfIllness: string
+    overallStatus: string
+    height: string
+    pulse: string
+    temperature: string
+    bloodPressure: string
+    weight: string
+    services: Services[]
+    medicines: Medicines[]
+    finalConsultation: string
+    year: string
+    day: string
+    month: string
+    doctorName: string
 }
 
 export default function DetailTreatmentHistory() {
@@ -122,6 +160,90 @@ export default function DetailTreatmentHistory() {
             .catch(() => {
                 message.error('Phản hồi thất bại!')
             })
+    }
+    const { serviceOrder } = useGetServiceOrderDetailQuery(
+        detail.serviceOrderId!,
+        {
+            skip: !detail.serviceOrderId,
+            selectFromResult: ({ data }) => ({
+                serviceOrder: data?.body?.serviceOrder,
+            }),
+        },
+    )
+    const { medicineOrder } = useGetMedicineOrderByIdQuery(
+        detail.medicineOrderId!,
+        {
+            skip: !detail.medicineOrderId,
+            selectFromResult: ({ data }) => ({
+                medicineOrder: data?.body?.medicineOrder ?? {},
+            }),
+        },
+    )
+
+    const [generateGeneralMedicalReportPdf] =
+        useGetGeneralMedicalReportPdfMutation()
+    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
+    const [isLoadingPdf, setIsLoadingPdf] = useState(false)
+    const handlePrintMedicalReport = async () => {
+        try {
+            setIsLoadingPdf(true)
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo phiếu khám...',
+                0,
+            )
+            const servicesList: Services[] = serviceOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    code: item.service.code,
+                    name: item.service.name,
+                    price: item.priceAtOrder,
+                }),
+            )
+            const medicineList: Medicines[] = medicineOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    name: item.medicine.name,
+                    quantity: item.quantity,
+                    usage: item.description,
+                }),
+            )
+            const data: GenderalMedicalReport = {
+                reportCode: generateReportCode(),
+                patientName: patientInfor?.patientName!,
+                age: dayjs().diff(patientInfor?.dob!, 'years').toString(),
+                gender: patientInfor?.patientGender,
+                patientAddress: patientInfor?.address!,
+                historyOfIllness: detail?.medicalHistory,
+                overallStatus: detail?.generalCondition!,
+                bloodPressure: detail?.bloodPressure!,
+                height: detail?.height!,
+                pulse: detail?.pulse!,
+                temperature: detail?.temperature!,
+                weight: detail?.weight!,
+                services: servicesList ?? [],
+                medicines: medicineList ?? [],
+                finalConsultation: detail?.diagnosis!,
+                year: dayjs().format('YYYY'),
+                day: dayjs().format('DD'),
+                month: dayjs().format('MM'),
+                doctorName: doctorInfor?.doctorName!,
+            }
+            const res = await generateGeneralMedicalReportPdf(data).unwrap()
+            loadingMessage()
+            setIsLoadingPdf(false)
+            if (res instanceof Blob) {
+                setPdfBlob(res)
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+        } catch (error) {}
     }
 
     return (
@@ -237,9 +359,12 @@ export default function DetailTreatmentHistory() {
                                                             'DD/MM/YYYY',
                                                         )}{' '}
                                                         -{' '}
-                                                        {
-                                                            dayjs().diff(dayjs(patientInfor?.dob), 'year')
-                                                        }{' '}
+                                                        {dayjs().diff(
+                                                            dayjs(
+                                                                patientInfor?.dob,
+                                                            ),
+                                                            'year',
+                                                        )}{' '}
                                                         tuổi
                                                     </span>
                                                 </p>
@@ -425,10 +550,13 @@ export default function DetailTreatmentHistory() {
                                         </div>
                                         <div className="flex gap-4 pt-8">
                                             <Button
+                                                loading={isLoadingPdf}
                                                 type="primary"
-                                                className="py-4 font-bold"
+                                                className="bg-secondaryDark py-4 font-bold"
+                                                onClick={() => handlePrintMedicalReport()}
                                             >
-                                                In toàn bộ <Printer size={20} />
+                                                In phiếu khám{' '}
+                                                <Printer size={20} />
                                             </Button>
                                             {!detail?.hasFeedback ? (
                                                 <Button

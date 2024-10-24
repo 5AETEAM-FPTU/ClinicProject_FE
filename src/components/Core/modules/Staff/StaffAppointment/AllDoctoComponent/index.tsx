@@ -25,7 +25,6 @@ export default function AllDoctorComponent() {
             try {
                 if (getDoctors) getDoctors({ pageSize, pageIndex: page, keyWord })
             } catch (error) {
-                console.log(error)
             }
         }, 1000), []
     );
@@ -65,7 +64,7 @@ export default function AllDoctorComponent() {
                     Tất cả bác sĩ
                 </h3>
                 <p className="text-[16px] font-semibold text-secondarySupperDarker text-opacity-60">
-                    Chọn bác sĩ để lên lịch khám cho bác sĩ
+                    Chọn bác sĩ để xem các lịch khám đã đặt
                 </p>
                 <Input
                     className="mt-5 w-[224px]"
@@ -108,6 +107,7 @@ export default function AllDoctorComponent() {
                         </div>
                         <div className='mt-4'>
                             <Button
+                                type='primary'
                                 onClick={() => handleChangeDoctor(doctor)}
                                 className='float-end h-[33px] bg-[#0284C7] text-white'
                                 iconPosition='end'
@@ -119,7 +119,9 @@ export default function AllDoctorComponent() {
                     </div>
                 ))}
             </div>
-            <Paginate totalPages={totalPages} page={page} onPageChange={(page) => setPage(page)} />
+            {
+                totalPages > 1 && <Paginate totalPages={totalPages} page={page} onPageChange={(page) => setPage(page)} />
+            }
         </div>
     )
 }

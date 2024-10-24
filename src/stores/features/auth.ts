@@ -11,6 +11,11 @@ export interface IUserInfo {
 }
 export interface IAuth {
     user: IUserInfo
+    storage: IStorage
+}
+export interface IStorage {
+    fileStorage: File | null
+    selectedId: string
 }
 const initialState: IAuth = {
     user: {
@@ -19,6 +24,11 @@ const initialState: IAuth = {
         fullName: null,
         role: null,
     },
+    storage: {
+        fileStorage: null,
+        selectedId: '',
+    }
+    
 }
 const slice = createSlice({
     name: 'auth',
@@ -32,6 +42,12 @@ const slice = createSlice({
         },
         updateUserFullName: (state, action) => {
             state.user.fullName = action.payload
+        },
+        updateStorage: (state, action) => {
+            state.storage.fileStorage = action.payload
+        },
+        updateSelectedId: (state, action) => {
+            state.storage.selectedId = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -123,7 +139,9 @@ const slice = createSlice({
 export const {
     updateUserInfo,
     updateUserAvatar,
-    updateUserFullName
+    updateUserFullName,
+    updateStorage,
+    updateSelectedId
 } = slice.actions
 
 export default slice.reducer

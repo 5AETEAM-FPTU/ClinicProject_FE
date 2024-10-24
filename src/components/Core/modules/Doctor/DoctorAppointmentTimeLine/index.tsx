@@ -95,11 +95,6 @@ function renderEventContent(eventInfo: any) {
                                 <strong>Tuổi: </strong>{age}
                             </p>
                         </div>
-                        <div className='self-start'>
-                            <button className='bg-[#00B5F1] h-[32px] w-[36px] rounded-[8px]'>
-                                <MessageCircleReply className="w-6 h-6 text-white mx-auto" />
-                            </button>
-                        </div>
                     </div>
                     <div className="text-base text-secondarySupperDarker mt-2">
                         <strong>Thời gian: </strong>{eventInfo.timeText}

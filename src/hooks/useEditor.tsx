@@ -46,6 +46,7 @@ const useEditor = (initContent: string) => {
                 windowAny.tinymce.init({
                     selector: `textarea#elm1`,
                     height: 300,
+                    statusbar: false,
                     plugins: [
                         'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
                         'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',

@@ -1,10 +1,11 @@
+import AllDoctorPage from '@/components/Core/modules/Staff/AllDoctor'
 import AllDoctorComponent from '@/components/Core/modules/Staff/DoctorUpdateSchedules/AllDoctorComponent'
 import React from 'react'
 
 function AllDoctor() {
     return (
         <div>
-            Tất cả bác sĩ
+           <AllDoctorPage/>
         </div>
     )
 }

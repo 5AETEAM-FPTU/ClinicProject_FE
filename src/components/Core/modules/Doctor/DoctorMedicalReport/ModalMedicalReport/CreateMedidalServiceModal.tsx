@@ -72,9 +72,10 @@ export default function CreateMedicalServiceModal({
         setServiceOrder([...serviceOrder, item])
     }
     const handleDeleteOrderItem = (item: any) => {
+        console.log(item);
         setServiceOrder(serviceOrder.filter((i: any) => i.id !== item.id))
     }
-    const [addServiceOrder] = useAddServiceOrderMutation()
+    const [addServiceOrder, { isLoading }] = useAddServiceOrderMutation()
     const handleUpdateOrderService = async () => {
         try {
             await addServiceOrder({
@@ -109,6 +110,7 @@ export default function CreateMedicalServiceModal({
                     Hủy bỏ
                 </Button>,
                 <Button
+                    loading={isLoading}
                     className="bg-secondaryDark"
                     key="submit"
                     type="primary"
@@ -280,7 +282,7 @@ export default function CreateMedicalServiceModal({
                                                             </div>
                                                         </td>
                                                         <td className="border-b-[1px] border-secondarySupperDarker">
-                                                            <div className='text-center py-2'>
+                                                            <div className="py-2 text-center">
                                                                 <Button
                                                                     type="primary"
                                                                     className="bg-secondaryDark"

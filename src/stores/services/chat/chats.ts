@@ -104,6 +104,13 @@ export const chats = baseApi.injectEndpoints({
                 method: 'POST',
             }),
         }),
+        switchEndChatRoom: build.mutation<any, { chatRoomId: string }>({
+            query: ({ chatRoomId }) => ({
+                url: chatEndpoint.SWITCH_TO_END_CHAT_ROOM.replace('{chatRoomId}', chatRoomId),
+                flashError: true,
+                method: 'DELETE',
+            }),
+        }),
     }),
 })
 
@@ -117,5 +124,6 @@ export const {
     useGetChatRoomByDoctorQuery,
     useLazyGetAllQueueRoomsQuery,
     useGetAllQueueRoomsQuery,
-    useAddChatRoomMutation
+    useAddChatRoomMutation,
+    useSwitchEndChatRoomMutation
 } = chats

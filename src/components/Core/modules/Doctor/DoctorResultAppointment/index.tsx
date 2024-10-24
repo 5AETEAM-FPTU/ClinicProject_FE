@@ -51,11 +51,11 @@ export default function DoctorResultAppointment() {
         })
 
         let groupedReports: DayMedicalReports[] =
-            result.data.body.groupedReports
+            result?.data?.body?.groupedReports
 
-        prevLength.current = groupedReports.length
+        prevLength.current = groupedReports?.length
 
-        if (groupedReports.length > 0) {
+        if (groupedReports?.length > 0) {
             setAllReports((prevReports) => [...prevReports, ...groupedReports])
             setLastReportDate(
                 groupedReports[groupedReports.length - 1].dayOfDate,

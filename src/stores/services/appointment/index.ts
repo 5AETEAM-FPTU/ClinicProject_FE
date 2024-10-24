@@ -1,5 +1,6 @@
 'use client'
 
+import { get } from 'lodash'
 import { baseApi } from '../base'
 import { AppointmentEndpoint } from '@/settings/endpoints'
 export const appointmentApi = baseApi.injectEndpoints({
@@ -29,6 +30,20 @@ export const appointmentApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        getRecentAbsentAppointment: build.query<any, void>({
+            query: () => ({
+                url: AppointmentEndpoint.GET_RECENT_ABSENT_APPOINTMENTS,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
+        getRecentPendingAppointment: build.query<any, void>({
+            query: () => ({
+                url: AppointmentEndpoint.GET_RECENT_PENDING_APPOINTMENTS,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
     }),
 })
 
@@ -36,5 +51,7 @@ export const {
     useUpdateAppointmentStatusMutation,
     useGetAllUserFollowUpAppointmentQuery,
     useLazyGetAllUserFollowUpAppointmentQuery,
-    useGetUserDetailInMedicalReportQuery
+    useGetUserDetailInMedicalReportQuery,
+    useGetRecentAbsentAppointmentQuery,
+    useGetRecentPendingAppointmentQuery,
 } = appointmentApi

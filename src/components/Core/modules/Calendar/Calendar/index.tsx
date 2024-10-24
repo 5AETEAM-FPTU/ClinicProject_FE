@@ -176,7 +176,6 @@ export default function Component() {
                 setSelectedSlot(null);
                 await getScheduleByDateQuery({ date: `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`, doctorId: "1a6c3e77-4097-40e2-b447-f00d1f82cf72" });
             } catch (error) {
-                console.log(error);
             }
         }
     }

@@ -1,15 +1,12 @@
 'use client'
 import { useTrigger } from '@/hooks/useTrigger'
-import { Divider } from 'antd'
-import { ChevronsDown } from 'lucide-react'
-import React from 'react'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import dayjs from 'dayjs'
 import { getTimeAgo } from '@/utils/time'
-import { useMutation } from 'convex/react'
 import { api } from '@convex/_generated/api'
 import { Id } from '@convex/_generated/dataModel'
+import { useMutation } from 'convex/react'
+import { motion } from 'framer-motion'
+import { ChevronsDown } from 'lucide-react'
 
 export type UserNofiticationPayload = {
     _id: string
@@ -59,7 +56,6 @@ function NotificationItem({ item }: { item: UserNofiticationPayload }) {
                 id: item._id as Id<'user_notifications'>,
             })
         } catch (error) {
-            // console.log(error)
         }
     }
     return (

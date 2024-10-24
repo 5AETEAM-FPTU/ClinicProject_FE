@@ -1,9 +1,6 @@
-import React from 'react'
 import LandingLayout from '@/components/Layouts/LandingLayout'
 import { Metadata } from 'next'
-import { getCookies } from 'cookies-next'
-import { cookieName } from '@/app/i18n/settings'
-import { cookies } from 'next/headers'
+import React from 'react'
 
 type Language = 'en' | 'vi'
 

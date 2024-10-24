@@ -1,19 +1,19 @@
 "use client"
-import React, { useCallback, useEffect, useState } from 'react'
-import { Input, Avatar, Card, Button, Tooltip, Skeleton } from 'antd'
+import Paginate from '@/components/Core/common/Paginate'
+import { useLazyGetStaffGetAllDoctorQuery } from '@/stores/services/staff/staffSettings'
+import { Avatar, Button, Input, Skeleton } from 'antd'
+import { debounce } from 'lodash'
 import {
-    Calendar,
+    CalendarCog,
     ScanSearch
 } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
-import { useLazyGetStaffGetAllDoctorQuery } from '@/stores/services/staff/staffSettings'
-import Paginate from '@/components/Core/common/Paginate'
-import { debounce } from 'lodash'
+import { useCallback, useEffect, useState } from 'react'
 
 export default function AllDoctorComponent() {
     const [totalPages, setTotalPages] = useState(0)
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(1)
+    const [pageSize, setPageSize] = useState(6)
     const [keyWord, setKeyWord] = useState('')
     const [doctors, setDoctors] = useState([])
 
@@ -25,7 +25,6 @@ export default function AllDoctorComponent() {
             try {
                 if (getDoctors) getDoctors({ pageSize, pageIndex: page, keyWord })
             } catch (error) {
-                console.log(error)
             }
         }, 1000), []
     );
@@ -108,18 +107,23 @@ export default function AllDoctorComponent() {
                         </div>
                         <div className='mt-4'>
                             <Button
+                                type='primary'
                                 onClick={() => handleChangeDoctor(doctor)}
                                 className='float-end h-[33px] bg-[#0284C7] text-white'
                                 iconPosition='end'
-                                icon={<Calendar size={18} />}
+                                icon={<CalendarCog size={18} />}
                             >
-                                Xem lịch đã đặt
+                                Cập nhật lịch
                             </Button>
                         </div>
                     </div>
                 ))}
             </div>
-            <Paginate totalPages={totalPages} page={page} onPageChange={(page) => setPage(page)} />
+            {
+                totalPages > 1 && (
+                    <Paginate totalPages={totalPages} page={page} onPageChange={(page) => setPage(page)} />
+                )
+            }
         </div>
     )
 }

@@ -14,7 +14,7 @@ import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import { StaffProfileTypes } from '../..'
+import { StaffProfileTypes } from '../../StaffProfileModule'
 
 type StaffUpdateProfileProps = {
     isProfileFetching: boolean

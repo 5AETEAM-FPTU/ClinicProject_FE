@@ -31,8 +31,8 @@ import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
 
-const { Header, Content } = Layout
-const { Title, Text, Paragraph } = Typography
+const { Content } = Layout
+const { Text } = Typography
 
 const appointments = [
     { name: 'Mai Sương', time: '7:00 - 8:00 29/9/2024', price: '200.000 VND' },
@@ -65,7 +65,6 @@ export default function DoctorProfileModule() {
         },
     )
 
-    console.log(result)
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}

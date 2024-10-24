@@ -58,7 +58,7 @@ export default function ViewFeedback({ open, close, appointmentId }: IProps) {
                             width={200}
                             src={doctor.avatarUrl}
                             alt=""
-                            className="h-[100px] w-[100px] rounded-xl"
+                            className="h-[100px] w-[100px] rounded-xl object-cover"
                         />
                         <div className="flex select-none flex-col justify-center text-[14px] font-bold">
                             <p className="text-[14px]">

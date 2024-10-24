@@ -6,7 +6,7 @@ export const serviceOrderApi = baseApi.injectEndpoints({
         addServiceOrder: build.mutation<
             any,
             {
-                serviceOrderId:string;
+                serviceOrderId: string
                 serviceIds: string[]
             }
         >({
@@ -21,8 +21,25 @@ export const serviceOrderApi = baseApi.injectEndpoints({
                 url: `${serviceOrderEndpoint.SERVICE_ORDER_DETAIL}?serviceOrderId=${id}`,
                 method: 'GET',
             }),
-        })
+        }),
+        updateServiceOrderStatusItem: build.mutation<
+            any,
+            {
+                serviceOrderId: string
+                serviceId: string
+            }
+        >({
+            query: (data) => ({
+                url: serviceOrderEndpoint.UPDATE_STATUS_ITEM,
+                method: 'PATCH',
+                body: data,
+            }),
+        }),
     }),
 })
 
-export const {useAddServiceOrderMutation, useGetServiceOrderDetailQuery} = serviceOrderApi
+export const {
+    useAddServiceOrderMutation,
+    useGetServiceOrderDetailQuery,
+    useUpdateServiceOrderStatusItemMutation,
+} = serviceOrderApi

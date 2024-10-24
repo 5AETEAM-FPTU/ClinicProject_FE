@@ -132,7 +132,7 @@ export function IncomingCallPopup({
                 </h2>
                 <p className="text-lg opacity-80">{callerNumber}</p>
             </div>
-            <div className="to-seco flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 p-4">
+            <div className="flex justify-around rounded-b-lg bg-gradient-to-b from-blue-500 to-secondaryDark p-4">
                 <audio
                     ref={audioRef}
                     preload="auto"
@@ -180,6 +180,8 @@ export default function ConsultationComponent() {
             },
         },
     )
+    const [isEndChatRoom, setIsEndChatRoom] = useState<boolean>(false)
+
     const pageSize = 4;
 
     const { chatRoomResult, isChatRoomFetching, refetch } = useGetChatRoomByUserQuery({ lastConversationTime: lastChatRoomTime, pageSize: pageSize }, {
@@ -282,9 +284,10 @@ export default function ConsultationComponent() {
                         refetch={refetch}
                         isChatRoomFetching={isChatRoomFetching}
                         setIsLoadingChatRoom={setIsLoadingChatRoom}
+                        setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-full sm:w-[calc(100%-370px)]">
-                        <ChatContent />
+                        <ChatContent  isEndConversation={isEndChatRoom}/>
                     </div>
                 </div>
             </Layout>

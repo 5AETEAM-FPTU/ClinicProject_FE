@@ -65,6 +65,20 @@ export const medicalReportApi = baseApi.injectEndpoints({
                 flashError: true,
             }),
         }),
+        updateMedicineOrderNote: build.mutation<
+            any,
+            {
+                medicineOrderId: string
+                note:string
+            }
+        >({
+            query: (data) => ({
+                url: medicineOrderEndpoint.UPDATE_MEDICINE_NOTE,
+                method: 'PATCH',
+                body: data,
+                flashError: true,
+            }),
+        }),
     }),
 })
 
@@ -74,4 +88,5 @@ export const {
     useAddMedicineOrderItemMutation,
     useDeleteMedicineOrderItemMutation,
     useGetAllMedicineAvailableQuery,
+    useUpdateMedicineOrderNoteMutation
 } = medicalReportApi

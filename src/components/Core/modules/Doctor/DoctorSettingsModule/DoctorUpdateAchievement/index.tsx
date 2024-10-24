@@ -2,12 +2,10 @@
 import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
-import { useAppDispatch } from '@/hooks/redux-toolkit'
-import { useUpdateDoctorAchievementMutation, useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
-import { Button, Form, message } from 'antd'
+import { useUpdateDoctorAchievementMutation } from '@/stores/services/doctor/doctorSettings'
+import { Button, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { DoctorProfileTypes } from '..'
 import { DoctorSettingProfileComponetProps } from '../DoctorUpdateGeneral'
 
 export default function DoctorUpdateAchievement({

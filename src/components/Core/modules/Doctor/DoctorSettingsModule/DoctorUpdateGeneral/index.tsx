@@ -1,23 +1,21 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { DoctorProfileTypes } from '..'
-import { Button, DatePicker, Form, Input, message, Select } from 'antd'
-import { useForm } from 'antd/es/form/Form'
-import { ChevronDown, Save } from 'lucide-react'
-import themeColors from '@/style/themes/default/colors'
-import CommonSelect from '@/components/Core/common/CommonSelect'
-import { FormProps } from 'antd/lib'
-import { useUpdateDoctorPrivateInformationMutation } from '@/stores/services/doctor/doctorSettings'
-import webStorageClient from '@/utils/webStorageClient'
-import { constants } from '@/settings'
 import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { constants } from '@/settings'
 import { updateUserFullName } from '@/stores/features/auth'
-import dayjs from 'dayjs'
+import { useUpdateDoctorPrivateInformationMutation } from '@/stores/services/doctor/doctorSettings'
 import {
     useGetAllGenderQuery,
     useGetAllPositionQuery,
     useGetAllSpecicaltiesQuery,
 } from '@/stores/services/enum/enum'
+import themeColors from '@/style/themes/default/colors'
+import webStorageClient from '@/utils/webStorageClient'
+import { Button, DatePicker, Form, Input, message, Select } from 'antd'
+import { FormProps } from 'antd/lib'
+import dayjs from 'dayjs'
+import { ChevronDown } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { DoctorProfileTypes } from '..'
 
 export type DoctorSettingProfileComponetProps = {
     isProfileFetching: boolean
@@ -107,7 +105,6 @@ export default function DoctorUpdateGeneral({
             message.success('Cập nhật thành công!')
             refetch && refetch()
         } catch (error) {
-            console.log(error)
             refetch && refetch()
             message.error('Cập nhật thất bại!')
         }
