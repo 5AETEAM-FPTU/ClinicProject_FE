@@ -69,9 +69,7 @@ export default function UserQueueRoomModule() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
         >
-            <Layout
-                className="bg-dashboardBackground"
-            >
+            <Layout className="bg-dashboardBackground">
                 <Content style={{ padding: '0px' }}>
                     <div className="mb-4">
                         <h2 className="text-[20px] font-semibold text-[#003553]">

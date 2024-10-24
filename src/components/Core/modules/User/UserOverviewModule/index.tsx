@@ -1,6 +1,6 @@
 'use client'
 
-import { Layout } from 'antd'
+import { Layout, Skeleton } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import { motion } from 'framer-motion'
 import DoctorIncomingCalender from './UserIncomingCalender'
@@ -13,22 +13,17 @@ import UserRecentlyAction from './UserRencentlyAction'
 import { useGetAppointmentUpcomingQuery } from '@/stores/services/user/userAppointments'
 
 interface AppointmentUpcoming {
-    upcomingDate: string,
+    upcomingDate: string
     totalAppointmentedPation: number
 }
 
 export default function UserOverViewModule() {
-    const { results } = useGetAppointmentUpcomingQuery(
-        undefined,
-        {
-            selectFromResult: ({ data, isFetching }) => ({
-                results: (data?.body as AppointmentUpcoming) ?? [],
-                isFetching: isFetching,
-            }),
-        },
-    )
-
-
+    const { results, isFetching } = useGetAppointmentUpcomingQuery(undefined, {
+        selectFromResult: ({ data, isFetching }) => ({
+            results: (data?.body as AppointmentUpcoming) ?? [],
+            isFetching: isFetching,
+        }),
+    })
 
     return (
         <motion.div
@@ -39,16 +34,30 @@ export default function UserOverViewModule() {
         >
             <Layout className="bg-dashboardBackground">
                 <Content style={{ padding: '0px' }}>
-                    <div className="flex w-full xl:flex-row flex-col gap-5">
-                        <div className="flex xl:w-1/2 w-full flex-col gap-5 order-2 xl:order-none">
+                    <div className="flex w-full flex-col gap-5 xl:flex-row">
+                        <div className="order-2 flex w-full flex-col gap-5 xl:order-none xl:w-1/2">
                             <div className="flex h-[166px] w-full flex-row gap-5">
-                                <UserIncomingCalender upcomingDate={results.upcomingDate} />
-                                <UserExaminedTurn numberExaminedTurn={results.totalAppointmentedPation} />
+                                {isFetching ? (
+                                    <Skeleton.Button className="h-full w-full" />
+                                ) : (
+                                    <UserIncomingCalender
+                                        upcomingDate={results.upcomingDate}
+                                    />
+                                )}
+                                {isFetching ? (
+                                    <Skeleton.Button className="h-full w-full" />
+                                ) : (
+                                    <UserExaminedTurn
+                                        numberExaminedTurn={
+                                            results.totalAppointmentedPation
+                                        }
+                                    />
+                                )}
                             </div>
                             <UserAvailableDoctor />
                             <UserRecentlyAction />
                         </div>
-                        <div className="flex xl:w-1/2 w-full flex-col gap-5 order-1 xl:order-none">
+                        <div className="order-1 flex w-full flex-col gap-5 xl:order-none xl:w-1/2">
                             <UserProfile />
                             <UserMedicalHistory />
                         </div>

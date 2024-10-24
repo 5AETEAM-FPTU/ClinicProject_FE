@@ -35,25 +35,19 @@ export default function UserAvailableDoctor() {
     // ]
     const [doctors, setDoctors] = useState<any>([])
 
-
-
-    const { doctorsData, isFetching } = useGetAvailableDoctorQuery(
-        undefined, {
+    const { doctorsData, isFetching } = useGetAvailableDoctorQuery(undefined, {
         selectFromResult: ({ data, isFetching }) => {
             return {
                 doctorsData: data?.body?.doctors,
-                isFetching: isFetching
+                isFetching: isFetching,
             }
-        }
-    }
-
-    );
+        },
+    })
     useEffect(() => {
         if (doctorsData) {
             setDoctors(doctorsData)
         }
     }, [doctorsData])
-
 
     const settings = {
         dots: false,
@@ -86,26 +80,43 @@ export default function UserAvailableDoctor() {
     }
 
     return (
-        <Skeleton active loading={isFetching} >
-            <div className="h-[230px] rounded-xl bg-white text-[#003553] shadow-third">
-                <div className="flex items-center justify-between p-5">
-                    <p className="text-[16px] font-bold">
-                        Bác sĩ đang trực tại phòng khám
-                    </p>
-                    <Button className="flex items-center gap-1 text-[12px] font-bold border-none" onClick={() => { router.push(`/${locale}/${role}/doctors/all-doctors`) }}>
-                        {role === 'user' ? (<div className='flex items-center gap-1'>Yêu cầu tư vấn<ChevronsRight size={16} /></div>) : (<div className='flex items-center gap-1'>Danh sách bác sĩ <ChevronsRight size={16} /></div>)}
-                    </Button>
-                </div>
+        <div className="h-[230px]">
+            {isFetching ? (
+                <Skeleton.Button className="h-full w-full" />
+            ) : (
+                <div className="h-full rounded-xl bg-white text-[#003553] shadow-third">
+                    <div className="flex items-center justify-between p-5">
+                        <p className="text-[16px] font-bold">
+                            Bác sĩ đang trực tại phòng khám
+                        </p>
+                        <Button
+                            className="flex items-center gap-1 border-none text-[12px] font-bold"
+                            onClick={() => {
+                                router.push(
+                                    `/${locale}/${role}/doctors/all-doctors`,
+                                )
+                            }}
+                        >
+                            {role === 'user' ? (
+                                <div className="flex items-center gap-1">
+                                    Yêu cầu tư vấn
+                                    <ChevronsRight size={16} />
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-1">
+                                    Danh sách bác sĩ <ChevronsRight size={16} />
+                                </div>
+                            )}
+                        </Button>
+                    </div>
 
-                <div className="slider-container flex w-full flex-row px-5">
-
-                    {
-                        doctors.length > 0 && (
+                    <div className="slider-container flex w-full flex-row px-5">
+                        {doctors.length > 0 && (
                             <Carousel settings={settings}>
                                 {doctors?.map((doctor: any, index: number) => {
                                     return (
-                                        <div className="h-[200px] max-h-[140px] w-[100px] border-2 rounded-[12px] bg-white p-[10px]">
-                                            <div className="h-[70%] w-full  rounded-[8px] overflow-hidden">
+                                        <div key={index} className="h-[200px] max-h-[140px] w-[100px] rounded-[12px] border-2 bg-white p-[10px]">
+                                            <div className="h-[70%] w-full overflow-hidden rounded-[8px]">
                                                 <Image
                                                     src={doctor.avatarUrl}
                                                     alt="avatar"
@@ -114,18 +125,18 @@ export default function UserAvailableDoctor() {
                                                     className="h-full w-full object-cover"
                                                 />
                                             </div>
-                                            <p className='font-bold line-clamp-2'>
+                                            <p className="line-clamp-2 font-bold">
                                                 {doctor.fullName}
                                             </p>
                                         </div>
                                     )
                                 })}
                             </Carousel>
-                        )
-                    }
+                        )}
+                    </div>
                 </div>
-            </div>
-        </Skeleton>
+            )}
+        </div>
     )
 }
 

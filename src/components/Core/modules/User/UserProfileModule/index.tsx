@@ -11,6 +11,7 @@ import {
     Row,
     Col,
     Space,
+    Skeleton,
 } from 'antd'
 import {
     MessageOutlined,
@@ -31,9 +32,13 @@ import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
 import _ from 'lodash'
+import { useGetAllUserHistoryTreatmentsQuery } from '@/stores/services/user/userHistoryAppointments'
+import { AppointmentResultingType } from '../UserTreatmentHistory'
+import { useGetChatRoomByUserQuery } from '@/stores/services/chat/chats'
+import { ChatRoom } from '../Consultation'
 
-const { Header, Content } = Layout
-const { Title, Text, Paragraph } = Typography
+const { Content } = Layout
+const { Text } = Typography
 
 const appointments = [
     { name: 'Mai Sương', time: '7:00 - 8:00 29/9/2024', price: '200.000 VND' },
@@ -63,6 +68,48 @@ export default function UserProfileModule() {
             }
         },
     })
+    const { historyTreatments, isHistoryFetching } =
+        useGetAllUserHistoryTreatmentsQuery(
+            {
+                pageSize: '5',
+                pageIndex: '1',
+                doctorName: '',
+            },
+            {
+                selectFromResult: ({ data, isFetching }) => {
+                    return {
+                        historyTreatments:
+                            (data?.body?.medicalReports
+                                ?.contents as AppointmentResultingType[]) || [],
+                        isHistoryFetching: isFetching,
+                    }
+                },
+            },
+        )
+
+    const role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role
+    const handleChangeRouteReportHistor = (reportId: string) => {
+        router.push(
+            `/${role}/treatment-calendar/treatment-history/view?reportId=${reportId}`,
+        )
+    }
+    const { chatRoomResult, isChatRoomFetching } = useGetChatRoomByUserQuery(
+        {
+            lastConversationTime: dayjs(new Date()).format(
+                'YYYY-MM-DDTHH:mm:ss',
+            ),
+            pageSize: 5,
+        },
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    chatRoomResult: data?.body?.chatRooms as ChatRoom[],
+                    isChatRoomFetching: isFetching,
+                }
+            },
+        },
+    )
+
     return (
         <motion.div
             initial={{ opacity: 0, translateY: 20 }}
@@ -71,7 +118,6 @@ export default function UserProfileModule() {
             exit={{ opacity: 0 }}
         >
             <Layout
-                style={{ minHeight: '100vh' }}
                 className="bg-dashboardBackground"
             >
                 <Content style={{ padding: '0px' }}>
@@ -170,40 +216,85 @@ export default function UserProfileModule() {
                                     </div>
                                 }
                             >
-                                <List
-                                    itemLayout="horizontal"
-                                    dataSource={appointments}
-                                    bordered={false}
-                                    renderItem={(item) => (
-                                        <List.Item className="!border-b-0">
-                                            <List.Item.Meta
-                                                avatar={
-                                                    <Avatar
-                                                        shape="square"
-                                                        size={48}
-                                                        icon={<UserOutlined />}
+                                <div>
+                                    {isHistoryFetching ? (
+                                        <div className="flex flex-col gap-5">
+                                            {Array.from({ length: 5 }).map(
+                                                (_, index) => (
+                                                    <Skeleton.Button
+                                                        key={index}
+                                                        className="h-[60px] w-full"
                                                     />
-                                                }
-                                                title={
-                                                    <div className="text-lg font-semibold text-secondarySupperDarker">
-                                                        {item.name}
-                                                    </div>
-                                                }
-                                                description={
-                                                    <div className="text-secondarySupperDarker">
-                                                        {item.time}
-                                                    </div>
-                                                }
-                                            />
-                                            <Button
-                                                type="primary"
-                                                className="rounded-xl bg-secondaryDark !p-5 font-medium"
-                                            >
-                                                Chi tiết
-                                            </Button>
-                                        </List.Item>
+                                                ),
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {historyTreatments?.length > 0 ? (
+                                                <List
+                                                    itemLayout="horizontal"
+                                                    dataSource={
+                                                        historyTreatments
+                                                    }
+                                                    bordered={false}
+                                                    renderItem={(item) => (
+                                                        <List.Item className="!border-b-0">
+                                                            <List.Item.Meta
+                                                                avatar={
+                                                                    <Avatar
+                                                                        shape="square"
+                                                                        size={
+                                                                            48
+                                                                        }
+                                                                        icon={
+                                                                            <UserOutlined />
+                                                                        }
+                                                                        src={
+                                                                            item
+                                                                                .doctorInfo
+                                                                                .avatarUrl
+                                                                        }
+                                                                    />
+                                                                }
+                                                                title={
+                                                                    <div className="text-lg font-semibold text-secondarySupperDarker">
+                                                                        {
+                                                                            item
+                                                                                .doctorInfo
+                                                                                .fullName
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                                description={
+                                                                    <div className="text-secondarySupperDarker">
+                                                                        {
+                                                                            item.title
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            />
+                                                            <Button
+                                                                type="primary"
+                                                                className="rounded-xl bg-secondaryDark !p-5 font-medium"
+                                                                onClick={() =>
+                                                                    handleChangeRouteReportHistor(
+                                                                        item?.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Chi tiết
+                                                            </Button>
+                                                        </List.Item>
+                                                    )}
+                                                />
+                                            ) : (
+                                                <div className="text-[14px] font-semibold text-secondarySupperDarker">
+                                                    Chưa có thông tin
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
-                                />
+                                </div>
                                 {/* <Link className="text-center block w-full text-secondarySupperDarker" href="#">Xem thêm</Link> */}
                             </Card>
                         </Col>
@@ -291,43 +382,70 @@ export default function UserProfileModule() {
                                     </div>
                                 }
                             >
-                                <List
-                                    itemLayout="horizontal"
-                                    dataSource={messages}
-                                    renderItem={(item) => (
-                                        <List.Item
-                                            className="!border-none"
-                                            actions={[
-                                                <a
-                                                    className="text-base font-bold"
-                                                    key="list-loadmore-edit !text-secondarySupperDarker"
-                                                >
-                                                    TRẢ LỜI
-                                                </a>,
-                                            ]}
-                                        >
-                                            <List.Item.Meta
-                                                avatar={
-                                                    <Avatar
-                                                        shape="square"
-                                                        size={48}
-                                                        icon={<UserOutlined />}
-                                                    />
-                                                }
-                                                title={
-                                                    <div className="text-lg font-semibold text-secondarySupperDarker">
-                                                        {item.name}
-                                                    </div>
-                                                }
-                                                description={
-                                                    <div className="text-md text-secondarySupperDarker">
-                                                        {item.message}
-                                                    </div>
-                                                }
-                                            />
-                                        </List.Item>
+                                <div>
+                                    {isChatRoomFetching ? (
+                                        <div className="flex flex-col gap-5">
+                                            {Array.from({ length: 5 }).map(
+                                                () => (
+                                                    <Skeleton.Button className="h-[60px] w-full"></Skeleton.Button>
+                                                ),
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {chatRoomResult?.length > 0 ? (
+                                                <List
+                                                    itemLayout="horizontal"
+                                                    dataSource={chatRoomResult.slice(0,5)}
+                                                    renderItem={(item) => (
+                                                        <List.Item
+                                                            className="!border-none"
+                                                            actions={[
+                                                                <Button 
+                                                                    type='default'
+                                                                    className="text-base  font-bold text-secondaryDark border-secondaryDark"
+                                                                    key="list-loadmore-edit "
+                                                                >
+                                                                    <MessageOutlined/>
+                                                                </Button>,
+                                                            ]}
+                                                        >
+                                                            <List.Item.Meta
+                                                                avatar={
+                                                                    <Avatar
+                                                                        shape="square"
+                                                                        size={
+                                                                            48
+                                                                        }
+                                                                        icon={
+                                                                            <UserOutlined />
+                                                                        }
+                                                                    />
+                                                                }
+                                                                title={
+                                                                    <div className="text-lg font-semibold text-secondarySupperDarker">
+                                                                        {
+                                                                            item.fullName
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                                description={
+                                                                    <div className="text-md text-secondarySupperDarker">
+                                                                        {dayjs(item?.latestMessageTime).format('DD/MM/YYYY HH:mm')}
+                                                                    </div>
+                                                                }
+                                                            />
+                                                        </List.Item>
+                                                    )}
+                                                />
+                                            ) : (
+                                                <div className="text-[14px] font-semibold text-secondarySupperDarker">
+                                                    Chưa có tin nhắn
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
-                                />
+                                </div>
                             </Card>
                         </Col>
                     </Row>
