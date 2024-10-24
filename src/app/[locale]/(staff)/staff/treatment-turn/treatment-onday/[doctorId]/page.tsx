@@ -1,3 +1,4 @@
+import StaffDoctorVisitInDayModule from '@/components/Core/modules/Staff/StaffTreatmentOnDay/DoctorVisitOnDayModule'
 import React from 'react'
 
 type TProps = {
@@ -6,9 +7,10 @@ type TProps = {
     }
 }
 
-export default function TreatmentOnDayDoctor({params}:TProps) {
-    
-  return (
-    <div>StaffTreatmentOnDayDoctor: {params.doctorId}</div>
-  )
+export default function TreatmentOnDayDoctor({ params }: TProps) {
+    return (
+        <div>
+            <StaffDoctorVisitInDayModule doctorId={params.doctorId} />
+        </div>
+    )
 }

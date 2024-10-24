@@ -25,6 +25,7 @@ import ChatContent from './ChatContent'
 import {
     useGetChatRoomByDoctorQuery,
     useGetChatRoomByUserQuery,
+    useSwitchEndChatRoomMutation,
 } from '@/stores/services/chat/chats'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
 import { useSearchParams } from 'next/navigation'
@@ -62,6 +63,8 @@ export default function DoctorConservation() {
     const _accessToken = webStorageClient.getToken()!.toString()
     const [lastChatRoomTime, setLastChatRoomTime] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DDTHH:mm:ss'))
     const [isLoadingChatRoom, setIsLoadingChatRoom] = useState<boolean>(false)
+    const [isEndChatRoom, setIsEndChatRoom] = useState<boolean>(false)
+
     const { doctorInformationResult, isFetching } = useGetDoctorProfileQuery(
         undefined,
         {
@@ -73,11 +76,11 @@ export default function DoctorConservation() {
                 }
             },
         },
-    ) 
+    )
     const newChatId = searchParams.get('chat')
     const pageSize = 4;
     const { chatRoomResult, isChatRoomFetching, refetch } =
-        useGetChatRoomByDoctorQuery({lastConversationTime: lastChatRoomTime, pageSize: pageSize}, {
+        useGetChatRoomByDoctorQuery({ lastConversationTime: lastChatRoomTime, pageSize: pageSize }, {
             selectFromResult: ({ data, isFetching }) => {
                 return {
                     chatRoomResult: data?.body?.chatRooms as ChatRoom[],
@@ -85,11 +88,14 @@ export default function DoctorConservation() {
                 }
             },
         })
-   
-    
+
+
+
     useEffect(() => {
         refetch()
     }, [isLoadingChatRoom])
+
+
 
     return (
         <motion.div
@@ -178,9 +184,11 @@ export default function DoctorConservation() {
                         refetch={refetch}
                         isChatRoomFetching={isChatRoomFetching}
                         setIsLoadingChatRoom={setIsLoadingChatRoom}
+                        setIsEndChatRoom={setIsEndChatRoom}
                     />
                     <div className="w-[calc(100%-370px)]">
-                        <ChatContent />
+                        <ChatContent
+                        />
                     </div>
                 </div>
             </Layout>

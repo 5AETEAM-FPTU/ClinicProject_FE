@@ -1,27 +1,59 @@
 'use client'
 
+import { Button, Skeleton } from 'antd'
+import { jwtDecode } from 'jwt-decode'
 import { ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
 import Slider, { Settings } from 'react-slick'
 
 import 'slick-carousel/slick/slick-theme.css'
 import 'slick-carousel/slick/slick.css'
+import { JwtPayloadUpdated } from '../../../Auth/SignIn'
+import webStorageClient from '@/utils/webStorageClient'
+import { useGetAvailableDoctorQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
+import { use, useEffect, useState } from 'react'
 
 export default function UserAvailableDoctor() {
-    const doctors = [
-        {
-            name: 'Namae wa nan desuka?',
-            avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
-        },
-        {
-            name: 'Namae wa nan desuka hha?',
-            avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
-        }, 
-        {
-            name: 'Namae wa nan desuka aahha?',
-            avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
-        }, 
-    ]
+    const router = useRouter()
+    const locale = useLocale()
+    const role = jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role
+    // const doctors = [
+    //     {
+    //         name: 'Namae wa nan desuka?',
+    //         avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
+    //     },
+    //     {
+    //         name: 'Namae wa nan desuka hha?',
+    //         avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
+    //     },
+    //     {
+    //         name: 'Namae wa nan desuka aahha?',
+    //         avatar: 'https://res.cloudinary.com/dy1uuo6ql/image/upload/v1726408359/vfsjhbdmrbfirjf2pfek.jpg',
+    //     },
+    // ]
+    const [doctors, setDoctors] = useState<any>([])
+
+
+
+    const { doctorsData, isFetching } = useGetAvailableDoctorQuery(
+        undefined, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                doctorsData: data?.body?.doctors,
+                isFetching: isFetching
+            }
+        }
+    }
+
+    );
+    useEffect(() => {
+        if (doctorsData) {
+            setDoctors(doctorsData)
+        }
+    }, [doctorsData])
+
 
     const settings = {
         dots: false,
@@ -54,39 +86,46 @@ export default function UserAvailableDoctor() {
     }
 
     return (
-        <div className="h-[230px] rounded-xl bg-white text-[#003553] shadow-third">
-            <div className="flex items-center justify-between p-5">
-                <p className="text-[16px] font-bold">
-                    Bác sĩ đang trực tại phòng khám
-                </p>
-                <p className="flex items-center gap-1 text-[12px] font-bold">
-                    Yêu cầu tư vấn <ChevronsRight size={16} />
-                </p>
-            </div>
+        <Skeleton active loading={isFetching} >
+            <div className="h-[230px] rounded-xl bg-white text-[#003553] shadow-third">
+                <div className="flex items-center justify-between p-5">
+                    <p className="text-[16px] font-bold">
+                        Bác sĩ đang trực tại phòng khám
+                    </p>
+                    <Button className="flex items-center gap-1 text-[12px] font-bold border-none" onClick={() => { router.push(`/${locale}/${role}/doctors/all-doctors`) }}>
+                        {role === 'user' ? (<div className='flex items-center gap-1'>Yêu cầu tư vấn<ChevronsRight size={16} /></div>) : (<div className='flex items-center gap-1'>Danh sách bác sĩ <ChevronsRight size={16} /></div>)}
+                    </Button>
+                </div>
 
-            <div className="slider-container flex w-full flex-row px-5">
-                <Carousel settings={settings}>
-                    {doctors.map((doctor, index) => {
-                        return (
-                            <div className="h-[200px] max-h-[140px] w-[93%] border-2 rounded-[12px] bg-white p-[10px]">
-                                <div className="h-[70%] w-full  rounded-[8px] overflow-hidden">
-                                    <Image
-                                        src={doctor.avatar}
-                                        alt="avatar"
-                                        width={140}
-                                        height={140}
-                                        className="h-full w-full object-cover"
-                                    />
-                                </div>
-                                <p className='font-bold line-clamp-2'>
-                                    {doctor.name}
-                                </p>
-                            </div>
+                <div className="slider-container flex w-full flex-row px-5">
+
+                    {
+                        doctors.length > 0 && (
+                            <Carousel settings={settings}>
+                                {doctors?.map((doctor: any, index: number) => {
+                                    return (
+                                        <div className="h-[200px] max-h-[140px] w-[100px] border-2 rounded-[12px] bg-white p-[10px]">
+                                            <div className="h-[70%] w-full  rounded-[8px] overflow-hidden">
+                                                <Image
+                                                    src={doctor.avatarUrl}
+                                                    alt="avatar"
+                                                    width={140}
+                                                    height={140}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                            <p className='font-bold line-clamp-2'>
+                                                {doctor.fullName}
+                                            </p>
+                                        </div>
+                                    )
+                                })}
+                            </Carousel>
                         )
-                    })}
-                </Carousel>
+                    }
+                </div>
             </div>
-        </div>
+        </Skeleton>
     )
 }
 

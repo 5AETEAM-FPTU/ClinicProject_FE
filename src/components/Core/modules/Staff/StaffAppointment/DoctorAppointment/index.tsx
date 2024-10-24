@@ -200,7 +200,7 @@ export default function DoctorBookedAppointmentsList({ doctorId }: { doctorId: s
                                                     <p className='text-secondarySupperDarker'><span className="font-medium text-base">Tuổi:</span> {appointment.age}</p>
                                                 </div>
                                             </div>
-                                            <p className='text-secondarySupperDarker'><span className="font-medium text-base">Mô tả:</span> {appointment.description}</p>
+                                            <p className='text-secondarySupperDarker'><span className="font-medium text-base">Mô tả:</span> <span dangerouslySetInnerHTML={{ __html: appointment.description }}></span></p>
                                             <Divider />
                                             <div className='flex justify-end'>
                                                 <Button className='mr-2 h-[34px] font-semibold rounded-[12px] bg-[#0284C7] text-[12px]' type='primary'>Nhắn tin</Button>

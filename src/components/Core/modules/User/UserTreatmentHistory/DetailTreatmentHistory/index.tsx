@@ -6,6 +6,7 @@ import './style.css'
 import {
     ChevronRight,
     ChevronsRight,
+    MoveLeft,
     Printer,
     SendHorizontal,
     Star,
@@ -24,6 +25,11 @@ import EditorTinymce, {
 import { useCreateFeedbackMutation } from '@/stores/services/user/userAppointments'
 import NotFound from '@/components/Core/common/NotFound'
 import ViewFeedback from '../ViewFeedback'
+import { useRouter } from 'next-nprogress-bar'
+import { useGetGeneralMedicalReportPdfMutation } from '@/stores/services/report/generatePdf'
+import { generateReportCode } from '@/utils/generateCode'
+import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
+import { useGetMedicineOrderByIdQuery } from '@/stores/services/report/medicineOrder'
 
 interface DoctorSpecialty {
     specialtyId: string
@@ -57,6 +63,7 @@ interface PatientInfo {
 
 interface ReportDetail {
     reportId: string
+    appointmentId: string
     date: string
     medicalHistory: string
     generalCondition: string
@@ -71,7 +78,42 @@ interface ReportDetail {
     hasFeedback: boolean
 }
 
+type Services = {
+    index: number
+    code: string
+    name: string
+    price: string
+}
+type Medicines = {
+    index: number
+    name: string
+    quantity: string
+    usage: string
+}
+type GenderalMedicalReport = {
+    reportCode: string
+    patientName: string
+    age: string
+    gender: string
+    patientAddress: string
+    historyOfIllness: string
+    overallStatus: string
+    height: string
+    pulse: string
+    temperature: string
+    bloodPressure: string
+    weight: string
+    services: Services[]
+    medicines: Medicines[]
+    finalConsultation: string
+    year: string
+    day: string
+    month: string
+    doctorName: string
+}
+
 export default function DetailTreatmentHistory() {
+    const router = useRouter()
     const [myForm] = Form.useForm()
     const editorRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
@@ -108,7 +150,7 @@ export default function DetailTreatmentHistory() {
         createFeedbackFunc({
             comment: editorContent,
             vote: selectedStar,
-            appointmentId: detail.reportId,
+            appointmentId: detail.appointmentId,
         })
             .then(() => {
                 refetch()
@@ -118,6 +160,90 @@ export default function DetailTreatmentHistory() {
             .catch(() => {
                 message.error('Phản hồi thất bại!')
             })
+    }
+    const { serviceOrder } = useGetServiceOrderDetailQuery(
+        detail.serviceOrderId!,
+        {
+            skip: !detail.serviceOrderId,
+            selectFromResult: ({ data }) => ({
+                serviceOrder: data?.body?.serviceOrder,
+            }),
+        },
+    )
+    const { medicineOrder } = useGetMedicineOrderByIdQuery(
+        detail.medicineOrderId!,
+        {
+            skip: !detail.medicineOrderId,
+            selectFromResult: ({ data }) => ({
+                medicineOrder: data?.body?.medicineOrder ?? {},
+            }),
+        },
+    )
+
+    const [generateGeneralMedicalReportPdf] =
+        useGetGeneralMedicalReportPdfMutation()
+    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
+    const [isLoadingPdf, setIsLoadingPdf] = useState(false)
+    const handlePrintMedicalReport = async () => {
+        try {
+            setIsLoadingPdf(true)
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo phiếu khám...',
+                0,
+            )
+            const servicesList: Services[] = serviceOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    code: item.service.code,
+                    name: item.service.name,
+                    price: item.priceAtOrder,
+                }),
+            )
+            const medicineList: Medicines[] = medicineOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    name: item.medicine.name,
+                    quantity: item.quantity,
+                    usage: item.description,
+                }),
+            )
+            const data: GenderalMedicalReport = {
+                reportCode: generateReportCode(),
+                patientName: patientInfor?.patientName!,
+                age: dayjs().diff(patientInfor?.dob!, 'years').toString(),
+                gender: patientInfor?.patientGender,
+                patientAddress: patientInfor?.address!,
+                historyOfIllness: detail?.medicalHistory,
+                overallStatus: detail?.generalCondition!,
+                bloodPressure: detail?.bloodPressure!,
+                height: detail?.height!,
+                pulse: detail?.pulse!,
+                temperature: detail?.temperature!,
+                weight: detail?.weight!,
+                services: servicesList ?? [],
+                medicines: medicineList ?? [],
+                finalConsultation: detail?.diagnosis!,
+                year: dayjs().format('YYYY'),
+                day: dayjs().format('DD'),
+                month: dayjs().format('MM'),
+                doctorName: doctorInfor?.doctorName!,
+            }
+            const res = await generateGeneralMedicalReportPdf(data).unwrap()
+            loadingMessage()
+            setIsLoadingPdf(false)
+            if (res instanceof Blob) {
+                setPdfBlob(res)
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+        } catch (error) {}
     }
 
     return (
@@ -131,6 +257,22 @@ export default function DetailTreatmentHistory() {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     exit={{ opacity: 0 }}
                 >
+                    <div className="flex select-none justify-between pb-4">
+                        <h3 className="text-[20px] font-bold text-[#003553]">
+                            Lịch sử khám của bạn
+                        </h3>
+                        <Button
+                            type="default"
+                            className="border-none shadow-third"
+                            onClick={() => {
+                                router.back()
+                            }}
+                        >
+                            {' '}
+                            <MoveLeft size={18} />
+                            Quay lại
+                        </Button>
+                    </div>
                     <Layout className="flex h-fit flex-col gap-2 rounded-lg bg-transparent p-4 shadow-third">
                         {isFetching ? (
                             Array.from({ length: 4 }).map((_, index) => (
@@ -217,9 +359,12 @@ export default function DetailTreatmentHistory() {
                                                             'DD/MM/YYYY',
                                                         )}{' '}
                                                         -{' '}
-                                                        {
-                                                            patientInfor?.patientGender
-                                                        }{' '}
+                                                        {dayjs().diff(
+                                                            dayjs(
+                                                                patientInfor?.dob,
+                                                            ),
+                                                            'year',
+                                                        )}{' '}
                                                         tuổi
                                                     </span>
                                                 </p>
@@ -275,7 +420,9 @@ export default function DetailTreatmentHistory() {
                                                     </td>
                                                     <td className="block w-full border px-4 py-2 lg:table-cell lg:w-auto">
                                                         <div className="inline-block rounded-md bg-white px-2 py-1">
-                                                            {dayjs(detail?.date).format(
+                                                            {dayjs(
+                                                                detail?.date,
+                                                            ).format(
                                                                 'DD/MM/YYYY HH:mm:ss',
                                                             )}
                                                         </div>
@@ -374,11 +521,25 @@ export default function DetailTreatmentHistory() {
                                                 Chỉ định:
                                             </p>
                                             <div className="m-auto mt-2 flex w-full flex-col justify-center px-3">
-                                                <Button className="flex justify-between border-none">
+                                                <Button
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `view/service-indication?serviceOrderId=${detail?.serviceOrderId}&reportId=${detail?.reportId}&doctor=${doctorInfor.doctorName}&date=${dayjs(detail.date).format('DD/MM/YYYY')}`,
+                                                        )
+                                                    }
+                                                    className="flex justify-between border-none"
+                                                >
                                                     <p>Dịch vụ đã khám</p>
                                                     <ChevronsRight />
                                                 </Button>
-                                                <Button className="my-2 flex justify-between border-none">
+                                                <Button
+                                                    className="my-2 flex justify-between border-none"
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `view/prescription?medicineOrderId=${detail?.medicineOrderId}&reportId=${detail?.reportId}&doctor=${doctorInfor.doctorName}&date=${dayjs(detail.date).format('DD/MM/YYYY')}`,
+                                                        )
+                                                    }
+                                                >
                                                     <p>
                                                         Đơn thuốc bác sĩ cung
                                                         cấp
@@ -389,10 +550,13 @@ export default function DetailTreatmentHistory() {
                                         </div>
                                         <div className="flex gap-4 pt-8">
                                             <Button
+                                                loading={isLoadingPdf}
                                                 type="primary"
-                                                className="py-4 font-bold"
+                                                className="bg-secondaryDark py-4 font-bold"
+                                                onClick={() => handlePrintMedicalReport()}
                                             >
-                                                In toàn bộ <Printer size={20} />
+                                                In phiếu khám{' '}
+                                                <Printer size={20} />
                                             </Button>
                                             {!detail?.hasFeedback ? (
                                                 <Button
@@ -563,6 +727,7 @@ export default function DetailTreatmentHistory() {
                         <ViewFeedback
                             close={() => setIsModalOpenView(!isModalOpenView)}
                             open={isModalOpenView}
+                            appointmentId={detail?.appointmentId}
                         />
                     </Layout>
                 </motion.div>

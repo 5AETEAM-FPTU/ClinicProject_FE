@@ -26,8 +26,30 @@ import { Settings } from 'lucide-react'
 import { useLocale } from 'next-intl'
 import { useRouter } from 'next-nprogress-bar'
 import Image from 'next/image'
-import { StaffProfileTypes } from '..'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
+
+export type StaffProfileTypes = {
+    achievement: string | null
+    avatarUrl: string
+    fullName: string | null
+    description: string | null
+    address: string
+    gender: {
+        id: string
+        genderName: string
+    }
+    position: {
+        id: string
+        positionName: string
+    }
+    specialties: {
+        id: string
+        specialtyName: string
+    }[]
+    username: string
+    phoneNumber: string | null
+    dob: string | null
+}
 
 const { Header, Content } = Layout
 const { Title, Text, Paragraph } = Typography

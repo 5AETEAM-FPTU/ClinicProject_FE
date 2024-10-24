@@ -122,7 +122,6 @@ export default function StaffQueueRoom() {
             )
             message.success('Tạo đoạn hội thoại thành công!')
         } catch (error) {
-            console.log(error)
             message.error('Tạo đoạn hội thoại thểat bị!')
         }
     }

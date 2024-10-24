@@ -25,6 +25,7 @@ const userEndpoint = {
     GET_UPCOMING_DATE: '/appointment/appointment-upcoming',
     CREATE_AN_APPOINTMENT: '/appointment/create',
     CREATE_FEEDBACK: '/user/feedback/create',
+    VIEW_FEEDBACK: '/user/feedback/view'
 }
 
 const doctorEndpoint = {
@@ -33,12 +34,14 @@ const doctorEndpoint = {
     PATCH_ACHIEVEMENT: '/doctor/achievement',
     PATCH_DESCRIPTION: '/doctor/description',
 
-    GET_APPOINTMENTS_ON_DAY: "/doctor/appointments",
-    GET_CANCEL_APPOINTMENTS: "/appointment/absent",
-    UPDATE_DUTY: "/doctor/duty",
-    GET_RECENT_APPOINTMENTS: "/doctor/appointments/recent",
-    GET_MEDICAL_REPORT: "/medical-report/all",
-    GET_ALL_DOCTOR: "/doctor/staff/doctor/all",
+    GET_APPOINTMENTS_ON_DAY: '/doctor/appointments',
+    GET_CANCEL_APPOINTMENTS: '/appointment/absent',
+    UPDATE_DUTY: '/doctor/duty',
+    GET_RECENT_APPOINTMENTS: '/doctor/appointments/recent',
+    GET_MEDICAL_REPORT: '/medical-report/all',
+    GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
+    GET_ALL_DOCTOR_IDS: '/doctor/ids',
+    GET_AVAILABLE_DOCTOR: "/doctor/available",
 }
 
 const scheduleEndpoint = {
@@ -70,6 +73,7 @@ const chatEndpoint = {
     REMOVE_CHAT_CONTENT_BY_ID: 'chat-content/temporarily/{chatContentId}',
     GET_ALL_QUEUE_ROOM: '/queue-room/all',
     ADD_CHAT_ROOM: '/chat-room',
+    SWITCH_TO_END_CHAT_ROOM: '/chat-room/switch-to-end/{chatRoomId}',
 }
 
 const geminiEndpoint = {
@@ -82,6 +86,8 @@ const AppointmentEndpoint = {
     GET_ALL_USER_FOLLOW_UP_APPOINTMENT: '/doctor/re-examination/users',
     GET_USER_DETAIL_IN_FOLLOW_UP: '/doctor/user/detail/{userId}',
     GET_ALL_USER_HISTORY_APPOINTMENTS: 'user/medical-report/all',
+    GET_RECENT_ABSENT_APPOINTMENTS: '/appointment/recent-absent',
+    GET_RECENT_PENDING_APPOINTMENTS: '/appointment/recent-pending',
 }
 
 const medicalReportEndpoint = {
@@ -93,7 +99,8 @@ const medicalReportEndpoint = {
     UPDATE_MAIN_MEDICAL_REPORT_INFORMATION:
         '/medical-report/update-main-information',
     GET_MEDICAL_REPORT_DETAIL: '/user/medical-report/detail',
-    GET_ALL_MEDICAL_REPORT_RECENT_OF_USER: "/doctor/medicalreport/recent/{userId}",
+    GET_ALL_MEDICAL_REPORT_RECENT_OF_USER:
+        '/doctor/medicalreport/recent/{userId}',
 }
 
 const serviceEndpoint = {
@@ -107,10 +114,13 @@ const medicineOrderEndpoint = {
     UPDATE_MEDICINE_ORDER_ITEM: '/medicine-order/item/update',
     DELETE_MEDICINE_ORDER_ITEM:
         '/medicine-order/item/remove/{:medicineOrderId}/{:medicineId}',
+    UPDATE_MEDICINE_NOTE: '/medicine-order/note/update',
 }
+
 const serviceOrderEndpoint = {
     SERVICE_ORDER_ADD: '/service-order/add',
     SERVICE_ORDER_DETAIL: '/service-order/detail',
+    UPDATE_STATUS_ITEM: '/service-order/status/update',
 }
 
 const VnPayEndpoint = {
@@ -130,6 +140,23 @@ const blogEndpoints = {
     GET_NEWEST_POST: '/api/post/get-new-posts',
 }
 
+const generatePdfEndpoint = {
+    GENERAL_PDF: '/api/generate-pdf/general-medical-report',
+    ADOMINAL_PDF: '/api/generate-pdf/abdominal-ultrasound-report',
+    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report'
+}
+const formServiceEndpoint = {
+    CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',
+    UPDATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/update',
+    GET_ABDOMINAL_UNTRASOUND: '/api/abdominal-ultrasound/get',
+    DELETE_ABDOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/delete/{:id}',
+
+    CREATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/create',
+    UPDATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/update',
+    GET_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/get',
+    DELETE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/delete/{:id}',
+    
+}
 const notificationEndpoints = {
     GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',
     CREATE_FOLLOW_UP_NOTIFICATION: '/notification/retreatment/create',
@@ -155,6 +182,8 @@ export {
     chatEndpoint,
     serviceOrderEndpoint,
     medicineOrderEndpoint,
+    generatePdfEndpoint,
+    formServiceEndpoint,
     notificationEndpoints,
     contactEndpoints,
 }

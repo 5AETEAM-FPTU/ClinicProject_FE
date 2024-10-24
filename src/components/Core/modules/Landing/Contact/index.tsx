@@ -257,7 +257,7 @@ function Contact() {
                                         </Col>
                                     </Row>
                                 </div>
-                                <Form.Item className="!mb-0">
+                                <Form.Item className="!mb-0 mt-5">
                                     <Button
                                         className='float-end'
                                         loading={isLoading}

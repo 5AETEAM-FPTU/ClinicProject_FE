@@ -25,7 +25,8 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 params: query,
                 extraOptions: { skipAuth: true },
             }),
-            extraOptions: { skipAuth: false },}),
+            extraOptions: { skipAuth: false },
+        }),
         getCancelAppointment: build.query<any, void>({
             query: () => ({
                 url: doctorEndpoint.GET_CANCEL_APPOINTMENTS,
@@ -33,7 +34,32 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        getAppointmentOnDayForStaff: build.query<any, { date: string, doctorId: string }>({
+            query: (query) => ({
+                url: doctorEndpoint.GET_APPOINTMENTS_ON_DAY.concat(
+                    `?startDate=${query.date}&doctorId=${query.doctorId}`,
+                ),
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: true },
+            }),
+            extraOptions: { skipAuth: false },
+    })
+          ,  
+        getAvailableDoctor: build.query<any, void>({
+            query: () => ({
+                url: doctorEndpoint.GET_AVAILABLE_DOCTOR,
+                flashError: true,
+                method: 'GET',
+            }),
+        }),
     }),
 })
 
-export const { useGetAppointmentOnDayQuery,  useLazyGetAllMedicalReportQuery ,useGetCancelAppointmentQuery } = doctorTreatmentTurnApi
+export const {
+    useGetAppointmentOnDayQuery,
+    useLazyGetAllMedicalReportQuery,
+    useGetCancelAppointmentQuery,
+    useGetAppointmentOnDayForStaffQuery,
+    useGetAvailableDoctorQuery
+} = doctorTreatmentTurnApi

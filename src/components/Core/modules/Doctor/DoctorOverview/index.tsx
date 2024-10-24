@@ -14,7 +14,10 @@ import {
 import Image from 'next/image'
 import BackGround from '@public/landing/images/profile-background.png'
 import './style.css'
-import { useUpdateDoctorDutyMutation, useGetRecentAppointmentsQuery } from '@/stores/services/doctor/doctorOverview'
+import {
+    useUpdateDoctorDutyMutation,
+    useGetRecentAppointmentsQuery,
+} from '@/stores/services/doctor/doctorOverview'
 import { set } from 'lodash'
 import { useGetScheduleByMonthQuery } from '@/stores/services/schedule/scheduleSettings'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
@@ -24,22 +27,24 @@ import { useRouter } from 'next-nprogress-bar'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
 import webStorageClient from '@/utils/webStorageClient'
-import { useGetAllQueueRoomsQuery, useGetQueueRoomByUserQuery } from '@/stores/services/chat/chats'
+import {
+    useGetAllQueueRoomsQuery,
+    useGetQueueRoomByUserQuery,
+} from '@/stores/services/chat/chats'
 
 function calculateAge(birthday: string) {
-    const today = new Date();
-    const birthDate = new Date(birthday);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
+    const today = new Date()
+    const birthDate = new Date(birthday)
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+    const dayDiff = today.getDate() - birthDate.getDate()
 
     if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
+        age--
     }
 
-    return age;
+    return age
 }
-
 
 const patients = [
     { name: 'Nguyễn Hòa An', gender: 'Nữ', age: 32 },
@@ -57,24 +62,28 @@ const consultations1 = [
     },
 ]
 
-const currentMonth = new Date().getMonth() + 1;
-const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth() + 1
+const currentYear = new Date().getFullYear()
 
 const CustomCalendar = () => {
-    const _accessToken = webStorageClient.getToken();
-    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub;
-    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({ month: currentMonth, year: currentYear, doctorId: userId! });
+    const _accessToken = webStorageClient.getToken()
+    const userId = jwtDecode<JwtPayloadUpdated>(_accessToken!).sub
+    const { data, isLoading, error, refetch } = useGetScheduleByMonthQuery({
+        month: currentMonth,
+        year: currentYear,
+        doctorId: userId!,
+    })
     const days = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
     const dates = Array.from({ length: 31 }, (_, i) => i + 1)
-    const currentDate = new Date().getDate();
+    const currentDate = new Date().getDate()
     const hashData = useMemo(() => {
-        let dataHash = data && data.body.workingDays;
+        let dataHash = data && data.body.workingDays
         const hash: any = {}
         dataHash?.forEach((item: string) => {
-            hash[new Date(item).getDate()] = true;
+            hash[new Date(item).getDate()] = true
         })
-        return hash;
-    }, [data]);
+        return hash
+    }, [data])
 
     return (
         <Skeleton loading={isLoading} active>
@@ -96,7 +105,7 @@ const CustomCalendar = () => {
                     {dates.map((date) => (
                         <div
                             key={date}
-                            className={`shadow-custom-shadow mx-auto flex h-11 w-[95%] cursor-pointer items-center justify-center rounded-[8px] p-2 text-center font-semibold text-secondarySupperDarker hover:bg-blue-100 ${currentDate == date ? 'bg-[#0284C7] text-white' : ''} ${date > currentDate && currentDate != date && hashData[date] ? 'bg-[#0284C760]' : ''} ${date < currentDate ? 'bg-[#E7E7E7] opacity-60' : ''}`}
+                            className={`mx-auto flex h-11 w-[95%] cursor-pointer items-center justify-center rounded-[8px] p-2 text-center font-semibold text-secondarySupperDarker shadow-custom-shadow hover:bg-blue-100 ${currentDate == date ? 'bg-[#0284C7] text-white' : ''} ${date > currentDate && currentDate != date && hashData[date] ? 'bg-[#0284C760]' : ''} ${date < currentDate ? 'bg-[#E7E7E7] opacity-60' : ''}`}
                         >
                             {date}
                         </div>
@@ -108,63 +117,76 @@ const CustomCalendar = () => {
 }
 
 const AppointmentComponent = () => {
-    const { data, isLoading, error } = useGetAppointmentOnDayQuery({ date: new Date().toISOString().slice(0, 10) })
-    const appointments = data?.body.appointment;
+    const { data, isLoading, error } = useGetAppointmentOnDayQuery({
+        date: new Date().toISOString().slice(0, 10),
+    })
+    const appointments = data?.body.appointment
     return (
         <Skeleton loading={isLoading} active avatar>
             <div className="shadow shadow h-full rounded-lg bg-white p-4 shadow-third">
                 <h2 className="mb-4 text-lg font-bold text-secondarySupperDarker">
                     Đang chờ khám
                 </h2>
-                {appointments?.length == 0 && <p className="text-center text-secondarySupperDarker">Không có lịch hẹn nào</p>}
-                {appointments?.filter((item: any) => item.appointmentStatus.constant == 'Pending').map((item: any) => (
-                    <div
-                        key={item.id}
-                        className="flex justify-between border-b-[1px] border-[#00355350] px-[10px] py-2"
-                    >
-                        <div className="flex">
-                            <Avatar
-                                shape='square'
-                                src={item.patient.avatar}
-                                className="mr-[10px] h-[60px] w-[60px] object-cover"
-                                alt="Patient"
-                            />
-                            <div className="flex-col">
-                                <p className="font-bold text-secondarySupperDarker">
-                                    {item.patient.fullName || "Nguyễn"}
-                                </p>
-                                <p className="text-[12px] font-semibold text-secondarySupperDarker">
-                                    {item.patient.gender.name}
-                                </p>
-                                <p className="text-[12px] font-semibold text-secondarySupperDarker">
-                                    {calculateAge(item.patient.dob)} Tuổi
-                                </p>
+                {appointments?.length == 0 && (
+                    <p className="text-center text-secondarySupperDarker">
+                        Không có lịch hẹn nào
+                    </p>
+                )}
+                {appointments
+                    ?.filter(
+                        (item: any) =>
+                            item.appointmentStatus.constant == 'Pending',
+                    )
+                    .map((item: any) => (
+                        <div
+                            key={item.id}
+                            className="flex justify-between border-b-[1px] border-[#00355350] px-[10px] py-2"
+                        >
+                            <div className="flex">
+                                <Avatar
+                                    shape="square"
+                                    src={item.patient.avatar}
+                                    className="mr-[10px] h-[60px] w-[60px] object-cover"
+                                    alt="Patient"
+                                />
+                                <div className="flex-col">
+                                    <p className="font-bold text-secondarySupperDarker">
+                                        {item.patient.fullName || 'Nguyễn'}
+                                    </p>
+                                    <p className="text-[12px] font-semibold text-secondarySupperDarker">
+                                        {item.patient.gender.name}
+                                    </p>
+                                    <p className="text-[12px] font-semibold text-secondarySupperDarker">
+                                        {calculateAge(item.patient.dob)} Tuổi
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <button className="rounded-[12px] bg-[#0284C7] px-3 py-1 font-bold text-white">
+                                    {item.appointmentStatus.statusName}
+                                </button>
                             </div>
                         </div>
-                        <div className="flex items-center">
-                            <button className="rounded-[12px] bg-[#0284C7] px-3 py-1 font-bold text-white">
-                                {item.appointmentStatus.statusName}
-                            </button>
-                        </div>
+                    ))}
+                {appointments?.length > 0 && (
+                    <div className="mt-4 text-center">
+                        <a
+                            target="_blank"
+                            href="/doctor/treatment-turn/treatment-onday"
+                            className="font-bold text-secondarySupperDarker"
+                        >
+                            Xem tất cả
+                        </a>
                     </div>
-                ))}
-                {appointments?.length > 0 && <div className="mt-4 text-center">
-                    <a
-                        target='_blank'
-                        href="/doctor/treatment-turn/treatment-onday"
-                        className="font-bold text-secondarySupperDarker"
-                    >
-                        Xem tất cả
-                    </a>
-                </div>
-                }
+                )}
             </div>
         </Skeleton>
     )
 }
 
 const ConsultationComponent = () => {
-   
+    const router = useRouter()
+    const locale = useLocale()
     const { data, isFetching } = useGetAllQueueRoomsQuery({pageIndex: 1, pageSize: 2}, {
         selectFromResult: ({ data, isFetching }) => {
             return {
@@ -175,9 +197,8 @@ const ConsultationComponent = () => {
     })
     
 
-    console.log("haha", data);
-
     return (
+        <Skeleton loading={isFetching} avatar>
         <div className="shadow rounded-lg bg-white p-4 shadow-third">
             <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
                 Yêu cầu tư vấn
@@ -187,75 +208,98 @@ const ConsultationComponent = () => {
                 dataSource={data.length === 1 ? [data[0], data[0]] : data}
                 renderItem={(item: any) => (
                     <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
-                        <List.Item.Meta
-                            avatar={
-                                <Avatar
-                                    size={50}
-                                    src={item.patientAvatar}
-                                />
-                            }
-                            title={
-                                <span className="text-[14px] font-bold text-secondarySupperDarker">
-                                    {item.patientName}
-                                </span>
-                            }
-                            description={
-                                <span className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker">
-                                    {item.message}
-                                </span>
-                            }
-                        />
-                        <button className="h-8 w-11 rounded-[8px] bg-[#00B5F1]">
-                            <MessageCircleReply
-                                className="mx-auto text-white"
-                                size={20}
+                    <List.Item.Meta
+                        avatar={
+                            <Avatar
+                                size={50}
+                                src={item.patientAvatar}
                             />
-                        </button>
-                    </List.Item>
+                        }
+                        title={
+                            <span className="text-[14px] font-bold text-secondarySupperDarker">
+                                {item.patientName}
+                            </span>
+                        }
+                        description={
+                            <span className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html:  item.message }}>
+                            </span>
+                        }
+                    />
+                    <Button className="h-8 w-11 rounded-[8px] bg-[#00B5F1]" onClick={() => { router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/consultation/pending-room`) }}>
+                        <MessageCircleReply
+                            className="mx-auto text-white"
+                            size={20}
+                        />
+                    </Button>
+                </List.Item>
                 )}
             />) : <div>Chưa có data</div>}
         </div>
+        </Skeleton>
     )
 }
 
 const RecentBookedAppoinemt = () => {
-    const { data, isLoading, error } = useGetRecentAppointmentsQuery({ size: 2 })
-    let appointments = [];
-    if (data) appointments = data.body.appointments;
+    const { data, isLoading, error } = useGetRecentAppointmentsQuery({
+        size: 2,
+    })
+    let appointments = []
+    if (data) appointments = data.body.appointments
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const options: DateTimeFormatOptions  = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
-        return date.toLocaleDateString('vi-VN', options).replace(',', ''); // Format to Vietnamese style
-    };
+        const date = new Date(dateString)
+        const options: DateTimeFormatOptions = {
+            weekday: 'short',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }
+        return date.toLocaleDateString('vi-VN', options).replace(',', '') // Format to Vietnamese style
+    }
 
     const formatDateTime = (dateString: string) => {
-        const date = new Date(dateString);
+        const date = new Date(dateString)
 
         // Formatting time as HH:mm
-        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: false } as const;
-        const formattedTime = date.toLocaleTimeString([], timeOptions);
+        const timeOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        } as const
+        const formattedTime = date.toLocaleTimeString([], timeOptions)
 
         // Formatting date as DD/MM/YYYY
-        const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
-        const formattedDate = date.toLocaleDateString('vi-VN', dateOptions);
+        const dateOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        } as const
+        const formattedDate = date.toLocaleDateString('vi-VN', dateOptions)
 
-        return `${formattedTime} - ${formattedDate}`; // Combine time and date
-    };
+        return `${formattedTime} - ${formattedDate}` // Combine time and date
+    }
 
     const formatTime = (startDate: string, endDate: string) => {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        return `${startTime} - ${endTime}`;
-    };
+        const start = new Date(startDate)
+        const end = new Date(endDate)
+        const startTime = start.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+        const endTime = end.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        })
+        return `${startTime} - ${endTime}`
+    }
     return (
         <Skeleton loading={isLoading} avatar>
             <div className="shadow rounded-lg bg-white p-4 shadow-third">
                 <h2 className="mb-4 text-lg font-bold text-secondarySupperDarker">
                     Lịch đã được đặt gần đây
                 </h2>
-                {appointments ?
+                {appointments ? (
                     <List
                         dataSource={appointments}
                         renderItem={(item: any) => (
@@ -264,46 +308,60 @@ const RecentBookedAppoinemt = () => {
                                     avatar={
                                         <Avatar
                                             className="size-[50px] rounded-[8px] text-secondarySupperDarker"
-                                            src={item.patient.avatar || "/placeholder.svg?height=40&width=40"} // Use patient's avatar or placeholder
+                                            src={
+                                                item.patient.avatar ||
+                                                '/placeholder.svg?height=40&width=40'
+                                            } // Use patient's avatar or placeholder
                                         />
                                     }
                                     title={
                                         <span className="text-[14px] font-bold text-secondarySupperDarker">
-                                            {item.patient.fullName || "Unknown Patient"}
+                                            {item.patient.fullName ||
+                                                'Unknown Patient'}
                                         </span>
                                     }
                                     description={
                                         <div>
                                             <span className="text-[14px] font-medium text-secondarySupperDarker">
-                                                Đã đặt lịch lúc {formatDateTime(item.createdAt)}
+                                                Đã đặt lịch lúc{' '}
+                                                {formatDateTime(item.createdAt)}
                                             </span>
                                         </div>
                                     }
                                 />
                                 <div className="hidden gap-[14px] 2xl:flex">
                                     <p className="rounded-[12px] bg-[#0284C7] px-[10px] py-[2px] text-center font-bold text-white">
-                                        {formatTime(item.schedule.startDate, item.schedule.endDate)} | {formatDate(item.schedule.startDate)}
+                                        {formatTime(
+                                            item.schedule.startDate,
+                                            item.schedule.endDate,
+                                        )}{' '}
+                                        | {formatDate(item.schedule.startDate)}
                                     </p>
                                 </div>
                             </List.Item>
                         )}
-                    /> :
-                    <div className='text-center'>Không có lịch khám</div>
-                }
+                    />
+                ) : (
+                    <div className="text-center">Không có lịch khám</div>
+                )}
             </div>
-
         </Skeleton>
     )
 }
 
 export default function MedicalDashboard() {
     const [checked, setChecked] = useState(false)
-    const router = useRouter();
-    const locale = useLocale();
+    const router = useRouter()
+    const locale = useLocale()
     // Doctor profile
-    const [updateDoctorDuty, { isLoading, data, error }] = useUpdateDoctorDutyMutation();
-    const { data: doctorData, isLoading: doctorLoading, error: doctorError } = useGetDoctorProfileQuery();
-    const doctor = doctorData?.body.user;
+    const [updateDoctorDuty, { isLoading, data, error }] =
+        useUpdateDoctorDutyMutation()
+    const {
+        data: doctorData,
+        isLoading: doctorLoading,
+        error: doctorError,
+    } = useGetDoctorProfileQuery()
+    const doctor = doctorData?.body.user
 
     useMemo(() => {
         setChecked(doctor?.isOnDuty && true)
@@ -327,7 +385,11 @@ export default function MedicalDashboard() {
                     <AppointmentComponent />
                 </div>
                 <div className="xl:flex-1">
-                    <Skeleton className='h-[346px]' loading={doctorLoading} active>
+                    <Skeleton
+                        className="h-[346px]"
+                        loading={doctorLoading}
+                        active
+                    >
                         <div className="shadow h-full rounded-lg bg-white p-4 shadow-third">
                             <h2 className="text-[18px] font-bold text-secondarySupperDarker">
                                 Cập nhật trạng thái
@@ -340,7 +402,9 @@ export default function MedicalDashboard() {
                             <div className="mt-9 flex items-center">
                                 <Switch
                                     className={
-                                        checked ? `bg-[#0284C7]` : 'bg-white-200'
+                                        checked
+                                            ? `bg-[#0284C7]`
+                                            : 'bg-white-200'
                                     }
                                     value={checked}
                                     onChange={handleChange}
@@ -353,9 +417,9 @@ export default function MedicalDashboard() {
                                 </span>
                             </div>
                             <p className="mt-9 text-sm text-gray-500">
-                                Lưu ý: Người sử dụng hệ thống sẽ dễ dàng đặt lịch
-                                khám hoặc yêu cầu tư vấn hơn khi có bác sĩ đang
-                                trực!
+                                Lưu ý: Người sử dụng hệ thống sẽ dễ dàng đặt
+                                lịch khám hoặc yêu cầu tư vấn hơn khi có bác sĩ
+                                đang trực!
                             </p>
                         </div>
                     </Skeleton>
@@ -381,8 +445,14 @@ export default function MedicalDashboard() {
                                     className="h-[37px] border-[1px] border-[#0284C7] bg-white px-3 py-2 text-base font-semibold text-[#0284C7]"
                                     iconPosition="end"
                                     type="primary"
-                                    icon={<Settings color="#0284C7" size={20} />}
-                                    onClick={() => { router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/account/settings`)}}
+                                    icon={
+                                        <Settings color="#0284C7" size={20} />
+                                    }
+                                    onClick={() => {
+                                        router.push(
+                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/account/settings`,
+                                        )
+                                    }}
                                 >
                                     Cài đặt
                                 </Button>
@@ -392,13 +462,19 @@ export default function MedicalDashboard() {
                                     {doctor?.fullName}
                                 </h2>
                                 <div className="mt-3 flex items-center">
-                                    <UsersRound size={30} className="text-secondarySupperDarker" />
+                                    <UsersRound
+                                        size={30}
+                                        className="text-secondarySupperDarker"
+                                    />
                                     <p className="ml-[10px] text-[21px] font-medium text-secondarySupperDarker">
                                         Giới tính: {doctor?.gender.genderName}
                                     </p>
                                 </div>
                                 <div className="mt-3 flex items-center">
-                                    <BriefcaseMedical size={30} className="text-secondarySupperDarker" />
+                                    <BriefcaseMedical
+                                        size={30}
+                                        className="text-secondarySupperDarker"
+                                    />
                                     <p className="ml-[10px] text-[21px] font-medium text-secondarySupperDarker">
                                         Chức vụ: {doctor?.position.positionName}
                                     </p>
@@ -406,11 +482,21 @@ export default function MedicalDashboard() {
                                 <div className="mt-3 flex items-center">
                                     <BookOpenText className="w-[30px] text-secondarySupperDarker" />
                                     <p className="ml-[10px] text-[21px] font-medium text-secondarySupperDarker">
-                                        Chuyên khoa: {doctor?.specialties.map((specialty: { specialtyName: string }) => specialty.specialtyName).join(', ')}
+                                        Chuyên khoa:{' '}
+                                        {doctor?.specialties
+                                            .map(
+                                                (specialty: {
+                                                    specialtyName: string
+                                                }) => specialty.specialtyName,
+                                            )
+                                            .join(', ')}
                                     </p>
                                 </div>
                                 <div className="mt-3 flex items-center">
-                                    <Smartphone size={30} className="text-secondarySupperDarker" />
+                                    <Smartphone
+                                        size={30}
+                                        className="text-secondarySupperDarker"
+                                    />
                                     <p className="ml-[10px] text-[21px] font-medium text-secondarySupperDarker">
                                         Số điện thoại: {doctor?.phoneNumber}
                                     </p>

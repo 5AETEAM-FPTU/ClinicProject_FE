@@ -8,6 +8,7 @@ import webStorageClient from '@/utils/webStorageClient'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
 import { set } from 'lodash'
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Sider, Content } = Layout
 const { startConnection } =
@@ -18,7 +19,7 @@ export default function ChatRooms({
     setLastChatRoomTime,
     refetch,
     isChatRoomFetching,
-    setIsLoadingChatRoom
+    setIsLoadingChatRoom,
 }: {
     chatRooms: ChatRoom[]
     setLastChatRoomTime: (date: string) => void
@@ -34,7 +35,8 @@ export default function ChatRooms({
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
     const observerRef = useRef<IntersectionObserver | null>(null)
     const loadMoreRef = useRef<HTMLDivElement>(null)
-    
+    const dispatch = useAppDispatch()
+
     const handleLoadMore = async () => {
         try {
             setIsLoadingChatRoom((prev: boolean) => !prev);
@@ -52,6 +54,21 @@ export default function ChatRooms({
             console.error('Error loading more chat rooms:', error)
         }
     }
+
+    const handleSelectChatRoom = (user: ChatRoom) => {
+        handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
+        dispatch(setEndConversation(user.isEndConversation))
+    }
+
+    useEffect(() => {
+        if (chatRoomId && chatRooms?.length > 0) {  
+            const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
+            console.log('selectedChatRoom', selectedChatRoom);
+            if (selectedChatRoom) {
+                dispatch(setEndConversation(selectedChatRoom.isEndConversation))
+            } 
+        }
+    }, [chatRoomId, chatRooms]);
 
     useEffect(() => {
         observerRef.current = new IntersectionObserver(
@@ -75,9 +92,9 @@ export default function ChatRooms({
     }, [isChatRoomFetching])
 
 
-    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt:string, fullName:string, title: string) => {
-       
-        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt+ '&peerName=' + fullName + '&title=' + title)
+    const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullName: string, title: string) => {
+
+        route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullName + '&title=' + title)
     }
     const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string) => {
         handleChangeRoute(chatRoomId, userId, peerAvt, '', '')
@@ -110,7 +127,7 @@ export default function ChatRooms({
             }
         );
     }, [_accessToken])
-    
+
     // useEffect(() => {
     //     setChatRoomList(chatRooms)
     // },[chatRooms])
@@ -141,48 +158,48 @@ export default function ChatRooms({
                             user.userId === userId;
 
                         return (
-                           <>
-                             <List.Item
-                                onClick={() => {
-                                    handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
-                                }}
-                                className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r
+                            <>
+                                <List.Item
+                                    onClick={() =>
+                                        handleSelectChatRoom(user)
+                                    }
+                                    className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r
                                     ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'}
                                     transition-all duration-500 ease-in-out
                                 `}
-                            >
-                                <List.Item.Meta
-                                    avatar={
-                                        <Avatar
-                                            size={48}
-                                            shape="square"
-                                            src={user.avatar}
-                                        />
-                                    }
-                                    title={
-                                        <span
-                                            className={`text-base font-semibold text-secondarySupperDarker group-hover:text-white
+                                >
+                                    <List.Item.Meta
+                                        avatar={
+                                            <Avatar
+                                                size={48}
+                                                shape="square"
+                                                src={user.avatar}
+                                            />
+                                        }
+                                        title={
+                                            <span
+                                                className={`text-base font-semibold text-secondarySupperDarker group-hover:text-white
                                                 ${isSelected ? 'text-white' : ''}
                                                 transition-all duration-500 ease-in-out
                                             `}
-                                        >
-                                            {user.fullName}
-                                        </span>
-                                    }
-                                    description={
-                                        <span
-                                            className={`text-base text-secondarySupperDarker group-hover:text-white line-clamp-2
+                                            >
+                                                {user.fullName}
+                                            </span>
+                                        }
+                                        description={
+                                            <span
+                                                className={`text-base text-secondarySupperDarker group-hover:text-white line-clamp-2
                                                 ${isSelected ? 'text-white' : ''}
                                                 transition-all duration-500 ease-in-out
                                             `}
-                                        >
-                                            {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
-                                        </span>
-                                    }
-                                />
-                            </List.Item>
-                           
-                           </>
+                                            >
+                                                {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
+                                            </span>
+                                        }
+                                    />
+                                </List.Item>
+
+                            </>
                         )
                     }}
                 />

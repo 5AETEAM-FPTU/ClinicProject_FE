@@ -15,7 +15,8 @@ import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
 import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
 import webStorageClient from '@/utils/webStorageClient'
 import { constants } from '@/settings'
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
+import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
@@ -75,13 +76,14 @@ export default function AppointmentConfirmation() {
         }).unwrap()
         return appointmentResponse.body.appointment
     }
+    const [content, setContent] = useState('')
 
     const handlePayment = async () => {
         if (vnPayUrl) return
         const doctorId = params.get('doctorId')
         const selectedSlot = JSON.parse(params.get('selectedSlot') || '{}')
         if (!doctorId || !selectedSlot) return
-        const description = getRawContent(editorRef)
+        const description = content
         const isFollowUp = isFollowUpAppointment
         console.log({ doctorId, selectedSlot, description, isFollowUp })
 
@@ -101,6 +103,8 @@ export default function AppointmentConfirmation() {
                 appointmentId: appointment.id,
             }).unwrap()
 
+            webStorageClient.set(constants.BOOKED_ID, doctorId)
+
             if (data) {
                 const vnPayUrl = data?.body?.paymentUrl
                 webStorageClient.set(
@@ -111,7 +115,6 @@ export default function AppointmentConfirmation() {
                 router.replace(vnPayUrl)
             }
         } catch (error) {
-            console.log(error)
             message.error('Có lỗi xảy ra, vui lòng thử lại sau')
         } finally {
             setLoading(false)
@@ -172,10 +175,7 @@ export default function AppointmentConfirmation() {
                             <p className="text-[20px] font-semibold text-secondarySupperDarker">
                                 Mô tả thêm:
                             </p>
-                            <EditorTinymce
-                                editorRef={editorRef}
-                                initContent={null}
-                            />
+                            <TinyMCEEditor content={content} setContent={setContent} />
                         </div>
                         <div className="mt-4 flex items-center">
                             <p className="text-base font-semibold text-secondarySupperDarker">

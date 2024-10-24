@@ -1,5 +1,5 @@
 'use client'
-import { Avatar, Layout, List, Skeleton } from 'antd'
+import { Avatar, Badge, Layout, List, Skeleton } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
 import { useEffect, useRef, useState } from 'react'
@@ -9,6 +9,8 @@ import { jwtDecode, JwtPayload } from 'jwt-decode'
 import createChatService from '@/stores/services/chat/signalService'
 import { set } from 'lodash'
 import dayjs from 'dayjs'
+import { ClockCircleOutlined } from '@ant-design/icons';
+import { setEndConversation } from '@/stores/features/chatControl'
 
 const { Sider } = Layout
 const { startConnection } =
@@ -19,13 +21,15 @@ export default function ChatRooms({
     setLastChatRoomTime,
     refetch,
     isChatRoomFetching,
-    setIsLoadingChatRoom
+    setIsLoadingChatRoom,
+    setIsEndChatRoom
 }: {
     chatRooms: ChatRoom[]
     setLastChatRoomTime: (date: string) => void
     refetch: () => void,
     isChatRoomFetching: boolean
     setIsLoadingChatRoom: any
+    setIsEndChatRoom: any
 }) {
     const route = useRouter()
     const searchParams = useSearchParams();
@@ -35,7 +39,7 @@ export default function ChatRooms({
     const [chatRoomList, setChatRoomList] = useState<ChatRoom[]>(chatRooms);
     const observerRef = useRef<IntersectionObserver | null>(null)
     const loadMoreRef = useRef<HTMLDivElement>(null)
-
+    const dispatch = useAppDispatch();
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullName: string, title: string) => {
         route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullName + '&title=' + title)
     }
@@ -61,6 +65,26 @@ export default function ChatRooms({
         }
     }
 
+    const handleSelectChatRoom = (user: ChatRoom) => {
+        handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
+        console.log("isEndConversation-user", user.isEndConversation)
+        dispatch(setEndConversation(user.isEndConversation))
+        // setIsEndChatRoom(user.isEndConversation)
+    }
+
+
+
+    useEffect(() => {
+        if (chatRoomId && chatRooms?.length > 0) {
+            const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
+            console.log('selectedChatRoom', selectedChatRoom);
+            if (selectedChatRoom) {
+                // setIsEndChatRoom(selectedChatRoom.isEndConversation);
+                dispatch(setEndConversation(selectedChatRoom.isEndConversation));
+            }
+
+        }
+    }, [chatRoomId, chatRooms]);
 
     useEffect(() => {
         startConnection(
@@ -135,7 +159,7 @@ export default function ChatRooms({
                             <div>
                                 <List.Item
                                     onClick={() => {
-                                        handleChangeRoute(user.chatRoomId, user.userId, user.avatar, user.fullName, user.title)
+                                        handleSelectChatRoom(user);
                                     }}
                                     className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r
                                     ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'}
@@ -161,14 +185,17 @@ export default function ChatRooms({
                                             </span>
                                         }
                                         description={
-                                            <span
-                                                className={`text-base text-secondarySupperDarker group-hover:text-white line-clamp-2
+                                            <div className='w-full flex justify-between items-center'>
+                                                <span
+                                                    className={`text-base text-secondarySupperDarker group-hover:text-white line-clamp-2
                                                 ${isSelected ? 'text-white' : ''}
                                                 transition-all duration-500 ease-in-out
-                                            `}
-                                            >
-                                                {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
-                                            </span>
+                                                `}
+                                                >
+                                                    {user.title ? user.title.split(':')[0] : 'Không có tiêu đề'}
+                                                </span>
+                                                <Badge count={user.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity mb-[2px] mr-2'  /> : null} />
+                                            </div>
                                         }
                                     />
                                 </List.Item>

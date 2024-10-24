@@ -95,7 +95,7 @@ export default function SignInComponent() {
             })
             console.log(googleLogin);
         } catch (error) {
-            console.log(error)
+            
         } finally {
             dispatch(setLoaded());
         }

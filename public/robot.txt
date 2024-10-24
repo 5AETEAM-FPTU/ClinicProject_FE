@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /private-page
+Allow: /
+Sitemap: https://pclinic.ohayo.io.vn/sitemap.xml

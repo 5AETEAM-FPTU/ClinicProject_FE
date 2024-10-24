@@ -226,6 +226,7 @@ export default function DoctorUpdateSchedules({ doctorId }: { doctorId: string }
                     </div>
                     <div className='self-end'>
                         <Button
+                            type='primary'
                             onClick={() => { }}
                             className='float-end h-[33px] bg-[#0284C7] text-white'
                             iconPosition='end'

@@ -20,6 +20,17 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, C
 
       return headers;
     },
+    responseHandler: async (response) => {
+      const contentType = response.headers.get('Content-Type');
+
+      if (contentType?.includes('application/pdf')) {
+        // If response is a PDF, return it as a Blob
+        return await response.blob();
+      }
+
+      // Default to JSON for other content types
+      return response.json();
+    },
   });
 
   return baseQuery(args, api, extraOptions);

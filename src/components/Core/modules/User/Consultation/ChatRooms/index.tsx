@@ -1,10 +1,11 @@
 'use client'
-import { Avatar, Layout, List, Skeleton, Typography } from 'antd'
+import { Avatar, Badge, Layout, List, Skeleton, Typography } from 'antd'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChatRoom } from '..'
 import { useEffect, useRef, useState } from 'react'
 import webStorageClient from '@/utils/webStorageClient'
 import createChatService from '@/stores/services/chat/signalService'
+import { ClockCircleOutlined } from '@ant-design/icons';
 
 const { startConnection } =
     createChatService();
@@ -14,13 +15,15 @@ export default function ChatRooms({
     setLastChatRoomTime,
     refetch,
     isChatRoomFetching,
-    setIsLoadingChatRoom
+    setIsLoadingChatRoom,
+    setIsEndChatRoom
 }: {
     chatRooms: ChatRoom[]
     setLastChatRoomTime: (date: string) => void
     refetch: () => void,
     isChatRoomFetching: boolean
     setIsLoadingChatRoom: any
+    setIsEndChatRoom: any
 }) {
     const route = useRouter()
     const searchParams = useSearchParams()
@@ -71,6 +74,25 @@ export default function ChatRooms({
     }, [isChatRoomFetching])
 
 
+
+    useEffect(() => {
+        if (chatRoomId && chatRooms?.length > 0) {
+            const selectedChatRoom = chatRooms?.find((user) => user.chatRoomId === chatRoomId);
+            console.log('selectedChatRoom', selectedChatRoom);
+            if (selectedChatRoom) {
+                setIsEndChatRoom(selectedChatRoom.isEndConversation);
+            } else {
+                setIsEndChatRoom(false);
+            }
+        }
+    }, [chatRoomId, chatRooms]);
+
+
+    const handleSelectChatRoom = (user: ChatRoom) => {
+        handleChangeRoute(user.chatRoomId, user.doctorId, user.avatar, user.fullName, user.title)
+        setIsEndChatRoom(user.isEndConversation)
+    }
+
     // useEffect(() => {
     //     setChatRoomList(chatRooms)
     // },[chatRooms])
@@ -101,14 +123,14 @@ export default function ChatRooms({
     const handleChangeRoute = (chatRoomId: string, userId: string, peerAvt: string, fullname: string, title: string) => {
         route.push('?chat=' + chatRoomId + '&user=' + userId + '&peerAvt=' + peerAvt + '&peerName=' + fullname + '&title=' + title)
     }
-    const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string,  fullname: string, title: string) => {
-        handleChangeRoute(chatRoomId, userId, peerAvt, fullname, title)
-    }
-    useEffect(() => {
-        if(chatRooms?.length > 0) {
-            handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.doctorId, chatRooms[0]?.avatar, chatRooms[0]?.fullName, chatRooms[0]?.title)
-        }
-    }, [chatRooms])
+    // const handleFirstChat = (chatRoomId: string, userId: string, peerAvt: string,  fullname: string, title: string) => {
+    //     handleChangeRoute(chatRoomId, userId, peerAvt, fullname, title)
+    // }
+    // useEffect(() => {
+    //     if(chatRooms?.length > 0) {
+    //         handleFirstChat(chatRooms[0]?.chatRoomId, chatRooms[0]?.doctorId, chatRooms[0]?.avatar, chatRooms[0]?.fullName, chatRooms[0]?.title)
+    //     }
+    // }, [chatRooms])
     return (
         <div className="min-w-full sm:min-w-[350px]">
             <div className="h-full !w-[100%] rounded-[12px] bg-white p-4 shadow-third">
@@ -135,13 +157,7 @@ export default function ChatRooms({
                         return (
                             <List.Item
                                 onClick={() => {
-                                    handleChangeRoute(
-                                        doctor.chatRoomId,
-                                        doctor.doctorId,
-                                        doctor.avatar,
-                                        doctor.fullName,
-                                        doctor.title
-                                    )
+                                    handleSelectChatRoom(doctor)
                                 }}
                                 className={`group mb-[10px] cursor-pointer rounded-lg border-none from-[#00B5F1] to-[#0284C7] p-2 hover:bg-gradient-to-r ${isSelected ? 'bg-gradient-to-r text-white' : 'bg-white'} transition-all duration-500 ease-in-out`}
                             >
@@ -161,11 +177,16 @@ export default function ChatRooms({
                                         </span>
                                     }
                                     description={
-                                        <span
-                                            className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
-                                        >
-                                            {doctor.title ? doctor.title.split(':')[0] : 'Không có tiêu đề'}
-                                        </span>
+                                        <div className='flex items-center justify-between'>
+                                            <span
+                                                className={`line-clamp-2 text-base text-secondarySupperDarker group-hover:text-white ${isSelected ? 'text-white' : ''} transition-all duration-500 ease-in-out`}
+                                            >
+                                                {doctor.title ? doctor.title.split(':')[0] : 'Không có tiêu đề'}
+                                            </span>
+                                            <Badge count={doctor.isEndConversation ? <ClockCircleOutlined className='text-secondaryDarkerOpacity' /> : null} />
+
+                                        </div>
+
                                     }
                                 />
                             </List.Item>

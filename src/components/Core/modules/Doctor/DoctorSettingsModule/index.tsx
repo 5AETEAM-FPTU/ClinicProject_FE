@@ -1,13 +1,13 @@
 'use client'
-import { Layout, Typography } from 'antd'
-import { motion } from 'framer-motion'
-import { DoctorUpdateProfileComponent } from './DoctorUpdateProfileComponent'
 import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-import DoctorUpdateGeneral from './DoctorUpdateGeneral'
+import { Layout } from 'antd'
+import { motion } from 'framer-motion'
 import { useEffect } from 'react'
-import DoctorUpdateSelfAbout from './DoctotUpdateSelfAbout'
-import DoctorUpdateAchievement from './DoctorUpdateAchievement'
 import DoctorChangePassword from './DoctorChangePassword'
+import DoctorUpdateAchievement from './DoctorUpdateAchievement'
+import DoctorUpdateGeneral from './DoctorUpdateGeneral'
+import { DoctorUpdateProfileComponent } from './DoctorUpdateProfileComponent'
+import DoctorUpdateSelfAbout from './DoctotUpdateSelfAbout'
 
 const { Content } = Layout
 

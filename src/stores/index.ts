@@ -8,21 +8,35 @@ import sidebar from './features/sidebar'
 import { authApis } from './services/auth'
 import { geminiApis } from './services/ai/gemini'
 import { formServiceBaseApi as nodeServicerBaseApi } from './services/formServiceBase'
+import chatControl from './features/chatControl'
 export const createStore = (
     option?: ConfigureStoreOptions['preloadedState'] | undefined,
 ) =>
     configureStore({
         reducer: {
-            //todo state for adding reducer
             [authApis.reducerPath]: authApis.reducer,
             [nodeServicerBaseApi.reducerPath]: nodeServicerBaseApi.reducer,
             auth,
             sidebar,
             loading,
+            chatControl,
             [geminiApis.reducerPath]: geminiApis.reducer,
         },
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(baseApi.middleware).concat(geminiApis.middleware).concat(authApis.middleware).concat(nodeServicerBaseApi.middleware),
+            getDefaultMiddleware({
+                serializableCheck: {
+                    // Ignore these action paths and state paths
+                    ignoredActions: ['form/executeMutation/fulfilled'],
+                    ignoredPaths: [
+                        'form.mutations.xye7Zo4Zuh39L3q1Eivs2.data',
+                        'auth.storage.fileStorage',
+                    ],
+                },
+            })
+                .concat(baseApi.middleware)
+                .concat(geminiApis.middleware)
+                .concat(authApis.middleware)
+                .concat(nodeServicerBaseApi.middleware),
     })
 export const store = createStore()
 
