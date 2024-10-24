@@ -30,7 +30,7 @@ export const serviceOrderApi = baseApi.injectEndpoints({
             }
         >({
             query: (data) => ({
-                url: '',
+                url: serviceOrderEndpoint.UPDATE_STATUS_ITEM,
                 method: 'PATCH',
                 body: data,
             }),
@@ -38,5 +38,8 @@ export const serviceOrderApi = baseApi.injectEndpoints({
     }),
 })
 
-export const { useAddServiceOrderMutation, useGetServiceOrderDetailQuery } =
-    serviceOrderApi
+export const {
+    useAddServiceOrderMutation,
+    useGetServiceOrderDetailQuery,
+    useUpdateServiceOrderStatusItemMutation,
+} = serviceOrderApi

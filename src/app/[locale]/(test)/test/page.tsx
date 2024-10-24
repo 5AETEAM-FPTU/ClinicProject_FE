@@ -17,6 +17,6 @@ export default function TestComponent() {
     // return <FollowUpAppointment />
     // return <DoctorFeedback />
     // return <DoctorAppointmentTimeLine />
-    return <TinyMCEEditor />
+    // return <TinyMCEEditor />
     // return <DoctorAppointmentTimeLine />
 }

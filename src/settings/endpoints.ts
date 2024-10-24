@@ -143,6 +143,13 @@ const formServiceEndpoint = {
     CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',
     UPDATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/update',
     GET_ABDOMINAL_UNTRASOUND: '/api/abdominal-ultrasound/get',
+    DELETE_ABDOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/delete/{:id}',
+
+    CREATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/create',
+    UPDATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/update',
+    GET_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/get',
+    DELETE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/delete/{:id}',
+    
 }
 const notificationEndpoints = {
     GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',

@@ -1,15 +1,14 @@
 'use client'
 
-import { Button, Popover } from 'antd'
-import { FilePlus2, Settings } from 'lucide-react'
-import Image from 'next/image'
-import ProfileBackground from '@public/landing/images/profile-background.png'
 import { useTrigger } from '@/hooks/useTrigger'
-import { AppointmentStatus, IAppointmentOnDay } from '../AppointmentPending'
-import dayjs from 'dayjs'
 import { cn } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
+import { Button, Popover } from 'antd'
+import dayjs from 'dayjs'
+import { Settings, View } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { AppointmentStatus, IAppointmentOnDay } from '../AppointmentPending'
 
 interface IProps {
     payload: IAppointmentOnDay
@@ -43,7 +42,7 @@ export default function AppointmentDone({ payload, refetch }: IProps) {
                                 className="rounded-[10px] border-2 border-secondaryDark bg-[#f7fafc] text-[#003553]"
                                 onClick={() => handleViewMecidcalReport()}
                             >
-                                Xem phiếu khám <FilePlus2 size={18} />
+                                Xem phiếu khám <View size={18} />
                             </Button>
                             <Button
                                 disabled

@@ -13,7 +13,6 @@ export const createStore = (
 ) =>
     configureStore({
         reducer: {
-            //todo state for adding reducer
             [authApis.reducerPath]: authApis.reducer,
             [nodeServicerBaseApi.reducerPath]: nodeServicerBaseApi.reducer,
             auth,
@@ -26,7 +25,10 @@ export const createStore = (
                 serializableCheck: {
                     // Ignore these action paths and state paths
                     ignoredActions: ['form/executeMutation/fulfilled'],
-                    ignoredPaths: ['form.mutations.xye7Zo4Zuh39L3q1Eivs2.data'],
+                    ignoredPaths: [
+                        'form.mutations.xye7Zo4Zuh39L3q1Eivs2.data',
+                        'auth.storage.fileStorage',
+                    ],
                 },
             })
                 .concat(baseApi.middleware)

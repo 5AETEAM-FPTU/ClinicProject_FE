@@ -1,8 +1,11 @@
 'use client'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux-toolkit'
+import { updateStorage } from '@/stores/features/auth'
 import {
     useGetAbdominalUltrasoundReportQuery,
     useUpdateAdominalUltrasoundReportMutation,
 } from '@/stores/services/report/formService'
+import { useUpdateServiceOrderStatusItemMutation } from '@/stores/services/report/serviceOrder'
 import {
     Button,
     Col,
@@ -21,6 +24,7 @@ type TProps = {
     open: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     serviceOrderedId: string
+    refetch: () => void
 }
 export type UpdateAdominalReportType = {
     serviceOrderedId: string
@@ -40,28 +44,41 @@ export default function UpdateAdominalUtrasound({
     open,
     setOpen,
     serviceOrderedId,
+    refetch,
 }: TProps) {
     const [myForm] = Form.useForm()
     const [isUploading, setIsUploading] = useState(false)
-    const [fileStorage, setFileStorage] = useState<File | null>(null)
-
-    const { report } = useGetAbdominalUltrasoundReportQuery(serviceOrderedId, {
-        selectFromResult: ({ data }) => ({
-            report: (data?.body?.result as any) || {},
-        }),
-    })
+    // const [fileStorage, setFileStorage] = useState<File | null>(null)
+    const { storage } = useAppSelector((state) => state.auth)
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(updateStorage(null))
+    }, [open])
+    const { report, refetch: reportRefetch } =
+        useGetAbdominalUltrasoundReportQuery(serviceOrderedId, {
+            selectFromResult: ({ data }) => ({
+                report: (data?.body?.result as any) || {},
+            }),
+        })
+    useEffect(() => {
+        if (open) {
+            reportRefetch()
+        }
+    }, [open])
     const handleOnChangeSelectFile = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const files: FileList | null = event.target.files
         if (files && files.length > 0) {
-            setFileStorage(files[0])
+            // setFileStorage(files[0])
+            dispatch(updateStorage(files[0]))
         }
     }
     const handleUploadAndGetImageUrl = async (file: File) => {
         const CLOUD_NAME = 'dy1uuo6ql'
         const UPLOAD_PRESET = 'pclinic'
         try {
+            if (!file) return
             const formData = new FormData()
             formData.append('file', file)
             formData.append('upload_preset', UPLOAD_PRESET)
@@ -79,9 +96,16 @@ export default function UpdateAdominalUtrasound({
     }
     const [updateAdominalUltrasoundReport] =
         useUpdateAdominalUltrasoundReportMutation()
+    const [updateServiceOrderStatusItem] =
+        useUpdateServiceOrderStatusItemMutation()
+    const [loading, setLoading] = useState(false); 
+    console.log(storage.selectedId);
     const onFinish = async (values: any) => {
         try {
-            const imageUrl = await handleUploadAndGetImageUrl(fileStorage!)
+            setLoading(true)
+            const imageUrl = await handleUploadAndGetImageUrl(
+                storage.fileStorage!,
+            )
             const updateLoadData: UpdateAdominalReportType = {
                 serviceOrderedId: serviceOrderedId,
                 liver: values.liver,
@@ -93,13 +117,19 @@ export default function UpdateAdominalUtrasound({
                 kidney: values.kidney,
                 other: values.other,
                 finalConclusion: values?.finalConclusion,
-                image: imageUrl,
+                image: imageUrl ?? report?.image,
             }
             const response = await updateAdominalUltrasoundReport({
                 payload: updateLoadData,
             }).unwrap()
+            await updateServiceOrderStatusItem({
+                serviceOrderId: serviceOrderedId,
+                serviceId: storage.selectedId,
+            })
+            refetch()
             message.success('Cập nhật thành công!')
             setOpen(false)
+            setLoading(false)
         } catch (error) {
             message.error('Cập nhật thất bại!')
         }
@@ -121,7 +151,7 @@ export default function UpdateAdominalUtrasound({
     return (
         <Modal
             title={[
-                <p className="text-[16px] font-bold text-secondarySupperDarker">
+                <p className="text-[26px] font-bold text-secondarySupperDarker">
                     Siêu âm bụng
                 </p>,
             ]}
@@ -131,6 +161,7 @@ export default function UpdateAdominalUtrasound({
             open={open}
             onOk={() => setOpen(false)}
             onCancel={() => setOpen(false)}
+            destroyOnClose
             className="w-fit rounded-xl !bg-white !shadow-third"
         >
             <Form
@@ -138,7 +169,7 @@ export default function UpdateAdominalUtrasound({
                 layout="vertical"
                 onFinish={onFinish}
                 form={myForm}
-                className="w-[600px]"
+                className="w-[700px]"
             >
                 <Row gutter={24}>
                     <Col span={12}>
@@ -254,38 +285,43 @@ export default function UpdateAdominalUtrasound({
                 >
                     <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                 </Form.Item>
-                <div className="">
-                    <p>Hình ảnh</p>
-                    <div className="flex flex-row gap-5">
-                        <div>
-                            <Image
-                                width={200}
-                                height={200}
-                                src={
-                                    fileStorage
-                                        ? URL.createObjectURL(fileStorage)
-                                        : report?.image ? report?.image
-                                        : 'https://www.contentviewspro.com/wp-content/uploads/2017/07/default_image.png' 
-                                }
-                                className="rounded-lg object-cover"
-                            />
-                        </div>
-                        <input
-                            type="file"
-                            className="hidden"
-                            id="image-report"
-                            accept="image/*, audio/*, video/*, .txt,"
-                            onChange={(event) =>
-                                handleOnChangeSelectFile(event)
-                            }
-                        />
-                        <label htmlFor="image-report">
-                            <div className="w-fit rounded-lg bg-secondaryDark px-4 py-[6px] font-semibold text-white">
-                                Tải lên hình ảnh
+                <Form.Item>
+                    <div className="">
+                        <p>Hình ảnh</p>
+                        <div className="flex flex-row gap-5">
+                            <div>
+                                <Image
+                                    width={360}
+                                    height={200}
+                                    src={
+                                        storage.fileStorage
+                                            ? URL.createObjectURL(
+                                                  storage.fileStorage,
+                                              )
+                                            : report?.image
+                                              ? report?.image
+                                              : 'https://www.contentviewspro.com/wp-content/uploads/2017/07/default_image.png'
+                                    }
+                                    className="rounded-lg object-cover"
+                                />
                             </div>
-                        </label>
+                            <Input
+                                type="file"
+                                className="hidden"
+                                id="image-report"
+                                accept="image/*, audio/*, video/*, .txt,"
+                                onChange={(event) =>
+                                    handleOnChangeSelectFile(event)
+                                }
+                            />
+                            <label htmlFor="image-report">
+                                <div className="w-fit rounded-lg bg-secondaryDark px-4 py-[6px] font-semibold text-white">
+                                    Tải lên hình ảnh
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                </div>
+                </Form.Item>
                 <div className="flex justify-end">
                     <Button
                         type="default"
@@ -295,6 +331,7 @@ export default function UpdateAdominalUtrasound({
                         Hủy
                     </Button>
                     <Button
+                        loading={loading}
                         type="primary"
                         htmlType="submit"
                         className="bg-secondaryDark"
