@@ -1,12 +1,10 @@
-import EditorTinymce from '@/components/Core/common/EditorTinymce'
-import { Button, Form, FormProps, Input, message } from 'antd'
-import { CircleX, Save, SendHorizontal, SquarePen } from 'lucide-react'
-import { useRef, useState } from 'react'
-import Image from 'next/image'
-import { handleClientScriptLoad } from 'next/script'
-import { UserInformationQueueRoom, UserQueueRoom } from '..'
-import { useRemoveQueueByIdMutation } from '@/stores/services/chat/chats'
 import { useAppSelector } from '@/hooks/redux-toolkit'
+import { useRemoveQueueByIdMutation } from '@/stores/services/chat/chats'
+import { Button, Form, FormProps, message } from 'antd'
+import { CircleX } from 'lucide-react'
+import Image from 'next/image'
+import { useRef, useState } from 'react'
+import { UserInformationQueueRoom, UserQueueRoom } from '..'
 
 interface IProps {
     data: UserQueueRoom

@@ -1,35 +1,33 @@
 'use client'
-import { Button, Form, Layout, message, Modal, Skeleton } from 'antd'
-import { motion } from 'framer-motion'
-import Image from 'next/image'
-import './style.css'
+import EditorTinymce, {
+    getEditorHtmlContent,
+} from '@/components/Core/common/EditorTinymce'
+import NotFound from '@/components/Core/common/NotFound'
+import { useGetGeneralMedicalReportPdfMutation } from '@/stores/services/report/generatePdf'
 import {
-    ChevronRight,
+    useGetMedicalReportDetailByIdQuery
+} from '@/stores/services/report/medicalReport'
+import { useGetMedicineOrderByIdQuery } from '@/stores/services/report/medicineOrder'
+import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
+import { useCreateFeedbackMutation } from '@/stores/services/user/userAppointments'
+import { generateReportCode } from '@/utils/generateCode'
+import { Button, Form, Layout, message, Modal, Skeleton } from 'antd'
+import dayjs from 'dayjs'
+import { motion } from 'framer-motion'
+import {
     ChevronsRight,
     MoveLeft,
     Printer,
     SendHorizontal,
     Star,
-    View,
+    View
 } from 'lucide-react'
-import { useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import {
-    useGetMedicalReportByIdQuery,
-    useGetMedicalReportDetailByIdQuery,
-} from '@/stores/services/report/medicalReport'
-import dayjs from 'dayjs'
-import EditorTinymce, {
-    getEditorHtmlContent,
-} from '@/components/Core/common/EditorTinymce'
-import { useCreateFeedbackMutation } from '@/stores/services/user/userAppointments'
-import NotFound from '@/components/Core/common/NotFound'
-import ViewFeedback from '../ViewFeedback'
 import { useRouter } from 'next-nprogress-bar'
-import { useGetGeneralMedicalReportPdfMutation } from '@/stores/services/report/generatePdf'
-import { generateReportCode } from '@/utils/generateCode'
-import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
-import { useGetMedicineOrderByIdQuery } from '@/stores/services/report/medicineOrder'
+import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
+import { useRef, useState } from 'react'
+import ViewFeedback from '../ViewFeedback'
+import './style.css'
 
 interface DoctorSpecialty {
     specialtyId: string

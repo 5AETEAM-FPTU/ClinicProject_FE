@@ -2,13 +2,11 @@
 import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
-import { useAppDispatch } from '@/hooks/redux-toolkit'
-import { useUpdateDoctorAchievementMutation, useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
-import { Button, Form, message } from 'antd'
+import { useUpdateStaffAchievementMutation } from '@/stores/services/staff/staffSettings'
+import { Button, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
-import { useUpdateStaffAchievementMutation } from '@/stores/services/staff/staffSettings'
 
 export default function StaffUpdateAchievement({
     isProfileFetching,

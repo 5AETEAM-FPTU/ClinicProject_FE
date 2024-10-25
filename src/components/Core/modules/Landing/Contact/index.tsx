@@ -1,24 +1,21 @@
 'use client'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import CommonSection from '@/components/Core/common/CommonSection'
 
-import { useRef } from 'react'
-import { Editor } from '@tinymce/tinymce-react'
 
-import ZaloIcon from '@public/landing/icons/Zalo.svg'
-import FacebookIcon from '@public/landing/icons/Facebook.svg'
-import Image from 'next/image'
-import { Button, Col, Form, FormProps, Input, message, Row, Select } from 'antd'
-import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
-import EditorTinymce from '@/components/Core/common/EditorTinymce'
-import { useCreateNewContactMutation } from '@/stores/services/contact'
 import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
-import { useMutation } from 'convex/react'
-import { api } from '@convex/_generated/api'
 import { constants } from '@/settings'
+import { useCreateNewContactMutation } from '@/stores/services/contact'
+import { api } from '@convex/_generated/api'
+import FacebookIcon from '@public/landing/icons/Facebook.svg'
+import ZaloIcon from '@public/landing/icons/Zalo.svg'
+import { Button, Col, Form, FormProps, Input, message, Row, Select } from 'antd'
+import { useMutation } from 'convex/react'
 import dayjs from 'dayjs'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
 
 function Contact() {
     const [createAContact, { isLoading }] = useCreateNewContactMutation();

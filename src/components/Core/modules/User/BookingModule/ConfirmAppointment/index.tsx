@@ -1,22 +1,16 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
-import { Button, Radio, message } from 'antd'
-import { BadgeDollarSign, SquarePen } from 'lucide-react'
-import Information from '@/components/Core/modules/Calendar/Information'
-import { Editor } from '@tinymce/tinymce-react'
-import EditorTinymce, {
-    getEditorHtmlContent,
-    getRawContent,
-} from '../../../../common/EditorTinymce'
-import { TimeSlot } from '@/components/Core/modules/Calendar/TimeSlot'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
-import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
-import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
-import webStorageClient from '@/utils/webStorageClient'
-import { constants } from '@/settings'
-import { motion } from 'framer-motion'
 import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
+import Information from '@/components/Core/modules/Calendar/Information'
+import { TimeSlot } from '@/components/Core/modules/Calendar/TimeSlot'
+import { constants } from '@/settings'
+import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
+import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
+import webStorageClient from '@/utils/webStorageClient'
+import { Button, Radio, message } from 'antd'
+import { motion } from 'framer-motion'
+import { BadgeDollarSign, SquarePen } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useRef, useState } from 'react'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
