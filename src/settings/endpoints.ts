@@ -42,6 +42,7 @@ const doctorEndpoint = {
     GET_ALL_DOCTOR: '/doctor/staff/doctor/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
     GET_AVAILABLE_DOCTOR: "/doctor/available",
+    GET_ALL_PATIENT: '/admin/users/all'
 }
 
 const scheduleEndpoint = {
@@ -155,7 +156,7 @@ const formServiceEndpoint = {
     UPDATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/update',
     GET_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/get',
     DELETE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/delete/{:id}',
-    
+
 }
 const notificationEndpoints = {
     GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',

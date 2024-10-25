@@ -55,6 +55,15 @@ export const staffSettingsApi = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: false }
             }),
             extraOptions: { skipAuth: false }
+        }),
+        getAllPatient: build.query<any, { pageIndex: number, pageSize: number, keyword: string }>({
+            query: (query) => ({
+                url: doctorEndpoint.GET_ALL_PATIENT + '?pageIndex=' + query.pageIndex + '&pageSize=' + query.pageSize + '&keyword=' + query.keyword,
+                flashError: true,
+                method: 'GET',
+                extraOptions: { skipAuth: false }
+            }),
+            extraOptions: { skipAuth: false }
         })
     })
 })
@@ -66,4 +75,5 @@ export const {
     useUpdateStaffDescriptionMutation,
     useGetStaffGetAllDoctorQuery,
     useLazyGetStaffGetAllDoctorQuery,
+    useLazyGetAllPatientQuery,
 } = staffSettingsApi;
