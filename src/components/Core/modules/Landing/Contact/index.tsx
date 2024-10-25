@@ -45,7 +45,6 @@ function Contact() {
                 topic: "Liên hệ",
                 href: '',
             })
-            message.success('Gửi thông báo thành công!');
         } catch (error) {
             console.log(error)
         }
