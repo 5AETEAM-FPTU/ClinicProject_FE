@@ -2,24 +2,14 @@ import { Button } from 'antd'
 import { LucideView } from 'lucide-react'
 import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
 import { useEffect } from 'react'
+import { ServiceOrder } from '..'
 
-export default function ServiceIndication({ payload }: any) {
-    const serviceId = payload?.serviceOrderId
+type TProps = {
+    service:  ServiceOrder
+}
 
-    const { service, refetch, isFetching } = useGetServiceOrderDetailQuery(
-        serviceId!,
-        {
-            selectFromResult: ({ data, isFetching }) => ({
-                service: data?.body?.serviceOrder ?? {},
-                isFetching: isFetching,
-            }),
-        },
-    )
-
-    useEffect(() => {
-        refetch()
-    }, [])
-    
+export default function ServiceIndication({service}: TProps) {
+  
     return (
         <>
             <div className="mt-5 max-w-[900px] overflow-y-auto rounded-xl bg-[#FFFFFF] p-4 shadow-third">

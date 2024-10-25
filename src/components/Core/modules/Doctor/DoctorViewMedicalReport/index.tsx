@@ -61,7 +61,7 @@ export function DoctorViewMedicalReport() {
         {
             skip: !reportId,
             selectFromResult: ({ data, isFetching }) => ({
-                report: data?.body ?? {},
+                report: data?.body as MedicalReportResponseBody ?? {},
                 isFetching: isFetching,
             }),
         },
@@ -114,6 +114,7 @@ export function DoctorViewMedicalReport() {
                     service={report?.service}
                     medicine={report?.medicine}
                     isFetching={isFetching}
+                    patientInfor={report?.patientInfor}
                 />
             </motion.div>
             )}

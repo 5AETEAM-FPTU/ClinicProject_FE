@@ -1,20 +1,9 @@
-import { useGetMedicineOrderByIdQuery } from "@/stores/services/report/medicineOrder";
+import { Prescription } from "..";
+type TProps = {
+    medicine: Prescription
+}
 
-
-export default function MedicineIndicationView({
-    payload,
-} : any) {
-    const medicineId = payload?.medicineOrderId
-
-    const { medicine, refetch, isFetching } = useGetMedicineOrderByIdQuery(
-        medicineId!,
-        {
-            selectFromResult: ({ data, isFetching }) => ({
-                medicine: data?.body?.medicineOrder ?? {},
-                isFetching: isFetching,
-            }),
-        },
-    )
+export default function MedicineIndicationView({ medicine }: TProps) {
     return (
         <>
             <div className="mt-5 overflow-y-auto max-w-[900px] bg-[#FFFFFF] rounded-xl shadow-third p-4">
