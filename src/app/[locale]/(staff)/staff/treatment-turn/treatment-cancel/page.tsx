@@ -1,9 +1,10 @@
+import StaffDoctorCancelAppointmentModule from '@/components/Core/modules/Staff/StaffCancelledAppointments/DoctorCancelAppointmentModule'
 import React from 'react'
 
 function TreatmentCanceled() {
     return (
         <div>
-            Bị hủy bỏ
+            <StaffDoctorCancelAppointmentModule/>
         </div>
     )
 }

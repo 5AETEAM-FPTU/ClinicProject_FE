@@ -66,6 +66,10 @@ export default function AllDoctorPage() {
         )
     }
 
+    const handleChangeRouteToViewProfile = (doctorId:string) => {
+        router.push(`/staff/account/profile/${doctorId}`);
+    }
+
     return (
         <div className="w-full">
             <div>
@@ -139,7 +143,9 @@ export default function AllDoctorPage() {
                             <div className="mt-4 flex flex-row gap-5">
                                 <Button
                                     type="primary"
-                                    onClick={() => handleChangeDoctorForSetCalendar(doctor)}
+                                    onClick={() =>
+                                        handleChangeDoctorForSetCalendar(doctor)
+                                    }
                                     className="float-end h-[33px] bg-[#0284C7] text-white"
                                     iconPosition="end"
                                     icon={<CalendarCog size={18} />}
@@ -148,7 +154,9 @@ export default function AllDoctorPage() {
                                 </Button>
                                 <Button
                                     type="primary"
-                                    onClick={() => handleChangeDoctorForAppointment(doctor)}
+                                    onClick={() =>
+                                        handleChangeDoctorForAppointment(doctor)
+                                    }
                                     className="float-end h-[33px] bg-[#0284C7] text-white"
                                     iconPosition="end"
                                     icon={<Calendar size={18} />}
@@ -157,21 +165,22 @@ export default function AllDoctorPage() {
                                 </Button>
                                 <Button
                                     type="primary"
-                                    // onClick={() => handleChangeDoctor(doctor)}
+                                    onClick={() => handleChangeRouteToViewProfile(doctor.id)}
                                     className="float-end h-[33px] bg-white text-secondarySupperDarker"
                                     iconPosition="end"
                                     icon={<View size={18} />}
-                                >
-                                </Button>
+                                ></Button>
                             </div>
                         </div>
                     ))}
             </div>
-            <Paginate
-                totalPages={totalPages}
-                page={page}
-                onPageChange={(page) => setPage(page)}
-            />
+            {totalPages > 1 && (
+                <Paginate
+                    totalPages={totalPages}
+                    page={page}
+                    onPageChange={(page) => setPage(page)}
+                />
+            )}
         </div>
     )
 }

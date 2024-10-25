@@ -4,7 +4,10 @@ import { motion } from 'framer-motion'
 import { Input, Layout, Skeleton } from 'antd'
 import DoctorMedicalReport from './DoctorMedicalReport'
 import { ScanSearch } from 'lucide-react'
-import { useLazyGetAllMedicalReportQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
+import {
+    useLazyGetAllMedicalReportQuery,
+    useLazyGetAllMedicalReportStaffQuery,
+} from '@/stores/services/doctor/doctorTreatmentTurn'
 import dayjs from 'dayjs'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -29,7 +32,7 @@ export interface DayMedicalReports {
     medicalReports: MedicalReport[]
     dayOfDate: string
 }
-let a = 0;
+let a = 0
 export default function StaffDoctorResultAppointment() {
     const [lastReportDate, setLastReportDate] = useState<string | null>(
         dayjs(Date.now()).format('YYYY-MM-DD'),
@@ -39,11 +42,11 @@ export default function StaffDoctorResultAppointment() {
     const { ref, inView } = useInView({ threshold: 1 })
     const [allReports, setAllReports] = useState<DayMedicalReports[]>([])
     const [groupedReportsFunc, { isFetching, data }] =
-        useLazyGetAllMedicalReportQuery()
+        useLazyGetAllMedicalReportStaffQuery()
 
     const handleFetchReports = async (searchVal?: string) => {
         if (prevLength.current == 0 || isFetching) return
-        
+
         let result = await groupedReportsFunc({
             pageSize: 6,
             lastReportDate: lastReportDate!,
@@ -79,8 +82,8 @@ export default function StaffDoctorResultAppointment() {
     )
 
     useEffect(() => {
-        if(!searchValue) {
-            return;
+        if (!searchValue) {
+            return
         }
         debouncedFetchReports(searchValue)
     }, [searchValue])
@@ -95,7 +98,7 @@ export default function StaffDoctorResultAppointment() {
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             exit={{ opacity: 0 }}
-            className='min-h-screen'
+            className="min-h-screen"
         >
             <Layout className="bg-dashboardBackground">
                 <Content style={{ padding: '0px' }}>

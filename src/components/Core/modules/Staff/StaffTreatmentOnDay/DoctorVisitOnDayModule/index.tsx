@@ -15,13 +15,14 @@ type TProps = {
 }
 
 export default function StaffDoctorVisitInDayModule({ doctorId }: TProps) {
-    const searchParams = useSearchParams();
-    const {
-        doctorName, specialties, dutyStatus, avatarUrl
-    } = {
+    const searchParams = useSearchParams()
+    const { doctorName, specialties, dutyStatus, avatarUrl } = {
         doctorName: searchParams.get('doctorName') || 'Tên bác sĩ',
         specialties: searchParams.get('specialties') || 'Nội tim mạch',
-        dutyStatus: (searchParams.get('isOnDuty') == 'true' ? 'Đang trực' : 'Đang nghỉ ngơi'),
+        dutyStatus:
+            searchParams.get('isOnDuty') == 'true'
+                ? 'Đang trực'
+                : 'Đang nghỉ ngơi',
         avatarUrl: searchParams.get('avatarUrl') || '',
     }
     const now = useMemo(() => dayjs(new Date(Date.now())).toISOString(), [])
@@ -74,7 +75,7 @@ export default function StaffDoctorVisitInDayModule({ doctorId }: TProps) {
                             {dayjs(Date.now()).format('DD/MM/YYYY')}
                         </h6>
                     </div>
-                    <div className="relative w-[100%] cursor-pointer flex-row gap-5 rounded-xl bg-white p-5 shadow-third transition-all hover:bg-slate-50">
+                    <div className="relative mb-5 w-[100%] cursor-pointer flex-row gap-5 rounded-xl bg-white p-5 shadow-third transition-all hover:bg-slate-50">
                         <div className="flex">
                             <div>
                                 <Avatar
@@ -99,7 +100,7 @@ export default function StaffDoctorVisitInDayModule({ doctorId }: TProps) {
                             ></div>
                             <div className="self-end">
                                 <Button
-                                    type='primary'
+                                    type="primary"
                                     onClick={() => {}}
                                     className="float-end h-[33px] bg-[#0284C7] text-white"
                                     iconPosition="end"
