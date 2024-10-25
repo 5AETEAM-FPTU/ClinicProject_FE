@@ -1,31 +1,28 @@
 'use client'
-import React, { use, useEffect, useState } from 'react'
-import {
-    Input,
-    Upload,
-    Select,
-    Button,
-    message,
-    Tag,
-    SelectProps,
-    Skeleton,
-    Form,
-} from 'antd'
-import { ImageUp } from 'lucide-react'
-import './style.css'
-import TextArea from 'antd/es/input/TextArea'
-import EditorTinymce, {
-    setEditorContent,
-} from '@/components/Core/common/EditorTinymce'
-import axios from 'axios'
+import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
+import useEditor from '@/hooks/useEditor'
 import {
     useGetAllActiveCategoriesQuery,
     useGetPostByIdQuery,
     useUpdatePostMutation,
 } from '@/stores/services/blog/blog'
+import {
+    Button,
+    Form,
+    Input,
+    message,
+    Select,
+    SelectProps,
+    Skeleton,
+    Tag,
+    Upload,
+} from 'antd'
+import TextArea from 'antd/es/input/TextArea'
+import axios from 'axios'
 import { motion } from 'framer-motion'
-import useEditor from '@/hooks/useEditor'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
+import { ImageUp } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import './style.css'
 
 const { Option } = Select
 type TagRender = SelectProps['tagRender']

@@ -2,14 +2,11 @@
 import EditorTinymce, {
     getEditorHtmlContent,
 } from '@/components/Core/common/EditorTinymce'
-import { useAppDispatch } from '@/hooks/redux-toolkit'
-import { useUpdateDoctorDescriptionMutation } from '@/stores/services/doctor/doctorSettings'
-import { Button, Form, message } from 'antd'
+import { useUpdateStaffDescriptionMutation } from '@/stores/services/staff/staffSettings'
+import { Button, message } from 'antd'
 import { Edit } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { useUpdateUserDescriptionMutation } from '@/stores/services/user/userSettings'
 import { StaffSettingProfileComponetProps } from '../StaffUpdateGeneral'
-import { useUpdateStaffDescriptionMutation } from '@/stores/services/staff/staffSettings'
 
 
 export default function StaffUpdateDescription({

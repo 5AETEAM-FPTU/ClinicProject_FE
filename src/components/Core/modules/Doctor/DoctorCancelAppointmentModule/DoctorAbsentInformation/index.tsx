@@ -57,7 +57,7 @@ interface IProps {
     payload: ICancelAppointment
     refetch: () => void
 }
-
+ 
 export default function DoctorAbsentInformation({ payload, refetch }: IProps) {
     const { handleTrigger, handleTriggerPayload, trigger } = useTrigger()
 

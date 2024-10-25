@@ -155,7 +155,7 @@ export default function DetailPrescription() {
 
                     <div className="pt-4">
                         <Title level={4} className="pb-2 text-[16px] font-bold">
-                            Đơn thuốc
+                            Đơn dịch vụ
                         </Title>
                         <Card className="shadow-third">
                             <Table

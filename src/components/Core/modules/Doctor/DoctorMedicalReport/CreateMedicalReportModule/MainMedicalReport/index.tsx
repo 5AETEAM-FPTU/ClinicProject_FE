@@ -1,20 +1,16 @@
 'use client'
 
-import EditorTinymce, {
-    getEditorHtmlContent,
-} from '@/components/Core/common/EditorTinymce'
+import { useUpdateMainMedicalReportInformationMutation } from '@/stores/services/report/medicalReport'
 import { Button, Form, Input, message, Skeleton } from 'antd'
 import { FormProps } from 'antd/lib'
-import { useSearchParams } from 'next/navigation'
+import dayjs from 'dayjs'
+import { Save } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import CreateMedicalServiceModal from '../../ModalMedicalReport/CreateMedidalServiceModal'
-import { Save } from 'lucide-react'
-import UpdateMedicalServiceModal from '../../ModalMedicalReport/UpdateMedicalServiceModal'
 import CreatePrescriptionModal from '../../ModalMedicalReport/CreatePrescriptionModal'
-import { MedicalReportResponseBody, TMedicalReport } from '../../ViewMedialReportModule'
-import dayjs from 'dayjs'
-import { useUpdateMainMedicalReportInformationMutation } from '@/stores/services/report/medicalReport'
-import { useRouter } from 'next/navigation'
+import UpdateMedicalServiceModal from '../../ModalMedicalReport/UpdateMedicalServiceModal'
+import { MedicalReportResponseBody } from '../../ViewMedialReportModule'
 
 type TProps = {
     payload: MedicalReportResponseBody

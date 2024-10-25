@@ -1,4 +1,4 @@
-import StaffoctorProfileModule from '@/components/Core/modules/User/DoctorProfileForStaffViewing'
+import StaffoctorProfileModule from '@/components/Core/modules/Staff/DoctorProfileForStaffViewing'
 import React from 'react'
 type TProps = {
     params: {doctorId: string}
