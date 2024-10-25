@@ -17,7 +17,7 @@ export default function MedicineIndicationView({
     )
     return (
         <>
-            <div className="mt-5 overflow-y-auto max-w-[900px] bg-[#FFFFFF] rounded-xl shadow-[0px_4px_12px_rgba(0,53,83,0.5)] p-4">
+            <div className="mt-5 overflow-y-auto max-w-[900px] bg-[#FFFFFF] rounded-xl shadow-third p-4">
                 <table className="min-w-full bg-[#FFFFFF] text-[#003553]">
                     <thead>
                         <tr className="bg-[#FFFFFF] text-center">

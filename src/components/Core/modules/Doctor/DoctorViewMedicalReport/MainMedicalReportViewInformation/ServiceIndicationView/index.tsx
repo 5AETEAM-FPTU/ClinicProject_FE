@@ -19,9 +19,10 @@ export default function ServiceIndication({ payload }: any) {
     useEffect(() => {
         refetch()
     }, [])
+    
     return (
         <>
-            <div className="mt-5 max-w-[900px] overflow-y-auto rounded-xl bg-[#FFFFFF] p-4 shadow-[0px_4px_12px_rgba(0,53,83,0.5)]">
+            <div className="mt-5 max-w-[900px] overflow-y-auto rounded-xl bg-[#FFFFFF] p-4 shadow-third">
                 <table className="min-w-full bg-[#FFFFFF] text-[#003553]">
                     <thead>
                         <tr className="bg-[#FFFFFF] text-center">

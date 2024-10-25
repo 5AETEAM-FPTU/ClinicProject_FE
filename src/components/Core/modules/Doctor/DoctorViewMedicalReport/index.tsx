@@ -59,6 +59,7 @@ export function DoctorViewMedicalReport() {
     const { report, refetch, isFetching } = useGetMedicalReportByIdQuery(
         reportId!,
         {
+            skip: !reportId,
             selectFromResult: ({ data, isFetching }) => ({
                 report: data?.body ?? {},
                 isFetching: isFetching,
@@ -68,7 +69,7 @@ export function DoctorViewMedicalReport() {
 
     useEffect(() => {
         refetch()
-    }, [])
+    }, [reportId])
 
 
     return (
