@@ -114,14 +114,14 @@ export default function FollowUpAppointment() {
                     <Input
                         onChange={(e) => setKeyword(e.target.value)}
                         placeholder="Tìm kiếm bệnh nhân"
-                        prefix={<Search className="text-[#003553] mr-[14px]" />}
-                        className="w-fit px-5 py-2 border rounded-[12px] border-[#003553] focus:shadow-none font-semibold"
+                        prefix={<Search className="text-secondaryDark mr-[14px]" />}
+                        className="w-fit px-5 py-2 border rounded-[12px] border-secondaryDark focus:shadow-none font-semibold"
                     />
                 </div>
                 <div className="grid lg:grid-cols-1 xl:grid-cols-3 gap-4">
                     {isFetching && <Skeleton.Button active className='h-[164px] w-full' />}
                     {!isFetching && patients.map((patient: any) => (
-                        <div key={patient.id} className='shadow-third py-3 px-[22px] rounded-[12px]'>
+                        <div key={patient.id} className='shadow-third py-5 px-[20px] rounded-[12px]'>
                             <div className="rounded-lg shadow-md flex">
                                 <Avatar src={patient.avatarUrl} shape='square' className="mr-4 w-16 h-16" />
                                 <div className="flex-grow">
@@ -136,9 +136,9 @@ export default function FollowUpAppointment() {
                                         </p>
                                     </div>
                                 </div>
-                                <button className='h-fit' onClick={() => { setIsExpanded(true); setPatientId(patient.id) }}>
+                                <Button  className='h-fit border-secondaryDark' onClick={() => { setIsExpanded(true); setPatientId(patient.id) }}>
                                     <ScanEye className="w-6 h-6 text-[#0284C7]" />
-                                </button>
+                                </Button>
                             </div>
                             <div className="flex justify-end items-center mt-2">
                                 <Popover
@@ -149,7 +149,7 @@ export default function FollowUpAppointment() {
                                     onOpenChange={(visible) => visible ? handlePopoverOpen(patient.id) : handlePopoverClose()}
                                 >
                                     <div className='flex justify-end'>
-                                        <Button className='mr-2 h-[34px] font-semibold rounded-[12px] bg-[#0284C7] text-[12px]' type='primary'>Tái khám</Button>
+                                        <Button className='h-[34px] font-semibold rounded-[12px] bg-[#0284C7] text-[12px]' type='primary'>Tái khám</Button>
                                     </div>
                                 </Popover>
                             </div>

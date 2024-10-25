@@ -43,11 +43,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
             )
             const expiredAt = claims.exp
 
-            const bufferTime = 4 * 60
+            const bufferTime = 4 * 60 * 60
 
             if (expiredAt! - Date.now() / 1000 < bufferTime) {
                 console.log(
-                    'Access token will expire within 4 minutes, refreshing token...',
+                    'Access token will expire within 4 hours, refreshing token...',
                 )
 
                 try {
