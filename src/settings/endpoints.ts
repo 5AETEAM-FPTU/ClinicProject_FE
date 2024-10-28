@@ -147,7 +147,10 @@ const blogEndpoints = {
 const generatePdfEndpoint = {
     GENERAL_PDF: '/api/generate-pdf/general-medical-report',
     ADOMINAL_PDF: '/api/generate-pdf/abdominal-ultrasound-report',
-    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report'
+    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report',
+
+    PRINT_MEDICINE_LIST : '/api/generate-pdf/medicine-report',
+    PRINT_SERVICE_LIST: '/api/generate-pdf/service-report',
 }
 const formServiceEndpoint = {
     CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',

@@ -260,7 +260,7 @@ export default function Component() {
                         Cật nhật
                     </Button>
                     :
-                    <Button onClick={navigateToConfirmAppointment} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full xl:w-auto">
+                    <Button type='primary' onClick={navigateToConfirmAppointment} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full xl:w-auto">
                         Xác nhận đặt lịch khám
                     </Button>
                 }
