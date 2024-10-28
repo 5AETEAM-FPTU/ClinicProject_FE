@@ -31,7 +31,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
     const [imageUrl, setImageUrl] = useState('')
     const [loading, setLoading] = useState(false)
     const [post, setPost] = useState<any>(null)
-    const { content, setContent, TinyMCEComponent } = useEditor('Hello World!');
+    const [content, setContent] = useState('');
     const [form] = Form.useForm()
     const { data: postResult, isFetching, refetch } = useGetPostByIdQuery(id)
     const [updatePost, { isLoading: isUpdateLoading }] = useUpdatePostMutation()
