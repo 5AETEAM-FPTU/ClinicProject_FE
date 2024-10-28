@@ -10,6 +10,8 @@ import {
     useGetNewestPostQuery,
 } from '@/stores/services/blog/blog'
 import dayjs from 'dayjs'
+import { useParams } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
 
 function MedicalNews() {
     const { data: newestPostResult } = useGetNewestPostQuery()
@@ -25,12 +27,17 @@ function MedicalNews() {
         setIsClient(true)
     }, [])
 
+    
+    const params = useParams()
+    const { t } = useTranslation(params?.locale as string, 'Landing')
+
+
     return (
         <div>
             <CommonSection
-                title={'Tin tức y tế'}
+                title={t('new_title')}
                 subtile={
-                    'Cập nhật các thông tin y tế hữu ích dành cho mọi khách hàng'
+                    t('new_sub')
                 }
                 tailCustomStyle="bg-gradient-to-b from-secondary to-white"
             >

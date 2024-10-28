@@ -59,5 +59,54 @@
     "banner_service_5": "Y tế tại nhà bệnh nhân",
     "banner_service_6": "Thanh toán qua hệ thống",
 
-    "request_email_description": "Bạn đã gửi đường link xác thực đến <strong>{{email}}</strong> để kích hoạt tài khoản"
+    "request_email_description": "Bạn đã gửi đường link xác thực đến <strong>{{email}}</strong> để kích hoạt tài khoản",
+
+    "who_we_are_title": "CHÚNG TÔI LÀ AI ?",
+    "who_we_are_subtitle": "Y đội ngũ bác sĩ đến từ phòng khám P-Clinic",
+    "who_we_are_description": "P-Clinic là phòng khám tư nhân chuyên về nội khoa, với sứ mệnh mang đến dịch vụ y tế chất lượng cao và cá nhân hóa cho mỗi bệnh nhân. Đội ngũ bác sĩ giàu kinh nghiệm của chúng tôi luôn tận tâm, chuyên nghiệp trong việc chẩn đoán và điều trị các bệnh lý nội khoa, từ những bệnh thường gặp đến những tình trạng phức tạp hơn. Chúng tôi không chỉ cung cấp dịch vụ khám trực tiếp mà còn hỗ trợ tư vấn trực tuyến, đặt lịch khám dễ dàng và giao thuốc tận nhà, giúp bạn tiếp cận y tế nhanh chóng, thuận tiện. Với P-Clinic sức khỏe của bạn luôn được chăm sóc một cách toàn diện và bền vững.",
+    "who_we_are_slogan": "Sức khỏe của bạn là ưu tiên hàng đầu của chúng tôi!",
+
+    "our_team_title": "ĐỘI NGŨ TẠI P-LINIC",
+    "our_team_sub": "Ân cần - Tận tâm - Uy tín - Chất lượng",
+    "our_team_rating": "Đánh giá",
+    "our_team_numberExam": "Lượt khám",
+
+    "specialist_title": "CHUYÊN KHOA NỘI",
+    "specialist_sub": "Tất cả các chuyên khoa tại P-Clinic",
+    "specialist_family_doctor": "Bác sĩ gia đình",
+    "specialist_general_internal": "Nội tổng quát",
+    "specialist_internal_cardiology" : "Nội Tim Mạch",
+    "specialist_internal_neurology" : "Nội Thần Kinh",
+    "specialist_internal_infectious_diseases" : "Nội Truyền Nhiễm",
+    "specialist_endocrinology_and_urology" : "Nội Tiết Niệu",
+    "specialist_internal_respiration" : "Nội Hô Hấp",
+    "specialist_internal_thoracic_cage" : "Lồng Ngưc - Mạch Máu",
+    "specialist_internal_digestion" : "Nội Tiêu Hóa",
+    "specialist_internal_musculoskeletal" : "Nội Cơ Xương Khớp",
+
+    "feedback_title": "CẢM NHẬN TỪ KHÁCH HÀNG",
+    "feedback_sub": "Cảm nhận trực quang từ những khách hàng từng khám bệnh tại P-Clinic",
+
+    "new_title": "TIN TỨC Y TẾ",
+    "new_sub": "Cập nhật các thông tin y tế hữu ích dành cho mọi khách hàng",
+
+    "contact_title": "ĐỊA CHỈ - THÔNG TIN - LIÊN HỆ",
+    "contact_sub": "Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng, Việt Nam",
+    "contact_guilty": "Submit the form directly to the system",
+
+    "work_name": "Phòng khám P-Clinic",
+    "work_title": "Thời gian hoạt động",
+    "work_start": "Thời gian mở cửa",
+    "work_2_7": "Từ thứ 2 đến thứ 7",
+    "work_end": "Thời gian nghỉ trong tuần",
+    "work_rest": "Chủ nhật Đóng cửa",
+
+    "form_title": "Gửi biễu mẫu trực tiếp đến hệ thống",
+    "form_contact": "Thông tin liên hệ của bạn",
+    "form_name": "Họ và Tên",
+    "form_email": "Email hoặc số điện thoại",
+    "form_gender": "Giới tính",
+    "form_age": "Age",
+    "form_message": "Nhập yêu cầu hoặc thắc mắc của bạn với chúng tôi",
+    "form_sending": "Xác nhận gửi"
 }

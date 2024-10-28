@@ -57,5 +57,54 @@
     "banner_service_3": "Video Health Consultation",
     "banner_service_4": "Quick Rapid Testing",
     "banner_service_5": "Home Medical Care",
-    "banner_service_6": "System Payment"
+    "banner_service_6": "System Payment",
+
+    "who_we_are_title": "Who we are ?",
+    "who_we_are_subtitle": "Medical team of doctors from P-Clinic clinic",
+    "who_we_are_description": "is a private clinic specializing in internal medicine, with a mission to bring high quality and personalized medical services to each patient. Our team of experienced doctors is dedicated and professional in the diagnosis and treatment of medical conditions, from common diseases to more complex conditions.We not only provide direct medical examination services but also support online consultation, easy appointment scheduling and home delivery of medicine, helping you access medical care quickly and conveniently. With P-Clinic, your health is always cared for in a comprehensive and sustainable way.",
+    "who_we_are_slogan": "Your health is our top priority!",
+
+    "our_team_title": "TEAM AT P-LINIC",
+    "our_team_sub": "Considerate - Peace of mind - Prestige - Quality",
+    "our_team_rating": "Rating",
+    "our_team_numberExam": "Visits",
+
+    "specialist_title": "INTERNAL SPECIALIST",
+    "specialist_sub": "All specialties at P-Clinic",
+    "specialist_family_doctor": "Family doctor",
+    "specialist_general_internal": "General internal",
+    "specialist_internal_cardiology" : "Internal Cardiology",
+    "specialist_internal_neurology" : "Internal Neurology",
+    "specialist_internal_infectious_diseases" : "Internal Infectious Diseases",
+    "specialist_endocrinology_and_urology" : "Endocrinology and Urology",
+    "specialist_internal_respiration" : "Internal Respiration",
+    "specialist_internal_thoracic_cage" : "Thoracic Cage - Blood Vessels",
+    "specialist_internal_digestion" : "Internal Digestion",
+    "specialist_internal_musculoskeletal" : "Internal Musculoskeletal",
+
+    "feedback_title": "REVIEWS FROM CUSTOMERS",
+    "feedback_sub": "Visual perception from customers who have had medical examinations at P-Clinic",
+
+    "new_title": "MEDICAL NEWS",
+    "new_sub": "Update useful medical information for all customers",
+
+    "contact_title": "ADDRESS - INFORMATION - CONTACT",
+    "contact_sub": "FPT City Urban Area, Ngu Hanh Son, Da Nang, Vietnam",
+    "contact_guilty": "Submit the form directly to the system",
+    
+    "work_name": "Clinic",
+    "work_title": "Operating time",
+    "work_start": "Opening hours",
+    "work_2_7": "Monday to Friday",
+    "work_end": "Time off during the week",
+    "work_rest": "Sunday Closed",
+
+    "form_title": "Your contact information",
+    "form_contact": "Your contact information",
+    "form_name": "Full Name",
+    "form_email": "Email or phone number",
+    "form_gender": "Gender",
+    "form_age": "Age",
+    "form_message": "Enter your request or query with us",
+    "form_sending": "Send"
 }

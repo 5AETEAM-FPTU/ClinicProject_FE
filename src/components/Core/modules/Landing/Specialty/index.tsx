@@ -15,15 +15,20 @@ import NoiTietNieu from '@public/landing/specialty/NoiTietNieu.png'
 import NoiTimMach from '@public/landing/specialty/NoiTimMach.png'
 import NoiTongQuat from '@public/landing/specialty/NoiTongQuat.png'
 import NoiTruyenNhiem from '@public/landing/specialty/NoiTruyenNhiem.png'
+import { useParams } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
 
 function Specialty() {
+    const params = useParams()
+    const { t } = useTranslation(params?.locale as string, 'Landing')
+
     return (
         <div
-            
+
         >
             <CommonSection
-                title={'Chuyên khoa nội'}
-                subtile={'Tất cả các chuyên khoa tại P-Clinic'}
+                title={t('specialist_title')}
+                subtile={t('specialist_sub')}
             >
                 <div className="flex flex-row w-full justify-center sm:flex-col gap-[16px] sm:gap-[30px] p-0 sm:px-[80px]">
                     <div className="flex flex-col sm:flex-row justify-between">
@@ -36,7 +41,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Bác sĩ gia đình
+                                {t('specialist_family_doctor')}
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[16px]">
@@ -48,7 +53,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội tổng quát
+                                {t('specialist_general_internal')}
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[16px]">
@@ -60,7 +65,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Tim Mạch
+                                {t('specialist_internal_cardiology')}
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[16px]">
@@ -72,7 +77,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Thần Kinh
+                                {t('specialist_internal_neurology')}
                             </p>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[16px]">
@@ -84,7 +89,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Truyền Nhiễm
+                                {t('specialist_internal_infectious_diseases')}
                             </p>
                         </div>
                     </div>
@@ -98,7 +103,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Tiết Niệu
+                                {t('specialist_endocrinology_and_urology')}
                             </p>
                         </div>
                         <div className="ic flex flex-col gap-[16px] items-center justify-center">
@@ -110,7 +115,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Hô Hấp
+                                {t('specialist_internal_respiration')}
                             </p>
                         </div>
                         <div className="ic flex flex-col gap-[16px] items-center justify-center">
@@ -122,7 +127,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Lồng Ngưc - Mạch Máu
+                                {t('specialist_internal_thoracic_cage')}
                             </p>
                         </div>
                         <div className="ic flex flex-col gap-[16px] items-center justify-center">
@@ -134,7 +139,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Tiêu Hóa
+                                {t('specialist_internal_digestion')}
                             </p>
                         </div>
                         <div className="ic flex flex-col gap-[16px] items-center justify-center">
@@ -146,7 +151,7 @@ function Specialty() {
                                 ></Image>
                             </div>
                             <p className="font-semibold text-secondaryDark">
-                                Nội Cơ Xương Khớp
+                                {t('specialist_internal_musculoskeletal')}
                             </p>
                         </div>
                     </div>

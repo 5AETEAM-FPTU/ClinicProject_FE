@@ -43,7 +43,7 @@ function Banner() {
                                 {t('banner_platform')}
                             </h1>
                             <div className={montserrat.className}>
-                                <div className="relative">
+                                <div className="relative"> 
                                     <h1
                                         className="sm:max-w-[850px] max-w-[360px]  text-center text-[28px] sm:text-[46px] font-bold leading-none text-secondaryDarker"
                                         dangerouslySetInnerHTML={{

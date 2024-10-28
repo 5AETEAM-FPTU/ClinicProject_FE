@@ -15,6 +15,8 @@ import Hospital from '@public/landing/icons/hospital.svg'
 import Dollar from '@public/landing/icons/dollar.svg'
 
 import { motion } from 'framer-motion'
+import { useTranslation } from '@/app/i18n/client'
+import { useParams } from 'next/navigation'
 
 function OurTeam() {
     const settings = {
@@ -107,13 +109,16 @@ function OurTeam() {
 
         // Add more doctor objects here...
     ]
+    const params = useParams()
+    const { t } = useTranslation(params?.locale as string, 'Landing')
+
     return (
         <div
             id='our-team'
         >
             <CommonSection
-                title={'đội ngũ tại p-linic'}
-                subtile={'Ân cần - Tận tâm - Uy tín - Chất lượng'}
+                title={t('our_team_title')}
+                subtile={t('our_team_sub')}
                 tailCustomStyle="bg-gradient-to-b from-secondaryLight to-white"
             >
                 <Carousel settings={settings}>
@@ -137,7 +142,7 @@ function OurTeam() {
                                 <div>
                                     <div className="flex w-full flex-row justify-between bg-secondary p-[10px]">
                                         <p className="flex items-center gap-1 text-[12px] font-bold">
-                                            Đánh giá:{' '}
+                                            {t('our_team_rating')}:{' '}
                                             <span className="flex items-center justify-center gap-1 text-orange-600">
                                                 4.5{' '}
                                                 <span className="mb-[3px]">
@@ -146,7 +151,7 @@ function OurTeam() {
                                             </span>
                                         </p>
                                         <p className="flex items-center gap-1 text-[12px] font-bold">
-                                            Lượt khám:
+                                            {t('our_team_numberExam')}:{' '}
                                             <span className="flex items-center justify-center gap-1 text-orange-600">
                                                 100
                                             </span>
