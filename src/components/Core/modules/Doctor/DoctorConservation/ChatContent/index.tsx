@@ -312,7 +312,7 @@ export default function ChatContent() {
                 },
                 (senderId: string, chatContentId: string) => {
                     if (senderId == userId) {
-                        console.log('Not in remove typing')
+                        console.log('Not in remove typing1')
                         setMessages((messagePrev) =>
                             messagePrev.map((msg) => {
                                 if (msg.chatContentId == chatContentId) {

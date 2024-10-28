@@ -7,6 +7,8 @@ import React from 'react'
 import Slider, { Settings } from 'react-slick'
 
 import { motion } from 'framer-motion'
+import { useParams } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
 
 function CustomerFeedback() {
     const settings = {
@@ -71,14 +73,18 @@ function CustomerFeedback() {
         },
     ]
 
+    const params = useParams()
+    const { t } = useTranslation(params?.locale as string, 'Landing')
+
     return (
         <div
             
         >
             <CommonSection
-                title={'Cảm nhận từ khách hàng'}
+                title={t('feedback_title')}
                 subtile={
-                    'Cảm nhận trực quang từ những khách hàng từng khám bệnh tại P-Clinic'
+                    t(
+                        'feedback_sub')
                 }
                 tailCustomStyle="bg-gradient-to-b from-white to-secondary"
             >
