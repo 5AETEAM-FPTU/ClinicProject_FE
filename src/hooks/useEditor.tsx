@@ -50,7 +50,7 @@ const TinyMCEComponent = ({ content, editorRef }: { content: string, editorRef: 
                     windowAny.tinymce.remove(`textarea#elm1`);
                 }
             }
-        }, 1000);
+        }, 0);
 
     }, [windowAny.tinymce]);
     return (
