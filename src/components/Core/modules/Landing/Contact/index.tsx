@@ -18,10 +18,6 @@ import useEditor from '@/hooks/useEditor'
 
 function Contact() {
     const [createAContact, { isLoading }] = useCreateNewContactMutation()
-    const [isClient, setIsClient] = useState<boolean>(false)
-    useEffect(() => {
-        setIsClient(true)
-    }, [])
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()

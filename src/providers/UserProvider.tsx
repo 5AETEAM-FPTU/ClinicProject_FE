@@ -86,10 +86,9 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 
             <Script
                 src="/assets/libs/tinymce/jquery.tinymce.min.js"
-                strategy="afterInteractive"
+                strategy="beforeInteractive"
                 onLoad={() => console.log("jquery loaded")}
             />
-            {/* Tải TinyMCE script sau khi jQuery đã tải */}
             <Script
                 src="/assets/libs/tinymce/tinymce.min.js"
                 strategy="afterInteractive"
