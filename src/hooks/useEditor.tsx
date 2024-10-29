@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 const TinyMCEComponent = ({ content, editorRef }: { content: string, editorRef: any }) => {
-    let windowAny = window as any;
-
+    let windowAny = typeof window !== 'undefined' && window as any;
     const initTinyMCE = () => {
+        let windowAny = window as any;
         try {
+            console.log("initTinyMCE: " + windowAny.tinymce);
             if (typeof window !== 'undefined' && windowAny.tinymce) {
+                console.log("initTinyMCE");
                 windowAny.tinymce.init({
                     selector: `#elm1`,
                     height: 300,
@@ -37,17 +39,20 @@ const TinyMCEComponent = ({ content, editorRef }: { content: string, editorRef: 
     };
 
     useEffect(() => {
-        console.log("init");
-        if (typeof window !== 'undefined' && windowAny.tinymce) {
-            windowAny.tinymce.remove(`textarea#elm1`);
-        }
-        initTinyMCE();
-        return () => {
+        setTimeout(() => {
+            let windowAny = window as any;
             if (typeof window !== 'undefined' && windowAny.tinymce) {
                 windowAny.tinymce.remove(`textarea#elm1`);
             }
-        }
-    }, []);
+            initTinyMCE();
+            return () => {
+                if (typeof window !== 'undefined' && windowAny.tinymce) {
+                    windowAny.tinymce.remove(`textarea#elm1`);
+                }
+            }
+        }, 1000);
+
+    }, [windowAny.tinymce]);
     return (
         <div>
             {/* Textarea cho TinyMCE */}
