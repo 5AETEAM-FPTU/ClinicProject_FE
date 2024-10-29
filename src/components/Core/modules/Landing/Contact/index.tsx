@@ -26,7 +26,7 @@ function Contact() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()
 
-    const { content, getContentFromEditor, TinyMCEComponent } = useEditor("");
+    const { content, getContentFromEditor, TinyMCEComponent } = useEditor(""); 
 
     const sendContactToAdmin = useMutation(
         api._user_notifications.functions.sendUserNotification,
