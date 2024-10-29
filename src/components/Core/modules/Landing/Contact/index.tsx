@@ -52,6 +52,7 @@ function Contact() {
 
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
         try {
+            const content = getContentFromEditor();
             if (!content) {
                 message.error(
                     'Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn',
@@ -59,7 +60,6 @@ function Contact() {
                 return
             }
             await createAContact({ ...values, content: getContentFromEditor() })
-            console.log('onFinishForm')
             handleSendContactToAdmin(values.fullName, getContentFromEditor())
             message.success('Gửi thông tin thành công')
             myForm.resetFields()
