@@ -91,7 +91,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
             />
             <Script
                 src="/assets/libs/tinymce/tinymce.min.js"
-                strategy="afterInteractive"
+                strategy="beforeInteractive"
                 onLoad={() => console.log("tinymce loaded")}
             />
             <div className={loading ? 'pointer-events-none' : ''}>
