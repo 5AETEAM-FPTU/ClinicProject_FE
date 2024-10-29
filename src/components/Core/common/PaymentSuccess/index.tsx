@@ -62,7 +62,7 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
                 senderAvatarUrl: `${user.avatarUrl}`,
                 senderId: `${userId}`,
                 senderName: 'Người dùng',
-                topic: 'Tư vấn',
+                topic: 'Đặt lịch',
                 href: `/`,
             })
         } catch (error) {}
