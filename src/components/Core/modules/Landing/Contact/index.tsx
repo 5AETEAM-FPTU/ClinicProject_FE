@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import CommonSection from '@/components/Core/common/CommonSection'
 
 import { useTranslation } from '@/app/i18n/client'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 import { constants } from '@/settings'
 import { useCreateNewContactMutation } from '@/stores/services/contact'
 import { api } from '@convex/_generated/api'
@@ -15,6 +14,7 @@ import { useMutation } from 'convex/react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
+import useEditor from '@/hooks/useEditor'
 
 function Contact() {
     const [createAContact, { isLoading }] = useCreateNewContactMutation()
@@ -26,7 +26,7 @@ function Contact() {
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()
 
-    const [content, setContent] = useState('')
+    const { content, getContentFromEditor, TinyMCEComponent } = useEditor("");
 
     const sendContactToAdmin = useMutation(
         api._user_notifications.functions.sendUserNotification,
@@ -62,9 +62,9 @@ function Contact() {
                 )
                 return
             }
-            await createAContact({ ...values, content })
+            await createAContact({ ...values, content: getContentFromEditor() })
             console.log('onFinishForm')
-            handleSendContactToAdmin(values.fullName, content)
+            handleSendContactToAdmin(values.fullName, getContentFromEditor())
             message.success('Gửi thông tin thành công')
             myForm.resetFields()
         } catch (error) {
@@ -305,12 +305,7 @@ function Contact() {
                                     </p>
                                     <Row gutter={24}>
                                         <Col span={24}>
-                                            {isClient && (
-                                                <TinyMCEEditor
-                                                    content={content}
-                                                    setContent={setContent}
-                                                />
-                                            )}
+                                            {TinyMCEComponent}
                                         </Col>
                                     </Row>
                                 </div>

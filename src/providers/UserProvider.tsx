@@ -12,6 +12,7 @@ import { setLoaded, setLoading } from '@/stores/features/loading'
 import { message } from 'antd'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import Script from 'next/script'
 
 function UserProvider({ children }: { children: React.ReactNode }) {
     const dispatch = useAppDispatch()
@@ -82,6 +83,18 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     return (
         <>
             {loading && <RingLoaderComponent />}
+
+            <Script
+                src="/assets/libs/tinymce/jquery.tinymce.min.js"
+                strategy="afterInteractive"
+                onLoad={() => console.log("jquery loaded")}
+            />
+            {/* Tải TinyMCE script sau khi jQuery đã tải */}
+            <Script
+                src="/assets/libs/tinymce/tinymce.min.js"
+                strategy="afterInteractive"
+                onLoad={() => console.log("tinymce loaded")}
+            />
             <div className={loading ? 'pointer-events-none' : ''}>
                 {children}
             </div>
