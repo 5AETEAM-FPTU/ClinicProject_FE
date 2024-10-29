@@ -96,6 +96,10 @@ export default function Component() {
             }).toString()}`, { maxAge: 60 * 10 });
             return;
         }
+        if (role !== 'user') {
+            message.error('Bạn không phải là user để đặt lịch');
+            return;
+        }
         router.push(`/user/treatment-calendar/booking/confirm?${new URLSearchParams({
             fullName: params.get('fullName') || '',
             doctorId: params.get('doctorId') || '',
