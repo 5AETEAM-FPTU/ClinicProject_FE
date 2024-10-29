@@ -10,7 +10,7 @@ import { Button, Radio, message } from 'antd'
 import { motion } from 'framer-motion'
 import { BadgeDollarSign, SquarePen } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
@@ -25,6 +25,10 @@ export default function AppointmentConfirmation() {
     const [createAnAppointment] = useCreateAnAppointmentMutation()
     const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [isClient, setIsClient] = useState<boolean>(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, [])
     const handleBack = () => {
         const currentParams = new URLSearchParams(window.location.search)
         router.push(
@@ -169,7 +173,9 @@ export default function AppointmentConfirmation() {
                             <p className="text-[20px] font-semibold text-secondarySupperDarker">
                                 Mô tả thêm:
                             </p>
-                            <TinyMCEEditor content={content} setContent={setContent} />
+                            {
+                                isClient && <TinyMCEEditor content={content} setContent={setContent} />
+                            }
                         </div>
                         <div className="mt-4 flex items-center">
                             <p className="text-base font-semibold text-secondarySupperDarker">

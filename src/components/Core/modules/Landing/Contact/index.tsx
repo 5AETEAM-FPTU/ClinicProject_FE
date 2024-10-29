@@ -1,8 +1,7 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import CommonSection from '@/components/Core/common/CommonSection'
-
 
 import { useTranslation } from '@/app/i18n/client'
 import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
@@ -18,17 +17,25 @@ import Image from 'next/image'
 import { useParams } from 'next/navigation'
 
 function Contact() {
-    const [createAContact, { isLoading }] = useCreateNewContactMutation();
-
+    const [createAContact, { isLoading }] = useCreateNewContactMutation()
+    const [isClient, setIsClient] = useState<boolean>(false)
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()
 
     const [content, setContent] = useState('')
 
-    const sendContactToAdmin = useMutation(api._user_notifications.functions.sendUserNotification)
+    const sendContactToAdmin = useMutation(
+        api._user_notifications.functions.sendUserNotification,
+    )
 
-    const handleSendContactToAdmin = async (fullName: string, description: string) => {
+    const handleSendContactToAdmin = async (
+        fullName: string,
+        description: string,
+    ) => {
         try {
             await sendContactToAdmin({
                 receiverId: '1a6c3e77-4097-40e2-b447-f00d1f82cf78', // admin
@@ -39,7 +46,7 @@ function Contact() {
                 senderAvatarUrl: ``,
                 senderId: '',
                 senderName: `Người dùng: ${fullName}`,
-                topic: "Liên hệ",
+                topic: 'Liên hệ',
                 href: '',
             })
         } catch (error) {
@@ -50,14 +57,16 @@ function Contact() {
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
         try {
             if (!content) {
-                message.error('Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn')
-                return;
+                message.error(
+                    'Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn',
+                )
+                return
             }
             await createAContact({ ...values, content })
             console.log('onFinishForm')
             handleSendContactToAdmin(values.fullName, content)
-            message.success("Gửi thông tin thành công")
-            myForm.resetFields();
+            message.success('Gửi thông tin thành công')
+            myForm.resetFields()
         } catch (error) {
             message.error(t('updateError'))
         }
@@ -66,8 +75,8 @@ function Contact() {
     return (
         <div id="contact">
             <CommonSection
-                title={'địa chỉ - thông tin - liên hệ'}
-                subtile={'Khu đô thị FPT City, Ngũ Hành Sơn, Đà Nẵng, Việt Nam'}
+                title={t('contact_title')}
+                subtile={t('contact_sub')}
                 tailCustomStyle="bg-gradient-to-b from-white to-secondaryLight"
             >
                 <div className="flex flex-col gap-[40px]">
@@ -88,22 +97,22 @@ function Contact() {
                         <div className="flex h-fit w-full flex-col gap-[10px] sm:w-1/2">
                             {' '}
                             <p className="text-end text-secondaryDark">
-                                Thời gian hoạt động
+                                {t('work_title')}
                             </p>
                             <div className="flex h-fit w-full flex-col gap-[15px] rounded-xl border-2 border-dashed border-secondaryDark bg-white p-[20px] sm:h-[348px]">
                                 <div>
                                     <h3 className="text-end text-[20px] font-bold">
-                                        Phòng khám{' '}
+                                        {t('work_name')}{' '}
                                         <span className="text-secondaryDark">
                                             P-Clinic
                                         </span>
                                     </h3>
                                     <p className="text-end font-semibold text-secondaryDark">
-                                        Thời gian mở cửa:
+                                        {t('work_start')}
                                     </p>
                                     <div className="flex h-fit w-full flex-row items-end justify-end gap-1">
                                         <div className="rounded-xl bg-secondaryDark px-[15px] py-[10px] text-[14px] font-semibold text-white sm:px-[20px] sm:py-[16px] sm:text-[20px]">
-                                            <p>Từ thứ 2 đến thứ 7</p>
+                                            <p>{t('work_2_7')}</p>
                                         </div>
                                         <div className="rounded-xl bg-secondaryDark px-[15px] py-[10px] text-[14px] font-semibold text-white sm:px-[20px] sm:py-[16px] sm:text-[20px]">
                                             <p>7:00 AM - 6:00 PM</p>
@@ -112,11 +121,11 @@ function Contact() {
                                 </div>
                                 <div>
                                     <p className="text-end font-semibold text-secondaryDark">
-                                        Thời gian nghỉ trong tuần
+                                        {t('work_end')}
                                     </p>
                                     <div className="flex h-fit w-full flex-row items-end justify-end gap-1">
                                         <div className="ms:px-[20px] rounded-xl bg-red-600 px-[15px] py-[10px] text-[14px] font-semibold text-white sm:py-[16px] sm:text-[20px]">
-                                            <p>Chủ nhật Đóng của</p>
+                                            <p>{t('work_rest')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -147,7 +156,7 @@ function Contact() {
                     <div className="flex h-fit w-full flex-col gap-2">
                         <div>
                             <p className="flex text-secondaryDark">
-                                Gửi biễu mẫu trực tiếp đến hệ thống
+                                {t('form_title')}
                             </p>
                         </div>
                         <div className="h-full w-full rounded-xl bg-white p-5 shadow-secondary">
@@ -158,7 +167,7 @@ function Contact() {
                             >
                                 <div>
                                     <h3 className="mb-2 text-[16px] font-bold">
-                                        Thông tin liên hệ của bạn
+                                        {t('form_contact')}
                                     </h3>
                                     <Row gutter={24}>
                                         <Col
@@ -168,7 +177,7 @@ function Contact() {
                                         >
                                             <Form.Item
                                                 name={'fullName'}
-                                                label="Họ và Tên"
+                                                label={t('form_name')}
                                                 wrapperCol={{ span: 24 }}
                                                 rules={[
                                                     {
@@ -178,7 +187,9 @@ function Contact() {
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder="Họ và tên" />
+                                                <Input
+                                                    placeholder={t('form_name')}
+                                                />
                                             </Form.Item>
                                         </Col>
                                         <Col
@@ -188,9 +199,9 @@ function Contact() {
                                         >
                                             <Form.Item
                                                 name={'emailOrPhone'}
-                                                label="Email hoặc số điện thoại"
+                                                label={t('form_email')}
                                                 wrapperCol={{ span: 24 }}
-                                                validateTrigger='onBlur'
+                                                validateTrigger="onBlur"
                                                 rules={[
                                                     {
                                                         required: true,
@@ -200,25 +211,42 @@ function Contact() {
                                                     {
                                                         validator(_, value) {
                                                             if (!value) {
-                                                                return Promise.resolve(); // If empty, handled by 'required'
+                                                                return Promise.resolve() // If empty, handled by 'required'
                                                             }
 
                                                             // Email regex
-                                                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                            const emailRegex =
+                                                                /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
                                                             // Vietnamese phone number regex (starts with +84 or 0 and has 9 or 10 digits)
-                                                            const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+                                                            const phoneRegex =
+                                                                /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/
 
-                                                            if (emailRegex.test(value) || phoneRegex.test(value)) {
-                                                                return Promise.resolve();
+                                                            if (
+                                                                emailRegex.test(
+                                                                    value,
+                                                                ) ||
+                                                                phoneRegex.test(
+                                                                    value,
+                                                                )
+                                                            ) {
+                                                                return Promise.resolve()
                                                             }
 
-                                                            return Promise.reject(new Error('Vui lòng nhập email hoặc số điện thoại hợp lệ'));
-                                                        }
-                                                    }
+                                                            return Promise.reject(
+                                                                new Error(
+                                                                    'Vui lòng nhập email hoặc số điện thoại hợp lệ',
+                                                                ),
+                                                            )
+                                                        },
+                                                    },
                                                 ]}
                                             >
-                                                <Input placeholder="Email hoặc số điện thoại" />
+                                                <Input
+                                                    placeholder={t(
+                                                        'form_email',
+                                                    )}
+                                                />
                                             </Form.Item>
                                         </Col>
                                         <Col
@@ -228,12 +256,14 @@ function Contact() {
                                         >
                                             <Form.Item
                                                 name={'gender'}
-                                                label="Giới tính"
+                                                label={t('form_gender')}
                                                 wrapperCol={{ span: 24 }}
                                             >
                                                 <Select
                                                     size="large"
-                                                    placeholder="Chọn giới tính của bạn"
+                                                    placeholder={t(
+                                                        'form_gender',
+                                                    )}
                                                 >
                                                     <Select.Option value="1">
                                                         Nam
@@ -251,7 +281,7 @@ function Contact() {
                                         >
                                             <Form.Item
                                                 name={'age'}
-                                                label="Tuổi"
+                                                label={t('form_age')}
                                                 wrapperCol={{ span: 24 }}
                                                 rules={[
                                                     {
@@ -263,7 +293,7 @@ function Contact() {
                                             >
                                                 <Input
                                                     type="number"
-                                                    placeholder="Nhập tuổi của bạn"
+                                                    placeholder={t('form_age')}
                                                 />
                                             </Form.Item>
                                         </Col>
@@ -271,23 +301,27 @@ function Contact() {
                                 </div>
                                 <div className="">
                                     <p className="text-[16px] font-bold">
-                                        Nhập yêu cầu hoặc thắc mắc của bạn với
-                                        chúng tôi
+                                        {t('form_message')}
                                     </p>
                                     <Row gutter={24}>
                                         <Col span={24}>
-                                            <TinyMCEEditor content={content} setContent={setContent} />
+                                            {isClient && (
+                                                <TinyMCEEditor
+                                                    content={content}
+                                                    setContent={setContent}
+                                                />
+                                            )}
                                         </Col>
                                     </Row>
                                 </div>
                                 <Form.Item className="!mb-0 mt-5">
                                     <Button
-                                        className='float-end'
+                                        className="float-end bg-secondaryDark"
                                         loading={isLoading}
                                         htmlType="submit"
                                         type="primary"
                                     >
-                                        Xác nhận gửi
+                                        {t('form_sending')}
                                     </Button>
                                 </Form.Item>
                             </Form>

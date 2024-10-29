@@ -135,7 +135,7 @@ export default function MainMedicalReportViewInformation({
 }: TProps) {
     const [activeButton, setActiveButton] = useState<string | null>(null)
     const searchParam = useSearchParams()
-    const router = useRouter();
+    const router = useRouter()
 
     const handleIndication = () => {
         setActiveButton('indication')
@@ -174,7 +174,7 @@ export default function MainMedicalReportViewInformation({
         try {
             setIsLoadingPdf(true)
             const loadingMessage = message.loading(
-                'Đang tiến hành phân tích...',
+                'Đang tiến hành tạo kết quả...',
                 0,
             )
             const servicesList: Services[] = serviceOrder?.items?.map(
@@ -232,7 +232,7 @@ export default function MainMedicalReportViewInformation({
             }
         } catch (error) {}
     }
-    
+
     return (
         <div className="flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
             <div className="flex w-full flex-col gap-4">
@@ -446,10 +446,14 @@ export default function MainMedicalReportViewInformation({
                     <div>
                         <div className="mt-4 text-left text-[#003553]">
                             <strong>Tổng số xét nghiệm: </strong>{' '}
-                            {service?.quantity}
+                            {serviceOrder?.quantity}
                         </div>
                         <div className="mt-4 text-left text-[#003553]">
-                            <strong>Tổng cộng: </strong> {service?.totalPrice}
+                            <strong>Tổng cộng: </strong>{' '}
+                            {new Intl.NumberFormat('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
+                            }).format(serviceOrder?.totalPrice)}
                         </div>
                     </div>
                 </div>

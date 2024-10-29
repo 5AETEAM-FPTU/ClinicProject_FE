@@ -1,36 +1,30 @@
 'use client'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { List, Avatar, Switch, Button, Skeleton } from 'antd'
+import { useGetAllQueueRoomsQuery } from '@/stores/services/chat/chats'
 import {
-    Settings,
-    MessageCircle,
-    Calendar as CalendarIcon,
-    Smartphone,
-    UsersRound,
+    useGetRecentAppointmentsQuery,
+    useUpdateDoctorDutyMutation,
+} from '@/stores/services/doctor/doctorOverview'
+import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
+import { useGetAppointmentOnDayQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
+import { useGetScheduleByMonthQuery } from '@/stores/services/schedule/scheduleSettings'
+import webStorageClient from '@/utils/webStorageClient'
+import BackGround from '@public/landing/images/profile-background.png'
+import { Avatar, Button, List, Skeleton, Switch } from 'antd'
+import { jwtDecode } from 'jwt-decode'
+import {
     BookOpenText,
     BriefcaseMedical,
     MessageCircleReply,
+    Settings,
+    Smartphone,
+    UsersRound,
 } from 'lucide-react'
-import Image from 'next/image'
-import BackGround from '@public/landing/images/profile-background.png'
-import './style.css'
-import {
-    useUpdateDoctorDutyMutation,
-    useGetRecentAppointmentsQuery,
-} from '@/stores/services/doctor/doctorOverview'
-import { set } from 'lodash'
-import { useGetScheduleByMonthQuery } from '@/stores/services/schedule/scheduleSettings'
-import { useGetDoctorProfileQuery } from '@/stores/services/doctor/doctorSettings'
-import { useGetAppointmentOnDayQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
 import { DateTimeFormatOptions, useLocale } from 'next-intl'
 import { useRouter } from 'next-nprogress-bar'
-import { jwtDecode } from 'jwt-decode'
+import { useMemo, useState } from 'react'
 import { JwtPayloadUpdated } from '../../Auth/SignIn'
-import webStorageClient from '@/utils/webStorageClient'
-import {
-    useGetAllQueueRoomsQuery,
-    useGetQueueRoomByUserQuery,
-} from '@/stores/services/chat/chats'
+import './style.css'
+import { motion } from 'framer-motion'
 
 function calculateAge(birthday: string) {
     const today = new Date()
@@ -187,54 +181,72 @@ const AppointmentComponent = () => {
 const ConsultationComponent = () => {
     const router = useRouter()
     const locale = useLocale()
-    const { data, isFetching } = useGetAllQueueRoomsQuery({pageIndex: 1, pageSize: 2}, {
-        selectFromResult: ({ data, isFetching }) => {
-            return {
-                data: data?.body.patientQueues?.contents,
-                isFetching: isFetching
-            }
-        }
-    })
-    
+    const { data, isFetching } = useGetAllQueueRoomsQuery(
+        { pageIndex: 1, pageSize: 2 },
+        {
+            selectFromResult: ({ data, isFetching }) => {
+                return {
+                    data: data?.body.patientQueues?.contents,
+                    isFetching: isFetching,
+                }
+            },
+        },
+    )
 
     return (
         <Skeleton loading={isFetching} avatar>
-        <div className="shadow rounded-lg bg-white p-4 shadow-third">
-            <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
-                Yêu cầu tư vấn
-            </h2>
-            { data ? (
-            <List
-                dataSource={data.length === 1 ? [data[0], data[0]] : data}
-                renderItem={(item: any) => (
-                    <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
-                    <List.Item.Meta
-                        avatar={
-                            <Avatar
-                                size={50}
-                                src={item.patientAvatar}
-                            />
+            <div className="shadow rounded-lg bg-white p-4 shadow-third">
+                <h2 className="mb-4 text-[18px] font-bold text-secondarySupperDarker">
+                    Yêu cầu tư vấn
+                </h2>
+                {data ? (
+                    <List
+                        dataSource={
+                            data.length === 1 ? [data[0], data[0]] : data
                         }
-                        title={
-                            <span className="text-[14px] font-bold text-secondarySupperDarker">
-                                {item.patientName}
-                            </span>
-                        }
-                        description={
-                            <span className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker" dangerouslySetInnerHTML={{ __html:  item.message }}>
-                            </span>
-                        }
+                        renderItem={(item: any) => (
+                            <List.Item className="mt-[10px] rounded-[12px] bg-[#F8F9FB] p-[10px]">
+                                <List.Item.Meta
+                                    avatar={
+                                        <Avatar
+                                            size={50}
+                                            src={item.patientAvatar}
+                                        />
+                                    }
+                                    title={
+                                        <span className="text-[14px] font-bold text-secondarySupperDarker">
+                                            {item.patientName}
+                                        </span>
+                                    }
+                                    description={
+                                        <span
+                                            className="font-regular line-clamp-1 text-[14px] text-secondarySupperDarker"
+                                            dangerouslySetInnerHTML={{
+                                                __html: item.message,
+                                            }}
+                                        ></span>
+                                    }
+                                />
+                                <Button
+                                    className="h-8 w-11 rounded-[8px] bg-[#00B5F1]"
+                                    onClick={() => {
+                                        router.push(
+                                            `/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/consultation/pending-room`,
+                                        )
+                                    }}
+                                >
+                                    <MessageCircleReply
+                                        className="mx-auto text-white"
+                                        size={20}
+                                    />
+                                </Button>
+                            </List.Item>
+                        )}
                     />
-                    <Button className="h-8 w-11 rounded-[8px] bg-[#00B5F1]" onClick={() => { router.push(`/${locale}/${jwtDecode<JwtPayloadUpdated>(webStorageClient.getToken()!).role}/consultation/pending-room`) }}>
-                        <MessageCircleReply
-                            className="mx-auto text-white"
-                            size={20}
-                        />
-                    </Button>
-                </List.Item>
+                ) : (
+                    <div>Chưa có data</div>
                 )}
-            />) : <div>Chưa có data</div>}
-        </div>
+            </div>
         </Skeleton>
     )
 }
@@ -376,7 +388,12 @@ export default function MedicalDashboard() {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <motion.div
+            initial={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="flex flex-col gap-4"
+        >
             <div className="flex flex-col gap-4 xl:flex-row">
                 <div className="xl:flex-1">
                     <CustomCalendar />
@@ -510,6 +527,6 @@ export default function MedicalDashboard() {
                     <RecentBookedAppoinemt />
                 </div>
             </div>
-        </div>
+        </motion.div>
     )
 }
