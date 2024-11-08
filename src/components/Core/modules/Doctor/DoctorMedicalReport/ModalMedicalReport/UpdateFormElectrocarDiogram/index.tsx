@@ -100,6 +100,7 @@ export default function UpdateElectrocarDiogram({
     const [loading, setLoading] = useState(false)
     const onFinish = async (values: any) => {
         try {
+            setLoading(true)
             const imageUrl = await handleUploadAndGetImageUrlElectrocarDiogram(
                 storage.fileStorage!,
             )
@@ -127,7 +128,7 @@ export default function UpdateElectrocarDiogram({
             await updateServiceOrderStatusItem({
                 serviceOrderId: serviceOrderedId,
                 serviceId: storage.selectedId,
-            })
+            }).unwrap()
             refetch()
             message.success('Cập nhật thành công!')
             setOpen(false);
@@ -299,6 +300,7 @@ export default function UpdateElectrocarDiogram({
                         Hủy
                     </Button>
                     <Button
+                        loading={loading}
                         type="primary"
                         htmlType="submit"
                         className="bg-secondaryDark"
