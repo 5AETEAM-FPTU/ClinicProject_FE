@@ -310,7 +310,7 @@ export default function UserProfileModule() {
                                 }
                             >
                                 {' '}
-                                {result?.description ? (
+                                {result?.description && result?.description != "default" ? (
                                     <p
                                         className="text-lg text-secondarySupperDarker"
                                         dangerouslySetInnerHTML={{
@@ -319,7 +319,7 @@ export default function UserProfileModule() {
                                     ></p>
                                 ) : (
                                     <div className="flex h-fit w-full items-center justify-center">
-                                        Ẩn mô tả cá nhân
+                                        Chưa có mô tả cá nhân
                                     </div>
                                 )}
                                 <Divider />
