@@ -277,8 +277,8 @@ export default function Component() {
                                             Đánh giá
                                         </p>
                                         <div className="flex text-[14px] font-semibold text-secondarySupperDarker">
-                                            {/* {doctor.rating.toFixed(1)}{' '} */}
-                                            5
+                                            {doctor.rating.toFixed(1)}{' '}
+                                            
                                             <Star
                                                 fill="#FAFF00"
                                                 className="ml-1 text-yellow-300"

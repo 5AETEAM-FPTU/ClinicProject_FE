@@ -1,7 +1,8 @@
 import { useGetFeedbackQuery } from '@/stores/services/user/userAppointments'
-import { Modal, Skeleton } from 'antd'
+import { Button, Modal, Skeleton } from 'antd'
 import { Star } from 'lucide-react'
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 interface IProps {
     open: boolean
@@ -42,13 +43,20 @@ export default function ViewFeedback({ open, close, appointmentId }: IProps) {
             }),
         },
     )
-
+    useEffect(() => {
+        if (open) {
+            refetch()
+        }
+    }, [open])
     return (
         <Modal
             open={open}
             onCancel={close}
             closeIcon={false}
             className="h-fit w-[65%]"
+            footer={<div>
+                <Button type='primary' className='bg-secondaryDark' onClick={close}> OK</Button>
+            </div>}
         >
             {!isFetching ? (
                 <div className="">
