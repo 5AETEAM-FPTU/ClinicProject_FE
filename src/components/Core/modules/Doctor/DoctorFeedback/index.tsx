@@ -112,7 +112,7 @@ export default function DoctorFeedback() {
                     <div className="flex gap-[20px] text-[14px] font-semibold text-secondarySupperDarker">
                         Số lượt đánh giá:{' '}
                         <span className="flex text-[#FDD836]">
-                            {rating}{' '}
+                            {rating.toFixed(1)}{' '}
                             <Star
                                 fill="#FDD836"
                                 className={`pl- text-lg text-[#FDD836]`}
