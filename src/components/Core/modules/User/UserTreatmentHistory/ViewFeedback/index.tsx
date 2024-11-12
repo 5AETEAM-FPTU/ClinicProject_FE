@@ -2,6 +2,7 @@ import { useGetFeedbackQuery } from '@/stores/services/user/userAppointments'
 import { Modal, Skeleton } from 'antd'
 import { Star } from 'lucide-react'
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 interface IProps {
     open: boolean
@@ -42,6 +43,7 @@ export default function ViewFeedback({ open, close, appointmentId }: IProps) {
             }),
         },
     )
+    useEffect(() => {refetch()}, [open])
 
     return (
         <Modal
