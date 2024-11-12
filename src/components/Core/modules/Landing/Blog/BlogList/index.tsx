@@ -44,10 +44,9 @@ const NewsCard: React.FC<NewsItem> = ({
             src={image}
             className={cn(
                 'rounded-lg object-cover',
-                `${
-                    vertical
-                        ? '!h-[200px] !w-full'
-                        : 'max-w-[150px] sm:min-h-[76px] sm:max-w-[240px]'
+                `${vertical
+                    ? '!h-[200px] !w-full'
+                    : 'max-w-[150px] sm:min-h-[76px] sm:max-w-[240px]'
                 } }`,
             )}
         />
@@ -211,7 +210,7 @@ export default function BlogList() {
                     /> */}
                     <div className='mt-5 w-full flex justify-center'>
                         <Pagination
-                            total={totalPage + 10}
+                            total={totalPage}
                             pageSize={10}
                             onChange={(page) => {
                                 setPage(page)

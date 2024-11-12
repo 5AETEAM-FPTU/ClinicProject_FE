@@ -1,5 +1,4 @@
 'use client'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 import {
     useCreatePostMutation,
     useGetAllActiveCategoriesQuery,
@@ -21,6 +20,7 @@ import { motion } from 'framer-motion'
 import { ImageUp } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import './style.css'
+import useEditor from '@/hooks/useEditor'
 
 const { Option } = Select
 type TagRender = SelectProps['tagRender']
@@ -35,7 +35,7 @@ export default function BlogPostCreation() {
         refetch,
         isFetching: isTableFetching,
     } = useGetAllActiveCategoriesQuery()
-    const [content, setContent] = useState('')
+    const { content, getContentFromEditor, TinyMCEComponent } = useEditor("");
     const [categories, setCategories] = useState<any>([])
 
     useEffect(() => {
@@ -91,12 +91,12 @@ export default function BlogPostCreation() {
         }
         const values = form.getFieldsValue()
         console.log('Form values:', {
-            ...{ content, image: imageUrl },
+            ...{ content: getContentFromEditor(), image: imageUrl },
             ...values,
         })
         try {
             await createPost({
-                ...{ content, image: imageUrl },
+                ...{ content: getContentFromEditor(), image: imageUrl },
                 ...values,
             }).unwrap()
             form.resetFields()
@@ -297,9 +297,9 @@ export default function BlogPostCreation() {
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
-                        Content
+                        Nội dung
                     </label>
-                    <TinyMCEEditor content={content} setContent={setContent} />
+                    {TinyMCEComponent}
                 </div>
 
                 <Form.Item name="meta_title">

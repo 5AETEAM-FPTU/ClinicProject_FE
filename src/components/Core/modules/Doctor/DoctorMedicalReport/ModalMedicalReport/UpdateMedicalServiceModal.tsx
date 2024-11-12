@@ -133,7 +133,7 @@ export default function UpdateMedicalServiceModal({
     const handleGetAbdominalUltraSoundReportPdf = async () => {
         try {
             const loadingMessage = message.loading(
-                'Đang tiến hành phân tích...',
+                'Đang tiến hành tạo kết quả...',
                 0,
             )
             const res = await getAbdominalUltrasoundPdfMutation({
@@ -160,7 +160,7 @@ export default function UpdateMedicalServiceModal({
     const handleGetElectrocarDiogramReportPdf = async () => {
         try {
             const loadingMessage = message.loading(
-                'Đang tiến hành phân tích...',
+                'Đang tiến hành tạo kết quả...',
                 0,
             )
             const res = await getElectrocarDiogramPdfMutation({

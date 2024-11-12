@@ -32,6 +32,7 @@ export default function CallProvier({
     } | null>(null)
     const avatar = webStorageClient.get(constants.USER_AVATAR)
     const fullName = webStorageClient.get(constants.USER_FULLNAME)
+    const fetchCallToken = webStorageClient.get(constants.CALL_ACCESS_TOKEN);
     useEffect(() => {
         try {
             const stringeeAccessToken = webStorageClient.get(
@@ -46,7 +47,7 @@ export default function CallProvier({
                 jwtDecode<JwtPayloadStringee>(stringeeAccessToken).userId
             setUserId(userId)
         } catch (e) {}
-    }, [])
+    }, [fetchCallToken]);
 
     useEffect(() => {
         const accessToken = webStorageClient.getToken()

@@ -1,5 +1,4 @@
 'use client'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 import useEditor from '@/hooks/useEditor'
 import {
     useGetAllActiveCategoriesQuery,
@@ -31,12 +30,13 @@ export default function BlogPostEditing({ id }: { id: string }) {
     const [imageUrl, setImageUrl] = useState('')
     const [loading, setLoading] = useState(false)
     const [post, setPost] = useState<any>(null)
-    const { content, setContent, TinyMCEComponent } = useEditor('Hello World!');
     const [form] = Form.useForm()
     const { data: postResult, isFetching, refetch } = useGetPostByIdQuery(id)
     const [updatePost, { isLoading: isUpdateLoading }] = useUpdatePostMutation()
     const { data: categoriesResult } = useGetAllActiveCategoriesQuery()
     const [categories, setCategories] = useState<any>([])
+    const [postContent, setPostContent] = useState('')
+    const { content, getContentFromEditor, TinyMCEComponent } = useEditor(postContent);
     useEffect(() => {
         if (categoriesResult?.body?.result) {
             setCategories(categoriesResult?.body?.result)
@@ -49,7 +49,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
             setPost(postResult?.body?.result)
             form.setFieldsValue(postResult?.body?.result)
             setImageUrl(postResult?.body?.result?.image)
-            setContent(postResult?.body?.result?.content)
+            setPostContent(postResult?.body?.result?.content)
         }
     }, [postResult])
 
@@ -101,7 +101,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
         const values = form.getFieldsValue()
         console.log('Form values:', {
             ...{
-                content: content,
+                content: getContentFromEditor(),
                 image: imageUrl,
                 _id: post._id,
             },
@@ -110,7 +110,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
         try {
             await updatePost({
                 ...{
-                    content: content,
+                    content: getContentFromEditor(),
                     image: imageUrl,
                     id: post._id,
                 },
@@ -329,7 +329,7 @@ export default function BlogPostEditing({ id }: { id: string }) {
                         <label className="block text-sm font-medium text-gray-700">
                             Nội dung
                         </label>
-                        <TinyMCEEditor content={content} setContent={setContent} />
+                        {TinyMCEComponent}
                     </div>
 
                     <Form.Item name="meta_title">

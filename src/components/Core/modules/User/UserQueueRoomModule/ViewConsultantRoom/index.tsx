@@ -35,9 +35,9 @@ export default function ViewConsultantRoom(payload: IProps) {
 
     return (
         <div className="mt-4 flex w-full flex-col gap-5 rounded-xl bg-white p-5 shadow-third">
-            <div className="flex w-full flex-col items-start sm:items-center justify-between xl:flex-row">
+            <div className="flex w-full flex-col items-start sm:items-center justify-between sm:justify-between sm:flex-row">
                 <div className="flex w-full flex-col items-start sm:items-center justify-around gap-5 sm:gap-14 sm:flex-row">
-                    <div className="flex w-full flex-row items-start sm:items-center justify-start sm:justify-center gap-4 text-[14px] font-medium text-[#003553] xl:flex-row">
+                    <div className="flex w-full flex-row items-start sm:items-center justify-start sm:justify-start gap-4 text-[14px] font-medium text-[#003553] xl:flex-row">
                         <Image
                             src={
                                 user.avatarUrl!

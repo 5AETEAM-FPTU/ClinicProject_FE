@@ -1,11 +1,16 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Table, Card, Button, Typography, Skeleton } from 'antd'
+import { Table, Card, Button, Typography, Skeleton, message } from 'antd'
 import { AlignCenter, MoveLeft, Printer } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
 import { useSearchParams } from 'next/navigation'
 import { useGetMedicineOrderByIdQuery } from '@/stores/services/report/medicineOrder'
+import { useGetUserProfileQuery } from '@/stores/services/user/userSettings'
+import { UserProfileTypes } from '../..'
+import dayjs from 'dayjs'
+import { generateReportCode } from '@/utils/generateCode'
+import { useGetMedicineReportPdfMutation } from '@/stores/services/report/generatePdf'
 
 interface IMedicineTye {
     id: string
@@ -38,6 +43,25 @@ export type TablePrescription = {
     quantity: number
     usage: string
     medicineType: string
+}
+type Medicine = {
+    index: number
+    name: string
+    quantity: string
+    usage: string
+}
+type MedicinesItemListReportType = {
+    reportCode: string
+    patientName: string
+    age: string
+    gender: string
+    patientAddress: string
+    medicines: Medicine[]
+    notice: string
+    year: string
+    day: string
+    month: string
+    doctorName: string
 }
 
 export default function DetailPrescription() {
@@ -95,6 +119,14 @@ export default function DetailPrescription() {
             }),
         },
     )
+    const { profile } = useGetUserProfileQuery(undefined, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                profile: (data?.body?.user as UserProfileTypes) ?? {},
+                isFetching: isFetching,
+            }
+        },
+    })
 
     useEffect(() => {
         const result: TablePrescription[] = medicineOrder?.items?.map(
@@ -111,7 +143,61 @@ export default function DetailPrescription() {
         )
         setPrescriptionData(result)
     }, [medicineOrder])
+    const [getMedicineReportPdf] = useGetMedicineReportPdfMutation()
+    const [isLoadingPdf, setIsLoadingPdf] = useState(false)
+    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
 
+    const handlePrintMedicineList = async () => {
+        try {
+            setIsLoadingPdf(true)
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo đơn thuốc...',
+                0,
+            )
+            const medicineList: Medicine[] = medicineOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    name: item.medicine.name,
+                    quantity: item.quantity,
+                    usage: item.description,
+                }),
+            )
+            const data: MedicinesItemListReportType = {
+                age: dayjs().diff(profile?.dob!, 'years').toString(),
+                day: dayjs().format('DD'),
+                doctorName: doctorName!,
+                gender: profile?.gender?.genderName,
+                month: dayjs().format('MM'),
+                notice: medicineOrder?.note ?? '',
+                patientAddress: profile?.address ?? '',
+                patientName: profile?.fullName ?? '',
+                reportCode: generateReportCode(),
+                year: dayjs().format('YYYY'),
+                medicines: medicineList,
+            }
+            const res = await getMedicineReportPdf({
+                data,
+            }).unwrap()
+            setIsLoadingPdf(false)
+            loadingMessage()
+            setIsLoadingPdf(false)
+            if (res instanceof Blob) {
+                setPdfBlob(res)
+                console.log('Pass through')
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+        } catch (error) {
+            message.error('Tạo đơn thuốc thất bại')
+        }
+    }
     return (
         <>
             <div className="flex select-none justify-between pb-4">
@@ -167,7 +253,12 @@ export default function DetailPrescription() {
                         </Card>
                     </div>
                     <div className="gap-4 pt-8">
-                        <Button type="primary" className="py-4 font-bold bg-secondaryDark">
+                        <Button
+                            type="primary"
+                            className="bg-secondaryDark py-4 font-bold"
+                            onClick={handlePrintMedicineList}
+                            loading={isLoadingPdf}
+                        >
                             In đơn thuốc <Printer size={20} />
                         </Button>
                     </div>

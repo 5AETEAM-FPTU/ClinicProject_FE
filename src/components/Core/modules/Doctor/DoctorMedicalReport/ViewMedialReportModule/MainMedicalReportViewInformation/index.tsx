@@ -90,7 +90,7 @@ export default function MainMedicalReportViewInformation({
     const handlePrintMedicalReport = async () => {
         try {
             setIsLoadingPdf(true)
-            const loadingMessage = message.loading("Đang tiến hành phân tích...", 0);
+            const loadingMessage = message.loading("Đang tiến hành tạo phiếu khám...", 0);
             const servicesList: Services[] = serviceOrder?.items?.map(
                 (item: any, index: number) => ({
                     index: index + 1,
@@ -128,7 +128,6 @@ export default function MainMedicalReportViewInformation({
                 month: dayjs().format('MM'),
                 doctorName: doctorName,
             }
-            console.log(data)
             const res = await generateGeneralMedicalReportPdf(data).unwrap()
             loadingMessage();
             setIsLoadingPdf(false)
@@ -144,7 +143,9 @@ export default function MainMedicalReportViewInformation({
                 }
                 URL.revokeObjectURL(url)
             }
-        } catch (error) {}
+        } catch (error) {
+            message.error("Tạo phiếu khám thất bại")
+        }
     }
 
     return (

@@ -1,11 +1,16 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Table, Card, Button, Typography, Skeleton } from 'antd'
-import { Eye, MoveLeft, Printer } from 'lucide-react'
+import { Table, Card, Button, Typography, Skeleton, message } from 'antd'
+import { Eye, MoveLeft, Printer, View } from 'lucide-react'
 import { useRouter } from 'next-nprogress-bar'
 import { useSearchParams } from 'next/navigation'
 import { useGetServiceOrderDetailQuery } from '@/stores/services/report/serviceOrder'
+import { useGetAdominalUltrasoundPdfMutation, useGetElectrocarDiographyPdfMutation, useGetServiceReportPdfMutation } from '@/stores/services/report/generatePdf'
+import dayjs from 'dayjs'
+import { generateReportCode } from '@/utils/generateCode'
+import { useGetUserProfileQuery } from '@/stores/services/user/userSettings'
+import { UserProfileTypes } from '../..'
 
 interface IService {
     id: string
@@ -28,7 +33,24 @@ interface IServiceOrder {
     isAllUpdated: boolean
     items: IItem[]
 }
-
+type Services = {
+    index: number
+    code: string
+    name: string
+    price: string
+}
+type ServicesItemListReportType = {
+    reportCode: string
+    patientName: string
+    age: string
+    gender: string
+    patientAddress: string
+    services: Services[]
+    year: string
+    day: string
+    month: string
+    doctorName: string
+}
 export type TableServiceIndication = {
     key: React.Key
     serviceCode: string
@@ -47,6 +69,94 @@ export default function DetailPrescription() {
         TableServiceIndication[]
     >([])
     const { Title, Text } = Typography
+    const { servicesOrder, isFetching } = useGetServiceOrderDetailQuery(
+        medicineOrderid!,
+        {
+            selectFromResult: ({ data, isFetching }) => ({
+                servicesOrder:
+                    (data?.body?.serviceOrder as IServiceOrder) ?? {},
+                isFetching: isFetching,
+            }),
+        },
+    )
+
+    useEffect(() => {
+        const result: TableServiceIndication[] = servicesOrder?.items?.map(
+            (item: IItem, index: number) => {
+                return {
+                    ...item,
+                    key: index,
+                    serviceCode: item.service.code,
+                    serviceName: item.service.name,
+                    price: item.priceAtOrder,
+                }
+            },
+        )
+        setPrescriptionData(result)
+    }, [servicesOrder])
+    const handleGeneratePdf = (code: string) => {
+        if (code.toUpperCase() === 'SAB') {
+            handleGetAbdominalUltraSoundReportPdf()
+        } else if (code.toUpperCase() === 'DTD') {
+            handleGetElectrocarDiogramReportPdf()
+        }
+    }
+    const [getAbdominalUltrasoundPdfMutation] =
+        useGetAdominalUltrasoundPdfMutation()
+    const handleGetAbdominalUltraSoundReportPdf = async () => {
+        try {
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo kết quả...',
+                0,
+            )
+            const res = await getAbdominalUltrasoundPdfMutation({
+                serviceOrderedId: servicesOrder?.id!,
+            }).unwrap()
+            if (res instanceof Blob) {
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        // pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+            loadingMessage()
+            message.success('Tạo kết quả dịch vụ thành công!')
+        } catch (error) {
+            message.error('Tạo kết quả dịch vụ thất bại')
+        }
+    }
+    const [getElectrocarDiogramPdfMutation] =
+        useGetElectrocarDiographyPdfMutation()
+    const handleGetElectrocarDiogramReportPdf = async () => {
+        try {
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo kết quả...',
+                0,
+            )
+            const res = await getElectrocarDiogramPdfMutation({
+                serviceOrderedId: servicesOrder?.id!,
+            }).unwrap()
+            if (res instanceof Blob) {
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        // pdfWindow.print()
+                    }
+                }
+                URL.revokeObjectURL(url)
+            }
+            loadingMessage()
+            message.success('Tạo kết quả dịch vụ thành công!')
+        } catch (error) {
+            message.error('Tạo kết quả dịch vụ thất bại')
+        }
+    }
     const columns = [
         {
             title: 'STT',
@@ -86,35 +196,77 @@ export default function DetailPrescription() {
             title: 'Kết quả',
             dataIndex: 'result',
             width: '15%',
-            render: (value: any, record: any) => <Eye />,
+            render: (value: any, record: any) => (
+                <Button type="text"
+                    onClick={() => handleGeneratePdf(record.serviceCode)}
+                >
+                    <View size={18} className="text-secondaryDark" />
+                </Button>
+            ),
         },
     ]
 
-    const { medicineOrder, isFetching } = useGetServiceOrderDetailQuery(
-        medicineOrderid!,
-        {
-            selectFromResult: ({ data, isFetching }) => ({
-                medicineOrder:
-                    (data?.body?.serviceOrder as IServiceOrder) ?? {},
-                isFetching: isFetching,
-            }),
-        },
-    )
 
-    useEffect(() => {
-        const result: TableServiceIndication[] = medicineOrder?.items?.map(
-            (item: IItem, index: number) => {
-                return {
-                    ...item,
-                    key: index,
-                    serviceCode: item.service.code,
-                    serviceName: item.service.name,
+    const [getServiceReportPdf] = useGetServiceReportPdfMutation()
+    const [isLoadingPdf, setIsLoadingPdf] = useState(false)
+    const { profile } = useGetUserProfileQuery(undefined, {
+        selectFromResult: ({ data, isFetching }) => {
+            return {
+                profile: (data?.body?.user as UserProfileTypes) ?? {},
+                isFetching: isFetching,
+            }
+        },
+    })
+
+    const handlePrintServiceList = async () => {
+        try {
+            setIsLoadingPdf(true)
+            const loadingMessage = message.loading(
+                'Đang tiến hành tạo đơn dịch vụ đã khám...',
+                0,
+            )
+            const serviceList: Services[] = servicesOrder?.items?.map(
+                (item: any, index: number) => ({
+                    index: index + 1,
+                    code: item.service.code,
+                    name: item.service.name,
                     price: item.priceAtOrder,
+                }),
+            )
+            const data: ServicesItemListReportType = {
+                age: dayjs().diff(profile?.dob!, 'years').toString(),
+                day: dayjs().format('DD'),
+                doctorName: doctorName!,
+                gender: profile?.gender?.genderName,
+                month: dayjs().format('MM'),
+                patientAddress: profile?.address ?? '',
+                patientName: profile?.fullName ?? '',
+                reportCode: generateReportCode(),
+                year: dayjs().format('YYYY'),
+                services: serviceList,
+            }
+            const res = await getServiceReportPdf({
+                data,
+            }).unwrap()
+            setIsLoadingPdf(false)
+            loadingMessage()
+            setIsLoadingPdf(false)
+            if (res instanceof Blob) {
+                console.log('Pass through')
+                const url = URL.createObjectURL(res)
+                const pdfWindow = window.open(url)
+                if (pdfWindow) {
+                    pdfWindow.onload = () => {
+                        pdfWindow.focus()
+                        pdfWindow.print()
+                    }
                 }
-            },
-        )
-        setPrescriptionData(result)
-    }, [medicineOrder])
+                URL.revokeObjectURL(url)
+            }
+        } catch (error) {
+            message.error('Tạo đơn dịch vụ đã khám thất bại')
+        }
+    }
 
     return (
         <>
@@ -167,7 +319,12 @@ export default function DetailPrescription() {
                         </Card>
                     </div>
                     <div className="gap-4 pt-8">
-                        <Button type="primary" className="py-4 font-bold bg-secondaryDark">
+                        <Button
+                            type="primary"
+                            className="bg-secondaryDark py-4 font-bold"
+                            loading={isLoadingPdf}
+                            onClick={handlePrintServiceList}
+                        >
                             In đơn dịch vụ khám <Printer size={20} />
                         </Button>
                     </div>

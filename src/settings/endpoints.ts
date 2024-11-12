@@ -45,7 +45,7 @@ const doctorEndpoint = {
     GET_ALL_FEEDBACKS: '/doctor/feedbacks/all',
     GET_ALL_DOCTOR_IDS: '/doctor/ids',
     GET_AVAILABLE_DOCTOR: "/doctor/available",
-
+    GET_ALL_PATIENT: '/admin/users/all'
 }
 
 const scheduleEndpoint = {
@@ -147,7 +147,10 @@ const blogEndpoints = {
 const generatePdfEndpoint = {
     GENERAL_PDF: '/api/generate-pdf/general-medical-report',
     ADOMINAL_PDF: '/api/generate-pdf/abdominal-ultrasound-report',
-    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report'
+    ELECTROCAR_PDF: '/api/generate-pdf/electrocar-diagnosis-report',
+
+    PRINT_MEDICINE_LIST : '/api/generate-pdf/medicine-report',
+    PRINT_SERVICE_LIST: '/api/generate-pdf/service-report',
 }
 const formServiceEndpoint = {
     CREATE_ADOMINAL_ULTRASOUND: '/api/abdominal-ultrasound/create',
@@ -159,7 +162,7 @@ const formServiceEndpoint = {
     UPDATE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/update',
     GET_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/get',
     DELETE_ELECTROCAR_DIAGNOSIS: '/api/electrocardiogram/delete/{:id}',
-    
+
 }
 const notificationEndpoints = {
     GET_UPCOMING_FOLLOW_UP_NOTIFICATION: '/notification/user/up-comming',

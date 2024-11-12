@@ -1,10 +1,9 @@
+import AllPatientPage from '@/components/Core/modules/Staff/AllPatient'
 import React from 'react'
 
 function AllPatients() {
     return (
-        <div>
-            Hiển thị tất cả bệnh nhân sử dụng hệ thống online + tạo thủ công
-        </div>
+        <AllPatientPage />
     )
 }
 

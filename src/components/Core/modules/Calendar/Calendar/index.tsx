@@ -96,6 +96,10 @@ export default function Component() {
             }).toString()}`, { maxAge: 60 * 10 });
             return;
         }
+        if (role !== 'user') {
+            message.error('Bạn không phải là user để đặt lịch');
+            return;
+        }
         router.push(`/user/treatment-calendar/booking/confirm?${new URLSearchParams({
             fullName: params.get('fullName') || '',
             doctorId: params.get('doctorId') || '',
@@ -260,7 +264,7 @@ export default function Component() {
                         Cật nhật
                     </Button>
                     :
-                    <Button onClick={navigateToConfirmAppointment} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full xl:w-auto">
+                    <Button type='primary' onClick={navigateToConfirmAppointment} className="h-[42px] bg-[#0284C7] mt-4 text-base font-semibold min-h-10 py-2 px-4 sm:px-5 text-white rounded-[12px] transition-colors w-full xl:w-auto">
                         Xác nhận đặt lịch khám
                     </Button>
                 }

@@ -1,7 +1,7 @@
 'use client'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 import Information from '@/components/Core/modules/Calendar/Information'
 import { TimeSlot } from '@/components/Core/modules/Calendar/TimeSlot'
+import useEditor from '@/hooks/useEditor'
 import { constants } from '@/settings'
 import { useCreateAnAppointmentMutation } from '@/stores/services/user/userAppointments'
 import { useGetVnPayUrlMutation } from '@/stores/services/vnpay/vnpaySettings'
@@ -10,7 +10,7 @@ import { Button, Radio, message } from 'antd'
 import { motion } from 'framer-motion'
 import { BadgeDollarSign, SquarePen } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const formatSelectedSlot = (selectedSlot: TimeSlot) => {
     const startDate = new Date(selectedSlot.startTime)
@@ -25,6 +25,10 @@ export default function AppointmentConfirmation() {
     const [createAnAppointment] = useCreateAnAppointmentMutation()
     const [isFollowUpAppointment, setIsFollowUpAppointment] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [isClient, setIsClient] = useState<boolean>(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, [])
     const handleBack = () => {
         const currentParams = new URLSearchParams(window.location.search)
         router.push(
@@ -70,14 +74,14 @@ export default function AppointmentConfirmation() {
         }).unwrap()
         return appointmentResponse.body.appointment
     }
-    const [content, setContent] = useState('')
+    const { content, getRawContentFromEditor, TinyMCEComponent } = useEditor("");
 
     const handlePayment = async () => {
         if (vnPayUrl) return
         const doctorId = params.get('doctorId')
         const selectedSlot = JSON.parse(params.get('selectedSlot') || '{}')
         if (!doctorId || !selectedSlot) return
-        const description = content
+        const description = getRawContentFromEditor()
         const isFollowUp = isFollowUpAppointment
         console.log({ doctorId, selectedSlot, description, isFollowUp })
 
@@ -169,7 +173,7 @@ export default function AppointmentConfirmation() {
                             <p className="text-[20px] font-semibold text-secondarySupperDarker">
                                 Mô tả thêm:
                             </p>
-                            <TinyMCEEditor content={content} setContent={setContent} />
+                            {TinyMCEComponent}
                         </div>
                         <div className="mt-4 flex items-center">
                             <p className="text-base font-semibold text-secondarySupperDarker">

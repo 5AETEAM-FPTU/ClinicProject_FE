@@ -1,50 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
-import Script from 'next/script';
+import { useEffect, useRef, useState } from 'react';
 
-const TinyMCEComponent = ({ content, handleScriptLoad }: { content: string, handleScriptLoad: () => void }) => {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true); // Đánh dấu component đã được mount
-    }, []);
-
-    return (
-        <div>
-            {isMounted && (
-                <>
-                    {/* Tải script jQuery trước */}
-                    <Script
-                        src="https://code.jquery.com/jquery-3.6.0.min.js"
-                        strategy="afterInteractive"
-                        onLoad={() => console.log('jQuery script loaded')}
-                    />
-                    {/* Tải TinyMCE script sau khi jQuery đã tải */}
-                    <Script
-                        src="/assets/libs/tinymce/tinymce.min.js"
-                        strategy="afterInteractive"
-                        onLoad={() => handleScriptLoad()}
-                    />
-                </>
-            )}
-            {/* Textarea cho TinyMCE */}
-            <textarea id={`elm1`} defaultValue={content} />
-        </div>
-    );
-};
-
-const useEditor = (initContent: string) => {
-    const [content, setContent] = useState(initContent);
-    const [rawContent, setRawContent] = useState(initContent);
-    const [isScriptReady, setIsScriptReady] = useState(false);
-
-    useEffect(() => {
+const TinyMCEComponent = ({ content, editorRef }: { content: string, editorRef: any }) => {
+    let windowAny = typeof window !== 'undefined' && window as any;
+    const initTinyMCE = () => {
         let windowAny = window as any;
-
-        // Kiểm tra và khởi tạo TinyMCE khi script đã sẵn sàng
-        const initTinyMCE = () => {
-            if (typeof window !== 'undefined' && windowAny.tinymce && isScriptReady) {
+        try {
+            console.log("initTinyMCE: " + windowAny.tinymce);
+            if (typeof window !== 'undefined' && windowAny.tinymce) {
+                console.log("initTinyMCE");
                 windowAny.tinymce.init({
-                    selector: `textarea#elm1`,
+                    selector: `#elm1`,
                     height: 300,
                     statusbar: false,
                     plugins: [
@@ -55,12 +20,7 @@ const useEditor = (initContent: string) => {
                     toolbar:
                         'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons',
                     setup: (editor: any) => {
-                        editor.on('change', () => {
-                            const updatedContent = editor.getContent();
-                            const rawContent = editor.getContent({ format: 'text' });
-                            setRawContent(rawContent);
-                            setContent(updatedContent);
-                        });
+                        editorRef.current = editor;
                     },
                     style_formats: [
                         { title: 'Bold text', inline: 'b' },
@@ -73,31 +33,55 @@ const useEditor = (initContent: string) => {
                     ],
                 });
             }
-        };
-
-        // Đợi script sẵn sàng và gọi initTinyMCE
-        if (isScriptReady) {
-            initTinyMCE();
+        } catch (e) {
+            console.log(e);
         }
-
-        // Cleanup khi component unmount
-        return () => {
-            if (typeof window !== 'undefined' && windowAny.tinymce) {
-                windowAny.tinymce.remove('textarea#elm1');
-            }
-        };
-    }, [isScriptReady]);
-
-    // Đặt trạng thái khi script đã tải xong
-    const handleScriptLoad = () => {
-        setIsScriptReady(true);
     };
 
+    useEffect(() => {
+        setTimeout(() => {
+            let windowAny = window as any;
+            if (typeof window !== 'undefined' && windowAny.tinymce) {
+                windowAny.tinymce.remove(`textarea#elm1`);
+            }
+            initTinyMCE();
+            return () => {
+                if (typeof window !== 'undefined' && windowAny.tinymce) {
+                    windowAny.tinymce.remove(`textarea#elm1`);
+                }
+            }
+        }, 0);
+
+    }, [windowAny.tinymce]);
+    return (
+        <div>
+            {/* Textarea cho TinyMCE */}
+            <textarea id={`elm1`} defaultValue={content} />
+        </div>
+    );
+};
+
+const useEditor = (initContent: string) => {
+    const editorRef = useRef(null);
+    const getContentFromEditor = () => {
+        if (editorRef.current) {
+            return (editorRef.current as any).getContent(); // Lấy nội dung HTML từ editor
+        }
+        return ""; // Trả về chuỗi rỗng nếu editor chưa được khởi tạo
+    };
+
+    const getRawContentFromEditor = () => {
+        if (editorRef.current) {
+            return (editorRef.current as any).getContent({ format: 'text' }); // Lấy nội dung text từ editor
+        }
+        return ""; // Trả về chuỗi rỗng nếu editor chưa được khởi tạo
+    }
+
     return {
-        content,
-        setContent,
-        TinyMCEComponent: <TinyMCEComponent content={content} handleScriptLoad={handleScriptLoad} />,
-        rawContent,
+        content: initContent,
+        getContentFromEditor,
+        TinyMCEComponent: <TinyMCEComponent content={initContent} editorRef={editorRef} />,
+        getRawContentFromEditor,
     };
 };
 

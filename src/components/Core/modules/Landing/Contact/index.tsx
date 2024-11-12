@@ -1,11 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import CommonSection from '@/components/Core/common/CommonSection'
 
-
 import { useTranslation } from '@/app/i18n/client'
-import TinyMCEEditor from '@/components/Core/common/EditorTinymceLocal'
 import { constants } from '@/settings'
 import { useCreateNewContactMutation } from '@/stores/services/contact'
 import { api } from '@convex/_generated/api'
@@ -16,19 +14,24 @@ import { useMutation } from 'convex/react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
+import useEditor from '@/hooks/useEditor'
 
 function Contact() {
-    const [createAContact, { isLoading }] = useCreateNewContactMutation();
-
+    const [createAContact, { isLoading }] = useCreateNewContactMutation()
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [myForm] = Form.useForm()
 
-    const [content, setContent] = useState('')
+    const { content, getContentFromEditor, TinyMCEComponent } = useEditor(""); 
 
-    const sendContactToAdmin = useMutation(api._user_notifications.functions.sendUserNotification)
+    const sendContactToAdmin = useMutation(
+        api._user_notifications.functions.sendUserNotification,
+    )
 
-    const handleSendContactToAdmin = async (fullName: string, description: string) => {
+    const handleSendContactToAdmin = async (
+        fullName: string,
+        description: string,
+    ) => {
         try {
             await sendContactToAdmin({
                 receiverId: '1a6c3e77-4097-40e2-b447-f00d1f82cf78', // admin
@@ -39,7 +42,7 @@ function Contact() {
                 senderAvatarUrl: ``,
                 senderId: '',
                 senderName: `Người dùng: ${fullName}`,
-                topic: "Liên hệ",
+                topic: 'Liên hệ',
                 href: '',
             })
         } catch (error) {
@@ -49,15 +52,17 @@ function Contact() {
 
     const onFinish: FormProps<any>['onFinish'] = async (values) => {
         try {
+            const content = getContentFromEditor();
             if (!content) {
-                message.error('Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn')
-                return;
+                message.error(
+                    'Vui lòng nhập nội dung yêu cầu hoặc thắc mắc của bạn',
+                )
+                return
             }
-            await createAContact({ ...values, content })
-            console.log('onFinishForm')
-            handleSendContactToAdmin(values.fullName, content)
-            message.success("Gửi thông tin thành công")
-            myForm.resetFields();
+            await createAContact({ ...values, content: getContentFromEditor() })
+            handleSendContactToAdmin(values.fullName, getContentFromEditor())
+            message.success('Gửi thông tin thành công')
+            myForm.resetFields()
         } catch (error) {
             message.error(t('updateError'))
         }
@@ -93,8 +98,7 @@ function Contact() {
                             <div className="flex h-fit w-full flex-col gap-[15px] rounded-xl border-2 border-dashed border-secondaryDark bg-white p-[20px] sm:h-[348px]">
                                 <div>
                                     <h3 className="text-end text-[20px] font-bold">
-                                        {t('work_name')}
-                                        {' '}
+                                        {t('work_name')}{' '}
                                         <span className="text-secondaryDark">
                                             P-Clinic
                                         </span>
@@ -104,9 +108,7 @@ function Contact() {
                                     </p>
                                     <div className="flex h-fit w-full flex-row items-end justify-end gap-1">
                                         <div className="rounded-xl bg-secondaryDark px-[15px] py-[10px] text-[14px] font-semibold text-white sm:px-[20px] sm:py-[16px] sm:text-[20px]">
-                                            <p>
-                                                {t('work_2_7')}
-                                            </p>
+                                            <p>{t('work_2_7')}</p>
                                         </div>
                                         <div className="rounded-xl bg-secondaryDark px-[15px] py-[10px] text-[14px] font-semibold text-white sm:px-[20px] sm:py-[16px] sm:text-[20px]">
                                             <p>7:00 AM - 6:00 PM</p>
@@ -116,13 +118,10 @@ function Contact() {
                                 <div>
                                     <p className="text-end font-semibold text-secondaryDark">
                                         {t('work_end')}
-
                                     </p>
                                     <div className="flex h-fit w-full flex-row items-end justify-end gap-1">
                                         <div className="ms:px-[20px] rounded-xl bg-red-600 px-[15px] py-[10px] text-[14px] font-semibold text-white sm:py-[16px] sm:text-[20px]">
-                                            <p>                                        
-                                                {t('work_rest')}
-                                            </p>
+                                            <p>{t('work_rest')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -184,7 +183,9 @@ function Contact() {
                                                     },
                                                 ]}
                                             >
-                                                <Input placeholder={t('form_name')} />
+                                                <Input
+                                                    placeholder={t('form_name')}
+                                                />
                                             </Form.Item>
                                         </Col>
                                         <Col
@@ -196,7 +197,7 @@ function Contact() {
                                                 name={'emailOrPhone'}
                                                 label={t('form_email')}
                                                 wrapperCol={{ span: 24 }}
-                                                validateTrigger='onBlur'
+                                                validateTrigger="onBlur"
                                                 rules={[
                                                     {
                                                         required: true,
@@ -206,25 +207,42 @@ function Contact() {
                                                     {
                                                         validator(_, value) {
                                                             if (!value) {
-                                                                return Promise.resolve(); // If empty, handled by 'required'
+                                                                return Promise.resolve() // If empty, handled by 'required'
                                                             }
 
                                                             // Email regex
-                                                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                            const emailRegex =
+                                                                /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
                                                             // Vietnamese phone number regex (starts with +84 or 0 and has 9 or 10 digits)
-                                                            const phoneRegex = /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/;
+                                                            const phoneRegex =
+                                                                /^(?:\+84|0)(?:3[2-9]|5[6|8|9]|7[0|6-9]|8[1-5]|9[0-9])[0-9]{7}$/
 
-                                                            if (emailRegex.test(value) || phoneRegex.test(value)) {
-                                                                return Promise.resolve();
+                                                            if (
+                                                                emailRegex.test(
+                                                                    value,
+                                                                ) ||
+                                                                phoneRegex.test(
+                                                                    value,
+                                                                )
+                                                            ) {
+                                                                return Promise.resolve()
                                                             }
 
-                                                            return Promise.reject(new Error('Vui lòng nhập email hoặc số điện thoại hợp lệ'));
-                                                        }
-                                                    }
+                                                            return Promise.reject(
+                                                                new Error(
+                                                                    'Vui lòng nhập email hoặc số điện thoại hợp lệ',
+                                                                ),
+                                                            )
+                                                        },
+                                                    },
                                                 ]}
                                             >
-                                                <Input placeholder={t('form_email')} />
+                                                <Input
+                                                    placeholder={t(
+                                                        'form_email',
+                                                    )}
+                                                />
                                             </Form.Item>
                                         </Col>
                                         <Col
@@ -239,7 +257,9 @@ function Contact() {
                                             >
                                                 <Select
                                                     size="large"
-                                                    placeholder={t('form_gender')}
+                                                    placeholder={t(
+                                                        'form_gender',
+                                                    )}
                                                 >
                                                     <Select.Option value="1">
                                                         Nam
@@ -281,13 +301,13 @@ function Contact() {
                                     </p>
                                     <Row gutter={24}>
                                         <Col span={24}>
-                                            <TinyMCEEditor content={content} setContent={setContent} />
+                                            {TinyMCEComponent}
                                         </Col>
                                     </Row>
                                 </div>
                                 <Form.Item className="!mb-0 mt-5">
                                     <Button
-                                        className='float-end'
+                                        className="float-end bg-secondaryDark"
                                         loading={isLoading}
                                         htmlType="submit"
                                         type="primary"

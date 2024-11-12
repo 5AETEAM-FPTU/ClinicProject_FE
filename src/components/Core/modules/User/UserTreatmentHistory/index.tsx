@@ -2,7 +2,7 @@
 
 import { useGetAllUserHistoryTreatmentsQuery } from '@/stores/services/user/userHistoryAppointments'
 import { render } from '@fullcalendar/core/preact.js'
-import { Avatar, Table, Form, Input } from 'antd'
+import { Avatar, Table, Form, Input, Button } from 'antd'
 import dayjs from 'dayjs'
 import { Search } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -93,16 +93,17 @@ export default function ViewAllTreatment() {
             title: 'Chi tiết',
             dataIndex: 'detail',
             render: (value: any, record: any) => (
-                <button
+                <Button
+                    type='default'
                     onClick={() =>
                         router.push(
                             `treatment-history/view?reportId=${record.id}`,
                         )
                     }
-                    className="text-[14px] text-[#474e58] [text-shadow:_0_4px_4px_rgb(1_0_0_/_0.3)]"
+                    className="text-[14px] text-[#474e58]"
                 >
                     Xem hồ sơ
-                </button>
+                </Button>
             ),
         },
     ]

@@ -134,6 +134,7 @@ export default function DetailTreatmentHistory() {
     const handleMouseLeave = () => {
         setHoveredStar(0)
     }
+    
     const { detail, patientInfor, doctorInfor, refetch, isFetching } =
         useGetMedicalReportDetailByIdQuery(reportId!, {
             selectFromResult: ({ data, isFetching }) => ({
@@ -615,10 +616,10 @@ export default function DetailTreatmentHistory() {
                                         height={200}
                                         width={200}
                                         src={
-                                            'https://i.pinimg.com/564x/92/26/5c/92265c40c8e428122e0b32adc1994594.jpg'
+                                            doctorInfor?.doctorAvatar
                                         }
                                         alt=""
-                                        className="h-[100px] w-[100px] rounded-xl"
+                                        className="h-[100px] w-[100px] rounded-xl object-cover"
                                     />
                                     <div className="flex select-none flex-col justify-center text-[14px] font-bold">
                                         <p className="text-[14px]">
@@ -631,24 +632,23 @@ export default function DetailTreatmentHistory() {
                                                 {doctorInfor?.doctorName}
                                             </span>
                                         </p>
-                                        <p className="py-2">
-                                            Chuyên khoa:{' '}
-                                            <span className="font-normal">
-                                                Chuyên nội tim mạch
-                                            </span>
-                                        </p>
-                                        <p className="flex">
-                                            Được đánh giá:{' '}
-                                            <span className="pl-2">
-                                                5{' '}
-                                                <Star
-                                                    size={16}
-                                                    fill={'currentColor'}
-                                                    strokeWidth={1.5}
-                                                    className="mb-[3px] inline-block text-yellow-500"
-                                                />
-                                            </span>
-                                        </p>
+                                        <p className="gap-2 text-[14px] font-normal text-[#003553]">
+                                            Chuyên khoa: {" "}
+                                                {doctorInfor?.doctorSpecialties?.map(
+                                                    (specialty, index) => (
+                                                        <span
+                                                            className="mr-2"
+                                                            key={index}
+                                                        >
+                                                            {
+                                                                specialty?.specialtyName
+                                                            }
+                                                        </span>
+                                                    ),
+                                                )}
+                                            </p>
+                                        
+                                        
                                     </div>
                                 </div>
 
