@@ -45,8 +45,8 @@ export default function DoctorSuggestion({ doctorSpecialtyId }: { doctorSpecialt
                                     <p className="text-base text-secondarySupperDarker opacity-80"><span className='font-semibold'>Giá khám:</span> 150.000đ</p>
                                 </div>
                             </div>
-                            <p className="text-base text-secondarySupperDarker mb-4 line-clamp-3 h-[72px]">
-                                {doctor.description}
+                            <p className="text-base text-secondarySupperDarker mb-4 line-clamp-3 h-[72px]" dangerouslySetInnerHTML={{ __html: doctor.description }}>
+                                
                             </p>
                             <div className="flex items-center justify-between">
                                 <div>

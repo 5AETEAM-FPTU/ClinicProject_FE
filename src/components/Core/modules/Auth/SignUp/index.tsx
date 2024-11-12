@@ -18,6 +18,9 @@ import { useEffect } from 'react'
 import { useLocale } from 'next-intl'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../SignIn'
+import { AppDispatch } from '@/stores'
+import { useDispatch } from 'react-redux'
+import { setLoading } from '@/stores/features/loading'
 
 export default function SignUpComponent() {
     const params = useParams();
@@ -29,8 +32,10 @@ export default function SignUpComponent() {
     const {data: session} = useSession();
     const [requestLogin] = useRequestLoginMutation()
     const [requestAuthGoogle] = useRequestAuthGoogleMutation();
+    const dispatch: AppDispatch = useDispatch()
 
     const handleSubmit = async (values: any) => {
+        dispatch(setLoading());
         const dataMapping = {
             fullName: values.name,
             email: values.email,
@@ -41,7 +46,9 @@ export default function SignUpComponent() {
         if (result.error) {
             console.log(result.error)
             message.error("Không thể đăng ký! Vui lòng xác nhận lại thông tin!")
+            dispatch(setLoading());
         } else {
+            dispatch(setLoading());
             router.push('/vertify-email?email=' + values.email);
         }
     }
@@ -52,6 +59,7 @@ export default function SignUpComponent() {
                 redirect: true,
                 prompt: 'select_account',
             })
+
         } catch (error) {
         }
     }
@@ -223,7 +231,7 @@ export default function SignUpComponent() {
                                 size="large"
                                 ghost
                                 type='primary'
-                                className="placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent ml-5 w-[75px] text-[#003553] rounded-[16px] !border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
+                                className="cursor-pointer placeholder:text-[#003553] placeholder:text-opacity-60 bg-transparent ml-5 w-[75px] text-[#003553] rounded-[16px] !border-[#003553] font-bold text-md py-[10px] box-content h-[31px] px-0 border-2"
                                 onClick={() => {
                                     handleLoginWithGoogle();
                                 }}

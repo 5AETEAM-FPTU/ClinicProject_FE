@@ -32,7 +32,7 @@ export const userAppointments = baseApi.injectEndpoints({
                     `${params.doctorName ? `doctorName=${params.doctorName}&` : ''}` +
                     `${params.doctorGender ? `doctorGender=${params.doctorGender}&` : ''}` +
                     `${params.doctorSpecialtyId ? `doctorSpecialtyId=${params.doctorSpecialtyId}&` : ''}` +
-                    `pageSize=1&pageIndex=${params.pageIndex}`,
+                    `pageSize=6&pageIndex=${params.pageIndex}`,
                 flashError: true,
                 method: 'GET',
                 extraOptions: { skipAuth: false },

@@ -135,6 +135,7 @@ export default function UpdateElectrocarDiogram({
             setLoading(false);
         } catch (error) {
             message.error('Cập nhật thất bại!')
+            setLoading(false);
         }
     }
     useEffect(() => {
@@ -244,12 +245,12 @@ export default function UpdateElectrocarDiogram({
                         <Form.Item
                             label="Kết luận"
                             name={'finalConclusion'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>

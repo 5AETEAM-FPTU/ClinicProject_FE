@@ -25,7 +25,7 @@ export default function MainMedicalReport({
 }: TProps) {
     const [myForm] = Form.useForm()
     const editorRef = useRef<any>(null)
-    const router = useRouter();
+    const router = useRouter()
 
     const [openCreateMedicalServiceModal, setOpenCreateMedicalServiceModal] =
         useState<boolean>(false)
@@ -94,11 +94,13 @@ export default function MainMedicalReport({
                                 <p className="font-bold">
                                     Thời gian khám:{' '}
                                     <span className="font-medium">
-                                        {dayjs(payload?.medicalReport?.date).format('HH:mm') +
+                                        {dayjs(
+                                            payload?.medicalReport?.date,
+                                        ).format('HH:mm') +
                                             ' ' +
-                                            dayjs(payload?.medicalReport?.date).format(
-                                                'DD/MM/YYYY',
-                                            )}
+                                            dayjs(
+                                                payload?.medicalReport?.date,
+                                            ).format('DD/MM/YYYY')}
                                     </span>
                                 </p>
                             )}
@@ -150,12 +152,12 @@ export default function MainMedicalReport({
                             <Form.Item
                                 label="Chiều cao"
                                 name={'height'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
+                                // rules={[
+                                //     {
+                                //         required: true,
+                                //         message: 'Không được để trống',
+                                //     },
+                                // ]}
                             >
                                 <Input
                                     className="w-full sm:w-[224px]"
@@ -165,12 +167,12 @@ export default function MainMedicalReport({
                             <Form.Item
                                 label="Cân nặng"
                                 name={'weight'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
+                                // rules={[
+                                //     {
+                                //         required: true,
+                                //         message: 'Không được để trống',
+                                //     },
+                                // ]}
                             >
                                 <Input
                                     className="w-full sm:w-[224px]"
@@ -182,12 +184,12 @@ export default function MainMedicalReport({
                             <Form.Item
                                 label="Mạch"
                                 name={'pulse'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
+                                // rules={[
+                                //     {
+                                //         required: true,
+                                //         message: 'Không được để trống',
+                                //     },
+                                // ]}
                             >
                                 <Input
                                     className="w-full sm:w-[224px]"
@@ -197,12 +199,12 @@ export default function MainMedicalReport({
                             <Form.Item
                                 label="Nhiệt"
                                 name={'temperature'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
+                                // rules={[
+                                //     {
+                                //         required: true,
+                                //         message: 'Không được để trống',
+                                //     },
+                                // ]}
                             >
                                 <Input
                                     className="w-full sm:w-[224px]"
@@ -212,12 +214,12 @@ export default function MainMedicalReport({
                             <Form.Item
                                 label="Huyết áp"
                                 name={'bloodPresser'}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Không được để trống',
-                                    },
-                                ]}
+                                // rules={[
+                                //     {
+                                //         required: true,
+                                //         message: 'Không được để trống',
+                                //     },
+                                // ]}
                             >
                                 <Input
                                     className="w-full sm:w-[224px]"
@@ -283,16 +285,21 @@ export default function MainMedicalReport({
                 </div>
                 <div>
                     <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                        Tổng số xét nghiệm: 6
+                        Tổng số xét nghiệm: {payload.service.quantity}
                     </p>
                     <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                        Tổng phí xét nghiệm: 840.000 đ
+                        Tổng phí xét nghiệm:{' '}
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(payload.service.totalPrice)}
                     </p>{' '}
-                    <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                        Đã trả chi phí khám: 200.000đ
-                    </p>
                     <p className="text-[14px] font-bold text-secondarySupperDarker">
-                        Tổng cộng: 640.000 đ
+                        Tổng cộng:{' '}
+                        {new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        }).format(payload.service.totalPrice)}
                     </p>
                 </div>
             </div>
