@@ -269,8 +269,7 @@ export default function AIBotComponent() {
                 result.candidates[0].content.parts[0].text,
             )
             const reply = response.response_text.trim()
-            setSuggestSpecialty(response.suggested_specialty)
-            console.log(response.suggested_specialty)
+            if (response.suggested_specialty) setSuggestSpecialty(response.suggested_specialty)
             const newMessageAI: Message = {
                 id: messages.length + 1,
                 parts: [{ text: reply }],
@@ -351,11 +350,10 @@ export default function AIBotComponent() {
                                         className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                     >
                                         <div
-                                            className={`max-w-[75%] rounded-lg px-4 py-2 shadow-primary ${
-                                                message.role === 'user'
-                                                    ? 'bg-blue-500 text-white'
-                                                    : 'bg-gray-200 text-secondarySupperDarker'
-                                            }`}
+                                            className={`max-w-[75%] rounded-lg px-4 py-2 shadow-primary ${message.role === 'user'
+                                                ? 'bg-blue-500 text-white'
+                                                : 'bg-gray-200 text-secondarySupperDarker'
+                                                }`}
                                         >
                                             <div
                                                 className="text-base"
