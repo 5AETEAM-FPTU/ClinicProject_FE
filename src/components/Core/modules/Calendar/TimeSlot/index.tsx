@@ -20,12 +20,12 @@ function categorizeTimeSlots(timeSlots: TimeSlot[]) {
 
     timeSlots.forEach(slot => {
         const startHour = parseInt(slot.start.split(':')[0]); // Lấy giờ từ chuỗi "HH:MM"
-
-        if (startHour >= 0 && startHour < 12) {
+        console.log(new Date(slot.startTime));
+        if (startHour >= 0 && startHour < 12 && new Date(slot.startTime) > new Date()) {
             morningSlots.push(slot);
-        } else if (startHour >= 12 && startHour < 17) {
+        } else if (startHour >= 12 && startHour < 17 && new Date(slot.startTime) > new Date()) {
             afternoonSlots.push(slot);
-        } else if (startHour >= 17 && startHour <= 23) {
+        } else if (startHour >= 17 && startHour <= 23 && new Date(slot.startTime) > new Date()) {
             eveningSlots.push(slot);
         }
     });

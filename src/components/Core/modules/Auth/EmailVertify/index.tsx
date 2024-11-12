@@ -3,7 +3,7 @@
 // import { setCookie } from 'cookies-next'
 // import { useRouter } from 'next/navigation'
 // import React from 'react'
-import { Button, Input } from 'antd'
+import { Button, Input, message } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -12,9 +12,13 @@ import EmailSuccess from '@public/landing/icons/vertify-email-success.svg'
 import Image from 'next/image';
 import { useLazyRequestConfirmEmailQuery, useResendEmailMutation } from '@/stores/services/auth'
 import { useEffect, useState } from 'react'
+import { AppDispatch } from '@/stores'
+import { useAppDispatch } from '@/hooks/redux-toolkit'
+import { setLoaded, setLoading } from '@/stores/features/loading'
 
 
 export default function EmailVertify() {
+    const dispatch: AppDispatch = useAppDispatch();
     const params = useParams();
     const { t } = useTranslation(params?.locale as string, 'Landing');
     const [requestConfirmEmail] = useLazyRequestConfirmEmailQuery();
@@ -23,11 +27,13 @@ export default function EmailVertify() {
     const email = searchParams.get('email') as string;
     const token = searchParams.get('token') as string;
     const handleConfirmEmail = async () => {
+        dispatch(setLoading());
         const result = await requestConfirmEmail({
             token
         });
+        dispatch(setLoaded());
         if (result.error) {
-            console.log('Confirm email failed', result.error);
+            message.error('Xác thực email thất bại');
         } else {
             setIsSuccess(true);
         }
@@ -47,17 +53,20 @@ export default function EmailVertify() {
 }
 
 export function VertifyEmailRequest({ email }: { email: string }) {
+    const dispatch: AppDispatch = useAppDispatch();
     const params = useParams();
     const { t } = useTranslation(params?.locale as string, 'Landing')
     const [resendEmail] = useResendEmailMutation();
     const handleResend = async () => {
+        dispatch(setLoading());
         const result = await resendEmail({
             email
         });
+        dispatch(setLoaded());
         if (result.error) {
-            console.log('Resend email failed', result.error);
+            message.error('Vui lòng thử lại sau');
         } else {
-            alert("Gửi lại email thành công");
+            message.success("Gửi lại email thành công");
         }
     }
     return (

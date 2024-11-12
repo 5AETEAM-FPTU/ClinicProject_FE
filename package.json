@@ -61,7 +61,8 @@
         "swiper": "^11.1.14",
         "tailwind-merge": "^2.5.2",
         "tailwind-scrollbar-hide": "^1.1.7",
-        "tailwindcss-animated": "^1.1.2"
+        "tailwindcss-animated": "^1.1.2",
+        "uuid": "^11.0.3"
     },
     "devDependencies": {
         "@types/js-cookie": "^3.0.6",

@@ -1,10 +1,12 @@
 'use client'
 import React, { use, useEffect, useState } from 'react'
-import { Layout, Row, Col, Card, Typography, Pagination } from 'antd'
+import { Layout, Row, Col, Card, Typography, Pagination, Skeleton, Select } from 'antd'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
-import Paginate from '@/components/Core/common/Paginate'
+import Search from 'antd/es/input/Search'
+import DataSVG from '@public/landing/images/NoDataSVG.svg';
 import {
+    useGetAllActiveCategoriesQuery,
     useGetAllActivePostsQuery,
     useGetAllPostsQuery,
     useGetNewestPostQuery,
@@ -77,21 +79,35 @@ const NewsCard: React.FC<NewsItem> = ({
 export default function BlogList() {
     const { data: newestPostResult } = useGetNewestPostQuery()
     const [newestPosts, setNewestPosts] = useState<any>([])
+    const { data: categoriesResult } = useGetAllActiveCategoriesQuery();
+    const [categories, setCategories] = useState<any>([]);
+    const [cateogiesSelected, setCategoriesSelected] = useState<string[]>([])
     useEffect(() => {
         if (newestPostResult?.body?.result) {
             setNewestPosts(newestPostResult.body.result)
         }
     }, [newestPostResult])
+    useEffect(() => {
+        if (categoriesResult?.body?.result) {
+            setCategories(categoriesResult.body.result);
+            console.log(categoriesResult?.body?.result);
+        }
+    }, [categoriesResult])
 
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(10)
     const [search, setSearch] = useState('')
     const [totalPage, setTotalPage] = useState(1)
-    const { data: allPostResult, refetch } = useGetAllActivePostsQuery({
+    const { data: allPostResult, refetch, isFetching } = useGetAllActivePostsQuery({
         page,
         limit,
-        search: '',
+        search,
+        categories: cateogiesSelected.join(',')
     })
+
+    const handleSelectChangeChange = (value: string[]) => {
+        setCategoriesSelected(value)
+    }
     const [allPosts, setAllPosts] = useState<any>([])
     useEffect(() => {
         if (allPostResult?.body?.result) {
@@ -101,10 +117,10 @@ export default function BlogList() {
     }, [allPostResult])
     useEffect(() => {
         refetch()
-    }, [page, limit])
+    }, [page, limit, cateogiesSelected])
     useEffect(() => {
         setPage(1)
-    }, [search])
+    }, [search, cateogiesSelected])
 
     return (
         <div className="flex min-h-screen w-full justify-center">
@@ -179,8 +195,34 @@ export default function BlogList() {
                     <Title level={2} className="text-primary mb-4">
                         Tin tức bệnh viện
                     </Title>
+                    <div className="flex justify-end w-full text-center">
+                        <Select className='min-w-[200px] w-fit max-w-[300px] mr-3' mode='multiple' allowClear onChange={handleSelectChangeChange}
+                            options={categories.map((category: any) => ({
+                                label: category.name,
+                                value: category._id,
+                            }))}
+                            placeholder="Chọn danh mục"
+                        />
+                        <Search
+                            className="m-0 max-w-[400px]"
+                            placeholder="Tìm kiếm"
+                            size="large"
+                            onSearch={(value) => setSearch(value)}
+                        />
+                    </div>
                     <Row gutter={24}>
-                        {allPosts.map((item: any, index: number) => (
+                        {isFetching && Array.from({ length: 3 }).map((_, index) => (
+                            <Col
+                                key={index}
+                                xl={8}
+                                className="flex flex-col items-center justify-between gap-5 mt-5"
+                            >
+                                <Skeleton.Button
+                                    key={index}
+                                    active className='w-[400px] h-[300px]' />
+                            </Col>
+                        ))}
+                        {!isFetching && allPosts.map((item: any, index: number) => (
                             <Col
                                 key={index}
                                 xl={8}
@@ -200,6 +242,12 @@ export default function BlogList() {
                                 />
                             </Col>
                         ))}
+                        {!isFetching && allPosts.length === 0 &&
+                            <div className='mx-auto mt-5'>
+                                <Title level={3} className='text-primary mt-5 text-center'>Không tìm thấy</Title>
+                                <Image width={600} height={400} alt='No data' src={DataSVG} />
+                            </div>
+                        }
                     </Row>
                     {/* <Paginate
                         totalPages={totalPage}
@@ -208,7 +256,7 @@ export default function BlogList() {
                             setPage(page)
                         }}
                     /> */}
-                    <div className='mt-5 w-full flex justify-center'>
+                    {totalPage > 1 && <div className='mt-5 w-full flex justify-center'>
                         <Pagination
                             total={totalPage}
                             pageSize={10}
@@ -216,7 +264,7 @@ export default function BlogList() {
                                 setPage(page)
                             }}
                         />
-                    </div>
+                    </div>}
                 </Content>
             </Layout>
         </div>

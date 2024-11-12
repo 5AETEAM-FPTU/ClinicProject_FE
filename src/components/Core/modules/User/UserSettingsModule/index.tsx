@@ -52,7 +52,7 @@ export default function UserSettingsModule() {
                         </div>
                         <div className="flex w-full flex-col gap-5">
                             <UserUpdateDescription isProfileFetching={isFetching} profile={result}/>
-                            <UserDeleteAccount/>
+                            {/* <UserDeleteAccount/> */}
                         </div>
                     </div>
                 </Content>

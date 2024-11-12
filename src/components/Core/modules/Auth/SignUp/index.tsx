@@ -18,15 +18,19 @@ import { useEffect } from 'react'
 import { useLocale } from 'next-intl'
 import { jwtDecode } from 'jwt-decode'
 import { JwtPayloadUpdated } from '../SignIn'
+import { AppDispatch } from '@/stores'
+import { useDispatch } from 'react-redux'
+import { setLoaded, setLoading } from '@/stores/features/loading'
 
 export default function SignUpComponent() {
     const params = useParams();
     const [form] = useForm();
     const { t } = useTranslation(params?.locale as string, 'Landing')
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
     const locale = useLocale();
     const [requestSignUp] = useRequestSignUpMutation();
-    const {data: session} = useSession();
+    const { data: session } = useSession();
     const [requestLogin] = useRequestLoginMutation()
     const [requestAuthGoogle] = useRequestAuthGoogleMutation();
 
@@ -48,22 +52,26 @@ export default function SignUpComponent() {
 
     const handleLoginWithGoogle = async () => {
         try {
+            dispatch(setLoading())
             await signIn('google', {
                 redirect: true,
                 prompt: 'select_account',
             })
         } catch (error) {
         }
+        dispatch(setLoaded())
     }
 
     const handleLoginByGoogleIdToken = async (value: string) => {
+        dispatch(setLoading())
         const result = await requestAuthGoogle({
             idToken: value
         });
+        dispatch(setLoaded())
         const accessToken = result?.data?.body?.accessToken ?? ''
 
-        if(result.error) {
-            if((result.error as any).status !== 500) {
+        if (result.error) {
+            if ((result.error as any).status !== 500) {
                 message.error("Đăng nhập không thành công")
             }
         } else {
@@ -73,10 +81,10 @@ export default function SignUpComponent() {
             )
         }
     }
-        
+
     useEffect(() => {
         if (session) {
-           handleLoginByGoogleIdToken(session?.idToken!);
+            handleLoginByGoogleIdToken(session?.idToken!);
         }
     }, [session])
 
@@ -181,14 +189,14 @@ export default function SignUpComponent() {
                             rules={[
                                 { required: true, message: "Vui lòng nhập mật khẩu" },
                                 {
-                                    pattern:  /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
+                                    pattern: /^(?=.*[a-z])(?=.*[!@#?])[A-Za-z!@#?.0-9]{8,100}$/,
                                     message: "Mật khẩu phải chứa ít nhất 8 ký tự, chữ cái viết hoa, chữ cái viết thường và ít nhất 1 chữ số"
                                 }
                             ]}
                         >
                             <div>
                                 <label htmlFor="password" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu</label>
-                                <CustomInputPassword placeholder='Ít nhất 8 ký tự'/>
+                                <CustomInputPassword placeholder='Ít nhất 8 ký tự' />
                             </div>
                         </Form.Item>
                         <Form.Item
@@ -210,7 +218,7 @@ export default function SignUpComponent() {
                         >
                             <div>
                                 <label htmlFor="confirmPassword" className='text-base font-medium mb-2 block text-[#003553]'>Mật khẩu xác nhận</label>
-                               <CustomInputPassword placeholder='Nhập lại mật khẩu'/>
+                                <CustomInputPassword placeholder='Nhập lại mật khẩu' />
                             </div>
                         </Form.Item>
                         <div className='flex' style={{ marginTop: '20px !important' }}>
