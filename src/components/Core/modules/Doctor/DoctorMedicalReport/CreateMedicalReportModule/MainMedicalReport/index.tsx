@@ -285,21 +285,21 @@ export default function MainMedicalReport({
                 </div>
                 <div>
                     <p className="text-[14px] font-semibold text-secondarySupperDarker">
-                        Tổng số xét nghiệm: {payload?.service?.quantity}
+                        Tổng số xét nghiệm: {payload?.service?.quantity ?? 0}
                     </p>
                     <p className="text-[14px] font-semibold text-secondarySupperDarker">
                         Tổng phí xét nghiệm:{' '}
                         {new Intl.NumberFormat('vi-VN', {
                             style: 'currency',
                             currency: 'VND',
-                        }).format(payload?.service?.totalPrice)}
+                        }).format(payload?.service?.totalPrice ?? 0)}
                     </p>{' '}
                     <p className="text-[14px] font-bold text-secondarySupperDarker">
                         Tổng cộng:{' '}
                         {new Intl.NumberFormat('vi-VN', {
                             style: 'currency',
                             currency: 'VND',
-                        }).format(payload?.service?.totalPrice)}
+                        }).format(payload?.service?.totalPrice ?? 0)}
                     </p>
                 </div>
             </div>
