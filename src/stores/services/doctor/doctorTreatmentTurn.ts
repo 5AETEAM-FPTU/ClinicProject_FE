@@ -47,21 +47,27 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
-        getCancelAppointmentStaff: build.query<any, {
-            pageIndex?: number;
-            pageSize?: number;
-        }>({
+        getCancelAppointmentStaff: build.query<
+            any,
+            {
+                pageIndex?: number
+                pageSize?: number
+            }
+        >({
             query: (pararms) => ({
                 url: doctorEndpoint.GET_CANCLE_APPOINTMENTS_STAFF,
                 flashError: true,
                 method: 'GET',
                 params: {
                     pageIndex: pararms.pageIndex,
-                    pageSize: pararms.pageSize
-                }
+                    pageSize: pararms.pageSize,
+                },
             }),
         }),
-        getAppointmentOnDayForStaff: build.query<any, { date: string, doctorId: string }>({
+        getAppointmentOnDayForStaff: build.query<
+            any,
+            { date: string; doctorId: string }
+        >({
             query: (query) => ({
                 url: doctorEndpoint.GET_APPOINTMENTS_ON_DAY.concat(
                     `?startDate=${query.date}&doctorId=${query.doctorId}`,
@@ -71,8 +77,7 @@ export const doctorTreatmentTurnApi = baseApi.injectEndpoints({
                 extraOptions: { skipAuth: true },
             }),
             extraOptions: { skipAuth: false },
-    })
-          ,  
+        }),
         getAvailableDoctor: build.query<any, void>({
             query: () => ({
                 url: doctorEndpoint.GET_AVAILABLE_DOCTOR,
@@ -91,5 +96,5 @@ export const {
     useGetAvailableDoctorQuery,
     useGetCancelAppointmentStaffQuery,
     useGetAllMedicalReportStaffQuery,
-    useLazyGetAllMedicalReportStaffQuery
+    useLazyGetAllMedicalReportStaffQuery,
 } = doctorTreatmentTurnApi

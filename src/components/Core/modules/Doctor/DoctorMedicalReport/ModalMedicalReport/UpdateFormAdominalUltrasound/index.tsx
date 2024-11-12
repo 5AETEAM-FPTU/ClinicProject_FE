@@ -176,48 +176,48 @@ export default function UpdateAdominalUtrasound({
                         <Form.Item
                             label="Gan"
                             name={'liver'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Túi mật - Đường mật"
                             name={'gallbladderBiliaryTract'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Lách"
                             name={'milt'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Tụy"
                             name={'pancreas'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
@@ -226,48 +226,48 @@ export default function UpdateAdominalUtrasound({
                         <Form.Item
                             label="Thận"
                             name={'kidney'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Dịch tự do"
                             name={'mucus'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Bàn quang"
                             name={'bladder'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
                         <Form.Item
                             label="Các cơ quan khác"
                             name={'other'}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Không được để trống',
-                                },
-                            ]}
+                            // rules={[
+                            //     {
+                            //         required: true,
+                            //         message: 'Không được để trống',
+                            //     },
+                            // ]}
                         >
                             <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                         </Form.Item>
@@ -276,12 +276,12 @@ export default function UpdateAdominalUtrasound({
                 <Form.Item
                     label="Kết luận"
                     name={'finalConclusion'}
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Không được để trống',
-                        },
-                    ]}
+                    // rules={[
+                    //     {
+                    //         required: true,
+                    //         message: 'Không được để trống',
+                    //     },
+                    // ]}
                 >
                     <Input.TextArea placeholder="Nhập kết quả"></Input.TextArea>
                 </Form.Item>

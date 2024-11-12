@@ -86,7 +86,7 @@ export function VertifyEmailRequest({ email }: { email: string }) {
                 Kiểm tra email của bạn
             </h1>
             <p className="mb-12 text-[#003553] text-center text-base ">
-                Bạn đã sử dụng <strong>quoch147@gmail.com</strong> như là email của tài khoản
+                Bạn đã sử dụng <strong>{email}</strong> như là email của tài khoản
             </p>
             <Button
                 size="large"

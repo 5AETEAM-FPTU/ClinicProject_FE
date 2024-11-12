@@ -36,7 +36,7 @@ export type TPatientInfo = {
 
 export type TService = {
     serviceOrderId: string
-    quantiry: number
+    quantity: number
     totalPrice: number
 }
 

@@ -43,7 +43,7 @@ export default function UserUpdateDescription({
             </div>
             <div className="mt-5 flex h-fit w-full flex-col gap-5">
                 <div>
-                    {profile?.description || profile?.description === '' ? (
+                    {profile?.description || profile?.description !== 'default' ? (
                         <p
                             dangerouslySetInnerHTML={{
                                 __html: editInitContent!,

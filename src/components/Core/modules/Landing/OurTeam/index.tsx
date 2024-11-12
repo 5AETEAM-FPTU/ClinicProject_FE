@@ -17,6 +17,7 @@ import Dollar from '@public/landing/icons/dollar.svg'
 import { motion } from 'framer-motion'
 import { useTranslation } from '@/app/i18n/client'
 import { useParams } from 'next/navigation'
+import { useGetAvailableDoctorQuery } from '@/stores/services/doctor/doctorTreatmentTurn'
 
 function OurTeam() {
     const settings = {
@@ -112,6 +113,13 @@ function OurTeam() {
     const params = useParams()
     const { t } = useTranslation(params?.locale as string, 'Landing')
 
+    const {availableDoctor} = useGetAvailableDoctorQuery(undefined, {
+        selectFromResult: (result) => ({
+            availableDoctor: result.data?.body?.doctors ?? [],
+        })
+    });
+    console.log(availableDoctor);
+
     return (
         <div
             id='our-team'
@@ -121,8 +129,9 @@ function OurTeam() {
                 subtile={t('our_team_sub')}
                 tailCustomStyle="bg-gradient-to-b from-secondaryLight to-white"
             >
-                <Carousel settings={settings}>
-                    {doctors.map((doctor, index) => (
+                {
+                    availableDoctor.length > 0 && <Carousel settings={settings}>
+                    {availableDoctor.map((doctor :any, index:number) => (
                         <div
                             key={index}
                             className="!flex w-[282px] h-fit sm:h-[430px] sm:w-[260px] !flex-col !items-center !justify-center"
@@ -133,9 +142,11 @@ function OurTeam() {
                                 <div className="h-[253px] sm:h-[253px] w-full">
                                     <div className="h-full w-full">
                                         <Image
-                                            src={Doctor}
+                                            src={doctor?.avatarUrl}
                                             alt="doctor"
                                             className="h-full w-full object-cover"
+                                            width={400}
+                                            height={400}
                                         ></Image>
                                     </div>
                                 </div>
@@ -160,10 +171,10 @@ function OurTeam() {
                                 </div>
                                 <div className="flex flex-col gap-[4px] p-[10px]">
                                     <p className="text-[12px]">
-                                        {doctor.position}
+                                        {doctor.position} Thạc sĩ - Bác sĩ
                                     </p>
                                     <p className="text-[14px] font-bold">
-                                        {doctor.name}
+                                        {doctor.fullName}
                                     </p>
                                     <div className="flex flex-row items-center gap-2">
                                         <Image
@@ -171,7 +182,7 @@ function OurTeam() {
                                             alt="icon"
                                         ></Image>
                                         <p className="text-[12px] font-semibold text-secondaryDarker">
-                                            {doctor.specialty}
+                                            {doctor.specialty} Chuyên khoa nội
                                         </p>
                                     </div>
                                     <div className="flex flex-row items-center gap-2">
@@ -185,6 +196,7 @@ function OurTeam() {
                         </div>
                     ))}
                 </Carousel>
+                }
             </CommonSection>
         </div>
     )

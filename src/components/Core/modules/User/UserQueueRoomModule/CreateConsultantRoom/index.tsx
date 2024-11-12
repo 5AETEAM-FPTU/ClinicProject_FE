@@ -25,7 +25,6 @@ export default function CreateConsultantRoom({
     const [addQueueRoomFunc, { isLoading }] = useAddQueueRoomMutation()
     const editorRef = useRef<any>(null)
     const [isEditVisible, setIsEditVisible] = useState<boolean>(false)
-
     const { user } = useAppSelector((state) => state.auth)
 
     const userId = jwtDecode<JwtPayloadUpdated>(
@@ -56,7 +55,7 @@ export default function CreateConsultantRoom({
         doctorId: string,
     ) => {
         try {
-        
+
             const domain =
                 process.env.NEXT_PUBLIC_FE_DOMAIN ?? 'http://localhost:3000'
             await sendToUserNotification({
@@ -95,15 +94,16 @@ export default function CreateConsultantRoom({
                                 className="h-[60px] w-[60px] rounded-full object-cover"
                             />
                             <div className="text-[14px]">
-                                <p className="font-bold">Nguyễn Văn Đạt </p>
-                                <p>
+                                <p className="font-bold">Nguyễn Văn Đạt</p>
+                                {/* <p>
                                     Giới tính: <span>Nam</span>
-                                </p>
+                                </p> */}
                             </div>
                         </div>
 
                         {isEditVisible ? (
-                            <Form.Item
+                            <div>
+                                {/* <Form.Item
                                 className="width-full"
                                 label="Chủ đề yêu cầu"
                                 name={'title'}
@@ -118,13 +118,17 @@ export default function CreateConsultantRoom({
                                     className="border-[1.2px] border-neutral-400"
                                     placeholder="Nhập số điện thoại của bạn"
                                 />
-                            </Form.Item>
+                            </Form.Item> */}
+                            </div>
                         ) : (
-                            <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
-                                <p>
+                            <div>
+                                {/* <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
+                                    <p>
                                     Số điện thoại: <span>09483712312</span>
                                 </p>{' '}
+                                </div> */}
                             </div>
+
                         )}
 
                         {isEditVisible ? (
@@ -145,11 +149,14 @@ export default function CreateConsultantRoom({
                                 />
                             </Form.Item>
                         ) : (
-                            <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
-                                <p>
-                                    Địa chỉ: <span>Hòa hải, TP Đà Nẵng</span>
-                                </p>{' '}
+                            <div>
+                                {/* <div className="w-full rounded-lg bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553] sm:w-fit">
+                                    <p>
+                                        Địa chỉ: <span>Hòa hải, TP Đà Nẵng</span>
+                                    </p>{' '}
+                                </div> */}
                             </div>
+
                         )}
                     </div>
                 </div>

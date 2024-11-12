@@ -321,6 +321,13 @@ export default function UpdateMedicalServiceModal({
                                                                                     item
                                                                                         ?.service
                                                                                         ?.code,
+                                                                                ),
+                                                                                dispatch(
+                                                                                    updateSelectedId(
+                                                                                        item
+                                                                                            ?.service
+                                                                                            ?.id,
+                                                                                    ),
                                                                                 )
                                                                             }}
                                                                         >
