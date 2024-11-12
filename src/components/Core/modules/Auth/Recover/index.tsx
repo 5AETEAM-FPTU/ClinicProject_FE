@@ -3,7 +3,7 @@
 // import { setCookie } from 'cookies-next'
 // import { useRouter } from 'next/navigation'
 // import React from 'react'
-import { Button, Input, Form } from 'antd'
+import { Button, Input, Form, message } from 'antd'
 import { useParams } from 'next/navigation'
 import { useTranslation } from '@/app/i18n/client'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -29,8 +29,9 @@ export default function RecoverComponent() {
         });
         dispatch(setLoaded());
         if (result.error) {
-            console.log('Change password failed', result.error);
+            message.error('Vui lòng thử lại');
         } else {
+            message.success('Đổi mật khẩu thành công');
             router.push('/sign-in');
         }
     }

@@ -30,7 +30,7 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
     const hours = date?.substring(8, 10);
     const minutes = date?.substring(10, 12);
     const doctorId = webStorageClient.get(constants.BOOKED_ID);
-    const {user} = useAppSelector((state) => state.auth);
+    const { user } = useAppSelector((state) => state.auth);
 
     const userId = jwtDecode<JwtPayloadUpdated>(
         webStorageClient.getToken()!,
@@ -38,20 +38,18 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
     const sendToUserNotification = useMutation(
         api._user_notifications.functions.sendUserNotification,
     )
-    
+
     // in cookie
     const vnPayUrl = webStorageClient.remove(constants.VNPAY_PAYMENT_URL);
-
-    const [dateAppointment, timeAppointment] = appointmentDate?.split(' ');
-    const formattedTime = timeAppointment.substring(0, 4);
-    console.log(formattedTime + " " + timeAppointment)
-    const formattedDateTimeAppointment = `${formattedTime} ${dateAppointment}`;
+    console.log(appointmentDate);
+    const [dateAppointment, timeAppointment, slot] = appointmentDate?.split(' ');
+    const formattedDateTimeAppointment = `${timeAppointment} ${slot} ${dateAppointment}`;
 
     const formattedDate = `${hours}:${minutes} ${day}/${month}/${year}`;
 
     const handleCreateNotificationToPatient = async (
         doctorId: string,
-       
+
     ) => {
         try {
             await sendToUserNotification({
@@ -65,12 +63,12 @@ export default function PaymentSuccess({ transactionId, amount, date, appointmen
                 topic: 'Đặt lịch',
                 href: `/`,
             })
-        } catch (error) {}
+        } catch (error) { }
     }
 
     useEffect(() => {
         handleCreateNotificationToPatient(doctorId!)
-    }, [transactionId]) 
+    }, [transactionId])
 
     return (
         <div className="flex items-center justify-center">

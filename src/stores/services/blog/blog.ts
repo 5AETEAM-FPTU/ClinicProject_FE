@@ -46,9 +46,9 @@ export const blogApis = formServiceBaseApi.injectEndpoints({
             }),
         }),
 
-        getAllActivePosts: build.query<any, { page: number, limit: number, search: string }>({
+        getAllActivePosts: build.query<any, { page: number, limit: number, search: string, categories: string }>({
             query: (query) => ({
-                url: blogEndpoints.GET_ALL_ACTIVE_POST + `?page=${query.page}&limit=${query.limit}&search=${query.search}`,
+                url: blogEndpoints.GET_ALL_ACTIVE_POST + `?page=${query.page}&limit=${query.limit}&search=${query.search}${query.categories ? `&categories=${query.categories}` : ''}`,
                 method: 'GET',
             })
         }),
