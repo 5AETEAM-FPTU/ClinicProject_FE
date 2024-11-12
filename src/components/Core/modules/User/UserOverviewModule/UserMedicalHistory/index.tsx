@@ -73,8 +73,8 @@ export default function UserMedicalHistory() {
                                     <p className="text-[14px]" dangerouslySetInnerHTML={{ __html: queueRoomResult.title }}>
                                        
                                     </p>
-                                    <p className="text-[10px] font-normal">
-                                        {queueRoomResult?.description}
+                                    <p className="text-[10px] font-normal" dangerouslySetInnerHTML={{ __html: queueRoomResult.description }}>
+                                        
                                     </p>
                                 </div>
                                 <Button
