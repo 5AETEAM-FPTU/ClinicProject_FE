@@ -258,8 +258,9 @@ export default function BlogList() {
                     /> */}
                     {totalPage > 1 && <div className='mt-5 w-full flex justify-center'>
                         <Pagination
-                            total={totalPage}
-                            pageSize={10}
+                            total={totalPage * limit}
+                            current={page}
+                            pageSize={limit}
                             onChange={(page) => {
                                 setPage(page)
                             }}
