@@ -58,20 +58,20 @@ export default function ViewConsultantRoom(payload: IProps) {
                         </div>
                     </div>
 
-                    <div className="rounded-lg sm:w-fit w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                    <div className="rounded-lg sm:w-full w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                         <p>
                             Số điện thoại:{' '}
-                            <span>{payload?.user?.phoneNumber}</span>
+                            <span>{payload?.user?.phoneNumber ? payload?.user?.phoneNumber : 'Chưa có'}</span>
                         </p>{' '}
                     </div>
 
-                    <div className="rounded-lg sm:w-fit w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
+                    <div className="rounded-lg sm:w-full w-full bg-[#E9ECEF] px-4 py-2 text-[14px] font-medium text-[#003553]">
                         <p>
-                            Địa chỉ: <span>{payload?.user?.address}</span>
+                            Địa chỉ: <span>{payload?.user?.address && payload?.user?.address !== "default" ? payload?.user?.address : 'Chưa có'}</span>
                         </p>{' '}
                     </div>
                 </div>
-                <div className="!mb-0 !mr-8 mt-3 flex w-full items-center justify-between xl:mt-0">
+                <div className="!mb-0 !mr-8 mt-3 flex items-center justify-between xl:mt-0 xl:ml-6">
                     <Button
                         loading={isLoading}
                         type="primary"

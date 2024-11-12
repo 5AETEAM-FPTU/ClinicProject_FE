@@ -112,6 +112,7 @@ type GenderalMedicalReport = {
 
 export default function DetailTreatmentHistory() {
     const router = useRouter()
+    let appointmentId: string | null;
     const [myForm] = Form.useForm()
     const editorRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
@@ -153,6 +154,7 @@ export default function DetailTreatmentHistory() {
             .then(() => {
                 refetch()
                 setIsModalOpen(false)
+                appointmentId = detail?.appointmentId
                 message.success('Cảm ơn quý khách đã phản hồi')
             })
             .catch(() => {
@@ -725,7 +727,7 @@ export default function DetailTreatmentHistory() {
                         <ViewFeedback
                             close={() => setIsModalOpenView(!isModalOpenView)}
                             open={isModalOpenView}
-                            appointmentId={detail?.appointmentId}
+                            appointmentId={detail?.appointmentId ? detail?.appointmentId : appointmentId!}
                         />
                     </Layout>
                 </motion.div>
