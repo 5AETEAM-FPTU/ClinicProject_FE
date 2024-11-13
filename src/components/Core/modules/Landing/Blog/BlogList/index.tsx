@@ -95,7 +95,7 @@ export default function BlogList() {
     }, [categoriesResult])
 
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(10)
+    const [limit, setLimit] = useState(9)
     const [search, setSearch] = useState('')
     const [totalPage, setTotalPage] = useState(1)
     const { data: allPostResult, refetch, isFetching } = useGetAllActivePostsQuery({
