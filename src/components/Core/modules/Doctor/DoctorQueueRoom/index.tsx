@@ -89,7 +89,7 @@ export default function DoctorQueueRoom() {
                 topic: 'Tư vấn',
                 href: `${domain}/consultation/conversation/?chat=${chat}&user=${patientId}&peerAvt=${peerAvatar}&peerName=${peerName}&title=${initialMessge}`,
             })
-        } catch (error) {}
+        } catch (error) { }
     }
 
     const handleFetchChatRoom = async (
@@ -135,7 +135,7 @@ export default function DoctorQueueRoom() {
         handleFetchQueueRooms(page, pageSizeDefault)
     }
 
-    const handleAcceptReply = (message: string) => {}
+    const handleAcceptReply = (message: string) => { }
 
     return (
         <motion.div
@@ -226,7 +226,7 @@ export default function DoctorQueueRoom() {
                     <Pagination
                         current={page}
                         pageSize={pageSizeDefault}
-                        total={totalPages + 10}
+                        total={totalPages * pageSizeDefault}
                         onChange={handlePageChange}
                     />
                 )}
