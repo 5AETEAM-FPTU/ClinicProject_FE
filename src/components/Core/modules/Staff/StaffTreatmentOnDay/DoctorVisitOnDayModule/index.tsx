@@ -29,7 +29,7 @@ export default function StaffDoctorVisitInDayModule({ doctorId }: TProps) {
 
     const { appointments, refetch, isFetching } =
         useGetAppointmentOnDayForStaffQuery(
-            { date: '2024-10-23T15:44:16.142Z', doctorId: doctorId },
+            { date: new Date().toDateString(), doctorId: doctorId },
             {
                 selectFromResult: ({ data, isFetching }) => ({
                     appointments: data?.body?.appointment ?? [],
@@ -101,7 +101,7 @@ export default function StaffDoctorVisitInDayModule({ doctorId }: TProps) {
                             <div className="self-end">
                                 <Button
                                     type="primary"
-                                    onClick={() => {}}
+                                    onClick={() => { }}
                                     className="float-end h-[33px] bg-[#0284C7] text-white"
                                     iconPosition="end"
                                     icon={<Calendar size={18} />}
