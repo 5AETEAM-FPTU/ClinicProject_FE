@@ -178,8 +178,9 @@ export default function Component() {
         if (selectedDate) {
             try {
                 setSelectedSlot(null);
-                await getScheduleByDateQuery({ date: `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`, doctorId: "1a6c3e77-4097-40e2-b447-f00d1f82cf72" });
+                await getScheduleByDateQuery({ date: `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`, doctorId: params.get('doctorId') || '' }).unwrap();
             } catch (error) {
+                message.error("Đã có lỗi xảy ra");
             }
         }
     }
