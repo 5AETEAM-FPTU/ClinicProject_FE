@@ -3,15 +3,18 @@
 import Image from 'next/image'
 import { MedicalReport } from '..'
 import dayjs from 'dayjs'
+import { useRouter } from 'next-nprogress-bar'
 
 interface IProps {
     reports: MedicalReport
 }
 
 export default function DoctorMedicalReport({ reports }: IProps) {
+    const router = useRouter();
+
     return (
         <>
-            <div className="flex h-fit cursor-pointer flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third transition-all hover:bg-slate-100 sm:gap-0">
+            <div onClick={() => {router.push("treatment-history/view?id=" + reports.reportId)}} className="flex h-fit cursor-pointer flex-col gap-2 rounded-xl bg-white p-[16px] shadow-third transition-all hover:bg-slate-100 sm:gap-0">
                 <div className="w-full">
                     <div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
                         <span className="font-semibold text-[#003553]">
