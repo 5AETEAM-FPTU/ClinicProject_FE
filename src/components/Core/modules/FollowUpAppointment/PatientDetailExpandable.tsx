@@ -15,7 +15,7 @@ export const PatientModal = ({ patientId, open, setOpen }: { patientId: string |
                 onCancel={() => setOpen(false)}
                 className='w-full lg:w-[90%] shadow-third'
             >
-                <PatientDetailForm patientId={patientId} />
+                <PatientDetailForm open={open} patientId={patientId} />
             </Modal>
         </>
     );

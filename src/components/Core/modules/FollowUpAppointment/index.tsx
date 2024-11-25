@@ -107,7 +107,6 @@ export default function FollowUpAppointment() {
 
     return (
         <>
-            <PatientModal open={isExpanded} setOpen={setIsExpanded} patientId={patientId} />
             <div className="w-full mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4 text-secondarySupperDarker">Tái khám</h1>
                 <div className="relative mb-6">
@@ -136,7 +135,7 @@ export default function FollowUpAppointment() {
                                         </p>
                                     </div>
                                 </div>
-                                <Button  className='h-fit border-secondaryDark' onClick={() => { setIsExpanded(true); setPatientId(patient.id) }}>
+                                <Button className='h-fit border-secondaryDark' onClick={() => { setPatientId(patient.id) }}>
                                     <ScanEye className="w-6 h-6 text-[#0284C7]" />
                                 </Button>
                             </div>
@@ -153,6 +152,7 @@ export default function FollowUpAppointment() {
                                     </div>
                                 </Popover>
                             </div>
+                            <PatientModal open={patientId == patient.id} setOpen={() => setPatientId(null)} patientId={patient.id} />
                         </div>
                     ))}
                 </div>

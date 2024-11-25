@@ -6,6 +6,10 @@ import { useGetUserDetailInMedicalReportQuery } from '@/stores/services/appointm
 import { useGetAllMedicalReportRecentOfUserQuery } from '@/stores/services/report/medicalReport'
 import { useGetUpcommingFollowUpNotificationQuery } from '@/stores/services/notification'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/navigation'
+import webStorageClient from '@/utils/webStorageClient'
+import { jwtDecode } from 'jwt-decode'
+import { JwtPayloadUpdated } from '../Auth/SignIn'
 
 interface ExaminationHistory {
     doctorName: string
@@ -40,7 +44,13 @@ function formatDateTime(startTime: string, endTime: string, date: string) {
     return `${formatTime(start)} - ${formatTime(end)} ${formatDate(appointmentDate)}`;
 }
 
-export default function PatientDetailForm({ patientId }: { patientId: string | null }) {
+export default function PatientDetailForm({ patientId, open }: { patientId: string | null, open: boolean }) {
+    const router = useRouter();
+    const _accessToken = webStorageClient.getToken();
+    let role: string;
+    if (_accessToken) {
+        role = jwtDecode<JwtPayloadUpdated>(_accessToken!).role
+    }
     const [upcommingRetreatments, setUpcommingRetreatments] = useState<any[]>([]);
     const { data: retreatmentData, isFetching: isRetreatmentFetching } = useGetUpcommingFollowUpNotificationQuery({ userId: patientId || '' });
     useEffect(() => {
@@ -143,7 +153,7 @@ export default function PatientDetailForm({ patientId }: { patientId: string | n
                                 </div>
                             </div>
                             <div className='w-fit md:w-[10%]'>
-                                <Button className="h-[34px] w-fit float-end hidden md:block font-semibold rounded-[12px] border-[#0284C7] text-[#0284C7] text-[12px]">
+                                <Button className="h-[34px] w-fit float-end hidden md:block font-semibold rounded-[12px] border-[#0284C7] text-[#0284C7] text-[12px]" onClick={() => router.push(`/${role}/treatment-turn/treatment-history/view?id=${history.reportId}`)}>
                                     Hồ sơ khám bệnh
                                 </Button>
                             </div>
@@ -162,7 +172,7 @@ export default function PatientDetailForm({ patientId }: { patientId: string | n
 
             <div className="text-center mt-4">
                 {!isMedicalReportFetching && medicalReports.length == 0 && <p className="text-base text-secondarySupperDarker">Không có lịch sử khám bệnh</p>}
-                {medicalReports.length != 0 && pageIndex < totalPages && <div onClick={handleLoadMore} className="border-none cursor-pointer select-none font-semibold text-[#0284C7] text-[12px]">
+                {medicalReports.length != 0 && pageIndex < totalPages && totalPages != 0 && <div onClick={handleLoadMore} className="border-none cursor-pointer select-none font-semibold text-[#0284C7] text-[12px]">
                     Xem thêm
                 </div>}
             </div>
